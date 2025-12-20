@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # Main website
+  website:
+    image: nginx:alpine
+    container_name: excalibur-website
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./website:/usr/share/nginx/html/website:ro
+      - ./web:/usr/share/nginx/html/web:ro
+      - ./admin:/usr/share/nginx/html/admin:ro
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/ssl:/etc/nginx/ssl:ro
+    restart: unless-stopped
+    networks:
+      - excalibur-net
+
+  # Treasury backend service
+  treasury:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.treasury
+    container_name: excalibur-treasury
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - ENV=production
+    restart: unless-stopped
+    networks:
+      - excalibur-net
+    volumes:
+      - treasury-data:/data
+
+  # Forge processor (Python backend)
+  forge-processor:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.forge
+    container_name: excalibur-forge
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - DIFFICULTY=4
+    restart: unless-stopped
+    networks:
+      - excalibur-net
+    volumes:
+      - forge-data:/data
+
+  # Redis for caching and rate limiting
+  redis:
+    image: redis:7-alpine
+    container_name: excalibur-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    networks:
+      - excalibur-net
+    volumes:
+      - redis-data:/data
+
+networks:
+  excalibur-net:
+    driver: bridge
+
+volumes:
+  treasury-data:
+  forge-data:
+  redis-data:

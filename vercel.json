@@ -1,0 +1,65 @@
+{
+  "version": 2,
+  "name": "excalibur-exs",
+  "builds": [
+    {
+      "src": "website/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "web/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "admin/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/website/index.html"
+    },
+    {
+      "src": "/web/(.*)",
+      "dest": "/web/$1"
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "/admin/$1",
+      "headers": {
+        "Authorization": "Basic"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/website/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "DOMAIN": "www.excaliburcrypto.com"
+  }
+}
