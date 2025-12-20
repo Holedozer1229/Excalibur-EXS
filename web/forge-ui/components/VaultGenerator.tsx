@@ -9,11 +9,14 @@ export default function VaultGenerator() {
     prophecyHash: string
   } | null>(null)
   const [network, setNetwork] = useState<'mainnet' | 'testnet'>('mainnet')
+  const [error, setError] = useState<string | null>(null)
 
   const handleWordChange = (index: number, value: string) => {
     const newWords = [...prophecyWords]
     newWords[index] = value
     setProphecyWords(newWords)
+    // Clear error when user starts typing
+    if (error) setError(null)
   }
 
   const generateVault = () => {
@@ -22,14 +25,17 @@ export default function VaultGenerator() {
     const allWordsFilled = prophecyWords.every(word => word.trim() !== '')
     
     if (!allWordsFilled) {
-      alert('Please fill all 13 prophecy words')
+      setError('Please fill all 13 prophecy words to generate a vault')
       return
     }
 
-    // Mock vault generation
+    setError(null)
+
+    // Note: This is a DEMO implementation for UI preview only
+    // In production, use proper Bech32m encoding via the Rosetta API
     const mockAddress = network === 'mainnet' 
-      ? `bc1p${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`
-      : `tb1p${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`
+      ? `bc1p${Array(52).fill(0).map(() => Math.floor(Math.random() * 32).toString(32)).join('').substring(0, 52)}`
+      : `tb1p${Array(52).fill(0).map(() => Math.floor(Math.random() * 32).toString(32)).join('').substring(0, 52)}`
     
     const mockHash = Array(64).fill(0).map(() => 
       Math.floor(Math.random() * 16).toString(16)
@@ -47,6 +53,7 @@ export default function VaultGenerator() {
       'delta', 'tetra', 'proof', 'work', 'ambiguity',
       'protocol', 'vault', 'prophecy'
     ])
+    setError(null)
   }
 
   return (
@@ -115,10 +122,23 @@ export default function VaultGenerator() {
         </div>
       </div>
 
+      {/* Error Display */}
+      {error && (
+        <div className="mt-4 bg-red-900/30 border border-red-500/50 rounded-lg p-4">
+          <div className="flex items-start space-x-3">
+            <span className="text-red-400 text-xl">⚠️</span>
+            <div>
+              <p className="text-red-300 font-semibold">Validation Error</p>
+              <p className="text-red-200 text-sm mt-1">{error}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Generate Button */}
       <button
         onClick={generateVault}
-        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-all card-glow"
+        className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-lg transition-all card-glow mt-6"
       >
         ⚔️ Forge Vault
       </button>
@@ -136,6 +156,11 @@ export default function VaultGenerator() {
                 Taproot Address (Bech32m)
               </label>
               <div className="mt-1 bg-slate-800 p-3 rounded font-mono text-sm break-all text-green-400">
+                {generatedVault.address}
+              </div>
+              <p className="text-xs text-yellow-500 mt-2">
+                ⚠️ DEMO ONLY: This is a mock address for UI preview. In production, use the Rosetta API for proper address generation.
+              </p>
                 {generatedVault.address}
               </div>
             </div>

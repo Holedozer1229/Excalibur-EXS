@@ -9,6 +9,12 @@ import (
 // HPP1Rounds defines the number of rounds for HPP-1 (600,000 rounds)
 const HPP1Rounds = 600000
 
+// DefaultSalt is the default salt used for HPP-1 key derivation in Tetra-PoW
+const DefaultSalt = "Excalibur-ESX-Ω′Δ18"
+
+// SafetyCheckInterval defines the interval for safety checks during mining
+const SafetyCheckInterval = 1000000
+
 // HPP1 performs High-Performance PBKDF2-based key derivation with 600,000 rounds
 // This provides quantum-hardened security for the Excalibur-ESX protocol
 func HPP1(password, salt []byte, keyLen int) []byte {
@@ -71,7 +77,7 @@ func TetraPoW(data []byte, difficulty uint64) (nonce uint64, hash []byte) {
 		binary.LittleEndian.PutUint64(input[len(data):], nonce)
 		
 		// Apply HPP-1 for quantum hardening
-		hpp1Result := HPP1(input, []byte("Excalibur-ESX-Ω′Δ18"), 32)
+		hpp1Result := HPP1(input, []byte(DefaultSalt), 32)
 		
 		// Apply Tetra-PoW state transformation
 		state := NewTetraPoWState(hpp1Result)
@@ -84,7 +90,7 @@ func TetraPoW(data []byte, difficulty uint64) (nonce uint64, hash []byte) {
 		}
 		
 		// Safety check to prevent infinite loops in testing
-		if nonce%1000000 == 0 && nonce > 0 {
+		if nonce%SafetyCheckInterval == 0 && nonce > 0 {
 			// For very low difficulty, return after reasonable attempts
 			if difficulty > 0xFFFFFFFFFFFFFF00 {
 				return nonce, hash

@@ -98,6 +98,27 @@ type BlockIdentifier struct {
 	Hash  string `json:"hash"`
 }
 
+// NetworkStatusResponse contains the current network status
+type NetworkStatusResponse struct {
+	CurrentBlockIdentifier BlockIdentifier `json:"current_block_identifier"`
+	CurrentBlockTimestamp  int64           `json:"current_block_timestamp"`
+	GenesisBlockIdentifier BlockIdentifier `json:"genesis_block_identifier"`
+	Peers                  []interface{}   `json:"peers"`
+}
+
+// BlockResponse contains block information
+type BlockResponse struct {
+	Block Block `json:"block"`
+}
+
+// Block represents a blockchain block
+type Block struct {
+	BlockIdentifier       BlockIdentifier `json:"block_identifier"`
+	ParentBlockIdentifier BlockIdentifier `json:"parent_block_identifier"`
+	Timestamp             int64           `json:"timestamp"`
+	Transactions          []interface{}   `json:"transactions"`
+}
+
 var rootCmd = &cobra.Command{
 	Use:   "rosetta",
 	Short: "Excalibur-ESX Rosetta API Server",
@@ -141,16 +162,20 @@ var serveCmd = &cobra.Command{
 }
 
 func handleNetworkList(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	response := NetworkListResponse{
 		NetworkIdentifiers: []NetworkIdentifier{
 			{Blockchain: "Excalibur-ESX", Network: "mainnet"},
 			{Blockchain: "Excalibur-ESX", Network: "testnet"},
 		},
 	}
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding response: %v", err)
+	}
 }
 
 func handleNetworkOptions(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	response := NetworkOptionsResponse{
 		Version: Version{
 			RosettaVersion: "1.4.13",
@@ -168,36 +193,51 @@ func handleNetworkOptions(w http.ResponseWriter, r *http.Request) {
 			},
 		},
 	}
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding response: %v", err)
+	}
 }
 
 func handleNetworkStatus(w http.ResponseWriter, r *http.Request) {
-	// Mock response for demonstration
-	response := map[string]interface{}{
-		"current_block_identifier": BlockIdentifier{
+	w.Header().Set("Content-Type", "application/json")
+	response := NetworkStatusResponse{
+		CurrentBlockIdentifier: BlockIdentifier{
 			Index: 1000,
 			Hash:  "0x" + fmt.Sprintf("%064x", 1000),
 		},
-		"current_block_timestamp": 1700000000000,
-		"genesis_block_identifier": BlockIdentifier{
+		CurrentBlockTimestamp: 1700000000000,
+		GenesisBlockIdentifier: BlockIdentifier{
 			Index: 0,
 			Hash:  "0x" + fmt.Sprintf("%064x", 0),
 		},
-		"peers": []map[string]interface{}{},
+		Peers: []interface{}{},
 	}
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding response: %v", err)
+	}
 }
 
 func handleAccountBalance(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	var req AccountBalanceRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(APIError{
+			Code:    400,
+			Message: "Invalid request format",
+			Retriable: false,
+		})
 		return
 	}
 
 	// Validate the address is a valid Taproot address
 	if !bitcoin.VerifyTaprootAddress(req.AccountIdentifier.Address) {
-		http.Error(w, "Invalid Taproot address", http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(APIError{
+			Code:    5,
+			Message: "Invalid Taproot address format",
+			Retriable: false,
+		})
 		return
 	}
 
@@ -217,29 +257,34 @@ func handleAccountBalance(w http.ResponseWriter, r *http.Request) {
 			},
 		},
 	}
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding response: %v", err)
+	}
 }
 
 func handleBlock(w http.ResponseWriter, r *http.Request) {
-	// Mock block response
-	response := map[string]interface{}{
-		"block": map[string]interface{}{
-			"block_identifier": BlockIdentifier{
+	w.Header().Set("Content-Type", "application/json")
+	response := BlockResponse{
+		Block: Block{
+			BlockIdentifier: BlockIdentifier{
 				Index: 1000,
 				Hash:  "0x" + fmt.Sprintf("%064x", 1000),
 			},
-			"parent_block_identifier": BlockIdentifier{
+			ParentBlockIdentifier: BlockIdentifier{
 				Index: 999,
 				Hash:  "0x" + fmt.Sprintf("%064x", 999),
 			},
-			"timestamp":    1700000000000,
-			"transactions": []interface{}{},
+			Timestamp:    1700000000000,
+			Transactions: []interface{}{},
 		},
 	}
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding response: %v", err)
+	}
 }
 
 func handleHealth(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	response := map[string]interface{}{
 		"status": "healthy",
 		"version": "0.1.0",
@@ -247,7 +292,9 @@ func handleHealth(w http.ResponseWriter, r *http.Request) {
 		"tetra_pow": "active",
 		"hpp1_rounds": crypto.HPP1Rounds,
 	}
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding response: %v", err)
+	}
 }
 
 var validateCmd = &cobra.Command{
