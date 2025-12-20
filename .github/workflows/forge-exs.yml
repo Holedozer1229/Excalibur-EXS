@@ -1,0 +1,190 @@
+name: Forge $EXS - Ω′ Δ18 Proof Validator
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+  pull_request_target:
+    types: [closed]
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  validate-proof:
+    name: Validate Ω′ Δ18 Proof
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged != true
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+      
+      - name: Extract proof from PR description
+        id: extract_proof
+        run: |
+          # Extract proof hash from PR body
+          PROOF=$(echo "${{ github.event.pull_request.body }}" | grep -oP "(?<=PROOF:\s)[a-f0-9]{64}" || echo "")
+          echo "proof=$PROOF" >> $GITHUB_OUTPUT
+          
+          if [ -z "$PROOF" ]; then
+            echo "❌ No valid proof found in PR description"
+            echo "Please include 'PROOF: <hash>' in your PR description"
+            exit 1
+          fi
+          
+          echo "✅ Proof extracted: $PROOF"
+      
+      - name: Verify Ω′ Δ18 difficulty
+        id: verify_difficulty
+        run: |
+          PROOF="${{ steps.extract_proof.outputs.proof }}"
+          DIFFICULTY=4
+          
+          # Check if proof has required leading zeros
+          LEADING_ZEROS=$(echo "$PROOF" | grep -oP "^0{$DIFFICULTY}" | wc -c)
+          
+          if [ "$LEADING_ZEROS" -ge "$DIFFICULTY" ]; then
+            echo "✅ Proof meets difficulty target (4 leading zeros)"
+            echo "valid=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Proof does not meet difficulty target"
+            echo "Required: 4 leading zeros"
+            echo "Found: $LEADING_ZEROS"
+            echo "valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+      
+      - name: Comment on PR
+        if: steps.verify_difficulty.outputs.valid == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ **Ω′ Δ18 Proof Verified**\n\n' +
+                    'Proof Hash: `${{ steps.extract_proof.outputs.proof }}`\n' +
+                    'Difficulty: 4 leading zeros ✓\n\n' +
+                    'Your forge will be recorded in the claims ledger upon merge.'
+            })
+
+  record-claim:
+    name: Record Forge Claim
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+      
+      - name: Extract claim data
+        id: extract_claim
+        run: |
+          # Extract proof and address from merged PR
+          PROOF=$(echo "${{ github.event.pull_request.body }}" | grep -oP "(?<=PROOF:\s)[a-f0-9]{64}" || echo "")
+          ADDRESS=$(echo "${{ github.event.pull_request.body }}" | grep -oP "(?<=ADDRESS:\s)[a-z0-9]{62,90}" || echo "")
+          
+          echo "proof=$PROOF" >> $GITHUB_OUTPUT
+          echo "address=$ADDRESS" >> $GITHUB_OUTPUT
+          
+          if [ -z "$PROOF" ] || [ -z "$ADDRESS" ]; then
+            echo "⚠️  Missing proof or address in PR description"
+            exit 1
+          fi
+      
+      - name: Update claims ledger
+        run: |
+          # Create ledger directory if it doesn't exist
+          mkdir -p ledger
+          
+          # Initialize claims.json if it doesn't exist
+          if [ ! -f ledger/claims.json ]; then
+            echo '{"claims": [], "total_forged": 0, "total_rewards": 0}' > ledger/claims.json
+          fi
+          
+          # Load tokenomics
+          REWARD_PER_FORGE=$(jq -r '.RewardPerForge' pkg/economy/tokenomics.json)
+          
+          # Create new claim entry
+          CLAIM=$(jq -n \
+            --arg pr "${{ github.event.pull_request.number }}" \
+            --arg proof "${{ steps.extract_claim.outputs.proof }}" \
+            --arg address "${{ steps.extract_claim.outputs.address }}" \
+            --arg reward "$REWARD_PER_FORGE" \
+            --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg merger "${{ github.event.pull_request.merged_by.login }}" \
+            '{
+              pr_number: ($pr | tonumber),
+              proof_hash: $proof,
+              taproot_address: $address,
+              reward_exs: ($reward | tonumber),
+              timestamp: $timestamp,
+              merged_by: $merger
+            }')
+          
+          # Append claim to ledger
+          jq --argjson claim "$CLAIM" \
+             --argjson reward "$REWARD_PER_FORGE" \
+             '.claims += [$claim] | 
+              .total_forged += 1 | 
+              .total_rewards += ($reward | tonumber)' \
+             ledger/claims.json > ledger/claims.json.tmp
+          
+          mv ledger/claims.json.tmp ledger/claims.json
+          
+          echo "✅ Claim recorded in ledger"
+          echo "📊 Total Forged: $(jq -r '.total_forged' ledger/claims.json)"
+          echo "💰 Total Rewards: $(jq -r '.total_rewards' ledger/claims.json) $EXS"
+      
+      - name: Commit and push ledger update
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          git add ledger/claims.json
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🗡️ Record forge claim from PR #${{ github.event.pull_request.number }}"
+            git push
+            
+            echo "✅ Ledger updated and pushed to main branch"
+          fi
+      
+      - name: Comment on merged PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const reward = require('./pkg/economy/tokenomics.json').RewardPerForge;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🗡️ **Forge Claim Recorded**\n\n' +
+                    `Address: \`${{ steps.extract_claim.outputs.address }}\`\n` +
+                    `Reward: **${reward} $EXS**\n` +
+                    `Proof: \`${{ steps.extract_claim.outputs.proof }}\`\n\n` +
+                    'Your claim has been added to the ledger. The Excalibur awaits! ⚔️'
+            })

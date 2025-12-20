@@ -1,0 +1,93 @@
+# Rosetta API Configuration for Excalibur $EXS Protocol
+# Specification: https://www.rosetta-api.org/
+
+version: "1.4.0"
+
+network:
+  blockchain: "Bitcoin"
+  network: "Excalibur-ESX"
+  sub_network_identifier:
+    network: "Ambiguity-Fork"
+    metadata:
+      fork_height: 0
+      consensus: "Proof-of-Forge"
+
+# Currency definition for $EXS token
+currency:
+  symbol: "EXS"
+  decimals: 8
+  metadata:
+    standard: "Bitcoin-Runes"
+    max_supply: 21000000
+    reward_per_forge: 100
+    forge_fee_sats: 10000
+    distribution:
+      PoF: "60%"
+      Treasury: "15%"
+      Liquidity: "20%"
+      Airdrop: "5%"
+
+# Operation types for exchange transparency
+operation_types:
+  - "TRANSFER"
+  - "FORGE"
+  - "REWARD_TRANSACTION"
+  - "FEE"
+
+# Operation statuses
+operation_statuses:
+  - status: "SUCCESS"
+    successful: true
+  - status: "FAILED"
+    successful: false
+  - status: "PENDING"
+    successful: false
+
+# Error definitions
+errors:
+  - code: 1
+    message: "Invalid transaction format"
+    retriable: false
+  - code: 2
+    message: "Insufficient balance"
+    retriable: false
+  - code: 3
+    message: "Invalid proof"
+    retriable: false
+  - code: 4
+    message: "Max supply reached"
+    retriable: false
+  - code: 5
+    message: "Network error"
+    retriable: true
+
+# Historical balance lookup support
+historical_balance_lookup: true
+
+# Call methods for Construction API
+call_methods:
+  - "/construction/derive"
+  - "/construction/preprocess"
+  - "/construction/metadata"
+  - "/construction/payloads"
+  - "/construction/parse"
+  - "/construction/combine"
+  - "/construction/hash"
+  - "/construction/submit"
+
+# Mempool transaction support
+mempool_coins: false
+
+# Block identifier format
+block_hash_format: "hex"
+transaction_hash_format: "hex"
+
+# Metadata
+metadata:
+  axiom: "sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
+  miner_algorithm: "Ω′ Δ18 Tetra-PoW"
+  miner_rounds: 128
+  difficulty: 4
+  derivation: "BIP-86 (Taproot)"
+  key_stretching: "PBKDF2-HMAC-SHA512"
+  iterations: 600000
