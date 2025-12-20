@@ -161,8 +161,6 @@ export default function VaultGenerator() {
               <p className="text-xs text-yellow-500 mt-2">
                 ⚠️ DEMO ONLY: This is a mock address for UI preview. In production, use the Rosetta API for proper address generation.
               </p>
-                {generatedVault.address}
-              </div>
             </div>
 
             <div>
