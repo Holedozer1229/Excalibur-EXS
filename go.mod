@@ -1,8 +1,11 @@
+module github.com/Holedozer1229/Excalibur-EXS
 module github.com/Holedozer1229/Excalibur-ESX
 
 go 1.21
 
 require (
+	github.com/gorilla/mux v1.8.1
+	github.com/rs/cors v1.10.1
 	github.com/btcsuite/btcd v0.24.0
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2
 	github.com/btcsuite/btcd/btcutil v1.1.5
