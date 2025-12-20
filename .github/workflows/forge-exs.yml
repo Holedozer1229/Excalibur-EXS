@@ -52,16 +52,14 @@ jobs:
           PROOF="${{ steps.extract_proof.outputs.proof }}"
           DIFFICULTY=4
           
-          # Check if proof has required leading zeros
-          LEADING_ZEROS=$(echo "$PROOF" | grep -oP "^0{$DIFFICULTY}" | wc -c)
-          
-          if [ "$LEADING_ZEROS" -ge "$DIFFICULTY" ]; then
+          # Check if proof has required leading zeros (exactly 4)
+          if echo "$PROOF" | grep -q "^0000"; then
             echo "✅ Proof meets difficulty target (4 leading zeros)"
             echo "valid=true" >> $GITHUB_OUTPUT
           else
             echo "❌ Proof does not meet difficulty target"
             echo "Required: 4 leading zeros"
-            echo "Found: $LEADING_ZEROS"
+            echo "Received proof: $PROOF"
             echo "valid=false" >> $GITHUB_OUTPUT
             exit 1
           fi
