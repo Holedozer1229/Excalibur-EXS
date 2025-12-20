@@ -1,4 +1,12 @@
 {
+  "MaxSupply": 21000000,
+  "RewardPerForge": 100,
+  "ForgeFeeSats": 10000,
+  "Distribution": {
+    "PoF": 0.6,
+    "Treasury": 0.15,
+    "Liquidity": 0.2,
+    "Airdrop": 0.05
   "protocol": "Excalibur $EXS",
   "version": "1.0.0",
   "supply": {

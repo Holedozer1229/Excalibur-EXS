@@ -1,4 +1,6 @@
 module github.com/Holedozer1229/Excalibur-EXS
+
+go 1.21
 module github.com/Holedozer1229/Excalibur-ESX
 
 go 1.21
