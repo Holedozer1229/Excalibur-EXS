@@ -1,5 +1,7 @@
 # Excalibur $EXS Protocol: The Manifesto
 
+> ⚠️ **IMPORTANT NOTICE**: This is a demonstration/prototype implementation. It is **NOT production-ready** and should **NOT** be used with real funds or on mainnet. See [PRODUCTION_TODO.md](PRODUCTION_TODO.md) for items that must be addressed before production deployment.
+
 ## 🗡️ The Legend Awakens
 
 **Excalibur $EXS** is an axiomatic ambiguity fork of Bitcoin, wielding the power of the **Ω′ Δ18 Tetra-PoW** miner. Through the sacred 13-word prophecy axiom, forge unique, un-linkable Taproot (P2TR) vaults. Quantum-hardened via **HPP-1** (600,000 rounds) and 128-round unrolled nonlinear state shifts.
