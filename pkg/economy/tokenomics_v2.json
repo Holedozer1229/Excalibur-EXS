@@ -1,0 +1,277 @@
+{
+  "protocol": "Excalibur $EXS",
+  "version": "2.0.0",
+  "supply": {
+    "total": 21000000,
+    "unit": "$EXS",
+    "description": "Total supply mirrors Bitcoin's scarcity model"
+  },
+  "forge_rewards": {
+    "amount_per_forge": 50,
+    "unit": "$EXS",
+    "halving": {
+      "enabled": true,
+      "interval_forges": 420000,
+      "description": "Reward halves every 420,000 forges (similar to Bitcoin's 210,000 block halving)"
+    }
+  },
+  "distribution": {
+    "proof_of_forge": {
+      "percentage": 60,
+      "amount": 12600000,
+      "description": "Miners who successfully complete Ω′ Δ18 forges"
+    },
+    "treasury": {
+      "percentage": 15,
+      "amount": 3150000,
+      "description": "Protocol development, infrastructure, and revenue operations"
+    },
+    "liquidity": {
+      "percentage": 20,
+      "amount": 4200000,
+      "description": "DEX and CEX liquidity pools"
+    },
+    "airdrop": {
+      "percentage": 5,
+      "amount": 1050000,
+      "description": "Community rewards and early adopters"
+    }
+  },
+  "revenue_streams": {
+    "description": "Multi-faceted revenue generation to fund treasury vault and provide sustainable rewards",
+    "streams": [
+      {
+        "name": "cross_chain_mining",
+        "description": "Mining operations across BTC, ETH, and other PoW chains",
+        "revenue_share": {
+          "treasury": 0.40,
+          "user_rewards": 0.55,
+          "operations": 0.05
+        },
+        "supported_chains": ["Bitcoin", "Ethereum", "Litecoin", "Monero", "Dogecoin"],
+        "mechanism": "Unified mining pool with Ω′ Δ18 coordination",
+        "estimated_apr": "8-15%"
+      },
+      {
+        "name": "smart_contract_futures",
+        "description": "Automated futures trading on DeFi protocols",
+        "revenue_share": {
+          "treasury": 0.30,
+          "user_rewards": 0.60,
+          "risk_reserve": 0.10
+        },
+        "platforms": ["GMX", "dYdX", "Synthetix", "Hyperliquid"],
+        "strategies": ["trend_following", "arbitrage", "market_making"],
+        "risk_level": "medium",
+        "estimated_apr": "12-25%"
+      },
+      {
+        "name": "lightning_fee_routing",
+        "description": "Fee collection from Lightning Network routing through Taproot channels",
+        "revenue_share": {
+          "treasury": 0.35,
+          "user_rewards": 0.60,
+          "channel_management": 0.05
+        },
+        "channel_capacity_btc": 100,
+        "routing_nodes": 50,
+        "estimated_monthly_fees": "0.5-2 BTC",
+        "mechanism": "High-capacity P2TR channels with optimized routing"
+      },
+      {
+        "name": "taproot_processing",
+        "description": "Processing fees for Taproot transaction batching and optimization",
+        "revenue_share": {
+          "treasury": 0.25,
+          "user_rewards": 0.70,
+          "infrastructure": 0.05
+        },
+        "services": [
+          "Batch transaction coordination",
+          "Schnorr signature aggregation",
+          "MAST optimization",
+          "Key path spending facilitation"
+        ],
+        "fee_per_tx": "0.00001 BTC",
+        "estimated_daily_volume": "1000-5000 transactions"
+      },
+      {
+        "name": "defi_yield_farming",
+        "description": "Automated yield farming across multiple DeFi protocols",
+        "revenue_share": {
+          "treasury": 0.30,
+          "user_rewards": 0.65,
+          "gas_reserve": 0.05
+        },
+        "protocols": ["Aave", "Compound", "Curve", "Convex", "Yearn"],
+        "strategies": ["stable_farming", "leverage_staking", "liquidity_provision"],
+        "estimated_apr": "6-18%"
+      },
+      {
+        "name": "mev_extraction",
+        "description": "Maximal Extractable Value capture through flashbots and MEV-boost",
+        "revenue_share": {
+          "treasury": 0.40,
+          "user_rewards": 0.50,
+          "validator_tips": 0.10
+        },
+        "networks": ["Ethereum", "BSC", "Polygon"],
+        "strategies": ["sandwich", "arbitrage", "liquidations"],
+        "estimated_monthly_revenue": "10-50 ETH"
+      },
+      {
+        "name": "staking_services",
+        "description": "Multi-chain staking pool with auto-compounding",
+        "revenue_share": {
+          "treasury": 0.20,
+          "user_rewards": 0.75,
+          "operations": 0.05
+        },
+        "supported_chains": ["Ethereum", "Cardano", "Polkadot", "Cosmos", "Solana"],
+        "auto_compound": true,
+        "estimated_apr": "4-12%"
+      },
+      {
+        "name": "nft_royalty_pools",
+        "description": "Curated NFT collection with royalty redistribution",
+        "revenue_share": {
+          "treasury": 0.30,
+          "user_rewards": 0.60,
+          "creators": 0.10
+        },
+        "royalty_rate": "5%",
+        "platforms": ["OpenSea", "Blur", "LooksRare"],
+        "collection_focus": "Blue-chip + emerging"
+      },
+      {
+        "name": "lending_protocol",
+        "description": "$EXS lending and borrowing with over-collateralization",
+        "revenue_share": {
+          "treasury": 0.25,
+          "lenders": 0.70,
+          "insurance_fund": 0.05
+        },
+        "collateral_ratio": 150,
+        "supported_collateral": ["BTC", "ETH", "USDC", "DAI"],
+        "estimated_lending_apr": "5-15%",
+        "estimated_borrowing_apr": "8-20%"
+      }
+    ]
+  },
+  "fee_structure": {
+    "treasury_fee": {
+      "rate": 0.01,
+      "description": "1% of all forge rewards automatically collected for treasury",
+      "collection": "automatic"
+    },
+    "forge_fee": {
+      "amount": 0.0001,
+      "unit": "BTC",
+      "description": "Per-forge fee to prevent spam and fund infrastructure",
+      "payment_method": "pre-forge"
+    },
+    "revenue_operations_fee": {
+      "rate": 0.05,
+      "description": "5% operational fee on all revenue stream profits",
+      "collection": "automatic"
+    }
+  },
+  "treasury_allocation": {
+    "description": "How treasury funds are allocated",
+    "categories": {
+      "development": {
+        "percentage": 30,
+        "description": "Core protocol development and maintenance"
+      },
+      "infrastructure": {
+        "percentage": 20,
+        "description": "Servers, nodes, security audits"
+      },
+      "revenue_operations": {
+        "percentage": 25,
+        "description": "Capital for revenue-generating activities"
+      },
+      "marketing": {
+        "percentage": 15,
+        "description": "Marketing, partnerships, exchange listings"
+      },
+      "reserves": {
+        "percentage": 10,
+        "description": "Emergency reserves and future opportunities"
+      }
+    }
+  },
+  "user_reward_system": {
+    "description": "Fair distribution of revenue profits to active users",
+    "eligibility": {
+      "minimum_stake": "100 $EXS",
+      "minimum_forge_count": 1,
+      "kyc_required": false
+    },
+    "distribution_frequency": "weekly",
+    "distribution_method": "proportional_to_stake",
+    "bonus_multipliers": {
+      "long_term_holder": {
+        "6_months": 1.1,
+        "1_year": 1.25,
+        "2_years": 1.5
+      },
+      "active_forger": {
+        "10_forges": 1.05,
+        "50_forges": 1.15,
+        "100_forges": 1.30
+      },
+      "liquidity_provider": {
+        "provider": 1.2
+      }
+    }
+  },
+  "mining": {
+    "algorithm": "Ω′ Δ18 Tetra-PoW",
+    "rounds": 128,
+    "hardening": "HPP-1 (600,000 PBKDF2-HMAC-SHA512 iterations)",
+    "default_difficulty": 4,
+    "target_forge_time": "~10 minutes"
+  },
+  "address_format": {
+    "type": "P2TR",
+    "standard": "Taproot (BIP 341)",
+    "prefix": "bc1p",
+    "description": "All rewards distributed to Taproot addresses for maximum privacy"
+  },
+  "emission_schedule": {
+    "total_forges_to_max_supply": 420000,
+    "years_to_max_supply": 8,
+    "description": "Assuming ~10 minute average forge time"
+  },
+  "economic_properties": {
+    "deflationary": true,
+    "max_supply_capped": true,
+    "quantum_resistant": true,
+    "privacy_enhanced": true,
+    "revenue_generating": true,
+    "yield_bearing": true
+  },
+  "governance": {
+    "difficulty_adjustment": "manual",
+    "authority": "Merlin's Portal (Admin Dashboard)",
+    "treasury_management": "multi-sig",
+    "upgrade_process": "community_consensus",
+    "revenue_strategy": "dao_votable"
+  },
+  "institutional": {
+    "rosetta_api_compliant": true,
+    "exchange_listing_ready": true,
+    "audit_status": "pending",
+    "regulatory_classification": "utility_token",
+    "securities_compliance": "utility_not_security"
+  },
+  "metadata": {
+    "axiom": "sword legend pull magic kingdom artist stone destroy forget fire steel honey question",
+    "lead_architect": "Travis D Jones",
+    "email": "holedozer@gmail.com",
+    "license": "BSD-3-Clause",
+    "genesis_date": "2025",
+    "chain_type": "Bitcoin_fork"
+  }
+}

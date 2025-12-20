@@ -1,0 +1,214 @@
+# Excalibur $EXS - Rosetta Construction API v1.4.10 Configuration
+# For Coinbase and institutional exchange listing compatibility
+
+# Network Configuration
+network:
+  blockchain: "Excalibur"
+  network: "mainnet"
+  sub_network_identifier:
+    network: "shard-1"
+    metadata:
+      producer: "Ω′ Δ18 Tetra-PoW"
+
+# Account Configuration
+account:
+  address_format: "P2TR"  # Taproot addresses (BIP 341)
+  address_prefix: "bc1p"
+  address_validation:
+    min_length: 42
+    max_length: 62
+    regex: "^bc1p[a-z0-9]{38,58}$"
+
+# Currency Configuration
+currency:
+  symbol: "$EXS"
+  decimals: 8
+  metadata:
+    total_supply: "21000000"
+    contract_address: null  # Native blockchain token
+    token_type: "native"
+
+# Operations
+operations:
+  - type: "FORGE"
+    description: "Proof-of-Work forge operation creating new $EXS"
+    status: "SUCCESS"
+  - type: "TRANSFER"
+    description: "Transfer $EXS between addresses"
+    status: "SUCCESS"
+  - type: "FEE"
+    description: "Network fee payment"
+    status: "SUCCESS"
+  - type: "TREASURY_FEE"
+    description: "1% treasury fee collection"
+    status: "SUCCESS"
+
+# Construction API Configuration
+construction:
+  # Preprocessing
+  preprocess:
+    required_fields:
+      - "from_address"
+      - "to_address"
+      - "amount"
+    optional_fields:
+      - "memo"
+      - "axiom"
+  
+  # Metadata
+  metadata:
+    forge_operations:
+      axiom_required: true
+      axiom_validation: "sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
+      hpp1_iterations: 600000
+      difficulty: 4
+      rounds: 128
+    
+    fee_structure:
+      forge_fee:
+        amount: "10000"  # 0.0001 BTC in satoshis
+        currency: "BTC"
+      treasury_fee:
+        rate: 0.01
+        currency: "$EXS"
+  
+  # Payloads
+  payloads:
+    signing_method: "ecdsa_recovery"
+    curve_type: "secp256k1"
+    signature_type: "schnorr"  # For Taproot compatibility
+  
+  # Combine
+  combine:
+    signature_required: true
+    witness_version: 1  # Taproot witness version
+  
+  # Submit
+  submit:
+    broadcast_method: "P2P"
+    confirmation_depth: 6
+
+# Block Configuration
+block:
+  genesis_block:
+    index: 0
+    hash: "0x0000000000000000000000000000000000000000000000000000000000000000"
+    timestamp: 1735603200000  # 2025-01-01 00:00:00 UTC
+    parent_hash: null
+  
+  block_time: 600  # 10 minutes average (in seconds)
+  
+  transaction_identifier:
+    hash_algorithm: "sha256d"  # Double SHA-256 (Bitcoin compatible)
+
+# Error Handling
+errors:
+  - code: 1000
+    message: "Invalid axiom"
+    retriable: false
+    details: "The 13-word prophecy axiom is incorrect"
+  
+  - code: 1001
+    message: "Invalid difficulty"
+    retriable: true
+    details: "Hash does not meet required difficulty target"
+  
+  - code: 1002
+    message: "Insufficient forge fee"
+    retriable: false
+    details: "0.0001 BTC forge fee required"
+  
+  - code: 1003
+    message: "Invalid P2TR address"
+    retriable: false
+    details: "Address must be a valid Taproot (bc1p...) address"
+  
+  - code: 1004
+    message: "HPP-1 validation failed"
+    retriable: false
+    details: "600,000 PBKDF2 iterations not satisfied"
+
+# Mempool Configuration
+mempool:
+  enabled: true
+  max_size: 1000  # Maximum pending forges
+  eviction_policy: "lowest_fee_first"
+
+# Peer Configuration
+peers:
+  discovery_method: "DNS_seed"
+  default_port: 8333  # Bitcoin-compatible port
+  max_peers: 125
+
+# Sync Configuration
+sync:
+  strategy: "full_node"
+  checkpoint_interval: 2016  # blocks
+  prune_mode: false
+
+# API Endpoints (Rosetta Standard)
+api:
+  version: "1.4.10"
+  endpoints:
+    network_list: "/network/list"
+    network_status: "/network/status"
+    network_options: "/network/options"
+    account_balance: "/account/balance"
+    account_coins: "/account/coins"
+    block: "/block"
+    block_transaction: "/block/transaction"
+    mempool: "/mempool"
+    mempool_transaction: "/mempool/transaction"
+    construction_derive: "/construction/derive"
+    construction_preprocess: "/construction/preprocess"
+    construction_metadata: "/construction/metadata"
+    construction_payloads: "/construction/payloads"
+    construction_combine: "/construction/combine"
+    construction_parse: "/construction/parse"
+    construction_hash: "/construction/hash"
+    construction_submit: "/construction/submit"
+
+# Metadata
+metadata:
+  protocol_name: "Excalibur $EXS Protocol"
+  protocol_version: "1.0.0"
+  mining_algorithm: "Ω′ Δ18 Tetra-PoW"
+  consensus_mechanism: "Proof-of-Forge"
+  lead_architect: "Travis D Jones"
+  contact_email: "holedozer@gmail.com"
+  license: "BSD-3-Clause"
+  repository: "https://github.com/Holedozer1229/Excalibur-EXS"
+  documentation: "https://github.com/Holedozer1229/Excalibur-EXS/blob/main/README.md"
+  
+  # Exchange listing compatibility
+  exchange_ready:
+    coinbase: true
+    kraken: true
+    binance: true
+    gemini: true
+  
+  # Compliance
+  compliance:
+    kyc_required: false
+    aml_policy: "decentralized"
+    jurisdiction: "global"
+    security_audit: "pending"
+
+# Security Configuration
+security:
+  quantum_resistance: "HPP-1 (600,000 iterations)"
+  address_privacy: "Taproot (P2TR)"
+  transaction_privacy: "standard"
+  signature_scheme: "Schnorr"
+  
+  # Rate Limiting
+  rate_limits:
+    requests_per_second: 100
+    requests_per_minute: 5000
+    burst_size: 200
+
+# Monitoring and Health
+monitoring:
+  health_check_endpoint: "/health"
+  metrics_endpoint: "/metrics"
+  log_level: "info"

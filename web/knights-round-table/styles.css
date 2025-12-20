@@ -1,0 +1,468 @@
+/* The Knights' Round Table - Public Forge UI Styles */
+
+:root {
+    --royal-gold: #ffd700;
+    --knight-silver: #c0c0c0;
+    --steel-gray: #708090;
+    --dark-stone: #2c3e50;
+    --forge-fire: #ff6b35;
+    --mystic-blue: #4169e1;
+    --success-green: #32cd32;
+    --bg-dark: #0a0e27;
+    --card-bg: #1a1f3a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', serif;
+    background: linear-gradient(135deg, var(--bg-dark) 0%, var(--dark-stone) 100%);
+    color: var(--knight-silver);
+    min-height: 100vh;
+}
+
+.round-table-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.table-header {
+    text-align: center;
+    padding: 40px 0;
+    border-bottom: 3px solid var(--royal-gold);
+    margin-bottom: 40px;
+}
+
+.table-header h1 {
+    font-size: 3.5em;
+    color: var(--royal-gold);
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1.5em;
+    color: var(--mystic-blue);
+    font-style: italic;
+}
+
+.forge-main {
+    margin-bottom: 40px;
+}
+
+/* Prophecy Section */
+.prophecy-section {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 20px;
+    border: 3px solid var(--mystic-blue);
+    margin-bottom: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.prophecy-section h2 {
+    color: var(--royal-gold);
+    font-size: 2.2em;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.instruction {
+    text-align: center;
+    font-size: 1.1em;
+    color: var(--knight-silver);
+    margin-bottom: 25px;
+}
+
+.axiom-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#axiom-input {
+    width: 100%;
+    padding: 20px;
+    font-size: 1.2em;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid var(--steel-gray);
+    border-radius: 10px;
+    color: var(--knight-silver);
+    font-family: 'Courier New', monospace;
+    resize: vertical;
+}
+
+#axiom-input:focus {
+    outline: none;
+    border-color: var(--royal-gold);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+.verify-btn {
+    background: var(--mystic-blue);
+    border: 2px solid var(--royal-gold);
+    color: white;
+    padding: 15px 40px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s;
+    align-self: center;
+}
+
+.verify-btn:hover {
+    background: var(--royal-gold);
+    color: var(--dark-stone);
+    transform: scale(1.05);
+}
+
+.status-message {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.1em;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.status-message.success {
+    background: rgba(50, 205, 50, 0.2);
+    border: 2px solid var(--success-green);
+    color: var(--success-green);
+}
+
+.status-message.error {
+    background: rgba(255, 107, 53, 0.2);
+    border: 2px solid var(--forge-fire);
+    color: var(--forge-fire);
+}
+
+/* Forge Section */
+.forge-section {
+    background: var(--card-bg);
+    padding: 60px 40px;
+    border-radius: 20px;
+    border: 3px solid var(--steel-gray);
+    margin-bottom: 40px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.sword-container {
+    margin-bottom: 30px;
+}
+
+.sword-stone {
+    position: relative;
+    width: 200px;
+    height: 300px;
+    margin: 0 auto 40px;
+}
+
+.sword {
+    position: absolute;
+    width: 40px;
+    height: 250px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    transition: all 1s ease;
+}
+
+.sword.drawn {
+    transform: translateX(-50%) translateY(-150px) rotate(-15deg);
+    animation: swordGlow 2s infinite;
+}
+
+@keyframes swordGlow {
+    0%, 100% { filter: drop-shadow(0 0 10px var(--royal-gold)); }
+    50% { filter: drop-shadow(0 0 30px var(--royal-gold)); }
+}
+
+.sword-blade {
+    width: 20px;
+    height: 180px;
+    background: linear-gradient(to right, var(--knight-silver), white, var(--knight-silver));
+    margin: 0 auto;
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+
+.sword-hilt {
+    width: 40px;
+    height: 70px;
+    background: var(--royal-gold);
+    margin: 0 auto;
+    border-radius: 5px;
+}
+
+.stone {
+    position: absolute;
+    bottom: 0;
+    width: 200px;
+    height: 150px;
+    background: linear-gradient(135deg, var(--steel-gray), var(--dark-stone));
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+}
+
+.draw-sword-btn {
+    background: var(--forge-fire);
+    border: 3px solid var(--royal-gold);
+    color: white;
+    padding: 20px 60px;
+    font-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 15px;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.draw-sword-btn:hover:not(:disabled) {
+    background: var(--royal-gold);
+    color: var(--dark-stone);
+    transform: scale(1.1);
+    box-shadow: 0 0 40px var(--royal-gold);
+}
+
+.draw-sword-btn:disabled {
+    background: var(--steel-gray);
+    border-color: var(--steel-gray);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.forge-status {
+    font-size: 1.2em;
+    color: var(--mystic-blue);
+    margin-top: 20px;
+}
+
+/* Visualization Section */
+.visualization-section {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 20px;
+    border: 3px solid var(--forge-fire);
+    margin-bottom: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.visualization-section h2 {
+    color: var(--royal-gold);
+    font-size: 2.2em;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.progress-bar-container {
+    position: relative;
+    width: 100%;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--forge-fire), var(--royal-gold));
+    border-radius: 20px;
+    transition: width 0.3s;
+    position: relative;
+    animation: progressGlow 2s infinite;
+}
+
+@keyframes progressGlow {
+    0%, 100% { box-shadow: 0 0 20px var(--forge-fire); }
+    50% { box-shadow: 0 0 40px var(--royal-gold); }
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    font-size: 1.1em;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.rounds-visualization h3 {
+    color: var(--mystic-blue);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.rounds-grid {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: 5px;
+    margin-bottom: 30px;
+}
+
+.round-cell {
+    aspect-ratio: 1;
+    background: rgba(70, 130, 180, 0.2);
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.round-cell.active {
+    background: var(--forge-fire);
+    box-shadow: 0 0 10px var(--forge-fire);
+}
+
+.round-cell.complete {
+    background: var(--success-green);
+}
+
+.mining-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    border-left: 4px solid var(--royal-gold);
+}
+
+.stat-label {
+    color: var(--mystic-blue);
+}
+
+.stat-value {
+    color: var(--royal-gold);
+    font-weight: bold;
+}
+
+/* Results Section */
+.results-section {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 20px;
+    border: 3px solid var(--success-green);
+    box-shadow: 0 10px 40px rgba(50, 205, 50, 0.3);
+}
+
+.results-section h2 {
+    color: var(--royal-gold);
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.success-message {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.success-icon {
+    font-size: 5em;
+    color: var(--success-green);
+    margin-bottom: 20px;
+}
+
+.success-message p {
+    font-size: 1.3em;
+    color: var(--knight-silver);
+}
+
+.forge-details {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid var(--steel-gray);
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    color: var(--mystic-blue);
+    font-weight: bold;
+}
+
+.detail-value {
+    color: var(--royal-gold);
+}
+
+.monospace {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+.action-btn {
+    display: block;
+    margin: 0 auto;
+    background: var(--mystic-blue);
+    border: 2px solid var(--royal-gold);
+    color: white;
+    padding: 15px 40px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+
+.action-btn:hover {
+    background: var(--royal-gold);
+    color: var(--dark-stone);
+    transform: scale(1.05);
+}
+
+/* Info Panel */
+.info-panel {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 20px;
+    border: 2px solid var(--mystic-blue);
+    margin-bottom: 40px;
+}
+
+.info-panel h3 {
+    color: var(--royal-gold);
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+
+.info-content p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.info-content strong {
+    color: var(--mystic-blue);
+}
+
+/* Footer */
+.table-footer {
+    text-align: center;
+    padding: 30px 0;
+    border-top: 2px solid var(--royal-gold);
+    color: var(--steel-gray);
+}
+
+.table-footer p {
+    margin: 5px 0;
+}

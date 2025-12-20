@@ -1,0 +1,1048 @@
+/* EXCALIBUR $EXS - Axiomatically Arthurian & Cryptic Styles */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=UnifrakturCook:wght@700&display=swap');
+
+:root {
+    --gold-divine: #d4af37;
+    --gold-bright: #ffd700;
+    --silver-ancient: #c0c0c0;
+    --bronze-aged: #cd7f32;
+    --purple-mystic: #4a148c;
+    --purple-deep: #2d0a4e;
+    --blue-arcane: #1e3a8a;
+    --void-black: #000000;
+    --stone-dark: #1a1a1a;
+    --stone-med: #2a2a2a;
+    --parchment: #f4e4c1;
+    --blood-red: #8b0000;
+    --emerald: #50c878;
+    
+    --glow-gold: 0 0 20px rgba(212, 175, 55, 0.8), 0 0 40px rgba(212, 175, 55, 0.4);
+    --glow-purple: 0 0 20px rgba(74, 20, 140, 0.8), 0 0 40px rgba(74, 20, 140, 0.4);
+    --glow-arcane: 0 0 30px rgba(30, 58, 138, 0.6);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    background: var(--void-black);
+}
+
+body {
+    font-family: 'Cinzel', serif;
+    background: radial-gradient(ellipse at top, var(--purple-deep) 0%, var(--void-black) 50%);
+    color: var(--silver-ancient);
+    line-height: 1.8;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Mystical Background Overlay */
+.mystical-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(74, 20, 140, 0.05) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+#rune-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.1;
+}
+
+/* Ancient Seal */
+.ancient-seal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80vmax;
+    height: 80vmax;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.03;
+}
+
+.seal-ring {
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--gold-divine);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rotating-slow {
+    animation: rotate-slow 120s linear infinite;
+}
+
+.rotating {
+    animation: rotate-slow 30s linear infinite;
+}
+
+.rotating-reverse {
+    animation: rotate-reverse 30s linear infinite;
+}
+
+@keyframes rotate-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes rotate-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+}
+
+.rune-text {
+    font-size: 2vmax;
+    color: var(--gold-divine);
+    letter-spacing: 0.5em;
+    text-shadow: var(--glow-gold);
+}
+
+/* Ethereal Navigation */
+.ethereal-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 40px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sigil {
+    font-size: 2em;
+    text-shadow: var(--glow-gold);
+    animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); transform: scale(1); }
+    50% { text-shadow: var(--glow-gold); transform: scale(1.1); }
+}
+
+.nav-runes {
+    display: flex;
+    gap: 40px;
+}
+
+.rune-link {
+    color: var(--silver-ancient);
+    text-decoration: none;
+    font-size: 1.1em;
+    letter-spacing: 0.2em;
+    position: relative;
+    transition: all 0.3s;
+    font-family: 'UnifrakturCook', cursive;
+}
+
+.rune-link::before {
+    content: attr(data-meaning);
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7em;
+    color: var(--gold-divine);
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.1em;
+}
+
+.rune-link:hover {
+    color: var(--gold-bright);
+    text-shadow: var(--glow-gold);
+}
+
+.rune-link:hover::before {
+    opacity: 1;
+}
+
+/* Awakening Chamber (Hero) */
+.awakening-chamber {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 40px 60px;
+    position: relative;
+    z-index: 10;
+}
+
+.stone-altar {
+    position: relative;
+    width: 400px;
+    height: 500px;
+    margin-right: 80px;
+}
+
+.excalibur-embed {
+    position: relative;
+    width: 80px;
+    height: 300px;
+    margin: 0 auto;
+    transform: translateY(-50px);
+    z-index: 2;
+}
+
+.sword-blade {
+    width: 20px;
+    height: 200px;
+    background: linear-gradient(90deg, var(--silver-ancient) 0%, #fff 50%, var(--silver-ancient) 100%);
+    margin: 0 auto;
+    clip-path: polygon(50% 0%, 100% 95%, 50% 100%, 0% 95%);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+}
+
+.shimmer {
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.5); }
+}
+
+.sword-crossguard {
+    width: 80px;
+    height: 15px;
+    background: var(--gold-divine);
+    margin: 0 auto;
+    box-shadow: var(--glow-gold);
+}
+
+.sword-grip {
+    width: 25px;
+    height: 60px;
+    background: linear-gradient(180deg, var(--bronze-aged), var(--stone-dark));
+    margin: 0 auto;
+    border: 1px solid var(--gold-divine);
+}
+
+.sword-pommel {
+    width: 35px;
+    height: 35px;
+    background: var(--gold-divine);
+    margin: 0 auto;
+    border-radius: 50%;
+    box-shadow: var(--glow-gold);
+}
+
+.pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.altar-stone {
+    width: 350px;
+    height: 200px;
+    background: linear-gradient(135deg, var(--stone-med) 0%, var(--stone-dark) 100%);
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    margin: 0 auto;
+    position: relative;
+    border: 2px solid rgba(212, 175, 55, 0.3);
+}
+
+.stone-inscription {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    text-align: center;
+}
+
+.ancient-text {
+    font-size: 0.9em;
+    color: var(--gold-divine);
+    font-style: italic;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    letter-spacing: 0.1em;
+}
+
+.prophecy-scroll {
+    max-width: 600px;
+}
+
+.title-arcane {
+    margin-bottom: 30px;
+}
+
+.glow-text {
+    font-family: 'UnifrakturCook', cursive;
+    font-size: 5em;
+    display: block;
+    color: var(--gold-bright);
+    text-shadow: var(--glow-gold);
+    letter-spacing: 0.1em;
+    line-height: 1;
+}
+
+.subtitle-mystic {
+    font-size: 1.8em;
+    color: var(--purple-mystic);
+    letter-spacing: 0.3em;
+    display: block;
+    margin-top: 10px;
+}
+
+.scroll-text {
+    font-size: 1.3em;
+    line-height: 2;
+    margin-bottom: 40px;
+}
+
+.cryptic-message {
+    color: var(--silver-ancient);
+    font-style: italic;
+    opacity: 0.9;
+}
+
+.call-to-arms {
+    display: flex;
+    gap: 20px;
+}
+
+.btn-mystical {
+    padding: 18px 35px;
+    border: 2px solid var(--gold-divine);
+    background: transparent;
+    color: var(--gold-bright);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1em;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.1em;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.btn-mystical.primary {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
+}
+
+.btn-mystical:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--glow-gold);
+    border-color: var(--gold-bright);
+}
+
+.btn-mystical.secondary {
+    border-color: var(--purple-mystic);
+    color: var(--purple-mystic);
+}
+
+.btn-mystical.secondary:hover {
+    box-shadow: var(--glow-purple);
+    border-color: var(--purple-mystic);
+}
+
+.btn-rune {
+    font-size: 1.3em;
+}
+
+.floating-runes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+.rune {
+    position: absolute;
+    font-size: 3em;
+    color: var(--gold-divine);
+    opacity: 0.2;
+    font-family: 'UnifrakturCook', cursive;
+}
+
+.float-1 { top: 10%; left: 10%; animation: float 8s ease-in-out infinite; }
+.float-2 { top: 20%; right: 15%; animation: float 10s ease-in-out infinite 1s; }
+.float-3 { top: 60%; left: 5%; animation: float 12s ease-in-out infinite 2s; }
+.float-4 { top: 70%; right: 10%; animation: float 9s ease-in-out infinite 3s; }
+.float-5 { top: 40%; left: 20%; animation: float 11s ease-in-out infinite 1.5s; }
+.float-6 { top: 50%; right: 25%; animation: float 13s ease-in-out infinite 2.5s; }
+.float-7 { top: 80%; left: 30%; animation: float 10s ease-in-out infinite 0.5s; }
+.float-8 { top: 30%; right: 5%; animation: float 14s ease-in-out infinite 3.5s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-20px) rotate(5deg); }
+    50% { transform: translateY(0) rotate(0deg); }
+    75% { transform: translateY(20px) rotate(-5deg); }
+}
+
+/* Section Styling */
+.prophecy-chamber, .alchemical-forge, .portal-nexus, .economic-codex {
+    padding: 100px 40px;
+    position: relative;
+    z-index: 10;
+}
+
+.chamber-walls, .forge-sanctum, .nexus-chamber, .codex-pages {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-header-mystic {
+    font-size: 3em;
+    text-align: center;
+    color: var(--gold-bright);
+    margin-bottom: 60px;
+    letter-spacing: 0.2em;
+    text-shadow: var(--glow-gold);
+    font-family: 'UnifrakturCook', cursive;
+}
+
+.header-ornament {
+    color: var(--bronze-aged);
+    margin: 0 20px;
+}
+
+/* Prophecy Chamber */
+.prophecy-chamber {
+    background: radial-gradient(ellipse at center, rgba(74, 20, 140, 0.1) 0%, transparent 70%);
+}
+
+.axiom-revelation {
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.8), rgba(42, 42, 42, 0.6));
+    border: 3px solid var(--gold-divine);
+    border-radius: 20px;
+    padding: 50px;
+    box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
+}
+
+.word-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.word-rune {
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--bronze-aged);
+    padding: 20px;
+    text-align: center;
+    font-size: 1.3em;
+    color: var(--gold-bright);
+    letter-spacing: 0.2em;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.word-rune::before {
+    content: attr(data-cipher);
+    position: absolute;
+    top: -15px;
+    right: 10px;
+    font-size: 1.5em;
+    color: var(--purple-mystic);
+    font-family: 'UnifrakturCook', cursive;
+}
+
+.word-rune::after {
+    content: attr(data-word);
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    font-size: 0.7em;
+    color: var(--silver-ancient);
+    opacity: 0.5;
+}
+
+.word-rune:hover {
+    transform: translateY(-5px);
+    border-color: var(--gold-bright);
+    box-shadow: var(--glow-gold);
+}
+
+.axiom-cipher {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.cipher-label {
+    display: block;
+    color: var(--silver-ancient);
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    letter-spacing: 0.2em;
+}
+
+.cipher-text {
+    font-family: 'Courier New', monospace;
+    font-size: 1.2em;
+    color: var(--gold-divine);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    display: inline-block;
+    border: 1px solid var(--gold-divine);
+    letter-spacing: 0.3em;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+.axiom-meaning {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.cryptic-verse {
+    font-size: 1.2em;
+    font-style: italic;
+    color: var(--silver-ancient);
+    line-height: 2;
+    opacity: 0.9;
+}
+
+/* Alchemical Forge */
+.alchemical-forge {
+    background: linear-gradient(180deg, rgba(139, 0, 0, 0.05) 0%, transparent 100%);
+}
+
+.alchemy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+.alchemical-process {
+    background: rgba(26, 26, 26, 0.8);
+    border: 2px solid var(--bronze-aged);
+    padding: 40px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.alchemical-process:hover {
+    transform: translateY(-10px);
+    border-color: var(--gold-divine);
+    box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
+}
+
+.process-sigil {
+    font-size: 4em;
+    margin-bottom: 20px;
+    color: var(--gold-divine);
+    text-shadow: var(--glow-gold);
+}
+
+.process-title {
+    font-size: 1.5em;
+    color: var(--gold-bright);
+    margin-bottom: 15px;
+    letter-spacing: 0.1em;
+}
+
+.process-text {
+    font-size: 1em;
+    line-height: 1.8;
+}
+
+.cryptic {
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.forge-ritual {
+    background: rgba(0, 0, 0, 0.5);
+    border: 3px solid var(--gold-divine);
+    padding: 40px;
+    border-radius: 10px;
+}
+
+.ritual-phases {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.phase {
+    flex: 1;
+    min-width: 150px;
+    text-align: center;
+}
+
+.phase-number {
+    display: block;
+    font-size: 2.5em;
+    color: var(--gold-divine);
+    font-family: 'UnifrakturCook', cursive;
+    margin-bottom: 10px;
+}
+
+.phase-name {
+    display: block;
+    font-size: 0.9em;
+    color: var(--silver-ancient);
+    letter-spacing: 0.1em;
+}
+
+.phase-arrow {
+    font-size: 2em;
+    color: var(--bronze-aged);
+}
+
+/* Portal Nexus */
+.portal-nexus {
+    background: radial-gradient(ellipse at center, rgba(30, 58, 138, 0.1) 0%, transparent 70%);
+}
+
+.portals-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 60px;
+}
+
+.portal-gateway {
+    perspective: 1000px;
+}
+
+.portal-frame {
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(42, 42, 42, 0.7));
+    border: 4px solid;
+    padding: 10px;
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+}
+
+.knights-gate .portal-frame {
+    border-color: var(--steel-blue);
+}
+
+.merlins-gate .portal-frame {
+    border-color: var(--purple-mystic);
+}
+
+.portal-gateway:hover .portal-frame {
+    transform: rotateY(5deg);
+}
+
+.frame-runes {
+    text-align: center;
+    font-family: 'UnifrakturCook', cursive;
+    font-size: 1.2em;
+    color: var(--gold-divine);
+    letter-spacing: 0.3em;
+    padding: 10px;
+}
+
+.frame-runes.top {
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.frame-runes.bottom {
+    border-top: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.portal-interior {
+    padding: 40px;
+    text-align: center;
+}
+
+.portal-sigil {
+    margin-bottom: 30px;
+}
+
+.sigil-circle {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sigil-sword, .sigil-staff {
+    font-size: 4em;
+    z-index: 2;
+}
+
+.knights-gate .sigil-sword {
+    color: var(--steel-blue);
+    text-shadow: 0 0 20px rgba(70, 130, 180, 0.8);
+}
+
+.merlins-gate .sigil-staff {
+    color: var(--purple-mystic);
+    text-shadow: var(--glow-purple);
+}
+
+.sigil-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3px solid;
+    border-radius: 50%;
+}
+
+.knights-gate .sigil-ring {
+    border-color: var(--steel-blue);
+}
+
+.merlins-gate .sigil-ring {
+    border-color: var(--purple-mystic);
+}
+
+.portal-title {
+    font-size: 2em;
+    color: var(--gold-bright);
+    margin-bottom: 20px;
+    letter-spacing: 0.1em;
+}
+
+.portal-desc {
+    margin-bottom: 30px;
+    font-size: 1.1em;
+    line-height: 1.8;
+}
+
+.portal-mysteries {
+    list-style: none;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.portal-mysteries li {
+    padding: 12px 0;
+    font-size: 1.1em;
+    color: var(--silver-ancient);
+    letter-spacing: 0.05em;
+}
+
+.portal-enter {
+    display: inline-block;
+    padding: 18px 40px;
+    border: 2px solid;
+    background: rgba(0, 0, 0, 0.5);
+    text-decoration: none;
+    font-size: 1.2em;
+    letter-spacing: 0.2em;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.knights-gate .portal-enter {
+    border-color: var(--steel-blue);
+    color: var(--steel-blue);
+}
+
+.merlins-gate .portal-enter {
+    border-color: var(--purple-mystic);
+    color: var(--purple-mystic);
+}
+
+.portal-enter:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+}
+
+.knights-gate .portal-enter:hover {
+    box-shadow: 0 10px 30px rgba(70, 130, 180, 0.5);
+}
+
+.merlins-gate .portal-enter:hover {
+    box-shadow: var(--glow-purple);
+}
+
+.portal-enter.admin {
+    border-color: var(--purple-mystic);
+}
+
+/* Economic Codex */
+.economic-codex {
+    background: linear-gradient(180deg, rgba(212, 175, 55, 0.05) 0%, transparent 100%);
+}
+
+.codex-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+.codex-entry {
+    background: rgba(26, 26, 26, 0.8);
+    border: 2px solid var(--bronze-aged);
+    padding: 30px;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.codex-entry:hover {
+    transform: translateY(-10px);
+    border-color: var(--gold-divine);
+    box-shadow: var(--glow-gold);
+}
+
+.entry-seal {
+    font-family: 'UnifrakturCook', cursive;
+    font-size: 2em;
+    color: var(--bronze-aged);
+    margin-bottom: 15px;
+}
+
+.entry-number {
+    display: block;
+    font-size: 2.5em;
+    color: var(--gold-bright);
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.entry-label {
+    display: block;
+    font-size: 1em;
+    color: var(--silver-ancient);
+    letter-spacing: 0.1em;
+}
+
+.distribution-scroll {
+    background: rgba(0, 0, 0, 0.5);
+    border: 3px solid var(--gold-divine);
+    padding: 40px;
+    border-radius: 10px;
+}
+
+.scroll-title {
+    text-align: center;
+    font-size: 2em;
+    color: var(--gold-bright);
+    margin-bottom: 30px;
+    letter-spacing: 0.1em;
+}
+
+.distribution-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dist-entry {
+    position: relative;
+}
+
+.dist-label {
+    display: block;
+    font-size: 1.1em;
+    color: var(--silver-ancient);
+    margin-bottom: 10px;
+    letter-spacing: 0.1em;
+}
+
+.dist-bar {
+    height: 40px;
+    background: linear-gradient(90deg, var(--gold-divine), var(--bronze-aged));
+    border: 1px solid var(--gold-divine);
+    box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.3);
+    transition: all 0.5s;
+}
+
+.dist-entry:hover .dist-bar {
+    box-shadow: var(--glow-gold);
+}
+
+/* Final Invocation */
+.final-invocation {
+    padding: 120px 40px;
+    text-align: center;
+    background: radial-gradient(ellipse at center, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+}
+
+.invocation-content {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.quote-marks {
+    font-family: 'UnifrakturCook', cursive;
+    font-size: 6em;
+    color: var(--gold-divine);
+    opacity: 0.3;
+    line-height: 0.5;
+}
+
+.quote-marks.opening {
+    text-align: left;
+}
+
+.quote-marks.closing {
+    text-align: right;
+}
+
+.invocation-text {
+    font-size: 1.5em;
+    line-height: 2.2;
+    color: var(--silver-ancient);
+    font-style: italic;
+    margin: 30px 0;
+}
+
+.final-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+    padding: 25px 60px;
+    border: 3px solid var(--gold-divine);
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
+    color: var(--gold-bright);
+    text-decoration: none;
+    font-size: 1.5em;
+    letter-spacing: 0.2em;
+    margin-top: 40px;
+    transition: all 0.3s;
+}
+
+.final-cta:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--glow-gold);
+    border-color: var(--gold-bright);
+}
+
+.cta-icon {
+    font-size: 1.3em;
+}
+
+/* Ancient Footer */
+.ancient-footer {
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.9) 100%);
+    border-top: 2px solid var(--gold-divine);
+    padding: 60px 40px 30px;
+}
+
+.footer-runes {
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+}
+
+.footer-header {
+    font-family: 'UnifrakturCook', cursive;
+    font-size: 1.5em;
+    color: var(--gold-divine);
+    margin-bottom: 20px;
+    letter-spacing: 0.2em;
+}
+
+.footer-links {
+    list-style: none;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: var(--silver-ancient);
+    text-decoration: none;
+    transition: color 0.3s;
+    font-size: 1em;
+}
+
+.footer-links a:hover {
+    color: var(--gold-bright);
+}
+
+.footer-text {
+    color: var(--silver-ancient);
+    line-height: 1.8;
+}
+
+.footer-seal {
+    text-align: center;
+    padding-top: 40px;
+    border-top: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.seal-text {
+    font-size: 1.1em;
+    color: var(--silver-ancient);
+    letter-spacing: 0.2em;
+    margin-bottom: 10px;
+}
+
+.seal-motto {
+    font-style: italic;
+    color: var(--gold-divine);
+    font-size: 1em;
+    margin-bottom: 15px;
+}
+
+.seal-warning {
+    font-size: 0.9em;
+    color: var(--blood-red);
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .awakening-chamber {
+        flex-direction: column;
+        padding: 100px 20px 40px;
+    }
+    
+    .stone-altar {
+        margin-right: 0;
+        margin-bottom: 40px;
+    }
+    
+    .glow-text {
+        font-size: 3em;
+    }
+    
+    .nav-runes {
+        gap: 20px;
+    }
+    
+    .rune-link {
+        font-size: 0.9em;
+    }
+    
+    .portals-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-header-mystic {
+        font-size: 2em;
+    }
+}

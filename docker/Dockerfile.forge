@@ -1,0 +1,18 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+RUN pip install --no-cache-dir flask redis gunicorn
+
+# Copy Python modules
+COPY pkg/miner ./pkg/miner
+COPY pkg/foundry ./pkg/foundry
+COPY pkg/revenue ./pkg/revenue
+COPY cmd/forge-api ./cmd/forge-api
+
+# Expose port
+EXPOSE 5000
+
+# Run with gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "cmd.forge-api.app:app"]

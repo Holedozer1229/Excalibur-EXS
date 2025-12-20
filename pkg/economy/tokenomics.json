@@ -10,6 +10,97 @@
   "protocol": "Excalibur $EXS",
   "version": "1.0.0",
   "supply": {
+    "total": 21000000,
+    "unit": "$EXS",
+    "description": "Total supply mirrors Bitcoin's scarcity model"
+  },
+  "forge_rewards": {
+    "amount_per_forge": 50,
+    "unit": "$EXS",
+    "halving": {
+      "enabled": true,
+      "interval_forges": 420000,
+      "description": "Reward halves every 420,000 forges (similar to Bitcoin's 210,000 block halving)"
+    }
+  },
+  "distribution": {
+    "proof_of_forge": {
+      "percentage": 60,
+      "amount": 12600000,
+      "description": "Miners who successfully complete Ω′ Δ18 forges"
+    },
+    "treasury": {
+      "percentage": 15,
+      "amount": 3150000,
+      "description": "Protocol development and infrastructure"
+    },
+    "liquidity": {
+      "percentage": 20,
+      "amount": 4200000,
+      "description": "DEX and CEX liquidity pools"
+    },
+    "airdrop": {
+      "percentage": 5,
+      "amount": 1050000,
+      "description": "Community rewards and early adopters"
+    }
+  },
+  "fee_structure": {
+    "treasury_fee": {
+      "rate": 0.01,
+      "description": "1% of all forge rewards automatically collected for treasury",
+      "collection": "automatic"
+    },
+    "forge_fee": {
+      "amount": 0.0001,
+      "unit": "BTC",
+      "description": "Per-forge fee to prevent spam and fund infrastructure",
+      "payment_method": "pre-forge"
+    }
+  },
+  "mining": {
+    "algorithm": "Ω′ Δ18 Tetra-PoW",
+    "rounds": 128,
+    "hardening": "HPP-1 (600,000 PBKDF2-HMAC-SHA512 iterations)",
+    "default_difficulty": 4,
+    "target_forge_time": "~10 minutes"
+  },
+  "address_format": {
+    "type": "P2TR",
+    "standard": "Taproot (BIP 341)",
+    "prefix": "bc1p",
+    "description": "All rewards distributed to Taproot addresses for maximum privacy"
+  },
+  "emission_schedule": {
+    "total_forges_to_max_supply": 420000,
+    "years_to_max_supply": 8,
+    "description": "Assuming ~10 minute average forge time"
+  },
+  "economic_properties": {
+    "deflationary": true,
+    "max_supply_capped": true,
+    "quantum_resistant": true,
+    "privacy_enhanced": true
+  },
+  "governance": {
+    "difficulty_adjustment": "manual",
+    "authority": "Merlin's Portal (Admin Dashboard)",
+    "treasury_management": "multi-sig",
+    "upgrade_process": "community_consensus"
+  },
+  "institutional": {
+    "rosetta_api_compliant": true,
+    "exchange_listing_ready": true,
+    "audit_status": "pending",
+    "regulatory_classification": "utility_token"
+  },
+  "metadata": {
+    "axiom": "sword legend pull magic kingdom artist stone destroy forget fire steel honey question",
+    "lead_architect": "Travis D Jones",
+    "email": "holedozer@gmail.com",
+    "license": "BSD-3-Clause",
+    "genesis_date": "2025",
+    "chain_type": "Bitcoin_fork"
     "total_cap": 21000000,
     "unit": "EXS",
     "decimals": 8,
