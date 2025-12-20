@@ -26,10 +26,7 @@
     },
     {
       "src": "/admin/(.*)",
-      "dest": "/admin/$1",
-      "headers": {
-        "Authorization": "Basic"
-      }
+      "dest": "/admin/$1"
     },
     {
       "src": "/(.*)",

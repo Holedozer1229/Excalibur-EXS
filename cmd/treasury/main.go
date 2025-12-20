@@ -100,8 +100,19 @@ func main() {
 	server := NewServer()
 
 	// CORS configuration
+	allowedOrigins := []string{
+		"https://www.excaliburcrypto.com",
+		"https://excaliburcrypto.com",
+		"http://localhost:3000", // For development
+	}
+	
+	// Allow wildcard in development
+	if os.Getenv("ENV") == "development" {
+		allowedOrigins = []string{"*"}
+	}
+	
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
+		AllowedOrigins: allowedOrigins,
 		AllowedMethods: []string{"GET", "POST", "OPTIONS"},
 		AllowedHeaders: []string{"Content-Type", "Authorization"},
 	})

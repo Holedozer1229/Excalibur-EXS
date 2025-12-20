@@ -120,4 +120,7 @@ def process_revenue():
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    # Only bind to 0.0.0.0 in production when behind reverse proxy
+    # For direct access, use gunicorn as specified in Dockerfile
+    host = '127.0.0.1' if os.environ.get('ENV') != 'production' else '0.0.0.0'
+    app.run(host=host, port=port, debug=False)

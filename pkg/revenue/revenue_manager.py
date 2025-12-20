@@ -206,7 +206,7 @@ class RevenueManager:
         Returns:
             User's share of revenue rewards
         """
-        if total_staked == 0:
+        if total_staked == 0 or user_stake == 0:
             return Decimal('0')
         
         # Base share proportional to stake
