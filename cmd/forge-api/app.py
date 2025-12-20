@@ -119,8 +119,13 @@ def process_revenue():
         return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
+    # WARNING: This is for development/testing only!
+    # In production, use gunicorn as specified in Dockerfile.forge
     port = int(os.environ.get('PORT', 5000))
-    # Only bind to 0.0.0.0 in production when behind reverse proxy
-    # For direct access, use gunicorn as specified in Dockerfile
     host = '127.0.0.1' if os.environ.get('ENV') != 'production' else '0.0.0.0'
+    
+    if os.environ.get('ENV') == 'production':
+        print("WARNING: Running Flask development server in production!")
+        print("Use gunicorn instead: gunicorn --bind 0.0.0.0:5000 cmd.forge-api.app:app")
+    
     app.run(host=host, port=port, debug=False)

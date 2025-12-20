@@ -60,13 +60,15 @@ func (s *Server) handleForge() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req forgeRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, "Invalid request format", http.StatusBadRequest)
 			return
 		}
 
 		result, err := s.treasury.ProcessForge(req.MinerAddress)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			// Log actual error but return generic message
+			log.Printf("Forge processing error: %v", err)
+			http.Error(w, "Forge processing failed", http.StatusBadRequest)
 			return
 		}
 

@@ -9,7 +9,7 @@ Lead Architect: Travis D Jones (holedozer@gmail.com)
 """
 
 from typing import Dict, List, Tuple
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from dataclasses import dataclass
 from datetime import datetime
 import json
@@ -206,11 +206,14 @@ class RevenueManager:
         Returns:
             User's share of revenue rewards
         """
-        if total_staked == 0 or user_stake == 0:
+        try:
+            if total_staked == 0 or user_stake == 0:
+                return Decimal('0')
+            
+            # Base share proportional to stake
+            base_share = user_stake / total_staked
+        except (ZeroDivisionError, InvalidOperation):
             return Decimal('0')
-        
-        # Base share proportional to stake
-        base_share = user_stake / total_staked
         
         # Apply multipliers
         multiplier = Decimal('1.0')

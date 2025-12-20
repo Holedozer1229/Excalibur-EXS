@@ -71,18 +71,21 @@ sudo cp /etc/letsencrypt/live/www.excaliburcrypto.com/privkey.pem docker/nginx/s
 
 ### Admin Portal Authentication
 
-Create password file for Merlin's Sanctum:
+**IMPORTANT**: Create password file BEFORE starting Docker services:
 
 ```bash
 # Install htpasswd
 sudo apt-get install apache2-utils
 
-# Create password
+# Create password file
+mkdir -p docker/nginx
 htpasswd -c docker/nginx/.htpasswd merlin
+# Enter password when prompted
 
-# Add to docker-compose.yml volumes:
-volumes:
-  - ./docker/nginx/.htpasswd:/etc/nginx/.htpasswd:ro
+# File is automatically mounted via docker-compose.yml
+```
+
+Without this file, admin portal authentication will fail.
 ```
 
 ## Service Management

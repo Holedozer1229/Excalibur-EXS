@@ -57,6 +57,7 @@
     }
   ],
   "env": {
+    "NOTE": "Environment variables in vercel.json are for build-time only. Set runtime variables in Vercel Dashboard: Settings > Environment Variables",
     "DOMAIN": "www.excaliburcrypto.com"
   }
 }
