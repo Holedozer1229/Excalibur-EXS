@@ -5,7 +5,7 @@ version: "1.4.0"
 
 network:
   blockchain: "Bitcoin"
-  network: "Excalibur-ESX"
+  network: "Excalibur-EXS"
   sub_network_identifier:
     network: "Ambiguity-Fork"
     metadata:

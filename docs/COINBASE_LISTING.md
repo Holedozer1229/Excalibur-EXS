@@ -133,7 +133,7 @@ Immutable parameters defining:
 
 **License:** BSD 3-Clause License  
 **Copyright:** 2025, Holedozer1229  
-**Repository:** github.com/Holedozer1229/Excalibur-ESX
+**Repository:** github.com/Holedozer1229/Excalibur-EXS
 
 ### Key Protections
 
@@ -184,7 +184,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 1. **Network Connection:**
    - Blockchain: Bitcoin
-   - Network: Excalibur-ESX
+   - Network: Excalibur-EXS
    - Sub-network: Ambiguity-Fork
 
 2. **Token Identification:**
@@ -229,7 +229,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ## Contact & Resources
 
-**Repository:** https://github.com/Holedozer1229/Excalibur-ESX  
+**Repository:** https://github.com/Holedozer1229/Excalibur-EXS  
 **Documentation:** See `README.md` and `SETUP.md`  
 **Technical Specification:** `rosetta-exs.yaml`  
 **Tokenomics:** `pkg/economy/tokenomics.json`  
