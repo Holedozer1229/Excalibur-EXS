@@ -1,6 +1,5 @@
-# Excalibur $EXS Protocol: The Manifesto
+# ![image](https://github.com/user-attachments/assets/d44a9969-3285-472f-ba2c-68c3c82c1df7)
 
-> ⚠️ **IMPORTANT NOTICE**: This is a demonstration/prototype implementation. It is **NOT production-ready** and should **NOT** be used with real funds or on mainnet. See [PRODUCTION_TODO.md](PRODUCTION_TODO.md) for items that must be addressed before production deployment.
 
 ## 🗡️ The Legend Awakens
 
