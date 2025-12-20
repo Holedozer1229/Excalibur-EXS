@@ -33,6 +33,19 @@ MANIFEST
 go.work
 
 # IDEs
+go.sum
+/cmd/miner/miner
+/cmd/rosetta/rosetta
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+/web/forge-ui/build
+/web/forge-ui/dist
+/web/forge-ui/.next
+
+# IDE
 .vscode/
 .idea/
 *.swp
@@ -63,3 +76,12 @@ foundry_output.txt
 # OS specific
 Thumbs.db
 .DS_Store
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+/bin/
+/build/
+/dist/
