@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Knights' Round Table - Excalibur $EXS Forge</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="round-table-container">
+        <header class="table-header">
+            <h1>⚔️ The Knights' Round Table</h1>
+            <p class="subtitle">Where Legends Are Forged</p>
+        </header>
+
+        <main class="forge-main">
+            <!-- Prophecy Input Section -->
+            <section class="prophecy-section">
+                <h2>🔮 Enter the Prophecy</h2>
+                <p class="instruction">Speak the 13-word Axiom to prove your worth:</p>
+                <div class="axiom-input-container">
+                    <textarea 
+                        id="axiom-input" 
+                        rows="3" 
+                        placeholder="sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
+                        maxlength="200"
+                    ></textarea>
+                    <button id="verify-axiom" class="verify-btn">Verify Axiom</button>
+                </div>
+                <div id="axiom-status" class="status-message"></div>
+            </section>
+
+            <!-- Draw the Sword Section -->
+            <section class="forge-section">
+                <div class="sword-container">
+                    <div class="sword-stone">
+                        <div class="sword" id="excalibur">
+                            <div class="sword-blade"></div>
+                            <div class="sword-hilt"></div>
+                        </div>
+                        <div class="stone"></div>
+                    </div>
+                    <button id="draw-sword-btn" class="draw-sword-btn" disabled>
+                        ⚔️ Draw the Sword
+                    </button>
+                </div>
+                <p class="forge-status" id="forge-status">Awaiting Prophecy Verification...</p>
+            </section>
+
+            <!-- Mining Visualization Section -->
+            <section class="visualization-section" id="mining-viz" style="display: none;">
+                <h2>⚡ Ω′ Δ18 Mining in Progress</h2>
+                <div class="mining-progress">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                        <span class="progress-text" id="progress-text">0 / 128 Rounds</span>
+                    </div>
+                </div>
+                <div class="rounds-visualization">
+                    <h3>128 Nonlinear Rounds</h3>
+                    <div class="rounds-grid" id="rounds-grid"></div>
+                </div>
+                <div class="mining-stats">
+                    <div class="stat">
+                        <span class="stat-label">Current Round:</span>
+                        <span class="stat-value" id="current-round">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Hash Rate:</span>
+                        <span class="stat-value" id="hash-rate">0 H/s</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Difficulty:</span>
+                        <span class="stat-value" id="difficulty">4</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">HPP-1 Iterations:</span>
+                        <span class="stat-value">600,000</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Forge Results Section -->
+            <section class="results-section" id="forge-results" style="display: none;">
+                <h2>🏆 Forge Complete!</h2>
+                <div class="success-message">
+                    <div class="success-icon">✓</div>
+                    <p>Congratulations! You have successfully drawn Excalibur from the stone.</p>
+                </div>
+                <div class="forge-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Reward:</span>
+                        <span class="detail-value" id="reward-amount">50 $EXS</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">P2TR Address:</span>
+                        <span class="detail-value monospace" id="p2tr-address">bc1p...</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Block Height:</span>
+                        <span class="detail-value" id="block-height">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Treasury Fee:</span>
+                        <span class="detail-value">0.5 $EXS (1%)</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Forge Fee:</span>
+                        <span class="detail-value">0.0001 BTC</span>
+                    </div>
+                </div>
+                <button id="forge-again-btn" class="action-btn">Forge Again</button>
+            </section>
+        </main>
+
+        <!-- Info Panel -->
+        <aside class="info-panel">
+            <h3>ℹ️ About the Forge</h3>
+            <div class="info-content">
+                <p><strong>Ω′ Δ18 Tetra-PoW:</strong> A revolutionary 128-round unrolled nonlinear hash algorithm.</p>
+                <p><strong>HPP-1:</strong> Quantum-hardened with 600,000 PBKDF2-HMAC-SHA512 iterations.</p>
+                <p><strong>Rewards:</strong> 50 $EXS per successful forge (1% treasury fee applies).</p>
+                <p><strong>Taproot Native:</strong> All rewards to P2TR addresses for maximum privacy.</p>
+            </div>
+        </aside>
+
+        <footer class="table-footer">
+            <p>Excalibur $EXS Protocol | Total Supply: 21,000,000 $EXS</p>
+            <p>Lead Architect: Travis D Jones (holedozer@gmail.com)</p>
+        </footer>
+    </div>
+
+    <script src="forge.js"></script>
+</body>
+</html>
