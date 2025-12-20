@@ -3,113 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Merlin's Portal - Excalibur $EXS Admin Dashboard</title>
+    <title>🔮 Merlin's Sanctum · The Architect's Observatory</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="portal-container">
-        <header class="portal-header">
-            <h1>🧙 Merlin's Portal</h1>
-            <p class="subtitle">The Sanctum of King Arthur</p>
+    <!-- Mystical Background -->
+    <div class="sanctum-void"></div>
+    <canvas id="arcane-sigils"></canvas>
+    
+    <!-- Rotating Cosmic Ring -->
+    <div class="cosmic-ring"></div>
+    
+    <div class="sanctum-chamber">
+        <!-- Sanctum Header -->
+        <header class="wizard-seal">
+            <div class="seal-symbol rotating">
+                <div class="inner-circle">
+                    <span class="staff-icon">🔮</span>
+                </div>
+            </div>
+            <h1 class="sanctum-title">
+                <span class="title-runes">ᛗᛖᚱᛚᛁᚾ'ᛊ ᛊᚨᚾᚲᛏᚢᛗ</span>
+                <span class="title-translation">THE WIZARD'S OBSERVATORY</span>
+            </h1>
+            <p class="sanctum-motto cryptic">"He who observes the flow, controls the tide"</p>
         </header>
 
-        <nav class="portal-nav">
-            <button class="nav-btn active" data-panel="treasury">💰 Treasury</button>
-            <button class="nav-btn" data-panel="difficulty">⚖️ Difficulty</button>
-            <button class="nav-btn" data-panel="anomaly">🗺️ Anomaly Map</button>
+        <!-- Arcane Navigation -->
+        <nav class="arcane-nav">
+            <button class="sigil-btn active" data-scry="treasury">
+                <span class="btn-sigil">◈</span>
+                <span class="btn-label">Treasury Scrying</span>
+                <span class="btn-rune">ᛏᚱᛖᚨᛊᚢᚱᚤ</span>
+            </button>
+            <button class="sigil-btn" data-scry="forge">
+                <span class="btn-sigil">⚒</span>
+                <span class="btn-label">Forge Weight</span>
+                <span class="btn-rune">ᚠᛟᚱᚷᛖ</span>
+            </button>
+            <button class="sigil-btn" data-scry="anomaly">
+                <span class="btn-sigil">🗺</span>
+                <span class="btn-label">Anomaly Sight</span>
+                <span class="btn-rune">ᚨᚾᛟᛗᚨᛚᚤ</span>
+            </button>
         </nav>
 
-        <main class="portal-main">
-            <!-- Treasury Monitoring Panel -->
-            <section id="treasury-panel" class="panel active">
-                <h2>Treasury Monitoring</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <h3>Total Treasury</h3>
-                        <p class="stat-value" id="total-treasury">0.00000000</p>
-                        <span class="stat-unit">BTC</span>
+        <!-- Main Scrying Panels -->
+        <main class="scrying-chamber">
+            
+            <!-- Treasury Scrying -->
+            <section id="treasury-scry" class="scry-panel active">
+                <h2 class="panel-header">
+                    <span class="header-ornament">◈</span>
+                    TREASURY SCRYING
+                    <span class="header-ornament">◈</span>
+                </h2>
+                
+                <div class="vision-orbs">
+                    <div class="orb-container">
+                        <div class="scry-orb gold-orb">
+                            <div class="orb-glow"></div>
+                            <div class="orb-content">
+                                <span class="orb-label">Total Vault</span>
+                                <span class="orb-value" id="total-vault">0.00000000</span>
+                                <span class="orb-unit">BTC</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <h3>$EXS Reserved</h3>
-                        <p class="stat-value" id="exs-reserved">0</p>
-                        <span class="stat-unit">$EXS</span>
+                    
+                    <div class="orb-container">
+                        <div class="scry-orb purple-orb">
+                            <div class="orb-glow"></div>
+                            <div class="orb-content">
+                                <span class="orb-label">$EXS Runes</span>
+                                <span class="orb-value" id="exs-vault">0</span>
+                                <span class="orb-unit">$EXS</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <h3>Satoshi Fees Collected</h3>
-                        <p class="stat-value" id="satoshi-fees">0</p>
-                        <span class="stat-unit">sats</span>
+                    
+                    <div class="orb-container">
+                        <div class="scry-orb emerald-orb">
+                            <div class="orb-glow"></div>
+                            <div class="orb-content">
+                                <span class="orb-label">Satoshi Flow</span>
+                                <span class="orb-value" id="satoshi-flow">0</span>
+                                <span class="orb-unit">sats</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <h3>Treasury Fee Rate</h3>
-                        <p class="stat-value">1</p>
-                        <span class="stat-unit">%</span>
+                    
+                    <div class="orb-container">
+                        <div class="scry-orb blood-orb">
+                            <div class="orb-glow"></div>
+                            <div class="orb-content">
+                                <span class="orb-label">Tithe Rate</span>
+                                <span class="orb-value">1</span>
+                                <span class="orb-unit">%</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="treasury-chart">
-                    <h3>Treasury Growth Over Time</h3>
-                    <canvas id="treasury-chart"></canvas>
+
+                <div class="ancient-scroll">
+                    <h3 class="scroll-title">The Flow of Digital Steel</h3>
+                    <div class="scroll-content">
+                        <canvas id="treasury-flow" width="800" height="300"></canvas>
+                    </div>
+                    <p class="scroll-note cryptic">
+                        "As the moon pulls the tide, so the treasury grows with each forge.<br/>
+                        1% of all steel forged flows into the architect's vault."
+                    </p>
                 </div>
             </section>
 
-            <!-- Difficulty Adjustment Panel -->
-            <section id="difficulty-panel" class="panel">
-                <h2>Forge Difficulty Adjustment</h2>
-                <div class="difficulty-control">
-                    <div class="current-difficulty">
-                        <h3>Current Difficulty</h3>
-                        <p class="difficulty-value" id="current-difficulty">4</p>
-                    </div>
-                    <div class="adjustment-controls">
-                        <label for="difficulty-slider">Forge Weight:</label>
-                        <input type="range" id="difficulty-slider" min="1" max="10" value="4" step="1">
-                        <span id="difficulty-display">4</span>
-                        <button id="apply-difficulty" class="action-btn">Apply New Difficulty</button>
-                    </div>
-                    <div class="difficulty-stats">
-                        <div class="stat-item">
-                            <span>Avg. Forge Time:</span>
-                            <strong id="avg-forge-time">~10 minutes</strong>
+            <!-- Forge Weight Adjustment -->
+            <section id="forge-scry" class="scry-panel">
+                <h2 class="panel-header">
+                    <span class="header-ornament">⚒</span>
+                    FORGE WEIGHT DIVINATION
+                    <span class="header-ornament">⚒</span>
+                </h2>
+
+                <div class="forge-altar">
+                    <div class="current-weight">
+                        <p class="weight-label">Current Difficulty</p>
+                        <div class="weight-display">
+                            <span class="weight-value" id="current-weight">4</span>
+                            <span class="weight-suffix">Leading Zeros</span>
                         </div>
-                        <div class="stat-item">
-                            <span>Network Hash Rate:</span>
-                            <strong id="network-hashrate">N/A</strong>
+                    </div>
+
+                    <div class="weight-control">
+                        <p class="control-label cryptic">
+                            "Adjust the forge weight. Increase to slow the flow, decrease to hasten."
+                        </p>
+                        
+                        <div class="weight-slider-container">
+                            <span class="slider-rune left">ᛖᚨᛊᚤ</span>
+                            <input type="range" id="weight-slider" class="mystical-slider" 
+                                   min="1" max="10" value="4" step="1">
+                            <span class="slider-rune right">ᚺᚨᚱᛞ</span>
                         </div>
-                        <div class="stat-item">
-                            <span>Last Adjustment:</span>
-                            <strong id="last-adjustment">Never</strong>
+                        
+                        <div class="weight-indicator">
+                            <span class="indicator-label">Selected Weight:</span>
+                            <span class="indicator-value" id="weight-indicator">4</span>
+                        </div>
+
+                        <button id="apply-weight" class="ritual-button">
+                            <span class="btn-icon">⚒</span>
+                            <span class="btn-text">Cast The Adjustment</span>
+                            <span class="btn-glow"></span>
+                        </button>
+                    </div>
+
+                    <div class="forge-divinations">
+                        <div class="divination-entry">
+                            <span class="div-label">Average Forge Time:</span>
+                            <span class="div-value" id="avg-time">~10 minutes</span>
+                        </div>
+                        <div class="divination-entry">
+                            <span class="div-label">Network Power:</span>
+                            <span class="div-value" id="network-power">Computing...</span>
+                        </div>
+                        <div class="divination-entry">
+                            <span class="div-label">Last Adjustment:</span>
+                            <span class="div-value" id="last-adjustment">Never</span>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Global Anomaly Map Panel -->
-            <section id="anomaly-panel" class="panel">
-                <h2>Global Anomaly Map</h2>
+            <!-- Anomaly Map -->
+            <section id="anomaly-scry" class="scry-panel">
+                <h2 class="panel-header">
+                    <span class="header-ornament">🗺</span>
+                    GLOBAL ANOMALY SIGHT
+                    <span class="header-ornament">🗺</span>
+                </h2>
+
                 <div class="map-controls">
-                    <button class="filter-btn active" data-filter="all">All Forges</button>
-                    <button class="filter-btn" data-filter="active">Active</button>
-                    <button class="filter-btn" data-filter="completed">Completed</button>
+                    <button class="vision-filter active" data-filter="all">
+                        <span>All Visions</span>
+                    </button>
+                    <button class="vision-filter" data-filter="active">
+                        <span>Active Forges</span>
+                    </button>
+                    <button class="vision-filter" data-filter="complete">
+                        <span>Completed</span>
+                    </button>
                 </div>
-                <div class="anomaly-map">
-                    <canvas id="anomaly-canvas"></canvas>
+
+                <div class="anomaly-vision">
+                    <canvas id="anomaly-map" width="1000" height="500"></canvas>
+                    <div class="map-overlay">
+                        <p class="map-subtitle cryptic">
+                            "Each light a warrior drawing steel. Each pulse a victory claimed."
+                        </p>
+                    </div>
                 </div>
-                <div class="forge-list">
-                    <h3>Recent Forge Activity</h3>
-                    <ul id="forge-activity-list">
-                        <li class="forge-item">
-                            <span class="forge-status active">●</span>
-                            <span class="forge-id">Forge #001</span>
-                            <span class="forge-time">Started 2m ago</span>
-                        </li>
-                        <!-- More forges will be populated by JavaScript -->
-                    </ul>
+
+                <div class="forge-chronicle">
+                    <h3 class="chronicle-title">Recent Forge Chronicle</h3>
+                    <div class="chronicle-scroll" id="forge-chronicle">
+                        <div class="chronicle-entry active">
+                            <span class="entry-status">⚔</span>
+                            <span class="entry-id">Forge #001</span>
+                            <span class="entry-time">Initiated 2m ago</span>
+                            <span class="entry-progress">Round 64/128</span>
+                        </div>
+                        <!-- More entries populated by JS -->
+                    </div>
                 </div>
             </section>
+
         </main>
 
-        <footer class="portal-footer">
-            <p>Excalibur $EXS Protocol - Architect: Travis D Jones (holedozer@gmail.com)</p>
+        <!-- Cryptic Footer -->
+        <footer class="sanctum-footer">
+            <div class="footer-seal">
+                <p class="seal-text">
+                    The Architect: Travis D Jones · holedozer@gmail.com
+                </p>
+                <p class="seal-warning cryptic">
+                    ⚠ This sanctum reveals but does not command. Use wisdom. ⚠
+                </p>
+            </div>
         </footer>
+    </div>
+
+    <!-- Authentication Guard (placeholder) -->
+    <div id="auth-veil" class="auth-veil hidden">
+        <div class="auth-chamber">
+            <div class="auth-sigil">🔮</div>
+            <h2 class="auth-title">SPEAK THE WORDS OF POWER</h2>
+            <p class="auth-desc cryptic">Only the architect may enter this sanctum.</p>
+            <form id="auth-form" class="auth-form">
+                <input type="password" id="auth-key" class="auth-input" 
+                       placeholder="Enter the sacred key..." autocomplete="off">
+                <button type="submit" class="auth-submit">
+                    <span>Enter Sanctum</span>
+                </button>
+            </form>
+            <p class="auth-note">Hint: The first word of the axiom...</p>
+        </div>
     </div>
 
     <script src="dashboard.js"></script>
