@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merlin's Portal - Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #ffffff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #ffd700;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .subtitle {
+            font-style: italic;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .panel {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .panel h2 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .metric:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-label {
+            font-weight: bold;
+        }
+        
+        .metric-value {
+            color: #ffd700;
+            font-family: monospace;
+        }
+        
+        .control-button {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            color: #1e3c72;
+        }
+        
+        .control-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .anomaly-map {
+            width: 100%;
+            height: 400px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+        }
+        
+        .access-log {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .timestamp {
+            color: #ffd700;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚔️ MERLIN'S PORTAL ⚔️</h1>
+            <p class="subtitle">"The wizard's sanctum, where King Arthur commands the realm."</p>
+        </header>
+        
+        <div class="dashboard-grid">
+            <!-- Treasury Monitoring -->
+            <div class="panel">
+                <h2>💰 Treasury Monitoring</h2>
+                <div class="metric">
+                    <span class="metric-label">Total Satoshi Fees:</span>
+                    <span class="metric-value" id="satoshi-fees">0.00000000 BTC</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">$EXS Treasury Balance:</span>
+                    <span class="metric-value" id="exs-balance">0 $EXS</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Total Forges:</span>
+                    <span class="metric-value" id="total-forges">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Treasury Fee (1%):</span>
+                    <span class="metric-value" id="treasury-fees">0 $EXS</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Forge Fee Pool:</span>
+                    <span class="metric-value" id="forge-fees">0.00000000 BTC</span>
+                </div>
+            </div>
+            
+            <!-- Difficulty Adjustment -->
+            <div class="panel">
+                <h2>⚙️ Difficulty Adjustment</h2>
+                <div class="metric">
+                    <span class="metric-label">Current Difficulty:</span>
+                    <span class="metric-value" id="current-difficulty">4</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Forge Weight:</span>
+                    <span class="metric-value" id="forge-weight">Normal</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Network Hashrate:</span>
+                    <span class="metric-value" id="network-hashrate">0 H/s</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Avg. Forge Time:</span>
+                    <span class="metric-value" id="avg-forge-time">N/A</span>
+                </div>
+                <button class="control-button" onclick="increaseDifficulty()">⬆️ Increase Difficulty</button>
+                <button class="control-button" onclick="decreaseDifficulty()">⬇️ Decrease Difficulty</button>
+            </div>
+        </div>
+        
+        <!-- Global Anomaly Map -->
+        <div class="panel">
+            <h2>🗺️ Global Anomaly Map</h2>
+            <div class="anomaly-map">
+                <p>Real-time forge tracking visualization will be rendered here</p>
+            </div>
+        </div>
+        
+        <!-- Access Log -->
+        <div class="panel">
+            <h2>📜 Access Log</h2>
+            <div class="access-log" id="access-log">
+                <div class="log-entry">
+                    <span class="timestamp">[2025-12-20 03:46:56]</span>
+                    <span>System initialized - Merlin's Portal active</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Simulated real-time data updates
+        function updateMetrics() {
+            // This would connect to a WebSocket in production
+            console.log('Metrics updated');
+        }
+        
+        function increaseDifficulty() {
+            const current = parseInt(document.getElementById('current-difficulty').textContent);
+            if (current < 32) {
+                document.getElementById('current-difficulty').textContent = current + 1;
+                addLogEntry('Difficulty increased to ' + (current + 1));
+            }
+        }
+        
+        function decreaseDifficulty() {
+            const current = parseInt(document.getElementById('current-difficulty').textContent);
+            if (current > 1) {
+                document.getElementById('current-difficulty').textContent = current - 1;
+                addLogEntry('Difficulty decreased to ' + (current - 1));
+            }
+        }
+        
+        function addLogEntry(message) {
+            const log = document.getElementById('access-log');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+            entry.innerHTML = `<span class="timestamp">[${now}]</span><span>${message}</span>`;
+            log.insertBefore(entry, log.firstChild);
+        }
+        
+        // Initialize
+        setInterval(updateMetrics, 5000);
+    </script>
+</body>
+</html>

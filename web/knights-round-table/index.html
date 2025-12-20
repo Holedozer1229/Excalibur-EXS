@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knights' Round Table - Excalibur $EXS Forge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 3px solid #ffd700;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            color: #ffd700;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+            margin-bottom: 15px;
+        }
+        
+        .quote {
+            font-style: italic;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .forge-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: #ffd700;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .axiom-input-group {
+            margin-bottom: 30px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #ffd700;
+            font-weight: bold;
+        }
+        
+        .axiom-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #ffd700;
+            border-radius: 5px;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+        }
+        
+        .axiom-input:focus {
+            outline: none;
+            border-color: #ffed4e;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .hint {
+            font-size: 0.9em;
+            color: #aaaaaa;
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        .draw-sword-button {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            border: none;
+            border-radius: 10px;
+            color: #0f2027;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+        
+        .draw-sword-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+        }
+        
+        .draw-sword-button:active {
+            transform: translateY(0);
+        }
+        
+        .draw-sword-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .visualization-panel {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .visualization-panel.active {
+            display: block;
+        }
+        
+        .rounds-container {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .round {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #555;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            transition: all 0.3s;
+        }
+        
+        .round.processing {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #0f2027;
+            border-color: #ffd700;
+            animation: pulse 0.5s ease-in-out;
+        }
+        
+        .round.complete {
+            background: rgba(34, 197, 94, 0.3);
+            border-color: #22c55e;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .status-display {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .status-label {
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .status-value {
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        
+        .difficulty-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+        
+        .difficulty-label {
+            color: #ffd700;
+        }
+        
+        .result-panel {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+        
+        .result-panel.success {
+            display: block;
+            background: rgba(34, 197, 94, 0.2);
+            border: 2px solid #22c55e;
+        }
+        
+        .result-panel.failure {
+            display: block;
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+        }
+        
+        .result-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .result-details {
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            opacity: 0.7;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚔️ KNIGHTS' ROUND TABLE ⚔️</h1>
+            <p class="quote">"Only those who prove their worth through ancient axioms may draw the sword from the stone."</p>
+        </header>
+        
+        <div class="forge-panel">
+            <h2 class="section-title">🔮 Enter the Sacred Axiom</h2>
+            
+            <div class="axiom-input-group">
+                <label for="axiom-input">The 13-Word Prophecy:</label>
+                <input 
+                    type="text" 
+                    id="axiom-input" 
+                    class="axiom-input" 
+                    placeholder="sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
+                    value="sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
+                >
+                <p class="hint">Enter the exact 13-word sequence to begin your forge attempt</p>
+            </div>
+            
+            <button id="draw-sword-btn" class="draw-sword-button">
+                ⚔️ Draw the Sword ⚔️
+            </button>
+        </div>
+        
+        <div id="visualization" class="visualization-panel">
+            <h2 class="section-title">⚡ Ω′ Δ18 Tetra-PoW Miner</h2>
+            
+            <div class="status-display">
+                <div class="status-label">Mining Status:</div>
+                <div id="mining-status" class="status-value">Initializing...</div>
+            </div>
+            
+            <div class="difficulty-indicator">
+                <span class="difficulty-label">Difficulty Target:</span>
+                <span id="difficulty-value">4 leading zero bytes</span>
+            </div>
+            
+            <h3 style="color: #ffd700; margin-top: 30px; margin-bottom: 10px;">128 Nonlinear Rounds:</h3>
+            <div id="rounds-container" class="rounds-container">
+                <!-- Rounds will be generated dynamically -->
+            </div>
+        </div>
+        
+        <div id="result" class="result-panel">
+            <div class="result-title" id="result-title"></div>
+            <div class="result-details" id="result-details"></div>
+        </div>
+        
+        <footer>
+            <p>Excalibur $EXS Protocol — Lead Architect: Travis D. Jones</p>
+            <p style="margin-top: 10px;">
+                <a href="https://github.com/Holedozer1229/Excalibur-EXS" style="color: #ffd700; text-decoration: none;">
+                    GitHub Repository
+                </a>
+            </p>
+        </footer>
+    </div>
+    
+    <script>
+        // Initialize 128 rounds
+        const roundsContainer = document.getElementById('rounds-container');
+        for (let i = 1; i <= 128; i++) {
+            const round = document.createElement('div');
+            round.className = 'round';
+            round.textContent = i;
+            round.id = `round-${i}`;
+            roundsContainer.appendChild(round);
+        }
+        
+        // Draw Sword button handler
+        document.getElementById('draw-sword-btn').addEventListener('click', function() {
+            const axiom = document.getElementById('axiom-input').value.trim();
+            const expectedAxiom = 'sword legend pull magic kingdom artist stone destroy forget fire steel honey question';
+            
+            // Validate axiom
+            if (axiom !== expectedAxiom) {
+                alert('⚠️ Invalid axiom! Please enter the exact 13-word sequence.');
+                return;
+            }
+            
+            // Start forging
+            startForge();
+        });
+        
+        function startForge() {
+            const button = document.getElementById('draw-sword-btn');
+            const visualization = document.getElementById('visualization');
+            const result = document.getElementById('result');
+            
+            button.disabled = true;
+            visualization.classList.add('active');
+            result.className = 'result-panel';
+            
+            document.getElementById('mining-status').textContent = 'Mining in progress...';
+            
+            // Simulate the 128-round mining process
+            let currentRound = 0;
+            const miningInterval = setInterval(() => {
+                if (currentRound > 0) {
+                    document.getElementById(`round-${currentRound}`).classList.remove('processing');
+                    document.getElementById(`round-${currentRound}`).classList.add('complete');
+                }
+                
+                currentRound++;
+                
+                if (currentRound <= 128) {
+                    document.getElementById(`round-${currentRound}`).classList.add('processing');
+                    document.getElementById('mining-status').textContent = `Processing round ${currentRound} of 128...`;
+                } else {
+                    clearInterval(miningInterval);
+                    completeMining();
+                }
+            }, 50); // Simulate 50ms per round for visualization
+        }
+        
+        function completeMining() {
+            document.getElementById('mining-status').textContent = 'Validating proof...';
+            
+            // Simulate validation
+            setTimeout(() => {
+                // For demo purposes, show success
+                // In production, this would check actual mining results
+                const success = Math.random() > 0.3; // 70% success rate for demo
+                
+                const resultPanel = document.getElementById('result');
+                const resultTitle = document.getElementById('result-title');
+                const resultDetails = document.getElementById('result-details');
+                
+                if (success) {
+                    resultPanel.className = 'result-panel success';
+                    resultTitle.textContent = '🎉 SWORD DRAWN! 🎉';
+                    resultDetails.innerHTML = `
+                        <p>Congratulations! You have successfully forged a new $EXS token.</p>
+                        <p style="margin-top: 10px;">Reward: <strong>50 $EXS</strong></p>
+                        <p>Treasury Fee (1%): <strong>0.5 $EXS</strong></p>
+                        <p>Your Reward: <strong>49.5 $EXS</strong></p>
+                        <p style="margin-top: 15px; font-size: 0.8em;">Hash: 0x${generateMockHash()}</p>
+                    `;
+                } else {
+                    resultPanel.className = 'result-panel failure';
+                    resultTitle.textContent = '⚠️ FORGE FAILED ⚠️';
+                    resultDetails.innerHTML = `
+                        <p>The proof did not meet the difficulty target.</p>
+                        <p style="margin-top: 10px;">Try again with more computational power!</p>
+                        <p style="margin-top: 15px; font-size: 0.8em;">Hash: 0x${generateMockHash()}</p>
+                    `;
+                }
+                
+                document.getElementById('mining-status').textContent = success ? 'Forge successful!' : 'Forge failed';
+                document.getElementById('draw-sword-btn').disabled = false;
+            }, 1000);
+        }
+        
+        function generateMockHash() {
+            return Array.from({length: 64}, () => 
+                Math.floor(Math.random() * 16).toString(16)
+            ).join('');
+        }
+    </script>
+</body>
+</html>

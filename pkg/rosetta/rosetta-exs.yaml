@@ -1,0 +1,166 @@
+# Excalibur $EXS - Rosetta Construction API v1.4.10 Implementation
+#
+# This configuration implements the Rosetta Construction API for institutional
+# exchange compatibility (Coinbase, Kraken, etc.)
+#
+# Rosetta API Documentation: https://www.rosetta-api.org/
+#
+# Author: Travis D. Jones <holedozer@gmail.com>
+# License: BSD 3-Clause
+
+network:
+  blockchain: "excalibur-exs"
+  network: "mainnet"
+  sub_network_identifier:
+    network: "camelot"
+
+construction:
+  construction_metadata:
+    # Network-specific metadata
+    protocol_version: "1.0.0"
+    consensus: "tetra-pow"
+    algorithm: "omega-prime-delta-18"
+    rounds: 128
+    hpp1_iterations: 600000
+    
+  transaction_construction:
+    # Transaction types supported
+    types:
+      - "forge"
+      - "transfer"
+      - "treasury_distribution"
+    
+    # Forge transaction structure
+    forge:
+      required_fields:
+        - "axiom"
+        - "nonce"
+        - "miner_address"
+      optional_fields:
+        - "forge_fee"
+      validation:
+        axiom_words: 13
+        canonical_axiom: "sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
+    
+    # Transfer transaction structure
+    transfer:
+      required_fields:
+        - "from_address"
+        - "to_address"
+        - "amount"
+      signature_type: "schnorr"
+    
+  fee_structure:
+    forge_fee:
+      amount: "0.0001"
+      currency: "BTC"
+    treasury_fee:
+      percent: 1
+      of: "forge_reward"
+    network_fee:
+      min: "0.00000546"
+      currency: "BTC"
+
+currency:
+  symbol: "EXS"
+  decimals: 8
+  metadata:
+    total_supply: "21000000"
+    supply_cap: "21000000"
+    forge_reward: "50"
+    halving: false
+
+operations:
+  # Operation types for Rosetta API
+  forge_operation:
+    type: "FORGE"
+    status:
+      - "SUCCESS"
+      - "FAILURE"
+      - "PENDING"
+    account_identifier_required: true
+    amount_required: true
+    
+  transfer_operation:
+    type: "TRANSFER"
+    status:
+      - "SUCCESS"
+      - "FAILURE"
+      - "PENDING"
+    account_identifier_required: true
+    amount_required: true
+
+accounts:
+  # Account structure
+  account_identifier:
+    address_format: "p2tr"  # Taproot addresses
+    address_prefix: "bc1p"
+    
+errors:
+  # Rosetta API error codes
+  - code: 1
+    message: "Invalid axiom sequence"
+    retriable: false
+    
+  - code: 2
+    message: "Insufficient forge fee"
+    retriable: true
+    
+  - code: 3
+    message: "Mining difficulty not met"
+    retriable: true
+    
+  - code: 4
+    message: "HPP-1 key derivation failed"
+    retriable: false
+    
+  - code: 5
+    message: "Invalid Taproot address"
+    retriable: false
+
+construction_flow:
+  steps:
+    - name: "construction/derive"
+      description: "Derive address from public key"
+      
+    - name: "construction/preprocess"
+      description: "Prepare transaction metadata"
+      
+    - name: "construction/metadata"
+      description: "Fetch network-specific metadata"
+      
+    - name: "construction/payloads"
+      description: "Generate unsigned transaction"
+      
+    - name: "construction/parse"
+      description: "Parse transaction for verification"
+      
+    - name: "construction/combine"
+      description: "Combine unsigned transaction with signatures"
+      
+    - name: "construction/hash"
+      description: "Get transaction hash"
+      
+    - name: "construction/submit"
+      description: "Submit signed transaction to network"
+
+indexer:
+  # Data API endpoints
+  endpoints:
+    - "/network/list"
+    - "/network/status"
+    - "/network/options"
+    - "/block"
+    - "/block/transaction"
+    - "/account/balance"
+    - "/account/coins"
+    - "/mempool"
+    - "/mempool/transaction"
+
+metadata:
+  lead_architect: "Travis D. Jones"
+  contact: "holedozer@gmail.com"
+  repository: "https://github.com/Holedozer1229/Excalibur-EXS"
+  documentation: "https://github.com/Holedozer1229/Excalibur-EXS/wiki"
+  rosetta_version: "1.4.10"
+  implementation_version: "1.0.0"

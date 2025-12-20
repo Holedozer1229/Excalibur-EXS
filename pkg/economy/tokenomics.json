@@ -1,0 +1,193 @@
+{
+  "protocol": "Excalibur $EXS",
+  "version": "1.0.0",
+  "axiom": "sword legend pull magic kingdom artist stone destroy forget fire steel honey question",
+  
+  "supply": {
+    "total_cap": 21000000,
+    "unit": "EXS",
+    "decimals": 8,
+    "smallest_unit": "satoshi_exs"
+  },
+  
+  "forge_economics": {
+    "reward_per_forge": 50,
+    "halving_schedule": "none",
+    "total_possible_forges": 420000,
+    "difficulty_target": 4,
+    "difficulty_adjustment": "manual"
+  },
+  
+  "distribution": {
+    "proof_of_forge": {
+      "percent": 60,
+      "amount": 12600000,
+      "description": "Distributed to miners through Proof-of-Forge (PoF) rewards"
+    },
+    "treasury": {
+      "percent": 15,
+      "amount": 3150000,
+      "description": "Protocol treasury for development, maintenance, and grants",
+      "fee_source": "1% of all forge rewards"
+    },
+    "liquidity": {
+      "percent": 20,
+      "amount": 4200000,
+      "description": "Liquidity pools on decentralized exchanges (DEX)"
+    },
+    "airdrop": {
+      "percent": 5,
+      "amount": 1050000,
+      "description": "Community airdrops and early adopter rewards"
+    }
+  },
+  
+  "fees": {
+    "treasury_fee": {
+      "percent": 1,
+      "basis": "forge_reward",
+      "description": "1% of each 50 $EXS forge reward goes to treasury",
+      "amount_per_forge": 0.5
+    },
+    "forge_fee": {
+      "amount": 0.0001,
+      "currency": "BTC",
+      "description": "Bitcoin fee required to submit a forge transaction"
+    },
+    "transfer_fee": {
+      "amount": 0.00000546,
+      "currency": "BTC",
+      "description": "Minimum Bitcoin network fee for $EXS transfers"
+    }
+  },
+  
+  "technical_parameters": {
+    "mining_algorithm": "Ω′ Δ18",
+    "algorithm_description": "128-round unrolled nonlinear hash algorithm",
+    "hardness_protocol": "HPP-1",
+    "hpp1_iterations": 600000,
+    "hpp1_algorithm": "PBKDF2-HMAC-SHA512",
+    "vault_type": "Taproot (P2TR)",
+    "quantum_resistance": true
+  },
+  
+  "emission_schedule": {
+    "phase": "constant",
+    "reward_per_block": null,
+    "reward_per_forge": 50,
+    "estimated_time_per_forge": "variable",
+    "difficulty_adjustment_method": "manual_by_architect"
+  },
+  
+  "treasury_allocation": {
+    "development": {
+      "percent": 40,
+      "amount": 1260000,
+      "description": "Core protocol development and improvements"
+    },
+    "grants": {
+      "percent": 30,
+      "amount": 945000,
+      "description": "Community grants and ecosystem development"
+    },
+    "operations": {
+      "percent": 20,
+      "amount": 630000,
+      "description": "Infrastructure, hosting, and operational costs"
+    },
+    "reserve": {
+      "percent": 10,
+      "amount": 315000,
+      "description": "Emergency reserve for unforeseen circumstances"
+    }
+  },
+  
+  "liquidity_strategy": {
+    "initial_dex_listing": {
+      "amount": 100000,
+      "description": "Initial liquidity for decentralized exchange listings"
+    },
+    "lp_incentives": {
+      "amount": 2100000,
+      "description": "Liquidity provider incentives over time"
+    },
+    "market_making": {
+      "amount": 2000000,
+      "description": "Market making and depth provision"
+    }
+  },
+  
+  "airdrop_distribution": {
+    "early_adopters": {
+      "percent": 50,
+      "amount": 525000,
+      "description": "First 1000 forge participants"
+    },
+    "community_builders": {
+      "percent": 30,
+      "amount": 315000,
+      "description": "Active community contributors and evangelists"
+    },
+    "strategic_partners": {
+      "percent": 20,
+      "amount": 210000,
+      "description": "Strategic partnerships and integrations"
+    }
+  },
+  
+  "governance": {
+    "model": "architect_led",
+    "lead_architect": "Travis D. Jones",
+    "email": "holedozer@gmail.com",
+    "transition_plan": "eventual_dao",
+    "voting_mechanism": "stake_weighted",
+    "proposal_threshold": 10000
+  },
+  
+  "roadmap": {
+    "phase_1": {
+      "name": "Genesis",
+      "status": "active",
+      "milestones": [
+        "Core protocol implementation",
+        "Double-portal architecture launch",
+        "Initial forge testing"
+      ]
+    },
+    "phase_2": {
+      "name": "Expansion",
+      "status": "planned",
+      "milestones": [
+        "DEX listings",
+        "Liquidity pool establishment",
+        "Community airdrop"
+      ]
+    },
+    "phase_3": {
+      "name": "Integration",
+      "status": "planned",
+      "milestones": [
+        "Rosetta API completion",
+        "CEX listings (Coinbase, Kraken)",
+        "Wallet integrations"
+      ]
+    },
+    "phase_4": {
+      "name": "Maturity",
+      "status": "future",
+      "milestones": [
+        "DAO transition",
+        "Layer-2 solutions",
+        "Cross-chain bridges"
+      ]
+    }
+  },
+  
+  "metadata": {
+    "created": "2025-12-20",
+    "last_updated": "2025-12-20",
+    "author": "Travis D. Jones <holedozer@gmail.com>",
+    "license": "BSD-3-Clause",
+    "repository": "https://github.com/Holedozer1229/Excalibur-EXS"
+  }
+}
