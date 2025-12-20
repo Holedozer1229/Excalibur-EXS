@@ -76,7 +76,7 @@ class TetraPowMiner:
         Returns:
             True if difficulty requirement is met, False otherwise
         """
-        return hash_result[:self.difficulty] == bytes(self.difficulty)
+        return hash_result[:self.difficulty] == b'\x00' * self.difficulty
     
     def mine(self, axiom: str, nonce: int = 0, max_attempts: int = 1000000) -> Tuple[bool, bytes, int, List[bytes]]:
         """
