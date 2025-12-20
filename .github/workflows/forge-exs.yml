@@ -5,8 +5,7 @@ on:
     types: [opened, synchronize, reopened]
     branches:
       - main
-  pull_request_target:
-    types: [closed]
+  push:
     branches:
       - main
 
@@ -18,7 +17,7 @@ jobs:
   validate-proof:
     name: Validate Ω′ Δ18 Proof
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged != true
+    if: github.event_name == 'pull_request'
     
     steps:
       - name: Checkout repository
@@ -82,13 +81,14 @@ jobs:
   record-claim:
     name: Record Forge Claim
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 2
           token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Set up Go
@@ -96,22 +96,44 @@ jobs:
         with:
           go-version: '1.21'
       
+      - name: Check for merge commit
+        id: check_merge
+        run: |
+          # Check if this is a merge commit from a PR
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          
+          if echo "$COMMIT_MSG" | grep -q "Merge pull request"; then
+            PR_NUM=$(echo "$COMMIT_MSG" | grep -oP "(?<=#)\d+" | head -1)
+            echo "is_merge=true" >> $GITHUB_OUTPUT
+            echo "pr_number=$PR_NUM" >> $GITHUB_OUTPUT
+            echo "Found merge from PR #$PR_NUM"
+          else
+            echo "is_merge=false" >> $GITHUB_OUTPUT
+            echo "Not a PR merge commit, skipping claim recording"
+          fi
+      
       - name: Extract claim data
         id: extract_claim
+        if: steps.check_merge.outputs.is_merge == 'true'
         run: |
-          # Extract proof and address from merged PR
-          PROOF=$(echo "${{ github.event.pull_request.body }}" | grep -oP "(?<=PROOF:\s)[a-f0-9]{64}" || echo "")
-          ADDRESS=$(echo "${{ github.event.pull_request.body }}" | grep -oP "(?<=ADDRESS:\s)[a-z0-9]{62,90}" || echo "")
+          # For automated recording, claims should be in commit message
+          # Format: PROOF: <hash> ADDRESS: <address>
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          
+          PROOF=$(echo "$COMMIT_MSG" | grep -oP "(?<=PROOF:\s)[a-f0-9]{64}" || echo "")
+          ADDRESS=$(echo "$COMMIT_MSG" | grep -oP "(?<=ADDRESS:\s)[a-z0-9]{62,90}" || echo "")
           
           echo "proof=$PROOF" >> $GITHUB_OUTPUT
           echo "address=$ADDRESS" >> $GITHUB_OUTPUT
           
           if [ -z "$PROOF" ] || [ -z "$ADDRESS" ]; then
-            echo "⚠️  Missing proof or address in PR description"
-            exit 1
+            echo "⚠️  No proof or address found in commit message"
+            echo "⚠️  Claims must be recorded manually"
+            exit 0
           fi
       
       - name: Update claims ledger
+        if: steps.check_merge.outputs.is_merge == 'true' && steps.extract_claim.outputs.proof != ''
         run: |
           # Create ledger directory if it doesn't exist
           mkdir -p ledger
@@ -126,12 +148,12 @@ jobs:
           
           # Create new claim entry
           CLAIM=$(jq -n \
-            --arg pr "${{ github.event.pull_request.number }}" \
+            --arg pr "${{ steps.check_merge.outputs.pr_number }}" \
             --arg proof "${{ steps.extract_claim.outputs.proof }}" \
             --arg address "${{ steps.extract_claim.outputs.address }}" \
             --arg reward "$REWARD_PER_FORGE" \
             --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            --arg merger "${{ github.event.pull_request.merged_by.login }}" \
+            --arg merger "${{ github.actor }}" \
             '{
               pr_number: ($pr | tonumber),
               proof_hash: $proof,
@@ -156,6 +178,7 @@ jobs:
           echo "💰 Total Rewards: $(jq -r '.total_rewards' ledger/claims.json) $EXS"
       
       - name: Commit and push ledger update
+        if: steps.check_merge.outputs.is_merge == 'true' && steps.extract_claim.outputs.proof != ''
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -165,24 +188,8 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "🗡️ Record forge claim from PR #${{ github.event.pull_request.number }}"
+            git commit -m "🗡️ Record forge claim from PR #${{ steps.check_merge.outputs.pr_number }}"
             git push
             
             echo "✅ Ledger updated and pushed to main branch"
           fi
-      
-      - name: Comment on merged PR
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const reward = require('./pkg/economy/tokenomics.json').RewardPerForge;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '🗡️ **Forge Claim Recorded**\n\n' +
-                    `Address: \`${{ steps.extract_claim.outputs.address }}\`\n` +
-                    `Reward: **${reward} $EXS**\n` +
-                    `Proof: \`${{ steps.extract_claim.outputs.proof }}\`\n\n` +
-                    'Your claim has been added to the ledger. The Excalibur awaits! ⚔️'
-            })
