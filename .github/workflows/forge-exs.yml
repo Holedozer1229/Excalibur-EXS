@@ -1,5 +1,5 @@
 name: Forge $EXS - Ω′ Δ18 Proof Validator
-name: Forge EXS - Ω′ Δ18 Validation
+
 
 # This workflow serves as the "Forge Trigger" for the Excalibur $EXS Protocol
 # It runs the Ω′ Δ18 miner to validate incoming "Claim" Pull Requests
