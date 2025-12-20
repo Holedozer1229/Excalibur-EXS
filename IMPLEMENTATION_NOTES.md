@@ -1,8 +1,8 @@
-# Excalibur-ESX Implementation Notes
+# Excalibur-EXS Implementation Notes
 
 ## Overview
 
-This implementation provides a complete, production-ready structure for the Excalibur-ESX blockchain protocol with quantum-hardened cryptography, Taproot support, and exchange integration capabilities.
+This implementation provides a complete, production-ready structure for the Excalibur-EXS blockchain protocol with quantum-hardened cryptography, Taproot support, and exchange integration capabilities.
 
 ## What Was Implemented
 
@@ -137,7 +137,7 @@ Based on code review feedback:
 ### Mining with Tetra-PoW
 ```bash
 cd cmd/miner
-./miner mine --data "Excalibur-ESX" --difficulty 0x00FFFFFFFFFFFFFF
+./miner mine --data "Excalibur-EXS" --difficulty 0x00FFFFFFFFFFFFFF
 ```
 
 ### Generate Taproot Vault
@@ -191,11 +191,11 @@ npm run dev
 
 ## Conclusion
 
-This implementation provides a solid foundation for the Excalibur-ESX blockchain protocol. All components are production-ready, well-tested, and follow best practices for security, maintainability, and extensibility.
+This implementation provides a solid foundation for the Excalibur-EXS blockchain protocol. All components are production-ready, well-tested, and follow best practices for security, maintainability, and extensibility.
 
 The project successfully combines cutting-edge cryptography (HPP-1, Tetra-PoW) with proven Bitcoin technologies (Taproot, Bech32m) and modern development practices (TypeScript, comprehensive testing, security scanning).
 
 ---
 
-*Implementation completed: December 2024*  
+*Implementation completed: December 2025*  
 *All tests passing • Zero security vulnerabilities • Code review approved*
