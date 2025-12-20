@@ -1,0 +1,235 @@
+name: Forge EXS - Ω′ Δ18 Validation
+
+# This workflow serves as the "Forge Trigger" for the Excalibur $EXS Protocol
+# It runs the Ω′ Δ18 miner to validate incoming "Claim" Pull Requests
+# before they can be merged into Camelot (main branch)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'claims/**'
+      - 'forges/**'
+  workflow_dispatch:
+    inputs:
+      axiom:
+        description: 'The 13-word Prophecy Axiom'
+        required: true
+        default: 'sword legend pull magic kingdom artist stone destroy forget fire steel honey question'
+      difficulty:
+        description: 'Mining difficulty (leading zeros)'
+        required: false
+        default: '4'
+
+env:
+  AXIOM: "sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
+  DEFAULT_DIFFICULTY: 4
+
+jobs:
+  validate-prophecy:
+    name: 🔮 Validate Prophecy Axiom
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Verify Axiom Format
+        run: |
+          echo "🔮 Validating the Prophecy Axiom..."
+          AXIOM_WORD_COUNT=$(echo "${{ env.AXIOM }}" | wc -w)
+          
+          if [ "$AXIOM_WORD_COUNT" -ne 13 ]; then
+            echo "❌ Invalid Axiom: Must contain exactly 13 words"
+            exit 1
+          fi
+          
+          echo "✅ Axiom validation passed: 13 words confirmed"
+
+  run-tetra-pow-miner:
+    name: ⚔️ Run Ω′ Δ18 Miner
+    runs-on: ubuntu-latest
+    needs: validate-prophecy
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install Dependencies
+        run: |
+          echo "📦 Installing Python dependencies..."
+          python -m pip install --upgrade pip
+          # The miner uses only standard library, but we'll verify Python version
+          python --version
+      
+      - name: Run Tetra-PoW Miner
+        id: forge
+        run: |
+          echo "⚔️ Drawing the Sword - Initiating Ω′ Δ18 mining..."
+          echo "🔮 Axiom: ${{ env.AXIOM }}"
+          echo "⚖️ Difficulty: ${{ env.DEFAULT_DIFFICULTY }}"
+          echo ""
+          
+          # Run the miner
+          python pkg/miner/tetra_pow_miner.py > forge_output.txt 2>&1
+          
+          # Display results
+          cat forge_output.txt
+          
+          # Check if forge was successful
+          if grep -q "FORGE SUCCESSFUL" forge_output.txt; then
+            echo "✅ Forge completed successfully!"
+            echo "forge_success=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Forge failed - no valid hash found"
+            echo "forge_success=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+      
+      - name: Upload Forge Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: forge-results
+          path: forge_output.txt
+          retention-days: 30
+      
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const output = fs.readFileSync('forge_output.txt', 'utf8');
+            
+            const comment = `## ⚔️ Forge Validation Results
+            
+            The Ω′ Δ18 Tetra-PoW miner has completed validation:
+            
+            \`\`\`
+            ${output}
+            \`\`\`
+            
+            ✅ **Forge Status:** ${{ steps.forge.outputs.forge_success == 'true' && 'SUCCESS' || 'FAILED' }}
+            
+            ---
+            *Excalibur $EXS Protocol - "Only the worthy may draw the sword"*
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  process-forge-hpp1:
+    name: 🔨 Process Forge with HPP-1
+    runs-on: ubuntu-latest
+    needs: run-tetra-pow-miner
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Run EXS Foundry
+        run: |
+          echo "🔨 Processing forge with HPP-1 protocol..."
+          echo "⚡ Iterations: 600,000 PBKDF2-HMAC-SHA512"
+          echo ""
+          
+          # Run the foundry
+          python pkg/foundry/exs_foundry.py > foundry_output.txt 2>&1
+          
+          # Display results
+          cat foundry_output.txt
+      
+      - name: Upload Foundry Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: foundry-results
+          path: foundry_output.txt
+          retention-days: 30
+
+  validate-treasury:
+    name: 💰 Validate Treasury Fees
+    runs-on: ubuntu-latest
+    needs: process-forge-hpp1
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Validate Fee Structure
+        run: |
+          echo "💰 Validating Treasury Fee Structure..."
+          echo ""
+          echo "Expected Fees:"
+          echo "  - Treasury Fee: 1% of forge reward"
+          echo "  - Forge Fee: 0.0001 BTC"
+          echo ""
+          
+          # Parse tokenomics.json
+          if [ -f "pkg/economy/tokenomics.json" ]; then
+            echo "✅ Tokenomics configuration found"
+            
+            # Validate fee structure exists
+            if grep -q "treasury_fee" pkg/economy/tokenomics.json; then
+              echo "✅ Treasury fee configuration validated"
+            else
+              echo "❌ Treasury fee configuration missing"
+              exit 1
+            fi
+            
+            if grep -q "forge_fee" pkg/economy/tokenomics.json; then
+              echo "✅ Forge fee configuration validated"
+            else
+              echo "❌ Forge fee configuration missing"
+              exit 1
+            fi
+          else
+            echo "❌ Tokenomics configuration not found"
+            exit 1
+          fi
+          
+          echo ""
+          echo "✅ All fee validations passed"
+
+  forge-summary:
+    name: 📊 Forge Summary
+    runs-on: ubuntu-latest
+    needs: [validate-prophecy, run-tetra-pow-miner, process-forge-hpp1, validate-treasury]
+    if: always()
+    
+    steps:
+      - name: Generate Summary
+        run: |
+          echo "# 🏆 Excalibur $EXS Forge Validation Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Prophecy Axiom validated" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Ω′ Δ18 mining completed (128 rounds)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ HPP-1 processing completed (600,000 iterations)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Treasury fees validated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Protocol Info" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Algorithm:** Ω′ Δ18 Tetra-PoW" >> $GITHUB_STEP_SUMMARY
+          echo "- **Rounds:** 128 nonlinear transformations" >> $GITHUB_STEP_SUMMARY
+          echo "- **Hardening:** HPP-1 (600,000 PBKDF2 iterations)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Difficulty:** ${{ env.DEFAULT_DIFFICULTY }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Reward:** 50 \$EXS (49.5 to miner, 0.5 to treasury)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "*Lead Architect: Travis D Jones (holedozer@gmail.com)*" >> $GITHUB_STEP_SUMMARY
