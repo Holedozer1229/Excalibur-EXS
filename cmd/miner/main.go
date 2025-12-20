@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/Holedozer1229/Excalibur-ESX/pkg/crypto"
+	"github.com/Holedozer1229/Excalibur-EXS/pkg/crypto"
 	"github.com/spf13/cobra"
 )
 
@@ -18,8 +18,8 @@ var (
 
 var rootCmd = &cobra.Command{
 	Use:   "miner",
-	Short: "Excalibur-ESX Ω′ Δ18 CLI mining tool",
-	Long: `The Ω′ Δ18 Tetra-PoW miner for Excalibur-ESX.
+	Short: "Excalibur-EXS Ω′ Δ18 CLI mining tool",
+	Long: `The Ω′ Δ18 Tetra-PoW miner for Excalibur-EXS.
 	
 This tool implements quantum-hardened mining using:
 - HPP-1: 600,000 rounds of PBKDF2
@@ -33,7 +33,7 @@ var mineCmd = &cobra.Command{
 	Short: "Mine a block using Tetra-PoW",
 	Long:  "Perform Tetra-PoW mining on the provided data with specified difficulty",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("🔱 Excalibur-ESX Ω′ Δ18 Miner")
+		fmt.Println("⚔️ Excalibur-EXS Ω′ Δ18 Miner")
 		fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 		fmt.Printf("Mining data: %s\n", data)
 		fmt.Printf("Difficulty: 0x%016x\n", difficulty)
@@ -81,7 +81,7 @@ var benchmarkCmd = &cobra.Command{
 		fmt.Printf("Rounds: %d\n", rounds)
 		fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 		
-		testData := []byte("Excalibur-ESX-Benchmark")
+		testData := []byte("Excalibur-EXS-Benchmark")
 		
 		// Benchmark Tetra-PoW state computation
 		state := crypto.NewTetraPoWState(testData)
@@ -99,9 +99,9 @@ var benchmarkCmd = &cobra.Command{
 
 func init() {
 	mineCmd.Flags().Uint64VarP(&difficulty, "difficulty", "d", 0x00FFFFFFFFFFFFFF, "Mining difficulty target")
-	mineCmd.Flags().StringVarP(&data, "data", "i", "Excalibur-ESX", "Data to mine")
+	mineCmd.Flags().StringVarP(&data, "data", "i", "Excalibur-EXS", "Data to mine")
 	
-	hpp1Cmd.Flags().StringVarP(&data, "data", "i", "Excalibur-ESX", "Input data for key derivation")
+	hpp1Cmd.Flags().StringVarP(&data, "data", "i", "Excalibur-EXS", "Input data for key derivation")
 	
 	benchmarkCmd.Flags().IntVarP(&rounds, "rounds", "r", 1000, "Number of benchmark rounds")
 	
