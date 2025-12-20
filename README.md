@@ -1,10 +1,10 @@
-# Excalibur-ESX
+# Excalibur-EXS
 
 $EXS: The Excalibur Anomaly Protocol. An axiomatic ambiguity fork of Bitcoin utilizing the Ω′ Δ18 Tetra-PoW miner. Forge unique, un-linkable Taproot (P2TR) vaults through the 13-word prophecy axiom. Quantum-hardened via HPP-1 (600,000 rounds) and 128-round unrolled nonlinear state shifts.
 
 ## 🔱 Overview
 
-Excalibur-ESX is a next-generation blockchain protocol that combines Bitcoin's proven architecture with cutting-edge cryptographic innovations:
+Excalibur-EXS is a next-generation blockchain protocol that combines Bitcoin's proven architecture with cutting-edge cryptographic innovations:
 
 - **Ω′ Δ18 Tetra-PoW**: 128-round unrolled nonlinear state shift mining algorithm
 - **HPP-1**: Quantum-hardened key derivation with 600,000 PBKDF2 rounds
@@ -15,7 +15,7 @@ Excalibur-ESX is a next-generation blockchain protocol that combines Bitcoin's p
 ## 📁 Project Structure
 
 ```
-Excalibur-ESX/
+Excalibur-EXS/
 ├── cmd/
 │   ├── miner/        # Ω′ Δ18 CLI mining tool
 │   └── rosetta/      # Go-based Rosetta API server
@@ -42,7 +42,7 @@ Excalibur-ESX/
 ```bash
 cd cmd/miner
 go build
-./miner mine --data "Excalibur-ESX" --difficulty 0x00FFFFFFFFFFFFFF
+./miner mine --data "Excalibur-EXS" --difficulty 0x00FFFFFFFFFFFFFF
 ```
 
 ### Start the Rosetta API Server
@@ -203,8 +203,8 @@ MIT License - see [LICENSE](LICENSE) for details
 
 ## 🔗 Links
 
-- Repository: https://github.com/Holedozer1229/Excalibur-ESX
-- Issues: https://github.com/Holedozer1229/Excalibur-ESX/issues
+- Repository: https://github.com/Holedozer1229/Excalibur-EXS
+- Issues: https://github.com/Holedozer1229/Excalibur-EXS/issues
 
 ---
 
