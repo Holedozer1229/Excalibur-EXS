@@ -141,7 +141,7 @@ After completing the setup, verify the following:
 - [ ] `EXS_AXIOM` secret is created
 - [ ] GitHub Discussions are enabled
 - [ ] LICENSE file contains BSD 3-Clause text
-- [ ] README.md displays the "Oath" section
+- [ ] README.md displays "The Axiom" and "Technical Architecture" sections
 
 ---
 
