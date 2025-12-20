@@ -184,8 +184,8 @@ The embrace of **Axiomatic Ambiguity**—the principle that uncertainty and unli
 
 ---
 
-**Project Repository:** https://github.com/Holedozer1229/Excalibur-ESX  
-**Contact:** excalibur-esx@protonmail.com  
+**Project Repository:** https://github.com/Holedozer1229/Excalibur-EXS  
+**Contact:** excalibur-exs@protonmail.com  
 **License:** MIT
 
 *"In ambiguity, we find certainty. In chaos, we forge order."*  
