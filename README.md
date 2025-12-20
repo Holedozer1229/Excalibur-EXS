@@ -1,8 +1,8 @@
-# Excalibur-EXS
+# ⚔️Excalibur-EXS⚔️
 
 $EXS: The Excalibur Anomaly Protocol. An axiomatic ambiguity fork of Bitcoin utilizing the Ω′ Δ18 Tetra-PoW miner. Forge unique, un-linkable Taproot (P2TR) vaults through the 13-word prophecy axiom. Quantum-hardened via HPP-1 (600,000 rounds) and 128-round unrolled nonlinear state shifts.
 
-## 🔱 Overview
+## 👑 Overview 
 
 Excalibur-EXS is a next-generation blockchain protocol that combines Bitcoin's proven architecture with cutting-edge cryptographic innovations:
 
@@ -12,7 +12,7 @@ Excalibur-EXS is a next-generation blockchain protocol that combines Bitcoin's p
 - **Taproot Integration**: Native P2TR addresses with Bech32m encoding
 - **Rosetta API**: Full exchange integration support
 
-## 📁 Project Structure
+## 🏰 Project Structure
 
 ```
 Excalibur-EXS/
