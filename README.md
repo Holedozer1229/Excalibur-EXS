@@ -136,7 +136,7 @@ React/TypeScript web interface:
 
 ## 🏷️ Topics/Tags
 
-`bitcoin`, `taproot`, `cryptography`, `proof-of-work`, `rosetta-api`, `blockchain-ambiguity`, `excalibur-esx`, `quantum-resistant`, `bech32m`, `schnorr-signatures`
+`bitcoin`, `taproot`, `cryptography`, `proof-of-work`, `rosetta-api`, `blockchain-ambiguity`, `excalibur-exs`, `quantum-resistant`, `bech32m`, `schnorr-signatures`
 
 ## 🧪 Testing
 
