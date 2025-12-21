@@ -136,6 +136,10 @@ Excalibur implements the **Rosetta Construction API v1.4.10** standard, ensuring
 - `pkg/miner/tetra_pow_miner.py`: The heart of Ω′ Δ18
 - `pkg/foundry/exs_foundry.py`: HPP-1 protocol and fee management
 
+#### Security Layer
+- `pkg/guardian/guardian.go`: Lancelot Guardian Protocol for authentication and authorization
+- `cmd/guardian/`: CLI tool for security management
+
 #### Economic Layer
 - `pkg/economy/tokenomics.json`: Supply, distribution, and reward schedules
 - `pkg/economy/treasury.go`: Automated fee collection and distribution
@@ -154,6 +158,12 @@ Excalibur implements the **Rosetta Construction API v1.4.10** standard, ensuring
 - **Nonlinear State Shifts**: 128 rounds prevent pattern-based attacks
 - **Taproot Privacy**: P2TR addresses obscure spending conditions
 - **Axiomatic Binding**: Deterministic yet unpredictable outputs from prophecy input
+- **Lancelot Guardian Protocol**: Multi-layered authentication and authorization system
+  - Argon2id password hashing (OWASP compliant)
+  - Role-based access control (King Arthur, Knight, Squire)
+  - Token bucket rate limiting
+  - IP whitelisting and session management
+  - See [`docs/guardian.md`](docs/guardian.md) for details
 
 ---
 
