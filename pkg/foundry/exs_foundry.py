@@ -188,8 +188,8 @@ class ExsFoundry:
     @staticmethod
     def _get_timestamp() -> str:
         """Get current ISO timestamp."""
-        from datetime import datetime
-        return datetime.utcnow().isoformat() + 'Z'
+        from datetime import datetime, timezone
+        return datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
 
 
 def main():
