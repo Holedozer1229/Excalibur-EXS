@@ -40,7 +40,13 @@ Every forge begins with these words, binding the protocol’s entropy and ensuri
 - **Total Supply:** 21,000,000 $EXS (fixed)
 - **Forge Reward:** 50 $EXS per successful forge
 - **Distribution:** 60% PoF Miners / 15% Treasury / 20% Liquidity / 5% Airdrop
-- **Fees:** 1% Treasury Fee / 0.0001 BTC Forge Fee
+- **Fees:** 0.0001 BTC Forge Fee / 0.0001 BTC Forge Fee
+- **Treasury Allocation:** 7.5 $EXS per block (15% direct allocation)
+- **12-Month Rolling Release:** Treasury split into 3 mini-outputs (2.5 $EXS each)
+  - Output 1: Immediately available (0 blocks)
+  - Output 2: Locked for ~1 month (4,320 blocks)
+  - Output 3: Locked for ~2 months (8,640 blocks)
+- **Time-Lock Security:** Bitcoin CLTV (OP_CHECKLOCKTIMEVERIFY) scripts
 - **Halving:** Every 210,000 blocks
 
 **Multi-Stream Revenue:**  
@@ -60,6 +66,7 @@ Bonuses for long-term holding, active forging, and liquidity provision.
 
 See:  
 - [`pkg/economy/tokenomics_v2.json`](pkg/economy/tokenomics_v2.json)
+- [`pkg/economy/ENHANCED_TOKENOMICS.md`](pkg/economy/ENHANCED_TOKENOMICS.md)
 - [`pkg/revenue/revenue_manager.py`](pkg/revenue/revenue_manager.py)
 
 ---
