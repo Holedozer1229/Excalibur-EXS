@@ -19,10 +19,9 @@ class TetraPowMiner:
     """
     Ω′ Δ18 Tetra-PoW Mining Engine
     
-    This class implements the 128-round unrolled nonlinear hash algorithm
-    used for proof-of-work in the Excalibur $EXS Protocol.
-    
-    Implements the Ω′ Δ18 (Omega-Prime Delta-18) mining algorithm.
+    Implements the Ω′ Δ18 (Omega-Prime Delta-18) mining algorithm
+    for the Excalibur $EXS Protocol. This class handles the 128-round 
+    unrolled nonlinear hash algorithm used for proof-of-work.
     
     Features:
     - 128 unrolled nonlinear rounds

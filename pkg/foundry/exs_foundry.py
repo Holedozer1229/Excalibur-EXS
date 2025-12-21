@@ -41,7 +41,7 @@ class ExsFoundry:
     FORGE_FEE_BTC = Decimal('0.0001')    # 0.0001 BTC per forge
     FORGE_REWARD_EXS = Decimal('50')     # 50 $EXS per forge
     
-    def __init__(self, treasury_address: str = None):
+    def __init__(self, treasury_address: Optional[str] = None):
         """
         Initialize the EXS Foundry.
         
