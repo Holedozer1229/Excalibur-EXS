@@ -28,9 +28,11 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
     from tetra_pow_miner import TetraPowMiner
+    from btc_faucet import BTCFaucet
 except ImportError:
     # Try absolute import
     from pkg.miner.tetra_pow_miner import TetraPowMiner
+    from pkg.miner.btc_faucet import BTCFaucet
 
 
 @dataclass
@@ -97,7 +99,9 @@ class UnifiedMiner:
                  difficulty: int = 4,
                  merge_mining_enabled: bool = False,
                  lightning_routing_enabled: bool = False,
-                 dice_mode_enabled: bool = False):
+                 dice_mode_enabled: bool = False,
+                 faucet_enabled: bool = False,
+                 btc_address: Optional[str] = None):
         """
         Initialize the Unified Miner.
         
@@ -106,14 +110,25 @@ class UnifiedMiner:
             merge_mining_enabled: Enable merge mining with other chains
             lightning_routing_enabled: Enable Lightning Network routing
             dice_mode_enabled: Enable dice roll probabilistic mining
+            faucet_enabled: Enable BTC faucet for auto-funding forge fees
+            btc_address: BTC address for faucet claims (required if faucet_enabled)
         """
         self.difficulty = difficulty
         self.merge_mining_enabled = merge_mining_enabled
         self.lightning_routing_enabled = lightning_routing_enabled
         self.dice_mode_enabled = dice_mode_enabled
+        self.faucet_enabled = faucet_enabled
+        self.btc_address = btc_address
         
         # Initialize core miner
         self.core_miner = TetraPowMiner(difficulty=difficulty)
+        
+        # Initialize faucet if enabled
+        self.faucet = None
+        if faucet_enabled:
+            self.faucet = BTCFaucet()
+            if btc_address and btc_address not in self.faucet.users:
+                self.faucet.register_user(btc_address)
         
         # Mining statistics
         self.stats = {
@@ -122,7 +137,8 @@ class UnifiedMiner:
             'start_time': None,
             'chains_mined': {},
             'lightning_routes': 0,
-            'dice_rolls': 0
+            'dice_rolls': 0,
+            'faucet_claims': 0
         }
         
         # Lightning Network state
@@ -150,6 +166,22 @@ class UnifiedMiner:
         """
         if axiom is None:
             axiom = self.CANONICAL_AXIOM
+        
+        # Check and deduct forge fee before mining
+        if not self.check_and_deduct_forge_fee():
+            print("❌ Mining aborted: Insufficient forge fee")
+            print("💡 Claim from faucet or wait for next claim interval")
+            return MiningResult(
+                success=False,
+                nonce=0,
+                hash="",
+                timestamp=datetime.now(timezone.utc).isoformat(),
+                attempts=0,
+                hash_rate=0,
+                mining_mode="solo",
+                chain="EXS",
+                difficulty=self.difficulty
+            )
         
         print(f"🎯 Solo Mining $EXS")
         print(f"   Difficulty: {self.difficulty} leading zero bytes")
@@ -415,6 +447,97 @@ class UnifiedMiner:
         
         return route
     
+    def claim_faucet(self, captcha_challenge: str, captcha_response: str) -> bool:
+        """
+        Claim BTC from faucet to fund forge fees.
+        
+        Args:
+            captcha_challenge: The captcha challenge (e.g., "5+3")
+            captcha_response: User's response to captcha
+            
+        Returns:
+            True if claim successful
+        """
+        if not self.faucet_enabled or not self.faucet:
+            print("⚠️  Faucet not enabled. Initialize with faucet_enabled=True")
+            return False
+        
+        if not self.btc_address:
+            print("⚠️  No BTC address configured")
+            return False
+        
+        print("💧 Claiming from BTC Faucet...")
+        claim = self.faucet.claim(self.btc_address, captcha_challenge, captcha_response)
+        
+        if claim:
+            self.stats['faucet_claims'] += 1
+            return True
+        
+        return False
+    
+    def auto_fund_forge_fee(self) -> bool:
+        """
+        Automatically check and fund forge fee from faucet if needed.
+        
+        Returns:
+            True if forge fee is available
+        """
+        if not self.faucet_enabled or not self.faucet:
+            return True  # Assume fee available if faucet disabled
+        
+        if not self.btc_address:
+            return True
+        
+        # Check if user has forge fee
+        if self.faucet.has_forge_fee(self.btc_address):
+            return True
+        
+        # Check if can claim
+        can_claim, reason = self.faucet.can_claim(self.btc_address)
+        
+        if can_claim:
+            print("💧 Insufficient forge fee. Attempting faucet claim...")
+            # Auto-solve simple captcha for auto-funding
+            captcha = f"{random.randint(1, 9)}+{random.randint(1, 9)}"
+            parts = captcha.split('+')
+            answer = str(int(parts[0]) + int(parts[1]))
+            
+            return self.claim_faucet(captcha, answer)
+        else:
+            print(f"⚠️  Insufficient forge fee. {reason}")
+            return False
+    
+    def check_and_deduct_forge_fee(self) -> bool:
+        """
+        Check if forge fee is available and deduct it.
+        
+        Returns:
+            True if fee successfully deducted
+        """
+        if not self.faucet_enabled or not self.faucet:
+            return True  # Assume fee paid if faucet disabled
+        
+        if not self.btc_address:
+            return True
+        
+        if not self.faucet.has_forge_fee(self.btc_address):
+            if not self.auto_fund_forge_fee():
+                return False
+        
+        return self.faucet.deduct_forge_fee(self.btc_address)
+    
+    def get_faucet_balance(self):
+        """Display current faucet balance."""
+        if not self.faucet_enabled or not self.faucet:
+            print("⚠️  Faucet not enabled")
+            return
+        
+        if not self.btc_address:
+            print("⚠️  No BTC address configured")
+            return
+        
+        self.faucet.print_balance(self.btc_address)
+    
     def start_continuous_mining(self,
                                mode: str = "solo",
                                callback: Optional[Callable] = None):
@@ -523,6 +646,10 @@ class UnifiedMiner:
             print(f"\nDice Roll Mining:")
             print(f"  Total Rolls:      {stats['dice_rolls']}")
         
+        if self.faucet_enabled and 'faucet_claims' in self.stats:
+            print(f"\nBTC Faucet:")
+            print(f"  Claims:           {self.stats['faucet_claims']}")
+        
         print("═" * 60)
 
 
@@ -540,6 +667,7 @@ Mining Modes:
   dice        Dice roll probabilistic mining
   lightning   Lightning Network payment routing
   continuous  Start continuous background mining
+  faucet      Claim BTC from faucet or check balance
 
 Examples:
   # Solo mine with difficulty 1
@@ -553,11 +681,14 @@ Examples:
   
   # Route Lightning payment
   python unified_miner.py lightning --dest 03abc... --amount 100000
+  
+  # Claim from BTC faucet
+  python unified_miner.py faucet --btc-address bc1q... --faucet-action claim
         """
     )
     
     parser.add_argument('mode', 
-                       choices=['solo', 'merge', 'dice', 'lightning', 'continuous'],
+                       choices=['solo', 'merge', 'dice', 'lightning', 'continuous', 'faucet'],
                        help='Mining mode')
     
     parser.add_argument('--difficulty', type=int, default=1,
@@ -584,6 +715,16 @@ Examples:
     parser.add_argument('--max-attempts', type=int, default=100000,
                        help='Maximum mining attempts')
     
+    parser.add_argument('--enable-faucet', action='store_true',
+                       help='Enable BTC faucet for auto-funding forge fees')
+    
+    parser.add_argument('--btc-address', type=str,
+                       help='BTC address for faucet claims')
+    
+    parser.add_argument('--faucet-action', choices=['claim', 'balance'],
+                       default='balance',
+                       help='Faucet action (claim or check balance)')
+    
     args = parser.parse_args()
     
     # Initialize unified miner with all features enabled
@@ -591,7 +732,9 @@ Examples:
         difficulty=args.difficulty,
         merge_mining_enabled=True,
         lightning_routing_enabled=True,
-        dice_mode_enabled=True
+        dice_mode_enabled=True,
+        faucet_enabled=args.enable_faucet or args.mode == 'faucet',
+        btc_address=args.btc_address
     )
     
     print("⚔️  EXCALIBUR $EXS UNIFIED MINER ⚔️")
@@ -637,6 +780,28 @@ Examples:
         )
         print()
         print("Route:", asdict(route))
+    
+    elif args.mode == 'faucet':
+        if not args.btc_address:
+            print("❌ Error: --btc-address required for faucet mode")
+            return
+        
+        if args.faucet_action == 'balance':
+            miner.get_faucet_balance()
+        elif args.faucet_action == 'claim':
+            # Generate simple captcha
+            a, b = random.randint(1, 9), random.randint(1, 9)
+            captcha = f"{a}+{b}"
+            answer = str(a + b)
+            
+            print(f"💧 BTC Faucet Claim")
+            print(f"   Captcha: {captcha} = ?")
+            print(f"   (Auto-solving for demo: {answer})")
+            print()
+            
+            if miner.claim_faucet(captcha, answer):
+                print()
+                miner.get_faucet_balance()
     
     elif args.mode == 'continuous':
         print("Starting continuous mining...")
