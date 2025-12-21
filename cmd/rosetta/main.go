@@ -121,8 +121,8 @@ type Block struct {
 
 var rootCmd = &cobra.Command{
 	Use:   "rosetta",
-	Short: "Excalibur-ESX Rosetta API Server",
-	Long: `Go-based Rosetta API server for Excalibur-ESX.
+	Short: "Excalibur-EXS Rosetta API Server",
+	Long: `Go-based Rosetta API server for Excalibur-EXS.
 	
 Implements the Rosetta API specification for blockchain integration
 with Coinbase and other exchanges. Supports Taproot addresses and
@@ -134,7 +134,7 @@ var serveCmd = &cobra.Command{
 	Short: "Start the Rosetta API server",
 	Long:  "Start the HTTP server implementing the Rosetta API specification",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("🔱 Excalibur-ESX Rosetta API Server\n")
+		fmt.Printf("🔱 Excalibur-EXS Rosetta API Server\n")
 		fmt.Printf("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
 		fmt.Printf("Network: %s\n", network)
 		fmt.Printf("Port: %d\n", port)
@@ -165,8 +165,8 @@ func handleNetworkList(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	response := NetworkListResponse{
 		NetworkIdentifiers: []NetworkIdentifier{
-			{Blockchain: "Excalibur-ESX", Network: "mainnet"},
-			{Blockchain: "Excalibur-ESX", Network: "testnet"},
+			{Blockchain: "Excalibur-EXS", Network: "mainnet"},
+			{Blockchain: "Excalibur-EXS", Network: "testnet"},
 		},
 	}
 	if err := json.NewEncoder(w).Encode(response); err != nil {
