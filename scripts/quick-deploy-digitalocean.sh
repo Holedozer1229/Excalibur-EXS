@@ -74,9 +74,17 @@ echo -e "${YELLOW}→ Creating web directory...${NC}"
 mkdir -p /var/www/$DOMAIN
 
 echo -e "${YELLOW}→ Copying website files...${NC}"
-cp -r website/* /var/www/$DOMAIN/
-cp -r web /var/www/$DOMAIN/
-cp -r admin /var/www/$DOMAIN/
+# Copy website files (copy directory contents)
+if [ -d "website" ] && [ "$(ls -A website)" ]; then
+    cp -r website/* /var/www/$DOMAIN/
+fi
+# Copy web and admin directories
+if [ -d "web" ]; then
+    cp -r web /var/www/$DOMAIN/
+fi
+if [ -d "admin" ]; then
+    cp -r admin /var/www/$DOMAIN/
+fi
 
 echo -e "${YELLOW}→ Setting permissions...${NC}"
 chown -R www-data:www-data /var/www/$DOMAIN
@@ -210,12 +218,16 @@ if [ "$DNS_READY" = true ]; then
         --agree-tos \
         --no-eff-email \
         --redirect \
-        --non-interactive || {
-            echo -e "${RED}✗ SSL installation failed${NC}"
-            echo -e "${YELLOW}You can run it manually later: sudo certbot --nginx -d $DOMAIN -d www.$DOMAIN${NC}"
-        }
+        --non-interactive
     
-    if [ $? -eq 0 ]; then
+    SSL_EXIT_CODE=$?
+    
+    if [ $SSL_EXIT_CODE -ne 0 ]; then
+        echo -e "${RED}✗ SSL installation failed${NC}"
+        echo -e "${YELLOW}You can run it manually later: sudo certbot --nginx -d $DOMAIN -d www.$DOMAIN${NC}"
+    fi
+    
+    if [ $SSL_EXIT_CODE -eq 0 ]; then
         echo -e "${GREEN}✓ SSL certificate installed!${NC}"
         
         # Setup auto-renewal
@@ -242,8 +254,9 @@ ADMIN_USER=${ADMIN_USER:-admin}
 echo -e "${BLUE}Enter password for $ADMIN_USER:${NC}"
 htpasswd -c /etc/nginx/.htpasswd_merlin $ADMIN_USER
 
-# Update Nginx config to add auth
-sed -i '/location \/admin\/merlins-portal\// a\        auth_basic "Merlin'\''s Sanctum - Restricted";\n        auth_basic_user_file /etc/nginx/.htpasswd_merlin;' /etc/nginx/sites-available/$DOMAIN
+# Update Nginx config to add auth (using a more readable approach)
+AUTH_LINES="        auth_basic \"Merlin's Sanctum - Restricted\";\n        auth_basic_user_file /etc/nginx/.htpasswd_merlin;"
+sed -i "/location \/admin\/merlins-portal\// a\\${AUTH_LINES}" /etc/nginx/sites-available/$DOMAIN
 
 nginx -t && systemctl reload nginx
 
@@ -303,7 +316,7 @@ fi
 
 echo -e "${YELLOW}🔧 Useful Commands:${NC}"
 echo -e "  View logs:        ${BLUE}sudo tail -f /var/log/nginx/access.log${NC}"
-echo -e "  Update site:      ${BLUE}cd /root/Excalibur-EXS && git pull && sudo cp -r website/* web admin /var/www/$DOMAIN/${NC}"
+echo -e "  Update site:      ${BLUE}cd /root/Excalibur-EXS && git pull && sudo rsync -av website/ /var/www/$DOMAIN/ && sudo cp -r web admin /var/www/$DOMAIN/${NC}"
 echo -e "  Restart Nginx:    ${BLUE}sudo systemctl restart nginx${NC}"
 echo -e "  Check status:     ${BLUE}sudo systemctl status nginx${NC}"
 echo ""
