@@ -1,0 +1,19 @@
+{
+  "name": "knights-round-table",
+  "version": "1.0.0",
+  "description": "Public Forge UI for Excalibur $EXS Protocol",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python -m http.server 3000",
+    "serve": "python3 -m http.server 3000"
+  },
+  "keywords": [
+    "excalibur",
+    "exs",
+    "forge",
+    "tetra-pow",
+    "blockchain"
+  ],
+  "author": "Travis D. Jones <holedozer@gmail.com>",
+  "license": "BSD-3-Clause"
+}

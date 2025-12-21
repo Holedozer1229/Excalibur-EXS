@@ -1,3 +1,5 @@
+# Excalibur $EXS - Git Ignore File
+
 # Python
 __pycache__/
 *.py[cod]
@@ -20,7 +22,39 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+*.mo
+*.pot
 *.log
+local_settings.py
+instance/
+.webassets-cache
+.scrapy
+docs/_build/
+target/
+.ipynb_checkpoints
+.python-version
+celerybeat-schedule
+*.sage.py
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
 # Go
 *.exe
@@ -30,58 +64,83 @@ MANIFEST
 *.dylib
 *.test
 *.out
-go.work
+vendor/
+go.sum
 
-# IDEs
-/cmd/miner/miner
-/cmd/rosetta/rosetta
-/cmd/guardian/guardian
-
-# Node.js
-node_modules/
-npm-debug.log
-yarn-error.log
-/web/forge-ui/build
-/web/forge-ui/dist
-/web/forge-ui/.next
-
-# IDE
+# IDEs and Editors
 .vscode/
 .idea/
 *.swp
 *.swo
+*.swn
+*.bak
 *~
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 
-# Node.js (if any JavaScript tooling is added)
+# Node.js / npm
 node_modules/
-npm-debug.log
-yarn-error.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.npm
+.eslintcache
 
 # Temporary files
 *.tmp
-*.bak
-*.orig
-.cache/
-
-# Environment
-.env
-.env.local
-.env.*.local
-
-# Build outputs
-forge_output.txt
-foundry_output.txt
-
-# OS specific
-Thumbs.db
-.DS_Store
-
-# OS
-.DS_Store
-Thumbs.db
+*.temp
+tmp/
+temp/
+.temp/
+.tmp/
 
 # Build artifacts
-/bin/
-/build/
-/dist/
+*.wasm
+*.js.map
+*.min.js
+*.min.css
+
+# Logs
+logs/
+*.log
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Bitcoin/Crypto private keys (NEVER COMMIT THESE!)
+*.key
+*.pem
+wallet.dat
+private_keys/
+secrets/
+.secrets/
+
+# Testing
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+
+# OS specific
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Project specific
+forge_results/
+mining_logs/
+treasury_data/

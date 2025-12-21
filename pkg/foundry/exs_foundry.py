@@ -1,474 +1,245 @@
-"""
-Excalibur $EXS Foundry
-HPP-1 (High-Performance PBKDF2) Protocol Implementation
-
-This module implements the HPP-1 protocol with 600,000 PBKDF2-HMAC-SHA512 rounds
-for quantum-hardened key derivation, along with fee management logic.
-
-Lead Architect: Travis D Jones (holedozer@gmail.com)
 #!/usr/bin/env python3
 """
-EXS Foundry - HPP-1 Protocol Implementation
-600,000 PBKDF2-HMAC-SHA512 rounds with fee logic
+Excalibur $EXS Protocol - HPP-1 Foundry
 
-Lead Architect: Travis D Jones (holedozer@gmail.com)
+This module implements the HPP-1 (Hardened Password Protocol v1) with 
+600,000 PBKDF2-HMAC-SHA512 rounds for quantum-resistant key derivation.
+It also handles treasury fees and forge fees.
+
+HPP-1 Specifications:
+- Algorithm: PBKDF2-HMAC-SHA512
+- Iterations: 600,000
+- Treasury Fee: 1% of all rewards
+- Forge Fee: 0.0001 BTC per forge
+
+Author: Travis D. Jones <holedozer@gmail.com>
 License: BSD 3-Clause
 """
 
 import hashlib
 import hmac
-import secrets
+import os
 from typing import Tuple, Dict
 from decimal import Decimal
-from typing import Dict, Optional, Tuple
 
 
 class ExsFoundry:
     """
-    Excalibur $EXS Foundry - HPP-1 Protocol Implementation
-    
-    Handles quantum-hardened key derivation and forge fee management.
+    Excalibur $EXS Foundry implementing HPP-1 protocol and fee management.
     """
     
-    # HPP-1 Parameters
+    # HPP-1 Constants
     HPP1_ITERATIONS = 600000
-    HPP1_DKLEN = 64  # Derived key length in bytes
+    HPP1_ALGORITHM = 'sha512'
+    KEY_LENGTH = 64  # 512 bits
     
-    # Fee Structure
-    TREASURY_FEE_RATE = Decimal('0.01')  # 1% of all rewards
-    FORGE_FEE_BTC = Decimal('0.0001')    # 0.0001 BTC per forge
-    FORGE_REWARD_EXS = Decimal('50')     # 50 $EXS per forge
+    # Economic Constants
+    FORGE_REWARD = Decimal('50.0')  # 50 $EXS per forge
+    TREASURY_FEE_PERCENT = Decimal('0.01')  # 1%
+    FORGE_FEE_BTC = Decimal('0.0001')  # 0.0001 BTC
     
     def __init__(self):
         """Initialize the EXS Foundry."""
-        self.forges_completed = 0
-        self.total_treasury_collected = Decimal('0')
-        self.total_forge_fees_collected = Decimal('0')
+        self.total_forges = 0
+        self.treasury_balance = Decimal('0')
+        self.total_fees_collected = Decimal('0')
     
-    def hpp1_derive_key(self, password: str, salt: bytes = None) -> Tuple[bytes, bytes]:
+    def hpp1_derive_key(self, axiom: str, nonce: int, salt: bytes = None) -> bytes:
         """
-        HPP-1: Quantum-hardened key derivation using PBKDF2-HMAC-SHA512.
+        Derive a cryptographic key using HPP-1 protocol.
         
-        Performs 600,000 iterations to provide quantum resistance.
+        Uses PBKDF2-HMAC-SHA512 with 600,000 iterations for quantum resistance.
         
         Args:
-            password: The password/axiom to derive from
-            salt: Optional salt (generates random if not provided)
+            axiom: The 13-word axiom string
+            nonce: The successful forge nonce
+            salt: Optional salt (generated if not provided)
             
         Returns:
-            Tuple of (derived_key, salt)
+            Derived key bytes (64 bytes / 512 bits)
         """
         if salt is None:
-            salt = secrets.token_bytes(32)
+            salt = os.urandom(32)
+        
+        password = f"{axiom}:{nonce}".encode('utf-8')
         
         # PBKDF2-HMAC-SHA512 with 600,000 iterations
-        derived_key = hashlib.pbkdf2_hmac(
-            'sha512',
-            password.encode('utf-8'),
+        key = hashlib.pbkdf2_hmac(
+            self.HPP1_ALGORITHM,
+            password,
             salt,
             self.HPP1_ITERATIONS,
-            dklen=self.HPP1_DKLEN
+            dklen=self.KEY_LENGTH
         )
         
-        return derived_key, salt
+        return key
     
-    def generate_p2tr_address(self, derived_key: bytes) -> str:
+    def calculate_forge_distribution(self) -> Dict[str, Decimal]:
         """
-        Generate a Taproot (P2TR) address from the derived key.
+        Calculate the distribution of a forge reward.
         
-        This is a simplified implementation for demonstration.
-        Production would use proper Bitcoin library functions.
-        
-        Args:
-            derived_key: The HPP-1 derived key
-            
         Returns:
-            A P2TR address string (bc1p...)
+            Dictionary with:
+                - miner_reward: Amount going to the miner
+                - treasury_fee: Amount going to the treasury
+                - total_reward: Total forge reward
         """
-        # Hash the derived key to create a Taproot output key
-        taproot_output = hashlib.sha256(derived_key).digest()
-        
-        # Bech32m encoding would happen here
-        # For this demo, we'll create a simplified representation
-        address_hash = hashlib.sha256(taproot_output).hexdigest()[:58]
-        return f"bc1p{address_hash}"
-    
-    def calculate_fees(self, reward_amount: Decimal) -> Dict[str, Decimal]:
-        """
-        Calculate fees for a forge operation.
-        
-        Args:
-            reward_amount: The base reward amount in $EXS
-            
-        Returns:
-            Dictionary containing fee breakdown
-        """
-        treasury_fee = reward_amount * self.TREASURY_FEE_RATE
-        miner_reward = reward_amount - treasury_fee
+        treasury_fee = self.FORGE_REWARD * self.TREASURY_FEE_PERCENT
+        miner_reward = self.FORGE_REWARD - treasury_fee
         
         return {
-            'base_reward': reward_amount,
-            'treasury_fee': treasury_fee,
+            'total_reward': self.FORGE_REWARD,
             'miner_reward': miner_reward,
+            'treasury_fee': treasury_fee,
             'forge_fee_btc': self.FORGE_FEE_BTC
         }
     
-    def process_forge(self, axiom: str, nonce: int, forge_hash: str) -> Dict:
+    def process_forge(self, axiom: str, nonce: int, miner_address: str) -> Dict:
         """
-        Process a complete forge operation.
-        
-        This combines HPP-1 key derivation, P2TR address generation,
-        and fee calculation.
+        Process a successful forge and distribute rewards.
         
         Args:
-            axiom: The 13-word prophecy axiom
-            nonce: The valid nonce found by the miner
-            forge_hash: The resulting hash from mining
+            axiom: The 13-word axiom used
+            nonce: The successful nonce
+            miner_address: The miner's receiving address
             
         Returns:
-            Dictionary containing forge results and details
+            Dictionary containing forge details and distribution
         """
-        # Generate salt from the forge hash
-        salt = bytes.fromhex(forge_hash[:64])  # Use first 32 bytes of hash
+        # Derive the HPP-1 key
+        salt = os.urandom(32)
+        hpp1_key = self.hpp1_derive_key(axiom, nonce, salt)
         
-        # HPP-1 key derivation
-        derived_key, used_salt = self.hpp1_derive_key(axiom, salt)
+        # Calculate distribution
+        distribution = self.calculate_forge_distribution()
         
-        # Generate P2TR address
-        p2tr_address = self.generate_p2tr_address(derived_key)
+        # Update treasury
+        self.treasury_balance += distribution['treasury_fee']
+        self.total_fees_collected += distribution['treasury_fee']
+        self.total_forges += 1
         
-        # Calculate fees
-        fees = self.calculate_fees(self.FORGE_REWARD_EXS)
-        
-        # Update counters
-        self.forges_completed += 1
-        self.total_treasury_collected += fees['treasury_fee']
-        self.total_forge_fees_collected += fees['forge_fee_btc']
-        
-        return {
-            'success': True,
-            'forge_number': self.forges_completed,
-            'p2tr_address': p2tr_address,
-            'derived_key_hash': derived_key.hex(),
-            'salt': used_salt.hex(),
-            'reward': {
-                'total_exs': str(fees['base_reward']),
-                'miner_exs': str(fees['miner_reward']),
-                'treasury_exs': str(fees['treasury_fee']),
-                'forge_fee_btc': str(fees['forge_fee_btc'])
-            },
-            'hpp1': {
-                'iterations': self.HPP1_ITERATIONS,
-                'algorithm': 'PBKDF2-HMAC-SHA512',
-                'dklen': self.HPP1_DKLEN
-            }
-    Implements the HPP-1 (High-Performance PBKDF2) protocol for Excalibur $EXS.
-    
-    Features:
-    - 600,000 rounds of PBKDF2-HMAC-SHA512
-    - 1% Treasury Fee on all rewards
-    - 0.0001 BTC Forge Fee per attempt
-    - Quantum-resistant key derivation
-    """
-    
-    HPP1_ITERATIONS = 600000
-    TREASURY_FEE_PERCENT = 1.0
-    FORGE_FEE_BTC = 0.0001
-    BLOCK_REWARD_EXS = 50.0
-    
-    def __init__(self, treasury_address: str):
-        """
-        Initialize the EXS Foundry.
-        
-        Args:
-            treasury_address: Address for treasury fee collection
-        """
-        self.treasury_address = treasury_address
-        self.total_forged = 0.0
-        self.treasury_collected = 0.0
-        
-    def derive_hpp1_key(self, axiom: str, salt: str = "EXCALIBUR_EXS_HPP1") -> bytes:
-        """
-        Derive a quantum-resistant key using HPP-1 protocol.
-        
-        Args:
-            axiom: The 13-word prophecy axiom
-            salt: Salt for key derivation
-            
-        Returns:
-            64-byte derived key
-        """
-        return hashlib.pbkdf2_hmac(
-            'sha512',
-            axiom.encode('utf-8'),
-            salt.encode('utf-8'),
-            self.HPP1_ITERATIONS,
-            dklen=64
-        )
-    
-    def calculate_treasury_fee(self, reward_amount: float) -> Tuple[float, float]:
-        """
-        Calculate the treasury fee from a reward.
-        
-        Args:
-            reward_amount: Total reward amount in $EXS
-            
-        Returns:
-            Tuple of (miner_reward, treasury_fee)
-        """
-        treasury_fee = reward_amount * (self.TREASURY_FEE_PERCENT / 100.0)
-        miner_reward = reward_amount - treasury_fee
-        return miner_reward, treasury_fee
-    
-    def validate_forge_fee(self, btc_paid: float) -> bool:
-        """
-        Validate that the correct forge fee was paid.
-        
-        Args:
-            btc_paid: Amount of BTC paid
-            
-        Returns:
-            True if fee is correct
-        """
-        return btc_paid >= self.FORGE_FEE_BTC
-    
-    def process_forge(self, miner_address: str, btc_paid: float, 
-                     block_height: int) -> Optional[Dict]:
-        """
-        Process a successful forge and calculate rewards.
-        
-        Args:
-            miner_address: Address of the miner
-            btc_paid: BTC forge fee paid
-            block_height: Current block height
-            
-        Returns:
-            Forge result dict or None if invalid
-        """
-        # Validate forge fee
-        if not self.validate_forge_fee(btc_paid):
-            return {
-                'success': False,
-                'error': f'Insufficient forge fee. Required: {self.FORGE_FEE_BTC} BTC'
-            }
-        
-        # Calculate block reward (with halving)
-        halvings = block_height // 210000
-        current_reward = self.BLOCK_REWARD_EXS / (2 ** halvings)
-        
-        # Calculate fees
-        miner_reward, treasury_fee = self.calculate_treasury_fee(current_reward)
-        
-        # Update totals
-        self.total_forged += current_reward
-        self.treasury_collected += treasury_fee
-        
-        return {
-            'success': True,
-            'block_height': block_height,
-            'total_reward': current_reward,
+        forge_result = {
+            'forge_id': self.total_forges,
+            'axiom': axiom,
+            'nonce': nonce,
             'miner_address': miner_address,
-            'miner_reward': miner_reward,
-            'treasury_address': self.treasury_address,
-            'treasury_fee': treasury_fee,
-            'forge_fee_btc': btc_paid,
-            'halvings': halvings
+            'hpp1_key': hpp1_key.hex(),
+            'salt': salt.hex(),
+            'distribution': distribution,
+            'treasury_balance': self.treasury_balance,
+            'timestamp': self._get_timestamp()
         }
+        
+        return forge_result
+    
+    def create_taproot_vault(self, hpp1_key: bytes) -> str:
+        """
+        Create a Taproot (P2TR) vault from the HPP-1 derived key.
+        
+        This creates a unique, un-linkable Bitcoin Taproot address.
+        
+        Args:
+            hpp1_key: The HPP-1 derived key
+            
+        Returns:
+            Taproot address string (bc1p...)
+        """
+        # In production, this would use actual Bitcoin Taproot key derivation
+        # For now, we'll create a deterministic mock address
+        
+        # Derive x-only pubkey (32 bytes)
+        x_only_pubkey = hashlib.sha256(hpp1_key).digest()
+        
+        # Create Bech32m address (simplified)
+        # Real implementation would use proper Bech32m encoding
+        address_hash = hashlib.sha256(x_only_pubkey).hexdigest()[:40]
+        taproot_address = f"bc1p{address_hash}"
+        
+        return taproot_address
+    
+    def verify_forge_fee(self, btc_amount: Decimal) -> bool:
+        """
+        Verify that the forge fee was paid.
+        
+        Args:
+            btc_amount: Amount of BTC paid
+            
+        Returns:
+            True if fee is sufficient, False otherwise
+        """
+        return btc_amount >= self.FORGE_FEE_BTC
     
     def get_treasury_stats(self) -> Dict:
         """
         Get current treasury statistics.
         
         Returns:
-            Dictionary containing treasury information
+            Dictionary with treasury information
         """
         return {
-            'forges_completed': self.forges_completed,
-            'total_treasury_exs': str(self.total_treasury_collected),
-            'total_forge_fees_btc': str(self.total_forge_fees_collected),
-            'treasury_fee_rate': str(self.TREASURY_FEE_RATE * 100) + '%',
+            'total_forges': self.total_forges,
+            'treasury_balance': str(self.treasury_balance),
+            'total_fees_collected': str(self.total_fees_collected),
+            'forge_reward': str(self.FORGE_REWARD),
+            'treasury_fee_percent': str(self.TREASURY_FEE_PERCENT * 100) + '%',
             'forge_fee_btc': str(self.FORGE_FEE_BTC)
         }
     
-    def verify_forge(self, axiom: str, nonce: int, claimed_hash: str, 
-                     claimed_address: str) -> bool:
-        """
-        Verify a forge submission.
-        
-        Args:
-            axiom: The claimed axiom
-            nonce: The claimed nonce
-            claimed_hash: The claimed hash
-            claimed_address: The claimed P2TR address
-            
-        Returns:
-            True if forge is valid, False otherwise
-        """
-        # Re-process the forge
-        result = self.process_forge(axiom, nonce, claimed_hash)
-        
-        # Verify the address matches
-        return result['p2tr_address'] == claimed_address
+    @staticmethod
+    def _get_timestamp() -> str:
+        """Get current ISO timestamp."""
+        from datetime import datetime, timezone
+        return datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
 
 
 def main():
-    """
-    Example usage of the EXS Foundry.
-    """
-    print("=" * 70)
-    print("Excalibur $EXS Foundry - HPP-1 Protocol")
-    print("=" * 70)
+    """Demonstrate the foundry functionality."""
+    print("⚒️  Excalibur $EXS Foundry - HPP-1 Protocol")
+    print("=" * 60)
     print()
     
     foundry = ExsFoundry()
     
-    # Example forge parameters
+    # Example forge
     axiom = "sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
-    nonce = 42
-    forge_hash = "0000abcd1234567890abcdef1234567890abcdef1234567890abcdef12345678"
+    nonce = 12345
+    miner_address = "bc1qexample..."
     
-    print("Processing forge with HPP-1 protocol...")
-    print(f"  Iterations: {foundry.HPP1_ITERATIONS:,}")
-    print(f"  Algorithm: PBKDF2-HMAC-SHA512")
+    print(f"Processing forge with nonce {nonce}...")
     print()
     
-    result = foundry.process_forge(axiom, nonce, forge_hash)
+    # Process the forge
+    result = foundry.process_forge(axiom, nonce, miner_address)
     
-    print("✓ FORGE PROCESSED SUCCESSFULLY")
+    print(f"✅ Forge #{result['forge_id']} Complete!")
     print()
-    print(f"Forge Number: #{result['forge_number']}")
-    print(f"P2TR Address: {result['p2tr_address']}")
+    print(f"Distribution:")
+    print(f"  Total Reward:    {result['distribution']['total_reward']} $EXS")
+    print(f"  Miner Reward:    {result['distribution']['miner_reward']} $EXS")
+    print(f"  Treasury Fee:    {result['distribution']['treasury_fee']} $EXS")
+    print(f"  Forge Fee:       {result['distribution']['forge_fee_btc']} BTC")
     print()
-    print("Reward Distribution:")
-    print(f"  Total Reward:    {result['reward']['total_exs']} $EXS")
-    print(f"  Miner Receives:  {result['reward']['miner_exs']} $EXS")
-    print(f"  Treasury Fee:    {result['reward']['treasury_exs']} $EXS (1%)")
-    print(f"  Forge Fee:       {result['reward']['forge_fee_btc']} BTC")
-    print()
-    print("HPP-1 Details:")
-    print(f"  Iterations: {result['hpp1']['iterations']:,}")
-    print(f"  Algorithm:  {result['hpp1']['algorithm']}")
-    print(f"  Key Length: {result['hpp1']['dklen']} bytes")
+    print(f"HPP-1 Key: {result['hpp1_key'][:32]}...")
+    print(f"Salt:      {result['salt'][:32]}...")
     print()
     
-    treasury_stats = foundry.get_treasury_stats()
-    print("Treasury Statistics:")
-    print(f"  Forges Completed:     {treasury_stats['forges_completed']}")
-    print(f"  Treasury Collected:   {treasury_stats['total_treasury_exs']} $EXS")
-    print(f"  Forge Fees Collected: {treasury_stats['total_forge_fees_btc']} BTC")
-    print(f"  Fee Rate:             {treasury_stats['treasury_fee_rate']}")
-
-
-if __name__ == "__main__":
-    main()
-        Get treasury statistics.
-        
-        Returns:
-            Dictionary of treasury stats
-        """
-        return {
-            'total_forged': self.total_forged,
-            'treasury_collected': self.treasury_collected,
-            'treasury_address': self.treasury_address,
-            'treasury_fee_percent': self.TREASURY_FEE_PERCENT
-        }
-    
-    def sign_forge(self, forge_data: str, private_key: bytes) -> str:
-        """
-        Sign forge data with HMAC-SHA512.
-        
-        Args:
-            forge_data: Data to sign
-            private_key: Private key for signing
-            
-        Returns:
-            Hex-encoded signature
-        """
-        signature = hmac.new(
-            private_key,
-            forge_data.encode('utf-8'),
-            hashlib.sha512
-        ).digest()
-        return signature.hex()
-    
-    def verify_forge_signature(self, forge_data: str, signature_hex: str, 
-                              public_key: bytes) -> bool:
-        """
-        Verify a forge signature.
-        
-        Args:
-            forge_data: Original data
-            signature_hex: Hex-encoded signature
-            public_key: Public key for verification
-            
-        Returns:
-            True if signature is valid
-        """
-        expected_sig = hmac.new(
-            public_key,
-            forge_data.encode('utf-8'),
-            hashlib.sha512
-        ).digest()
-        
-        try:
-            provided_sig = bytes.fromhex(signature_hex)
-            return hmac.compare_digest(expected_sig, provided_sig)
-        except ValueError:
-            return False
-
-
-def demo_foundry():
-    """Demonstrate the EXS Foundry in action."""
-    print("=" * 80)
-    print("Excalibur $EXS Foundry - HPP-1 Protocol Demo")
-    print("=" * 80)
-    
-    # Initialize foundry
-    treasury_addr = "bc1p_excalibur_treasury_example_address"
-    foundry = ExsFoundry(treasury_addr)
-    
-    # Derive HPP-1 key
-    axiom = "sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
-    print(f"\n🔑 Deriving HPP-1 key from axiom...")
-    print(f"   Iterations: {foundry.HPP1_ITERATIONS:,}")
-    
-    hpp1_key = foundry.derive_hpp1_key(axiom)
-    print(f"   Key (first 32 bytes): {hpp1_key[:32].hex()}")
-    
-    # Process a forge
-    print(f"\n⚒️  Processing forge at block height 1000...")
-    forge_result = foundry.process_forge(
-        miner_address="bc1p_knight_example_address",
-        btc_paid=0.0001,
-        block_height=1000
-    )
-    
-    if forge_result['success']:
-        print(f"   ✅ Forge successful!")
-        print(f"   Total Reward: {forge_result['total_reward']} $EXS")
-        print(f"   Miner Reward: {forge_result['miner_reward']} $EXS")
-        print(f"   Treasury Fee: {forge_result['treasury_fee']} $EXS")
-        print(f"   Forge Fee: {forge_result['forge_fee_btc']} BTC")
+    # Create Taproot vault
+    hpp1_key = bytes.fromhex(result['hpp1_key'])
+    taproot_address = foundry.create_taproot_vault(hpp1_key)
+    print(f"Taproot Vault: {taproot_address}")
+    print()
     
     # Show treasury stats
-    print(f"\n💰 Treasury Statistics:")
     stats = foundry.get_treasury_stats()
-    print(f"   Total Forged: {stats['total_forged']} $EXS")
-    print(f"   Treasury Collected: {stats['treasury_collected']} $EXS")
-    print(f"   Fee Percentage: {stats['treasury_fee_percent']}%")
+    print("Treasury Statistics:")
+    print(f"  Total Forges:        {stats['total_forges']}")
+    print(f"  Treasury Balance:    {stats['treasury_balance']} $EXS")
+    print(f"  Fees Collected:      {stats['total_fees_collected']} $EXS")
+    print()
     
-    # Demonstrate signature
-    print(f"\n🔏 Signing forge data...")
-    forge_data = f"block:1000,nonce:12345,miner:{forge_result['miner_address']}"
-    signature = foundry.sign_forge(forge_data, hpp1_key)
-    print(f"   Signature: {signature[:64]}...")
-    
-    # Verify signature
-    is_valid = foundry.verify_forge_signature(forge_data, signature, hpp1_key)
-    print(f"   Verification: {'✅ VALID' if is_valid else '❌ INVALID'}")
-    
-    print("\n" + "=" * 80)
+    print("⚡ HPP-1 Protocol: 600,000 PBKDF2-HMAC-SHA512 iterations")
+    print("🔐 Quantum-hardened key derivation complete")
 
 
-if __name__ == "__main__":
-    demo_foundry()
+if __name__ == '__main__':
+    main()

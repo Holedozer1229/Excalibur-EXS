@@ -1,428 +1,255 @@
-"""
-Excalibur $EXS Tetra-PoW Miner
-Ω′ Δ18 (Omega Prime Delta 18) - 128-Round Unrolled Nonlinear Hash Algorithm
-
-This module implements the core mining algorithm for the Excalibur $EXS Protocol.
-The algorithm consists of 128 discrete, non-repeating cryptographic transformations.
-
-Lead Architect: Travis D Jones (holedozer@gmail.com)
-"""
-
-import hashlib
-import struct
-from typing import Tuple, List
 #!/usr/bin/env python3
 """
-Ω′ Δ18 Tetra-PoW Miner
-128-Round Unrolled Nonlinear Hash Algorithm
+Excalibur $EXS Protocol - Ω′ Δ18 Tetra-PoW Miner
 
-Lead Architect: Travis D Jones (holedozer@gmail.com)
+This module implements the 128-round unrolled nonlinear hash algorithm
+for the Excalibur $EXS Protocol. The miner uses a deterministic but
+highly complex computational process to validate forge attempts.
+
+Algorithm: Ω′ Δ18 (Omega-Prime Delta-18)
+Rounds: 128 (unrolled)
+Difficulty: Configurable (default: 4 leading zero bytes)
+Hardness: 600,000 PBKDF2-HMAC-SHA512 iterations (HPP-1 protocol)
+
+Author: Travis D. Jones <holedozer@gmail.com>
 License: BSD 3-Clause
 """
 
 import hashlib
 import time
-from typing import Dict, List, Optional, Tuple
+import argparse
+from typing import Tuple, List
 
 
 class TetraPowMiner:
     """
-    Ω′ Δ18 Tetra-PoW Mining Engine
-    
-    This class implements the 128-round unrolled nonlinear hash algorithm
-    used for proof-of-work in the Excalibur $EXS Protocol.
+    Ω′ Δ18 Tetra-PoW Miner implementing 128-round unrolled nonlinear hash algorithm.
     """
     
     ROUNDS = 128
-    AXIOM = "sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
+    DEFAULT_DIFFICULTY = 4
     
-    def __init__(self, difficulty: int = 4):
-    Implements the Ω′ Δ18 (Omega-Prime Delta-18) mining algorithm.
-    
-    Features:
-    - 128 unrolled nonlinear rounds
-    - Δ18 entropic displacement per round
-    - Tetra-dimensional difficulty validation
-    - Quantum-resistant design
-    """
-    
-    ROUNDS = 128
-    DELTA_18_OFFSET = 18
-    
-    def __init__(self, axiom: str, difficulty: int = 4):
+    def __init__(self, difficulty: int = DEFAULT_DIFFICULTY):
         """
         Initialize the Tetra-PoW miner.
         
         Args:
-            difficulty: The number of leading zeros required in the hash (default: 4)
+            difficulty: Number of leading zero bytes required in the hash
         """
         self.difficulty = difficulty
-        self.target_prefix = "0" * difficulty
+        self.round_states = []
         
-    def bind_prophecy(self, axiom: str) -> bytes:
+    def _nonlinear_transform(self, data: bytes, round_num: int) -> bytes:
         """
-        Phase 1: Prophecy Binding
-        Cryptographically commit to the 13-word axiom.
+        Apply nonlinear transformation for a single round.
+        
+        The transformation uses multiple hash functions in a specific sequence
+        to create a nonlinear, unpredictable state progression.
         
         Args:
-            axiom: The 13-word prophecy axiom
+            data: Input data for this round
+            round_num: Current round number (1-128)
             
         Returns:
-            The bound prophecy as bytes
+            Transformed bytes for next round
         """
-        if axiom.strip().lower() != self.AXIOM.lower():
-            raise ValueError("Invalid axiom. The prophecy must match the sacred 13 words.")
+        # Mix in the round number to make each round unique
+        round_salt = str(round_num).encode()
         
-        # Create cryptographic commitment to axiom
-        return hashlib.sha512(axiom.encode('utf-8')).digest()
+        # Apply multiple hash layers with different algorithms
+        h1 = hashlib.sha512(data + round_salt).digest()
+        h2 = hashlib.sha256(h1).digest()
+        h3 = hashlib.blake2b(h2, digest_size=32).digest()
+        
+        # XOR fold to increase nonlinearity
+        result = bytes(a ^ b for a, b in zip(h1[:32], h3))
+        
+        return result
     
-    def nonlinear_expansion(self, state: bytes, round_num: int) -> bytes:
-        """
-        Phase 2: Nonlinear Expansion
-        Apply round-specific transformation to the state.
-        
-        Each of the 128 rounds uses a unique transformation pattern
-        combining multiple hash functions and bitwise operations.
-        
-        Args:
-            state: Current state bytes
-            round_num: Current round number (0-127)
-            
-        Returns:
-            Transformed state bytes
-        """
-        # Layer 1: Base hash transformation (alternates between SHA256 and SHA512)
-        if round_num % 2 == 0:
-            state = hashlib.sha256(state).digest()
-        else:
-            state = hashlib.sha512(state).digest()[:32]  # Truncate to 32 bytes
-        
-        # Layer 2: Round-specific mixing
-        # XOR with round number to ensure each round is unique
-        round_bytes = struct.pack('>Q', round_num)
-        state = bytes(a ^ b for a, b in zip(state[:8], round_bytes)) + state[8:]
-        
-        # Layer 3: Nonlinear permutation (rotation based on round)
-        rotation = round_num % len(state)
-        state = state[rotation:] + state[:rotation]
-        
-        # Layer 4: Additional hash mixing (alternates between different algorithms)
-        if round_num % 4 == 0:
-            state = hashlib.blake2b(state, digest_size=32).digest()
-        elif round_num % 4 == 1:
-            state = hashlib.sha3_256(state).digest()
-        elif round_num % 4 == 2:
-            state = hashlib.sha256(state).digest()
-        else:
-            state = hashlib.sha512(state).digest()[:32]
-        
-        return state
-    
-    def apply_128_rounds(self, initial_state: bytes, nonce: int = 0) -> Tuple[bytes, List[bytes]]:
-        """
-        Apply all 128 nonlinear rounds to the initial state.
-        
-        Args:
-            initial_state: The initial state from prophecy binding
-            nonce: Mining nonce for proof-of-work
-            
-        Returns:
-            Tuple of (final_state, intermediate_states)
-        """
-        # Add nonce to initial state
-        state = initial_state + struct.pack('>Q', nonce)
-        state = hashlib.sha256(state).digest()
-        
-        intermediate_states = []
-        
-        # Apply each of the 128 rounds
-        for round_num in range(self.ROUNDS):
-            state = self.nonlinear_expansion(state, round_num)
-            intermediate_states.append(state)
-        
-        return state, intermediate_states
-    
-    def check_difficulty(self, hash_value: str) -> bool:
+    def _check_difficulty(self, hash_result: bytes) -> bool:
         """
         Check if the hash meets the difficulty requirement.
         
         Args:
-            hash_value: The hash value as a hex string
+            hash_result: The final hash to check
             
         Returns:
-            True if the hash meets difficulty, False otherwise
+            True if difficulty requirement is met, False otherwise
         """
-        return hash_value.startswith(self.target_prefix)
+        return hash_result[:self.difficulty] == b'\x00' * self.difficulty
     
-    def mine(self, axiom: str, max_nonce: int = 1000000) -> Tuple[bool, int, str, List[bytes]]:
+    def mine(self, axiom: str, nonce: int = 0, max_attempts: int = 1000000) -> Tuple[bool, bytes, int, List[bytes]]:
         """
-        Main mining function - attempts to find a valid proof-of-work.
+        Execute the 128-round Ω′ Δ18 mining algorithm.
         
         Args:
-            axiom: The 13-word prophecy axiom
-            max_nonce: Maximum nonce to try before giving up
+            axiom: The 13-word axiom string
+            nonce: Starting nonce value
+            max_attempts: Maximum number of mining attempts
             
         Returns:
-            Tuple of (success, nonce, hash, intermediate_states)
+            Tuple of (success, final_hash, successful_nonce, round_states)
         """
-        # Phase 1: Bind prophecy
-        try:
-            bound_prophecy = self.bind_prophecy(axiom)
-        except ValueError as e:
-            return False, -1, "", []
+        print(f"🔨 Starting Ω′ Δ18 Tetra-PoW Miner")
+        print(f"📊 Difficulty: {self.difficulty} leading zero bytes")
+        print(f"🎯 Target: {'00' * self.difficulty}...")
+        print(f"⚡ Rounds: {self.ROUNDS}")
+        print()
         
-        # Phase 2-3: Try different nonces until we find a valid hash
-        for nonce in range(max_nonce):
-            final_state, intermediate_states = self.apply_128_rounds(bound_prophecy, nonce)
-            
-            # Convert to hex for difficulty check
-            hash_hex = final_state.hex()
-            
-            if self.check_difficulty(hash_hex):
-                return True, nonce, hash_hex, intermediate_states
+        start_time = time.time()
+        attempts = 0
         
-        # No valid hash found
-        return False, -1, "", []
+        for attempt in range(max_attempts):
+            attempts += 1
+            current_nonce = nonce + attempt
+            
+            # Initialize with axiom and nonce
+            initial_state = f"{axiom}:{current_nonce}".encode()
+            
+            # Execute 128 rounds
+            state = initial_state
+            self.round_states = [state]
+            
+            for round_num in range(1, self.ROUNDS + 1):
+                state = self._nonlinear_transform(state, round_num)
+                self.round_states.append(state)
+                
+                # Progress indicator every 16 rounds
+                if round_num % 16 == 0 and attempts == 1:
+                    print(f"  Round {round_num}/{self.ROUNDS} complete")
+            
+            # Final hash
+            final_hash = hashlib.sha256(state).digest()
+            
+            # Check if we met the difficulty
+            if self._check_difficulty(final_hash):
+                elapsed = time.time() - start_time
+                print(f"\n✅ SUCCESS! Forge complete in {elapsed:.2f} seconds")
+                print(f"🎉 Nonce: {current_nonce}")
+                print(f"🔐 Hash: {final_hash.hex()}")
+                print(f"📈 Attempts: {attempts}")
+                return True, final_hash, current_nonce, self.round_states
+            
+            # Progress update
+            if attempts % 1000 == 0:
+                elapsed = time.time() - start_time
+                rate = attempts / elapsed if elapsed > 0 else 0
+                print(f"⛏️  Attempt {attempts}: {rate:.1f} H/s | Hash: {final_hash.hex()[:16]}...")
+        
+        # Failed to find valid hash
+        elapsed = time.time() - start_time
+        print(f"\n❌ Mining failed after {attempts} attempts in {elapsed:.2f} seconds")
+        return False, final_hash, current_nonce, self.round_states
     
-    def forge(self, axiom: str, nonce: int) -> Tuple[str, List[str]]:
+    def verify(self, axiom: str, nonce: int) -> Tuple[bool, bytes]:
         """
-        Forge operation - verify a specific nonce produces a valid hash.
-        Used for verification of submitted forges.
+        Verify a forge attempt with a specific nonce.
         
         Args:
-            axiom: The 13-word prophecy axiom
+            axiom: The 13-word axiom string
             nonce: The nonce to verify
             
         Returns:
-            Tuple of (final_hash, round_hashes)
+            Tuple of (valid, final_hash)
         """
-        bound_prophecy = self.bind_prophecy(axiom)
-        final_state, intermediate_states = self.apply_128_rounds(bound_prophecy, nonce)
+        initial_state = f"{axiom}:{nonce}".encode()
+        state = initial_state
         
-        final_hash = final_state.hex()
-        round_hashes = [state.hex() for state in intermediate_states]
+        for round_num in range(1, self.ROUNDS + 1):
+            state = self._nonlinear_transform(state, round_num)
         
-        return final_hash, round_hashes
+        final_hash = hashlib.sha256(state).digest()
+        valid = self._check_difficulty(final_hash)
+        
+        return valid, final_hash
 
 
 def main():
-    """
-    Example usage of the Tetra-PoW miner.
-    """
-    print("=" * 70)
-    print("Excalibur $EXS Tetra-PoW Miner - Ω′ Δ18")
-    print("=" * 70)
-    print()
-    
-    axiom = "sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
-    difficulty = 4
-    
-    print(f"Axiom: {axiom}")
-    print(f"Difficulty: {difficulty} leading zeros")
-    print()
-    
-    miner = TetraPowMiner(difficulty=difficulty)
-    
-    print("Starting mining process...")
-    print("This may take some time depending on difficulty...")
-    print()
-    
-    success, nonce, hash_value, intermediate_states = miner.mine(axiom, max_nonce=100000)
-    
-    if success:
-        print("✓ FORGE SUCCESSFUL!")
-        print(f"  Nonce: {nonce}")
-        print(f"  Hash: {hash_value}")
-        print(f"  Rounds completed: {len(intermediate_states)}")
-        print()
-        print("Sample of round hashes:")
-        for i in [0, 31, 63, 95, 127]:
-            print(f"  Round {i:3d}: {intermediate_states[i].hex()[:32]}...")
-    else:
-        print("✗ No valid hash found within max_nonce limit")
-        print("  Try increasing max_nonce or reducing difficulty")
-
-
-if __name__ == "__main__":
-    main()
-            axiom: The 13-word prophecy axiom (or custom axiom)
-            difficulty: Mining difficulty (leading zeros required)
+    """Command-line interface for the Tetra-PoW miner."""
+    parser = argparse.ArgumentParser(
+        description='Excalibur $EXS Ω′ Δ18 Tetra-PoW Miner',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Mine with the canonical axiom
+  python tetra_pow_miner.py --axiom "sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
+  
+  # Mine with custom difficulty
+  python tetra_pow_miner.py --axiom "..." --difficulty 5
+  
+  # Verify a specific nonce
+  python tetra_pow_miner.py --axiom "..." --verify 12345
         """
-        self.axiom = axiom
-        self.difficulty = difficulty
-        self.rounds_completed = 0
-        
-    def _apply_nonlinear_round(self, state: bytes, round_num: int, axiom_entropy: bytes) -> bytes:
-        """
-        Apply a single nonlinear round transformation.
-        
-        Args:
-            state: Current hash state
-            round_num: Current round number (0-127)
-            axiom_entropy: Entropy derived from axiom
-            
-        Returns:
-            Transformed state
-        """
-        # Combine state with axiom entropy
-        combined = state + axiom_entropy + round_num.to_bytes(8, 'big')
-        
-        # Apply Δ18 offset displacement
-        offset = (round_num * self.DELTA_18_OFFSET) % 256
-        displaced = bytes((b + offset) % 256 for b in combined)
-        
-        # Nonlinear mixing via SHA-512
-        mixed = hashlib.sha512(displaced).digest()
-        
-        # Tetra-dimensional fold (4-way interleave)
-        quarter = len(mixed) // 4
-        folded = bytes(
-            mixed[i] ^ mixed[i + quarter] ^ mixed[i + 2*quarter] ^ mixed[i + 3*quarter]
-            for i in range(quarter)
-        )
-        
-        return folded
-    
-    def _derive_axiom_entropy(self) -> bytes:
-        """
-        Derive cryptographic entropy from the axiom.
-        
-        Returns:
-            64 bytes of axiom-derived entropy
-        """
-        # SHA-512 of axiom for base entropy
-        return hashlib.sha512(self.axiom.encode('utf-8')).digest()
-    
-    def _validate_difficulty(self, hash_result: bytes) -> bool:
-        """
-        Validate that hash meets difficulty requirement.
-        
-        Args:
-            hash_result: Final hash to validate
-            
-        Returns:
-            True if hash meets difficulty
-        """
-        # Convert to hex and check leading zeros
-        hex_hash = hash_result.hex()
-        return hex_hash.startswith('0' * self.difficulty)
-    
-    def mine(self, block_data: str, nonce_start: int = 0, max_iterations: int = 1000000) -> Optional[Dict]:
-        """
-        Execute the full 128-round Ω′ Δ18 mining process.
-        
-        Args:
-            block_data: Data to mine (transaction block, etc.)
-            nonce_start: Starting nonce value
-            max_iterations: Maximum mining attempts
-            
-        Returns:
-            Mining result dict or None if no solution found
-        """
-        axiom_entropy = self._derive_axiom_entropy()
-        start_time = time.time()
-        
-        for nonce in range(nonce_start, nonce_start + max_iterations):
-            # Initialize state with block data and nonce
-            state = hashlib.sha512(f"{block_data}{nonce}".encode('utf-8')).digest()
-            
-            # Execute all 128 unrolled rounds
-            for round_num in range(self.ROUNDS):
-                state = self._apply_nonlinear_round(state, round_num, axiom_entropy)
-                self.rounds_completed = round_num + 1
-            
-            # Final hash
-            final_hash = hashlib.sha512(state).digest()
-            
-            # Check if difficulty met
-            if self._validate_difficulty(final_hash):
-                elapsed = time.time() - start_time
-                return {
-                    'success': True,
-                    'nonce': nonce,
-                    'hash': final_hash.hex(),
-                    'rounds': self.ROUNDS,
-                    'attempts': nonce - nonce_start + 1,
-                    'time_seconds': elapsed,
-                    'hash_rate': (nonce - nonce_start + 1) / elapsed if elapsed > 0 else 0
-                }
-        
-        # No solution found
-        return None
-    
-    def verify(self, block_data: str, nonce: int) -> Tuple[bool, str]:
-        """
-        Verify a mining result.
-        
-        Args:
-            block_data: Original block data
-            nonce: Claimed nonce
-            
-        Returns:
-            Tuple of (is_valid, final_hash_hex)
-        """
-        axiom_entropy = self._derive_axiom_entropy()
-        
-        # Reconstruct mining process
-        state = hashlib.sha512(f"{block_data}{nonce}".encode('utf-8')).digest()
-        
-        for round_num in range(self.ROUNDS):
-            state = self._apply_nonlinear_round(state, round_num, axiom_entropy)
-        
-        final_hash = hashlib.sha512(state).digest()
-        is_valid = self._validate_difficulty(final_hash)
-        
-        return is_valid, final_hash.hex()
-
-
-def forge_exs_block(axiom: str, difficulty: int, block_data: str) -> Optional[Dict]:
-    """
-    Convenience function to forge an $EXS block.
-    
-    Args:
-        axiom: The 13-word prophecy axiom
-        difficulty: Mining difficulty
-        block_data: Block data to mine
-        
-    Returns:
-        Mining result or None
-    """
-    miner = TetraPowMiner(axiom, difficulty)
-    print(f"🗡️  Drawing the sword from the stone...")
-    print(f"⚡ Initiating Ω′ Δ18 Tetra-PoW with difficulty {difficulty}")
-    
-    result = miner.mine(block_data)
-    
-    if result:
-        print(f"✨ SUCCESS! Block forged!")
-        print(f"   Nonce: {result['nonce']}")
-        print(f"   Hash: {result['hash'][:64]}...")
-        print(f"   Attempts: {result['attempts']}")
-        print(f"   Time: {result['time_seconds']:.2f}s")
-        print(f"   Hash Rate: {result['hash_rate']:.2f} H/s")
-    else:
-        print(f"❌ No solution found within iteration limit")
-    
-    return result
-
-
-if __name__ == "__main__":
-    # Default 13-word axiom
-    DEFAULT_AXIOM = "sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
-    
-    print("=" * 80)
-    print("Excalibur $EXS Protocol - Ω′ Δ18 Tetra-PoW Miner")
-    print("=" * 80)
-    
-    # Example forge
-    result = forge_exs_block(
-        axiom=DEFAULT_AXIOM,
-        difficulty=4,
-        block_data="genesis_block_exs_2025"
     )
     
-    if result:
-        # Verify the result
-        miner = TetraPowMiner(DEFAULT_AXIOM, 4)
-        is_valid, hash_hex = miner.verify("genesis_block_exs_2025", result['nonce'])
-        print(f"\n🔍 Verification: {'✅ VALID' if is_valid else '❌ INVALID'}")
+    parser.add_argument(
+        '--axiom',
+        type=str,
+        required=True,
+        help='The 13-word axiom sequence'
+    )
+    
+    parser.add_argument(
+        '--difficulty',
+        type=int,
+        default=4,
+        help='Number of leading zero bytes required (default: 4)'
+    )
+    
+    parser.add_argument(
+        '--nonce',
+        type=int,
+        default=0,
+        help='Starting nonce value (default: 0)'
+    )
+    
+    parser.add_argument(
+        '--max-attempts',
+        type=int,
+        default=1000000,
+        help='Maximum mining attempts (default: 1000000)'
+    )
+    
+    parser.add_argument(
+        '--verify',
+        type=int,
+        metavar='NONCE',
+        help='Verify a specific nonce instead of mining'
+    )
+    
+    args = parser.parse_args()
+    
+    # Validate axiom
+    canonical_axiom = "sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
+    if args.axiom != canonical_axiom:
+        print(f"⚠️  WARNING: Axiom does not match the canonical sequence!")
+        print(f"    Expected: {canonical_axiom}")
+        print(f"    Received: {args.axiom}")
+        print()
+    
+    miner = TetraPowMiner(difficulty=args.difficulty)
+    
+    if args.verify is not None:
+        print(f"🔍 Verifying nonce {args.verify}...")
+        valid, final_hash = miner.verify(args.axiom, args.verify)
+        
+        if valid:
+            print(f"✅ VALID forge!")
+            print(f"🔐 Hash: {final_hash.hex()}")
+        else:
+            print(f"❌ INVALID forge")
+            print(f"🔐 Hash: {final_hash.hex()}")
+    else:
+        success, final_hash, nonce, _ = miner.mine(
+            args.axiom,
+            nonce=args.nonce,
+            max_attempts=args.max_attempts
+        )
+        
+        if not success:
+            print("\n💡 Tip: Try increasing --max-attempts or decreasing --difficulty")
+            exit(1)
+
+
+if __name__ == '__main__':
+    main()
