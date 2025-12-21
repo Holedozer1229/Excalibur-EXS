@@ -67,6 +67,10 @@ venv.bak/
 vendor/
 go.sum
 
+# Go binaries (keep specific)
+cmd/miner/miner
+cmd/rosetta/rosetta
+
 # IDEs and Editors
 .vscode/
 .idea/
