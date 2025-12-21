@@ -91,7 +91,7 @@ var hpp1Cmd = &cobra.Command{
 		fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 		
 		startTime := time.Now()
-		key := crypto.HPP1([]byte(data), []byte("Excalibur-ESX"), 32)
+		key := crypto.HPP1([]byte(data), []byte("Excalibur-EXS"), 32)
 		elapsed := time.Since(startTime)
 		
 		fmt.Printf("\n✅ Key derived in %v\n", elapsed)

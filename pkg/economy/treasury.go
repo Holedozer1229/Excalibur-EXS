@@ -1,8 +1,12 @@
 package economy
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
+	"math"
 	"math/big"
+	"os"
 	"sync"
 	"time"
 )
@@ -214,10 +218,7 @@ func ValidateMinerAddress(address string) bool {
 	}
 	
 	return false
-	"encoding/json"
-	"errors"
-	"os"
-)
+}
 
 // Tokenomics represents the $EXS token economic parameters
 type Tokenomics struct {
@@ -297,6 +298,16 @@ func (t *Treasury) ClaimReward(taprootAddress string, proofHash string, tokenomi
 	return tokenomics.RewardPerForge, nil
 }
 
+// GetTreasuryStats returns current treasury statistics
+func (t *Treasury) GetTreasuryStats() map[string]interface{} {
+	return map[string]interface{}{
+		"total_forged":      t.TotalForged,
+		"total_rewards":     t.TotalRewards,
+		"treasury_balance":  t.TreasuryBalance,
+		"unique_claimants":  len(t.Claims),
+	}
+}
+
 // verifyProofDifficulty checks if the proof hash has the required number of leading zeros
 func verifyProofDifficulty(proofHash string, difficulty int) bool {
 	if len(proofHash) < difficulty {
@@ -310,13 +321,10 @@ func verifyProofDifficulty(proofHash string, difficulty int) bool {
 	}
 
 	return true
-	"fmt"
-	"math"
-	"time"
-)
+}
 
-// Treasury manages the $EXS protocol treasury vault
-type Treasury struct {
+// TreasuryVault manages the $EXS protocol treasury vault with revenue streams
+type TreasuryVault struct {
 	Address            string
 	Balance            float64
 	TotalCollected     float64
@@ -382,9 +390,9 @@ type SmartContractFutureFee struct {
 	TreasuryShare   float64
 }
 
-// NewTreasury creates a new treasury instance
-func NewTreasury(address string) *Treasury {
-	return &Treasury{
+// NewTreasuryVault creates a new treasury vault instance
+func NewTreasuryVault(address string) *TreasuryVault {
+	return &TreasuryVault{
 		Address:           address,
 		Balance:           0,
 		TotalCollected:    0,
@@ -410,14 +418,14 @@ func NewTreasury(address string) *Treasury {
 }
 
 // CollectMiningFee collects the 1% treasury fee from mining rewards
-func (t *Treasury) CollectMiningFee(blockReward float64) float64 {
+func (t *TreasuryVault) CollectMiningFee(blockReward float64) float64 {
 	fee := blockReward * 0.01
 	t.addRevenue("mining_fees", fee)
 	return fee
 }
 
 // ProcessCrossChainReward handles cross-chain mining revenue
-func (t *Treasury) ProcessCrossChainReward(chain string, amount float64, multiplier float64) *CrossChainReward {
+func (t *TreasuryVault) ProcessCrossChainReward(chain string, amount float64, multiplier float64) *CrossChainReward {
 	reward := amount * multiplier
 	treasuryFee := reward * 0.10 // 10% to treasury
 	minerReward := reward - treasuryFee
@@ -434,7 +442,7 @@ func (t *Treasury) ProcessCrossChainReward(chain string, amount float64, multipl
 }
 
 // ProcessLightningRoutingFee handles Lightning Network routing revenue
-func (t *Treasury) ProcessLightningRoutingFee(routeID string, feeMsat int64) *LightningRoutingFee {
+func (t *TreasuryVault) ProcessLightningRoutingFee(routeID string, feeMsat int64) *LightningRoutingFee {
 	feeEXS := float64(feeMsat) / 100000000.0 // Convert msat to EXS
 	
 	treasuryShare := feeEXS * 0.15  // 15%
@@ -453,7 +461,7 @@ func (t *Treasury) ProcessLightningRoutingFee(routeID string, feeMsat int64) *Li
 }
 
 // ProcessTaprootFee handles Taproot P2TR processing revenue
-func (t *Treasury) ProcessTaprootFee(txID string, baseFee int64, withPrivacy bool) *TaprootProcessingFee {
+func (t *TreasuryVault) ProcessTaprootFee(txID string, baseFee int64, withPrivacy bool) *TaprootProcessingFee {
 	feeEXS := float64(baseFee) / 100000000.0
 	
 	// Apply privacy premium if requested
@@ -480,7 +488,7 @@ func (t *Treasury) ProcessTaprootFee(txID string, baseFee int64, withPrivacy boo
 }
 
 // ProcessSmartContractFutureFee handles futures trading revenue
-func (t *Treasury) ProcessSmartContractFutureFee(contractID string, volume float64, feeRate float64) *SmartContractFutureFee {
+func (t *TreasuryVault) ProcessSmartContractFutureFee(contractID string, volume float64, feeRate float64) *SmartContractFutureFee {
 	tradingFee := volume * feeRate
 	treasuryShare := tradingFee * 0.30  // 30%
 	
@@ -496,7 +504,7 @@ func (t *Treasury) ProcessSmartContractFutureFee(contractID string, volume float
 }
 
 // ProcessBridgeFee handles cross-chain bridge transaction fees
-func (t *Treasury) ProcessBridgeFee(amount float64) map[string]float64 {
+func (t *TreasuryVault) ProcessBridgeFee(amount float64) map[string]float64 {
 	bridgeFee := amount * 0.003 // 0.3%
 	
 	distribution := map[string]float64{
@@ -511,7 +519,7 @@ func (t *Treasury) ProcessBridgeFee(amount float64) map[string]float64 {
 }
 
 // addRevenue adds revenue to a specific stream
-func (t *Treasury) addRevenue(streamName string, amount float64) {
+func (t *TreasuryVault) addRevenue(streamName string, amount float64) {
 	if stream, exists := t.RevenueStreams[streamName]; exists && stream.Enabled {
 		stream.TotalRevenue += amount
 		stream.LastCollection = time.Now()
@@ -521,7 +529,7 @@ func (t *Treasury) addRevenue(streamName string, amount float64) {
 }
 
 // DistributeFunds distributes treasury funds according to allocation rules
-func (t *Treasury) DistributeFunds(amount float64) map[string]float64 {
+func (t *TreasuryVault) DistributeFunds(amount float64) map[string]float64 {
 	if amount > t.Balance {
 		return nil
 	}
@@ -542,7 +550,7 @@ func (t *Treasury) DistributeFunds(amount float64) map[string]float64 {
 }
 
 // CalculateUserReward calculates user reward with bonuses
-func (t *Treasury) CalculateUserReward(baseReward float64, hodlMonths int, govVotes int, lpProvided bool, nodeOperator bool) float64 {
+func (t *TreasuryVault) CalculateUserReward(baseReward float64, hodlMonths int, govVotes int, lpProvided bool, nodeOperator bool) float64 {
 	reward := baseReward
 	
 	// Long-term holder bonus
@@ -569,7 +577,7 @@ func (t *Treasury) CalculateUserReward(baseReward float64, hodlMonths int, govVo
 }
 
 // ExecuteBuyback executes the monthly buyback program
-func (t *Treasury) ExecuteBuyback() (float64, error) {
+func (t *TreasuryVault) ExecuteBuyback() (float64, error) {
 	// Calculate buyback amount (10% of treasury revenue)
 	buybackAmount := t.TotalCollected * 0.10
 	
@@ -584,30 +592,20 @@ func (t *Treasury) ExecuteBuyback() (float64, error) {
 }
 
 // CalculateTransactionBurn calculates the burn amount for a transaction
-func (t *Treasury) CalculateTransactionBurn(txAmount float64) float64 {
+func (t *TreasuryVault) CalculateTransactionBurn(txAmount float64) float64 {
 	return txAmount * 0.0001 // 0.01% burn
 }
 
-// GetTreasuryStats returns current treasury statistics
-func (t *Treasury) GetTreasuryStats() map[string]interface{} {
-	return map[string]interface{}{
-		"total_forged":      t.TotalForged,
-		"total_rewards":     t.TotalRewards,
-		"treasury_balance":  t.TreasuryBalance,
-		"unique_claimants":  len(t.Claims),
-	}
-		"address":           t.Address,
-		"balance":           t.Balance,
-		"total_collected":   t.TotalCollected,
-		"total_distributed": t.TotalDistributed,
-		"revenue_streams":   t.RevenueStreams,
+// ExportJSON exports treasury state to JSON
+func (t *TreasuryVault) ExportJSON() (string, error) {
+	stats := map[string]interface{}{
+		"address":            t.Address,
+		"balance":            t.Balance,
+		"total_collected":    t.TotalCollected,
+		"total_distributed":  t.TotalDistributed,
+		"revenue_streams":    t.RevenueStreams,
 		"distribution_rules": t.DistributionRules,
 	}
-}
-
-// ExportJSON exports treasury state to JSON
-func (t *Treasury) ExportJSON() (string, error) {
-	stats := t.GetTreasuryStats()
 	data, err := json.MarshalIndent(stats, "", "  ")
 	if err != nil {
 		return "", err
@@ -621,6 +619,6 @@ func CalculateAPY(principal float64, rate float64, compoundingPeriods int, years
 }
 
 // ValidateMultiSig validates that enough signatures are present
-func (t *Treasury) ValidateMultiSig(signatures []string) bool {
+func (t *TreasuryVault) ValidateMultiSig(signatures []string) bool {
 	return len(signatures) >= t.MultiSigThreshold
 }

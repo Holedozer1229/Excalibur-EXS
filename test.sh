@@ -1,10 +1,10 @@
 #!/bin/bash
-# Integration test script for Excalibur-ESX
+# Integration test script for Excalibur-EXS
 
 set -e
 
 echo "======================================"
-echo "Excalibur-ESX Integration Tests"
+echo "Excalibur-EXS Integration Tests"
 echo "======================================"
 echo ""
 
@@ -58,7 +58,7 @@ echo "  ✓ Network list endpoint working"
 
 # Test network options
 curl -s -X POST http://localhost:8081/network/options -H "Content-Type: application/json" \
-  -d '{"network_identifier":{"blockchain":"Excalibur-ESX","network":"mainnet"}}' > /dev/null
+  -d '{"network_identifier":{"blockchain":"Excalibur-EXS","network":"mainnet"}}' > /dev/null
 echo "  ✓ Network options endpoint working"
 
 # Cleanup

@@ -10,7 +10,7 @@ import (
 const HPP1Rounds = 600000
 
 // DefaultSalt is the default salt used for HPP-1 key derivation in Tetra-PoW
-const DefaultSalt = "Excalibur-ESX-Ω′Δ18"
+const DefaultSalt = "Excalibur-EXS-Ω′Δ18"
 
 // SafetyCheckInterval defines the interval for safety checks during mining
 const SafetyCheckInterval = 1000000
