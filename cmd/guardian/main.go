@@ -13,8 +13,9 @@ import (
 )
 
 var (
-	g         *guardian.Guardian
-	storePath = "guardian.data" // In production, use encrypted storage
+	g *guardian.Guardian
+	// Note: This CLI uses in-memory storage for demonstration.
+	// For production, implement persistent storage (PostgreSQL, Redis, etc.)
 )
 
 func main() {

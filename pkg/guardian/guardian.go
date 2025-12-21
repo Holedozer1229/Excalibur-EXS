@@ -367,6 +367,8 @@ func (rl *RateLimiter) Allow(identifier string) bool {
 
 	// Refill tokens based on time passed
 	elapsed := now.Sub(b.lastRefill)
+	// Note: Float to int conversion may truncate fractional tokens,
+	// which is acceptable for rate limiting as it errs on the side of being more restrictive
 	refillAmount := int(elapsed.Seconds() / rl.window.Seconds() * float64(rl.maxReqs))
 
 	if refillAmount > 0 {

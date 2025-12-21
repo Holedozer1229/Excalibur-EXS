@@ -1,6 +1,7 @@
 package guardian
 
 import (
+	"fmt"
 	"testing"
 	"time"
 )
@@ -288,7 +289,7 @@ func TestCleanupExpiredSessions(t *testing.T) {
 
 	// Create multiple users and sessions
 	for i := 0; i < 3; i++ {
-		username := string(rune('a' + i))
+		username := fmt.Sprintf("user%d", i)
 		g.CreateUser(username, "pass"+username, RoleKnight)
 		g.Authenticate(username, "pass"+username, "127.0.0.1")
 	}
