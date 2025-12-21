@@ -1,16 +1,28 @@
 # Excalibur $EXS Mining Kernel
 
-This directory contains the optimized batched/fused mining kernels for Tetra-PoW and dice roll mining operations.
+This directory contains the optimized batched/fused mining kernels for Tetra-PoW and dice roll mining operations, plus a research-grade Stratum-compliant mining architecture.
 
 ## Overview
 
-The universal batched/fused kernel (`tetrapow_dice_universal.py`) provides high-performance mining operations through:
+### Universal Batched/Fused Kernel (`tetrapow_dice_universal.py`)
+
+The universal batched/fused kernel provides high-performance mining operations through:
 
 - **Batched Processing**: Process multiple mining attempts simultaneously
 - **Fused Operations**: Combine multiple hash functions efficiently
 - **Bit-Sliced Operations**: Optimize bitwise operations across batches
 - **Universal Fusion**: Easy composition of different hash algorithms
 - **Modular Design**: Reusable components for all mining workflows
+
+### Stratum Mining Architecture (`stratum_miner.py`)
+
+A production-ready, Stratum-compliant mining control plane that provides:
+
+- **Stratum-Correct Extranonce Handling**: Thread-safe partitioning with no locks
+- **Deterministic Nonce Scheduling**: Difficulty-weighted priority scoring
+- **SIMD-Friendly Ordering**: Optimized nonce lattice for batch processing
+- **Kernel-Agnostic Design**: Integrates with existing Ω′ Δ18 Tetra-PoW kernel
+- **Full Taproot Support**: SegWit + Taproot commitment handling
 
 ## Performance Benefits
 
@@ -21,7 +33,35 @@ The universal batched/fused kernel (`tetrapow_dice_universal.py`) provides high-
 
 ## Usage
 
-### Direct Import
+### Stratum Mining (Production)
+
+```python
+from pkg.mining.stratum_miner import StratumClient
+
+# Create Stratum client
+client = StratumClient(
+    host='pool.example.com',
+    port=3333,
+    user='your_wallet_address',
+    num_lanes=4,        # Number of mining threads
+    batch_size=256,     # Nonce batch size
+    rounds=128          # Tetra-PoW rounds
+)
+
+# Start mining
+client.start_mining()
+
+# Mine for 60 seconds
+import time
+time.sleep(60)
+
+# Stop and get stats
+client.stop_mining()
+stats = client.get_stats()
+print(f"Hash rate: {stats['hash_rate']:.2f} H/s")
+```
+
+### Direct Kernel Usage
 
 ```python
 from pkg.mining.tetrapow_dice_universal import UniversalMiningKernel
@@ -138,6 +178,21 @@ success, nonce, hash, states = kernel.batch_mine(
 
 ## Testing
 
+### Test Stratum Miner
+
+```bash
+# Quick test with 2 lanes
+python3 pkg/mining/stratum_miner.py --lanes 2 --duration 10
+
+# High performance test
+python3 pkg/mining/stratum_miner.py --lanes 8 --batch-size 512 --duration 60
+
+# Reduced rounds for faster testing
+python3 pkg/mining/stratum_miner.py --lanes 4 --rounds 16 --duration 30
+```
+
+### Test Universal Kernel
+
 Run the kernel demo:
 ```bash
 python3 pkg/mining/tetrapow_dice_universal.py
@@ -149,6 +204,20 @@ python3 -c "from pkg.mining.tetrapow_dice_universal import UniversalMiningKernel
 kernel = UniversalMiningKernel(batch_size=32); \
 print(kernel.get_statistics())"
 ```
+
+## Stratum Architecture
+
+### Core Components
+
+1. **Nonce Lattice**: Deterministic, mining-aware nonce ordering
+2. **Extranonce Allocator**: Thread-safe partitioning with no locks
+3. **Batch Generator**: SIMD-friendly nonce batch creation
+4. **Coinbase Builder**: Taproot + SegWit support
+5. **Header Builder**: Stratum-compatible block headers
+6. **Tetra-PoW Integration**: Ω′ Δ18 kernel wire-in point
+7. **Target Checker**: Mask-based difficulty verification
+8. **Stratum Miner**: Full control plane with thread management
+9. **Share Submitter**: JSON-RPC ready (placeholder)
 
 ## API Reference
 

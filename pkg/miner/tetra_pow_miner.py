@@ -61,33 +61,6 @@ class TetraPowMiner:
         self.round_states = []
         # Initialize the universal batched kernel
         self.kernel = UniversalMiningKernel(batch_size=batch_size)
-        
-    def _nonlinear_transform(self, data: bytes, round_num: int) -> bytes:
-        """
-        Apply nonlinear transformation for a single round.
-        
-        The transformation uses multiple hash functions in a specific sequence
-        to create a nonlinear, unpredictable state progression.
-        
-        Args:
-            data: Input data for this round
-            round_num: Current round number (1-128)
-            
-        Returns:
-            Transformed bytes for next round
-        """
-        # Mix in the round number to make each round unique
-        round_salt = str(round_num).encode()
-        
-        # Apply multiple hash layers with different algorithms
-        h1 = hashlib.sha512(data + round_salt).digest()
-        h2 = hashlib.sha256(h1).digest()
-        h3 = hashlib.blake2b(h2, digest_size=32).digest()
-        
-        # XOR fold to increase nonlinearity
-        result = bytes(a ^ b for a, b in zip(h1[:32], h3))
-        
-        return result
     
     def _check_difficulty(self, hash_result: bytes) -> bool:
         """

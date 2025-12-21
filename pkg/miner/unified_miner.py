@@ -374,12 +374,12 @@ class UnifiedMiner:
             server_seed=server_seed,
             client_seeds=client_seeds,
             nonces=nonces,
-            max_value=self.DICE_SIDES * 100  # Scale to 0-9999 for 0.00-99.99
+            max_value=self.DICE_SIDES * 100  # 10000 for 0.00-99.99 range
         )
         
         for i, (hmac_value, nonce, roll_float, roll_int) in enumerate(batch_results):
-            # Scale roll to 1-100 range
-            roll = int(roll_float) + 1 if roll_float < 100 else 100
+            # roll_float is in 0.00-99.99 range, convert to 1-100
+            roll = min(int(roll_float) + 1, 100)
             
             # Check if roll wins
             if roll >= self.DICE_WIN_THRESHOLD:
