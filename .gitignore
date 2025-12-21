@@ -33,9 +33,9 @@ MANIFEST
 go.work
 
 # IDEs
-go.sum
 /cmd/miner/miner
 /cmd/rosetta/rosetta
+/cmd/guardian/guardian
 
 # Node.js
 node_modules/
