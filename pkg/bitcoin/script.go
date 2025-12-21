@@ -38,8 +38,12 @@ func BuildCLTVScript(lockHeight uint32, pubKeyHash []byte) (*CLTVScript, error) 
 	lockHeightBytes := make([]byte, 4)
 	binary.LittleEndian.PutUint32(lockHeightBytes, lockHeight)
 	
-	// Remove trailing zeros for minimal encoding
-	trimmedHeight := trimTrailingZeros(lockHeightBytes)
+	// Remove trailing zeros for minimal encoding (Bitcoin script requirement)
+	// Only trim if there are trailing zeros to optimize performance
+	trimmedHeight := lockHeightBytes
+	if lockHeightBytes[3] == 0 || lockHeightBytes[2] == 0 || lockHeightBytes[1] == 0 {
+		trimmedHeight = trimTrailingZeros(lockHeightBytes)
+	}
 	
 	builder.AddData(trimmedHeight)
 	builder.AddOp(txscript.OP_CHECKLOCKTIMEVERIFY)

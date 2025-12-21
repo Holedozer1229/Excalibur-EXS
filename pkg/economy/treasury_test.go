@@ -85,9 +85,10 @@ func TestMiniOutputLocks(t *testing.T) {
 
 func TestSetBlockHeight(t *testing.T) {
 	treasury := NewTreasury()
-	treasury.SetBlockHeight(1000)
+	initialHeight := uint32(1000)
+	treasury.SetBlockHeight(initialHeight)
 
-	// Process forge at height 1000
+	// Process forge at the initial height
 	treasury.ProcessForge("bc1ptest")
 
 	// Check locked balance (outputs 2 and 3 are locked)
@@ -96,8 +97,10 @@ func TestSetBlockHeight(t *testing.T) {
 		t.Errorf("Expected locked balance %.2f, got %.2f", MiniOutputAmount*2, lockedBalance)
 	}
 
-	// Advance to height where second output unlocks (1000 + 1 + 4320 = 5321)
-	treasury.SetBlockHeight(1001 + BlockInterval)
+	// Advance to height where second output unlocks
+	// Second output created at height 1000, unlocks at 1000 + 4320 = 5320
+	unlockHeight := initialHeight + BlockInterval
+	treasury.SetBlockHeight(unlockHeight)
 
 	// Check that second output is now spendable
 	lockedBalance = treasury.GetLockedBalance()
