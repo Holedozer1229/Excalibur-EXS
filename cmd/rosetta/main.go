@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/Holedozer1229/Excalibur-ESX/pkg/bitcoin"
-	"github.com/Holedozer1229/Excalibur-ESX/pkg/crypto"
+	"github.com/Holedozer1229/Excalibur-EXS/pkg/bitcoin"
+	"github.com/Holedozer1229/Excalibur-EXS/pkg/crypto"
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/spf13/cobra"
 )
