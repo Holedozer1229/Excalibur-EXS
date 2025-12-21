@@ -1,0 +1,5 @@
+# File: cmd/diceminer/requirements.txt
+# Python dependencies for Dice-Roll miner
+
+requests>=2.31.0
+flask>=3.0.0
