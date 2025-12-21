@@ -13,6 +13,12 @@ Features:
 - State commitment with BIP341 Tapleaf
 - Optional Stratum mining protocol integration
 - Full cryptographic verification
+- Batched dice roll computation for improved performance
+
+MIGRATION NOTE: Dice miner now uses batched/fused kernel
+- See mining/tetrapow_dice_universal.py for the new batched implementation
+- Batched dice roll operations improve performance significantly
+- Universal fusion enables easy composition with other mining operations
 
 Author: Travis D. Jones <holedozer@gmail.com>
 License: BSD 3-Clause
@@ -25,9 +31,19 @@ import os
 import time
 import random
 import struct
+import sys
 from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
+
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+try:
+    from mining.tetrapow_dice_universal import UniversalMiningKernel
+except ImportError:
+    # Try absolute import
+    from pkg.mining.tetrapow_dice_universal import UniversalMiningKernel
 
 
 @dataclass
@@ -65,11 +81,14 @@ class ProvablyFairDiceMiner:
     Implements cryptographically provable dice rolls using HMAC-SHA512,
     similar to freebitco.in's system but integrated with Bitcoin's
     Taproot and Schnorr signatures.
+    
+    Now uses batched dice roll computation for improved performance.
     """
     
     # Default dice configuration
     DICE_SIDES = 10000  # 0-9999 for precision (divide by 100 for 00.00-99.99)
     WIN_THRESHOLD = 9500  # Need 95.00+ to win (5% chance)
+    DEFAULT_BATCH_SIZE = 32
     
     # secp256k1 curve parameters (Bitcoin's curve)
     SECP256K1_P = int("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F", 16)
@@ -79,7 +98,8 @@ class ProvablyFairDiceMiner:
     def __init__(self, 
                  server_seed: Optional[str] = None,
                  enable_taproot: bool = True,
-                 enable_stratum: bool = False):
+                 enable_stratum: bool = False,
+                 batch_size: int = DEFAULT_BATCH_SIZE):
         """
         Initialize the Provably Fair Dice Miner.
         
@@ -87,10 +107,15 @@ class ProvablyFairDiceMiner:
             server_seed: Optional server seed (generated if not provided)
             enable_taproot: Enable Taproot address generation
             enable_stratum: Enable Stratum mining protocol
+            batch_size: Batch size for processing (default: 32)
         """
         self.server_seed = server_seed or self._generate_server_seed()
         self.enable_taproot = enable_taproot
         self.enable_stratum = enable_stratum
+        self.batch_size = batch_size
+        
+        # Initialize the universal batched kernel
+        self.kernel = UniversalMiningKernel(batch_size=batch_size)
         
         # Statistics
         self.total_rolls = 0
@@ -368,7 +393,7 @@ class ProvablyFairDiceMiner:
                             num_rolls: int = 100,
                             target_wins: Optional[int] = None) -> List[ProvablyFairRoll]:
         """
-        Mine by performing multiple provably fair dice rolls.
+        Mine by performing multiple provably fair dice rolls using batched computation.
         
         Args:
             num_rolls: Number of rolls to perform
@@ -377,33 +402,87 @@ class ProvablyFairDiceMiner:
         Returns:
             List of ProvablyFairRoll results
         """
-        print("🎲 PROVABLY FAIR DICE ROLL MINING 🎲")
+        print("🎲 PROVABLY FAIR DICE ROLL MINING (BATCHED MODE) 🎲")
         print("=" * 70)
         print(f"Rolls:            {num_rolls}")
         print(f"Win Threshold:    {self.WIN_THRESHOLD / 100:.2f}")
         print(f"Expected Wins:    ~{num_rolls * (self.DICE_SIDES - self.WIN_THRESHOLD) / self.DICE_SIDES:.1f}")
         print(f"Server Seed:      {self.server_seed[:32]}...")
+        print(f"Batch Size:       {self.batch_size}")
         print()
         
         results = []
         wins = 0
         
+        # Prepare batch data
+        client_seeds = []
+        nonces = []
         for i in range(num_rolls):
-            roll = self.roll_dice()
-            results.append(roll)
+            client_seeds.append(self._generate_client_seed())
+            nonces.append(self.nonce_counter + i)
+        
+        # Use batched dice roll computation from the universal kernel
+        batch_results = self.kernel.batch_dice_roll_mine(
+            server_seed=self.server_seed,
+            client_seeds=client_seeds,
+            nonces=nonces,
+            max_value=self.DICE_SIDES
+        )
+        
+        # Process results
+        for i, (hmac_value, nonce, roll_float, roll_int) in enumerate(batch_results):
+            # Determine success
+            success = roll_int >= self.WIN_THRESHOLD
             
-            if roll.success:
+            # Create state for commitment
+            state_dict = {
+                "server_seed": self.server_seed,
+                "client_seed": client_seeds[i],
+                "nonce": nonce,
+                "hmac": hmac_value,
+                "roll": roll_float,
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            }
+            
+            # Create commitments
+            state_commitment = self._create_state_commitment(state_dict)
+            tapleaf_hash = self._create_tapleaf_hash(state_commitment)
+            
+            # Update statistics
+            self.total_rolls += 1
+            if success:
+                self.total_wins += 1
                 wins += 1
-                print(f"🎉 Roll {i+1}: {roll.roll_value:.2f} - WIN! (Nonce: {roll.nonce})")
-                print(f"   State: {roll.state_commitment[:16]}...")
-                print(f"   Leaf:  {roll.tapleaf_hash[:16]}...")
+            
+            # Create result
+            result = ProvablyFairRoll(
+                server_seed=self.server_seed[:16] + "..." if len(self.server_seed) > 16 else self.server_seed,
+                client_seed=client_seeds[i],
+                nonce=nonce,
+                hmac_value=hmac_value[:32] + "...",
+                roll_value=roll_float,
+                roll_number=roll_int,
+                success=success,
+                timestamp=datetime.now(timezone.utc).isoformat(),
+                state_commitment=state_commitment,
+                tapleaf_hash=tapleaf_hash
+            )
+            results.append(result)
+            
+            if success:
+                print(f"🎉 Roll {i+1}: {roll_float:.2f} - WIN! (Nonce: {nonce})")
+                print(f"   State: {state_commitment[:16]}...")
+                print(f"   Leaf:  {tapleaf_hash[:16]}...")
                 
                 if target_wins and wins >= target_wins:
                     print(f"\n✅ Target reached: {wins} wins")
                     break
             else:
                 if (i + 1) % 20 == 0:
-                    print(f"   Roll {i+1}: {roll.roll_value:.2f}")
+                    print(f"   Roll {i+1}: {roll_float:.2f}")
+        
+        # Update nonce counter
+        self.nonce_counter += len(results)
         
         win_rate = (wins / len(results)) * 100 if results else 0
         expected_rate = ((self.DICE_SIDES - self.WIN_THRESHOLD) / self.DICE_SIDES) * 100
@@ -472,6 +551,9 @@ Examples:
                             help='Stop after this many wins')
     mine_parser.add_argument('--payout-address', type=str,
                             help='Destination address for rewards/payouts')
+    mine_parser.add_argument('--batch-size', type=int, 
+                            default=ProvablyFairDiceMiner.DEFAULT_BATCH_SIZE,
+                            help=f'Batch size for processing (default: {ProvablyFairDiceMiner.DEFAULT_BATCH_SIZE})')
     
     # Verify command
     verify_parser = subparsers.add_parser('verify', help='Verify a roll')
@@ -495,7 +577,10 @@ Examples:
     args = parser.parse_args()
     
     if args.command == 'mine':
-        miner = ProvablyFairDiceMiner(server_seed=args.server_seed)
+        miner = ProvablyFairDiceMiner(
+            server_seed=args.server_seed, 
+            batch_size=args.batch_size
+        )
         
         # Display payout address if provided
         if args.payout_address:
