@@ -7,6 +7,7 @@
     "Treasury": 0.15,
     "Liquidity": 0.2,
     "Airdrop": 0.05
+  },
   "protocol": "Excalibur $EXS",
   "version": "1.0.0",
   "supply": {
@@ -101,11 +102,12 @@
     "license": "BSD-3-Clause",
     "genesis_date": "2025",
     "chain_type": "Bitcoin_fork"
-    "total_cap": 21000000,
-    "unit": "EXS",
-    "decimals": 8,
-    "initial_supply": 0,
-    "mining_distribution": {
+  },
+  "total_cap": 21000000,
+  "unit": "EXS",
+  "decimals": 8,
+  "initial_supply": 0,
+  "mining_distribution": {
       "proof_of_forge": {
         "percentage": 60,
         "allocation": 12600000,
@@ -126,9 +128,8 @@
         "allocation": 1050000,
         "description": "Community building, early adopters, governance participants"
       }
-    }
-  },
-  "mining": {
+    },
+    "supply": {
     "algorithm": "Ω′ Δ18 Tetra-PoW",
     "block_time_seconds": 600,
     "initial_block_reward": 50,
