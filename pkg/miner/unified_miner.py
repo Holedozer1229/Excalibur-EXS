@@ -725,6 +725,9 @@ Examples:
                        default='balance',
                        help='Faucet action (claim or check balance)')
     
+    parser.add_argument('--payout-address', type=str,
+                       help='Destination address for mining rewards/payouts')
+    
     args = parser.parse_args()
     
     # Initialize unified miner with all features enabled
@@ -739,6 +742,12 @@ Examples:
     
     print("⚔️  EXCALIBUR $EXS UNIFIED MINER ⚔️")
     print("=" * 60)
+    
+    # Display payout address if provided
+    if args.payout_address:
+        print(f"💰 Rewards Destination: {args.payout_address}")
+        print("=" * 60)
+    
     print()
     
     # Execute requested mode
@@ -749,6 +758,15 @@ Examples:
         )
         print()
         print("Result:", asdict(result))
+        
+        # Show payout info
+        if args.payout_address and result.success:
+            print()
+            print(f"💰 REWARD DISTRIBUTION")
+            print(f"   Total Forge Reward:  50.0 $EXS")
+            print(f"   Miner Payout:        49.5 $EXS → {args.payout_address}")
+            print(f"   Treasury Fee (1%):   0.5 $EXS → Protocol Treasury")
+            print(f"   Forge Fee:           0.0001 BTC")
     
     elif args.mode == 'merge':
         results = miner.merge_mine(
@@ -759,6 +777,19 @@ Examples:
         print()
         for chain, result in results.items():
             print(f"{chain}: {asdict(result)}")
+        
+        # Show payout info for successful merge mining
+        if args.payout_address:
+            successful_chains = [chain for chain, result in results.items() if result.success]
+            if successful_chains:
+                print()
+                print(f"💰 MERGE MINING DISTRIBUTION")
+                print(f"   Primary Chain (EXS):")
+                print(f"     Total Reward:      50.0 $EXS")
+                print(f"     Miner Payout:      49.5 $EXS → {args.payout_address}")
+                print(f"     Treasury Fee (1%): 0.5 $EXS → Protocol Treasury")
+                print(f"   Auxiliary Chains:  {', '.join([c for c in successful_chains if c != 'EXS'])}")
+                print(f"   Forge Fee:         0.0001 BTC")
     
     elif args.mode == 'dice':
         results = miner.dice_roll_mine(
@@ -768,6 +799,12 @@ Examples:
         print()
         wins = sum(1 for r in results if r.success)
         print(f"Summary: {wins}/{len(results)} successful rolls")
+        
+        # Show payout info
+        if args.payout_address and wins > 0:
+            print()
+            print(f"✅ Dice roll winnings will be sent to: {args.payout_address}")
+            print(f"   Total wins: {wins}")
     
     elif args.mode == 'lightning':
         if not args.dest:

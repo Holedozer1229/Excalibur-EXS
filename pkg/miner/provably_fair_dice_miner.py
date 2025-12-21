@@ -470,6 +470,8 @@ Examples:
                             help='Custom server seed')
     mine_parser.add_argument('--target-wins', type=int,
                             help='Stop after this many wins')
+    mine_parser.add_argument('--payout-address', type=str,
+                            help='Destination address for rewards/payouts')
     
     # Verify command
     verify_parser = subparsers.add_parser('verify', help='Verify a roll')
@@ -494,11 +496,25 @@ Examples:
     
     if args.command == 'mine':
         miner = ProvablyFairDiceMiner(server_seed=args.server_seed)
+        
+        # Display payout address if provided
+        if args.payout_address:
+            print(f"💰 Payout Address: {args.payout_address}")
+            print()
+        
         results = miner.mine_with_dice_rolls(
             num_rolls=args.rolls,
             target_wins=args.target_wins
         )
         print()
+        
+        # Show payout destination in results
+        if args.payout_address:
+            wins = sum(1 for r in results if r.success)
+            print(f"✅ Rewards will be sent to: {args.payout_address}")
+            print(f"   Total wins: {wins}")
+            print()
+        
         miner.print_verification_info()
     
     elif args.command == 'verify':
