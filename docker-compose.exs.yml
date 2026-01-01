@@ -1,0 +1,120 @@
+# File: docker-compose.yml
+# Purpose: Orchestrate all EXS services (miners, treasury, guardian, UI)
+# Services: Tetra-PoW, Dice-Roll, Lancelot Guardian, Treasury, Rosetta, Forge UI
+
+version: '3.8'
+
+services:
+  # Tetra-PoW Go Miner
+  tetra-pow-miner:
+    build:
+      context: ./cmd/tetra_pow
+      dockerfile: Dockerfile
+    container_name: exs-tetra-pow
+    ports:
+      - "8082:8082"
+    environment:
+      - AXIOM=sword legend pull magic kingdom artist stone destroy forget fire steel honey question
+      - DIFFICULTY=4
+      - TREASURY_URL=http://treasury:8080
+      - ROSETTA_URL=http://rosetta:8081
+    restart: unless-stopped
+    networks:
+      - exs-network
+
+  # Dice-Roll Python Miner
+  dice-roll-miner:
+    build:
+      context: ./cmd/diceminer
+      dockerfile: Dockerfile
+    container_name: exs-dice-roll
+    ports:
+      - "8083:8083"
+    environment:
+      - AXIOM=sword legend pull magic kingdom artist stone destroy forget fire steel honey question
+      - DIFFICULTY=4
+      - TREASURY_URL=http://treasury:8080
+      - ROSETTA_URL=http://rosetta:8081
+    restart: unless-stopped
+    networks:
+      - exs-network
+
+  # Lancelot Guardian Monitoring
+  lancelot-guardian:
+    build:
+      context: ./cmd/lancelot_guardian
+      dockerfile: Dockerfile
+    container_name: exs-guardian
+    ports:
+      - "8084:8084"
+    volumes:
+      - ./cmd/lancelot_guardian/config.yaml:/app/config.yaml:ro
+    environment:
+      - TETRA_POW_URL=http://tetra-pow-miner:8082
+      - DICE_ROLL_URL=http://dice-roll-miner:8083
+      - TREASURY_URL=http://treasury:8080
+      - ROSETTA_URL=http://rosetta:8081
+    depends_on:
+      - tetra-pow-miner
+      - dice-roll-miner
+      - treasury
+    restart: unless-stopped
+    networks:
+      - exs-network
+
+  # Treasury API
+  treasury:
+    build:
+      context: ./cmd/treasury
+      dockerfile: Dockerfile
+    container_name: exs-treasury
+    ports:
+      - "8080:8080"
+    environment:
+      - ENV=production
+    restart: unless-stopped
+    networks:
+      - exs-network
+
+  # Rosetta API
+  rosetta:
+    build:
+      context: ./cmd/rosetta
+      dockerfile: Dockerfile
+    container_name: exs-rosetta
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+    networks:
+      - exs-network
+
+  # Forge UI (Next.js)
+  forge-ui:
+    build:
+      context: ./web/forge-ui
+      dockerfile: Dockerfile
+    container_name: exs-forge-ui
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_TETRA_POW_URL=http://tetra-pow-miner:8082
+      - NEXT_PUBLIC_DICE_ROLL_URL=http://dice-roll-miner:8083
+      - NEXT_PUBLIC_TREASURY_URL=http://treasury:8080
+      - NEXT_PUBLIC_ROSETTA_URL=http://rosetta:8081
+      - NEXT_PUBLIC_GUARDIAN_URL=http://lancelot-guardian:8084
+    depends_on:
+      - tetra-pow-miner
+      - dice-roll-miner
+      - treasury
+      - rosetta
+    restart: unless-stopped
+    networks:
+      - exs-network
+
+networks:
+  exs-network:
+    driver: bridge
+
+volumes:
+  treasury-data:
+  rosetta-data:

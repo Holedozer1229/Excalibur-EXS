@@ -28,7 +28,19 @@
       "percent": 15,
       "amount": 3150000,
       "description": "Protocol treasury for development, maintenance, and grants",
-      "fee_source": "1% of all forge rewards"
+      "allocation_per_block": 7.5,
+      "rolling_release": {
+        "enabled": true,
+        "duration_months": 12,
+        "mini_outputs": 3,
+        "amount_per_mini_output": 2.5,
+        "cltv_locks": {
+          "output_1": {"blocks": 0, "description": "Immediately available"},
+          "output_2": {"blocks": 4320, "description": "Locked for ~1 month"},
+          "output_3": {"blocks": 8640, "description": "Locked for ~2 months"}
+        },
+        "description": "Treasury allocation split into 3 time-locked mini-outputs using Bitcoin CLTV scripts"
+      }
     },
     "liquidity": {
       "percent": 20,

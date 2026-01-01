@@ -245,8 +245,38 @@
       "percent": 15,
       "amount": 3150000,
       "description": "Protocol treasury for development, maintenance, and grants",
-      "fee_source": "1% of all forge rewards + 50% of surge fees",
-      "improvements": "Additional funding from fee market stabilizes development"
+      "allocation_per_block": 7.5,
+      "fee_source": "Direct 15% allocation per block (not 1% fee) + 50% of surge fees",
+      "improvements": "Rolling 12-month release with CLTV time-locks prevents premature spending",
+      "rolling_release": {
+        "enabled": true,
+        "mini_outputs_per_block": 3,
+        "amount_per_output": 2.5,
+        "cltv_locks": {
+          "output_1": {
+            "delay_blocks": 0,
+            "delay_time": "immediate",
+            "purpose": "Operational expenses"
+          },
+          "output_2": {
+            "delay_blocks": 4320,
+            "delay_time": "~30 days",
+            "purpose": "Short-term development"
+          },
+          "output_3": {
+            "delay_blocks": 8640,
+            "delay_time": "~60 days",
+            "purpose": "Long-term reserves"
+          }
+        },
+        "script_format": "Bitcoin OP_CHECKLOCKTIMEVERIFY",
+        "benefits": [
+          "Enforced vesting via blockchain consensus",
+          "Transparent and auditable on-chain",
+          "Rolling maturity ensures continuous availability",
+          "Prevents treasury mismanagement"
+        ]
+      }
     },
     "liquidity": {
       "percent": 20,

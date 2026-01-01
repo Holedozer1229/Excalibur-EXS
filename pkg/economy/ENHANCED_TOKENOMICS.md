@@ -89,7 +89,65 @@ if forge % 144 == 0:
 | 2140 | 0 BTC | **Fee-only (risky)** | 0.1 $EXS | **Guaranteed** |
 | 2500 | 0 BTC | Unknown | 0.1 $EXS | Guaranteed |
 
-### 4. Adaptive Fee Market (vs Unpredictable Fees)
+### 4. 12-Month Rolling Treasury Release with CLTV Time-Locks
+
+**Treasury Allocation Problem:**
+- Traditional models allow immediate access to all treasury funds
+- Creates risk of premature spending or mismanagement
+- No built-in vesting or release schedule
+- Lack of accountability and transparency
+
+**Excalibur's Solution:**
+- **Treasury allocation: 7.5 $EXS per block (15% of 50 $EXS reward)**
+- **Split into 3 mini-outputs of 2.5 $EXS each**
+- **Staggered release using Bitcoin CLTV scripts**
+- **Rolling 12-month distribution schedule**
+
+**CLTV Time-Lock Schedule:**
+
+| Output | Amount | Lock Period | Unlock Height | Purpose |
+|--------|--------|-------------|---------------|---------|
+| Mini-Output 1 | 2.5 $EXS | 0 blocks | Immediate | Operational expenses |
+| Mini-Output 2 | 2.5 $EXS | 4,320 blocks | ~1 month | Short-term development |
+| Mini-Output 3 | 2.5 $EXS | 8,640 blocks | ~2 months | Long-term reserves |
+
+**Technical Implementation:**
+
+Bitcoin-style CLTV script format:
+```
+<lockHeight> OP_CHECKLOCKTIMEVERIFY OP_DROP 
+OP_DUP OP_HASH160 <treasuryPubKeyHash> OP_EQUALVERIFY OP_CHECKSIG
+```
+
+**Benefits:**
+- **Enforced vesting:** Funds cannot be accessed before unlock height
+- **Rolling distribution:** New outputs mature continuously
+- **Transparency:** All locks are on-chain and auditable
+- **Security:** CLTV is proven Bitcoin script functionality
+- **Accountability:** Prevents rushed or premature spending
+
+**Example Timeline:**
+
+```
+Block 1000: Forge creates 3 outputs
+  ├─ Output A: 2.5 $EXS, unlocks at block 1000 (immediate)
+  ├─ Output B: 2.5 $EXS, unlocks at block 5320 (~1 month)
+  └─ Output C: 2.5 $EXS, unlocks at block 9640 (~2 months)
+
+Block 1001: Forge creates 3 more outputs
+  ├─ Output D: 2.5 $EXS, unlocks at block 1001 (immediate)
+  ├─ Output E: 2.5 $EXS, unlocks at block 5321 (~1 month)
+  └─ Output F: 2.5 $EXS, unlocks at block 9641 (~2 months)
+
+Result: Rolling maturity schedule ensures steady fund availability
+```
+
+**Treasury Balance Overview:**
+- **Spendable:** Immediately available mini-outputs
+- **Locked:** CLTV time-locked mini-outputs
+- **Total:** All treasury mini-outputs combined
+
+### 5. Adaptive Fee Market (vs Unpredictable Fees)
 
 **Bitcoin's Problem:**
 - Pure auction-based fees
