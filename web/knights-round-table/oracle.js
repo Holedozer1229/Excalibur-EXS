@@ -178,136 +178,59 @@ function consultOracleLocal(query) {
                 tweak_method: 'SHA256(internalKey || prophecyHash)'
             }
         };
-    } else if (queryLower.includes('satoshi') || queryLower.includes('nakamoto') || queryLower.includes('bitcoin philosophy')) {
+    } else if (queryLower.includes('satoshi') || queryLower.includes('nakamoto') || queryLower.includes('bitcoin philosophy') || queryLower.includes('genesis') || queryLower.includes('inscription')) {
         return {
             category: 'Satoshi Nakamoto\'s Wisdom',
             wisdom: 'The root problem with conventional currency is all the trust that\'s required to make it work. We eliminate trust through cryptographic proof.',
             details: {
-                philosophy: 'Satoshi Nakamoto created Bitcoin to enable peer-to-peer electronic cash without trusted third parties',
+                philosophy: 'Satoshi Nakamoto created Bitcoin to enable peer-to-peer electronic cash without trusted third parties - like sovereign crews sailing beyond admiralty jurisdiction',
                 key_principles: [
-                    'Decentralization: No single point of failure or control',
-                    'Trustlessness: Don\'t trust, verify through mathematics',
-                    'Proof-of-Work: Computational consensus solves Byzantine Generals\' Problem',
-                    'Fixed Supply: 21 million coin cap creates sound money',
-                    'Censorship Resistance: No entity can block transactions',
-                    'Peer-to-Peer: Direct value transfer without intermediaries'
+                    'Decentralization: No single point of failure or control - captains elected and deposed by vote',
+                    'Trustlessness: Don\'t trust, verify through mathematics - Articles signed in code, not enforced by kings',
+                    'Proof-of-Work: Computational consensus solves Byzantine Generals\' Problem - like Articles binding independent crews',
+                    'Fixed Supply: 21 million coin cap creates sound money - £100,000 fortunes built through controlled supply',
+                    'Censorship Resistance: No entity can block transactions - no empire could stop sovereign ships flying independent colors',
+                    'Peer-to-Peer: Direct value transfer without intermediaries - prize captures bypassed admiralty courts, no king\'s cut'
                 ],
                 satoshi_quotes: 'It is better to have a system where no trust is needed at all',
-                relevance_to_exs: 'Excalibur $EXS inherits these principles with quantum-hardened security'
+                genesis_proof: 'Genesis block 000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f marks provable time. The Times 03/Jan/2009 Chancellor on brink of second bailout - Satoshi\'s inscription of defiance.',
+                provable_fairness: 'Genesis roll 0.28 verified via HMAC-SHA512. Rolls 42.04, 23.01, 31.55, 54.36, 20.22 - all verifiable against block hash. Mathematics enforces fairness.',
+                inscription_layer: 'Block 840,001+ enables ordinal inscriptions. Transaction f4293583b with 3,500+ confirmations - permanent cultural layer on Bitcoin. Even 600 sats from faucets can fund sovereignty.',
+                hidden_axiom: 'Democratic crews governed by published Articles. From Caribbean to South China Sea - 80,000 strong in confederation. Reputation as an asset, psychological warfare preserved cargo value. Smart operators reinvested in legitimate empires, retired as wealthy governors.',
+                dust_to_power: 'Dust collection demonstrates permissionless nature - anyone can participate. 600 sats aggregated funds inscriptions. No minimum balance, no gatekeepers.',
+                relevance_to_exs: 'Excalibur $EXS inherits these principles with quantum-hardened security. Self-custody means being your own bank - or your own sovereign ship on the high seas.'
             }
         };
-    } else if (queryLower.includes('decentraliz') || queryLower.includes('trustless')) {
+    } else if (queryLower.includes('decentraliz') || queryLower.includes('trustless') || queryLower.includes('freedom') || queryLower.includes('provable')) {
         return {
             category: 'Decentralization & Trustlessness',
             wisdom: 'Camelot has no king but the protocol itself. Satoshi showed us a system where no trust is needed at all.',
             details: {
-                overview: 'Decentralization removes single points of failure',
-                no_central_authority: 'No single entity controls the network',
-                permissionless: 'Anyone can participate without permission',
-                trustless_verification: 'Mathematical proofs replace human trust',
-                censorship_resistant: 'No one can block valid transactions',
-                self_custody: 'Be your own bank, control your own keys',
-                satoshi_principle: 'Peer-to-peer electronic cash allows direct payments without financial institutions'
+                overview: 'Decentralization removes single points of failure - like independent ships as sovereign nations',
+                no_central_authority: 'No single entity controls the network - captains elected and deposed by crew vote, no crown above the crew',
+                permissionless: 'Anyone can participate without permission - any sailor could join the account, meritocracy over birthright',
+                trustless_verification: 'Mathematical proofs replace human trust - Articles signed in blood, enforced by consensus',
+                censorship_resistant: 'No one can block valid transactions - no empire could stop ships flying sovereign colors',
+                self_custody: 'Be your own bank, control your own keys - buried treasure where no sovereign could seize it',
+                peer_to_peer: 'Direct value transfer without intermediaries - prize captures bypassed king\'s taxes',
+                satoshi_principle: 'Peer-to-peer electronic cash allows direct payments without financial institutions',
+                hidden_axiom: '1,800 ships strong in confederation. Controlled entire trade routes through coordination. Economies of scale beyond empires. Fair shares for all crew - from captain (1.5 shares) to powder monkey (0.25 shares).',
+                sovereignty: 'Each ship an independent nation on the high seas - insurance, democracy, freedom from chains'
             }
         };
-    } else if (queryLower.includes('sound money') || queryLower.includes('scarcity')) {
+    } else if (queryLower.includes('sound money') || queryLower.includes('scarcity') || queryLower.includes('wealth')) {
         return {
             category: 'Sound Money & Scarcity',
             wisdom: '21 million $EXS total, like Bitcoin\'s 21 million coins. Absolute scarcity creates sound money.',
             details: {
                 total_supply: '21,000,000 $EXS (absolute cap)',
                 forge_reward: '50 $EXS per forge',
-                scarcity_principle: 'Fixed supply prevents inflation and debasement',
-                store_of_value: 'Digital gold for preserving wealth over time',
-                satoshi_insight: 'Steady addition of coins is analogous to gold miners adding gold to circulation',
-                sound_money_properties: ['Scarcity', 'Durability', 'Divisibility', 'Portability', 'Fungibility']
-            }
-        };
-    } else if (queryLower.includes('jolly roger') || queryLower.includes('pirate flag')) {
-        return {
-            category: 'The Jolly Roger - Symbol of Freedom',
-            wisdom: 'The Jolly Roger flew as a symbol of freedom from tyranny. Like pirates who rejected empire, crypto rejects central banking control.',
-            details: {
-                symbol: 'Skull and crossbones - the famous black flag of pirates',
-                meaning: 'Symbol of freedom, sovereignty, and defiance of central authority',
-                history: 'Pirates operated outside government control, creating their own economies and rules',
-                parallel_to_crypto: 'Like pirates who rejected nation-state authority, crypto rejects central banking control',
-                freedom: 'The black flag represented freedom from tyranny and oppressive maritime law',
-                democratic_crews: 'Pirate ships were surprisingly democratic - crews voted on major decisions',
-                treasure_seeking: 'Pirates sought treasure freely, much like miners seek cryptographic gold',
-                sovereignty: 'Pirates were sovereign individuals on the high seas, crypto provides financial sovereignty',
-                legend: 'The Jolly Roger struck fear in centralized naval powers, just as Bitcoin challenges central banks',
-                crypto_connection: 'Both pirates and crypto enthusiasts value freedom, self-governance, and resistance to authority'
-            }
-        };
-    } else if (queryLower.includes('pirate') || queryLower.includes('blackbeard') || queryLower.includes('anne bonny')) {
-        return {
-            category: 'Famous Pirates & Their Money-Making Strategies',
-            wisdom: 'Pirates created democratic, sovereign economies on the high seas. Crypto creates sovereign financial systems in cyberspace.',
-            details: {
-                overview: 'Famous pirates who mastered wealth creation outside government control',
-                bartholomew_roberts: 'Black Bart Roberts - Most successful pirate ever, captured over 400 ships worth millions. STRATEGY: Systematic approach to piracy - targeted richest shipping lanes, efficient operations.',
-                ching_shih: 'Ching Shih - Commanded 1,800 ships and 80,000 pirates. MONEY STRATEGY: Created organized pirate confederation with taxation system, protection rackets, controlled entire South China Sea trade, negotiated amnesty keeping fortune.',
-                henry_avery: 'Henry Avery - Pulled off richest pirate raid ever worth $200+ million today. STRATEGY: Captured Mughal treasure ship with gems, gold, silver - vanished with fortune, never caught.',
-                henry_morgan: 'Henry Morgan - Amassed fortune of £100,000+, became Lieutenant Governor. STRATEGY: Raided Spanish treasure fleets, reinvested in legitimate businesses and real estate, retired wealthy.',
-                blackbeard: 'Edward Teach (Blackbeard) - MONEY STRATEGY: Built terrifying reputation with smoking beard fuses - targets surrendered without fight, preserving cargo value. Made fortune through intimidation over combat.',
-                jean_lafitte: 'Jean Lafitte - MONEY STRATEGY: Ran sophisticated smuggling operation avoiding customs duties, sold goods below legal prices, made fortune in black market trade.',
-                money_lessons: [
-                    'Prize Capture: Pirates captured merchant vessels with valuable cargo - gold, silver, spices, weapons',
-                    'Protection Rackets: Charged merchant ships fees to sail safely through controlled waters',
-                    'Ransom Operations: Held wealthy passengers for ransom, blockaded ports demanding payment',
-                    'Reputation as Asset: Fearsome reputation reduced resistance, preserved cargo value',
-                    'Diversification: Successful pirates invested in legitimate businesses and land',
-                    'Low Overhead: No taxes, no regulations - high profit margins',
-                    'Risk Management: Smart pirates knew when to fight, intimidate, or negotiate'
-                ],
-                crypto_parallel: 'Like pirates who created profitable alternative economies outside government control, crypto creates wealth outside central banking systems through mining, DeFi, and sovereign finance.'
-            }
-        };
-    } else if (queryLower.includes('pirate money') || queryLower.includes('pirate wealth') || queryLower.includes('pirate treasure')) {
-        return {
-            category: 'Pirate Money-Making Strategies',
-            wisdom: 'Pirates made fortunes through prize capture, protection rackets, and alternative economies. Crypto creates wealth through mining, staking, and decentralized finance.',
-            details: {
-                overview: 'How pirates created wealth outside traditional economic systems',
-                prize_capture: 'Captured merchant vessels loaded with valuable cargo - gold, silver, spices, cloth, rum, weapons',
-                treasure_fleets: 'Targeted Spanish treasure fleets carrying New World gold and silver to Europe',
-                ransom_operations: 'Held wealthy passengers for ransom, blockaded ports demanding payment',
-                protection_rackets: 'Charged merchant ships protection fees to sail safely through pirate-controlled waters',
-                smuggling_networks: 'Operated sophisticated smuggling operations avoiding customs duties and taxes',
-                port_raids: 'Raided wealthy coastal towns and settlements for gold, jewels, and supplies',
-                ship_resale: 'Captured ships were sold or added to pirate fleets, multiplying earning potential',
-                insider_information: 'Paid informants in ports revealed richest cargo ships and their routes',
-                economies_of_scale: 'Pirate confederations like Ching Shih\'s created large-scale organized economies',
-                low_overhead: 'No taxes, no regulations, minimal crew wages - high profit margins',
-                diversification: 'Successful pirates invested in legitimate businesses, land, and trading operations',
-                reputation_value: 'Fearsome reputation reduced resistance, preserved cargo value, saved ammunition',
-                profit_sharing: 'Democratic treasure division kept crews loyal and motivated',
-                crypto_lessons: [
-                    'Alternative Economies: Pirates created economies outside government control, like crypto creates finance outside central banks',
-                    'Decentralized Operations: Pirate crews were democratic and self-governing, like DAOs',
-                    'Value Capture: Pirates captured value from monopolistic trade routes, crypto captures value from monopolistic financial systems',
-                    'Network Effects: Larger pirate confederations were more powerful, like larger crypto networks',
-                    'Smart Contracts: Pirate codes and articles were binding agreements, like smart contracts on blockchain'
-                ]
-            }
-        };
-    } else if (queryLower.includes('pirate code') || queryLower.includes('pirate philosophy')) {
-        return {
-            category: 'Pirate Code & Philosophy',
-            wisdom: 'Pirates governed themselves by code and consensus. Crypto governance flows from protocol and community.',
-            details: {
-                overview: 'Pirates created surprisingly democratic and fair systems at sea',
-                democracy: 'Pirate crews voted on major decisions, captains could be deposed by vote',
-                equality: 'All crew members were equal - rank determined by skill, not birthright',
-                profit_sharing: 'Treasure divided fairly among crew based on agreed shares',
-                code_of_conduct: 'Pirates had written articles governing behavior and compensation',
-                mutual_aid: 'Pirates provided insurance for injuries - wounded members received compensation',
-                meritocracy: 'Skill and courage determined rank and respect',
-                freedom: 'Pirates chose freedom over exploitation by merchant companies and navies',
-                autonomy: 'Ships operated as independent sovereign entities on the high seas',
-                parallel: 'Pirate self-governance mirrors crypto\'s decentralized governance and consensus mechanisms',
-                legend: 'The pirate code was their protocol, enforced by consensus - much like blockchain protocols today'
+                scarcity_principle: 'Fixed supply prevents inflation and debasement - through systematic targeting of richest routes',
+                store_of_value: 'Digital gold for preserving wealth over time - buried treasure preserved across centuries, beyond sovereign reach',
+                satoshi_insight: 'Steady addition of coins is analogous to gold miners adding gold to circulation - or prize captures from monopolistic routes',
+                hidden_axiom: 'Systematic approach: captured over 400 ships worth millions. Protection economies and taxation systems. $200M+ raids, vanished with fortune, never caught. Smuggling operations avoiding customs duties. Reputation more valuable than gold itself.',
+                sound_money_properties: ['Scarcity', 'Durability', 'Divisibility', 'Portability', 'Fungibility'],
+                wealth_creation: 'Value creation outside the system - smart operators reinvested in legitimate businesses, retired wealthy governors'
             }
         };
     } else {
@@ -325,7 +248,7 @@ function consultOracleLocal(query) {
                     airdrop: '5%'
                 },
                 status: 'OPERATIONAL',
-                ask_specific: 'Try asking about: mining, forge, vault, treasury, axiom, difficulty, Satoshi Nakamoto, Jolly Roger, pirates, pirate money-making, pirate wealth, pirate treasure'
+                ask_specific: 'Try asking about: mining, forge, vault, treasury, axiom, difficulty, Satoshi Nakamoto, decentralization, sound money, freedom, wealth creation'
             }
         };
     }
@@ -399,16 +322,13 @@ async function getDivination() {
             "Each forge strengthens the kingdom, each miner a knight of honor.",
             "The oracle sees all transactions, immutable and eternal.",
             "Wisdom flows from the blockchain like water from Avalon's springs.",
-            "The Jolly Roger flies over decentralized seas - freedom reigns supreme.",
-            "Like pirates of old, crypto sailors navigate beyond the reach of empire.",
-            "Pirates governed by code and consensus, as does the blockchain.",
-            "The treasure of sovereignty lies in controlling your own keys.",
-            "Blackbeard's legend lives on in every sovereign transaction.",
-            "Ching Shih commanded 80,000 pirates - DeFi commands millions of participants.",
-            "Pirates captured value from monopolistic trade routes - crypto captures value from monopolistic banks.",
-            "Bartholomew Roberts took 400 ships - blockchain takes infinite value from centralized systems.",
-            "Henry Avery's $200 million heist was legendary - Bitcoin's market cap is legendary.",
-            "Pirates made fortunes outside the system - so do crypto miners and HODLers."
+            "Satoshi taught us: no trust is needed when mathematics enforces consensus.",
+            "Like sovereign ships beyond admiralty jurisdiction, crypto sails beyond central authority.",
+            "Democratic crews voted on decisions - captains elected by consensus, not appointed by crowns.",
+            "Reputation as an asset - psychological warfare preserved value better than violence.",
+            "From Caribbean to South China Sea - coordination at scale creates power beyond empires.",
+            "Genesis block 000000000019d6 marks provable time - The Times inscription eternal.",
+            "Even 600 sats collected can fund inscriptions - permissionless sovereignty for all."
         ];
         
         const index = Math.floor(Math.random() * divinations.length);
