@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Merlin's Portal - Restricted Admin Dashboard for Excalibur $EXS Protocol">
     <title>Merlin's Portal - Admin Dashboard</title>
     <style>
         * {
@@ -130,9 +132,55 @@
             color: #ffd700;
             margin-right: 10px;
         }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .panel {
+                padding: 15px;
+            }
+            
+            .panel h2 {
+                font-size: 1.2em;
+            }
+            
+            .anomaly-map {
+                height: 250px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .metric {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Security Warning Banner -->
+    <div style="background: rgba(139, 0, 0, 0.9); color: #fff; padding: 15px; text-align: center; border-bottom: 3px solid #8b0000; font-weight: bold;">
+        ⚠️ RESTRICTED ACCESS - ADMIN PORTAL ONLY ⚠️
+        <br>
+        <small style="font-size: 0.85em; opacity: 0.9;">This portal requires proper authentication in production. Current implementation is for demonstration purposes.</small>
+    </div>
+    
     <div class="container">
         <header>
             <h1>⚔️ MERLIN'S PORTAL ⚔️</h1>
@@ -213,7 +261,7 @@
         // Simulated real-time data updates
         function updateMetrics() {
             // This would connect to a WebSocket in production
-            console.log('Metrics updated');
+            // Metrics updated silently
         }
         
         function increaseDifficulty() {

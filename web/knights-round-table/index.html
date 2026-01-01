@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Knights' Round Table - Forge Excalibur $EXS tokens using the sacred 13-word axiom and Ω′ Δ18 Tetra-PoW mining">
+    <meta name="keywords" content="Excalibur, EXS, cryptocurrency, forge, mining, Tetra-PoW, blockchain">
     <title>Knights' Round Table - Excalibur $EXS Forge</title>
     <style>
         * {
@@ -246,6 +248,53 @@
             opacity: 0.7;
             font-size: 0.9em;
         }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .forge-panel {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 1.2em;
+            }
+            
+            .rounds-container {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 5px;
+            }
+            
+            .round {
+                font-size: 0.7em;
+            }
+            
+            .draw-sword-button {
+                font-size: 1.2em;
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .quote {
+                font-size: 0.9em;
+            }
+            
+            .rounds-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
@@ -265,12 +314,19 @@
                     id="axiom-input" 
                     class="axiom-input" 
                     placeholder="sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
-                    value="sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
+                    aria-label="Enter the 13-word prophecy axiom"
+                    aria-required="true"
+                    maxlength="200"
+                    autocomplete="off"
                 >
                 <p class="hint">Enter the exact 13-word sequence to begin your forge attempt</p>
             </div>
             
-            <button id="draw-sword-btn" class="draw-sword-button">
+            <button 
+                id="draw-sword-btn" 
+                class="draw-sword-button"
+                aria-label="Draw the sword to start forging"
+            >
                 ⚔️ Draw the Sword ⚔️
             </button>
         </div>
@@ -320,13 +376,54 @@
             roundsContainer.appendChild(round);
         }
         
+        // Sanitize input to prevent XSS
+        function sanitizeInput(input) {
+            const div = document.createElement('div');
+            div.textContent = input;
+            return div.innerHTML;
+        }
+        
+        // Validate axiom format
+        function validateAxiomFormat(input) {
+            // Check if input contains exactly 13 words
+            const words = input.trim().split(/\s+/);
+            if (words.length !== 13) {
+                return { valid: false, error: 'The axiom must contain exactly 13 words.' };
+            }
+            
+            // Check each word contains only lowercase letters
+            for (const word of words) {
+                if (!/^[a-z]+$/.test(word)) {
+                    return { valid: false, error: 'Each word must contain only lowercase letters.' };
+                }
+            }
+            
+            return { valid: true };
+        }
+
         // Draw Sword button handler
         document.getElementById('draw-sword-btn').addEventListener('click', function() {
-            const axiom = document.getElementById('axiom-input').value.trim();
+            const rawInput = document.getElementById('axiom-input').value.trim();
+            
+            // Validate input length
+            if (rawInput.length > 200) {
+                alert('⚠️ Input too long! The axiom consists of 13 words.');
+                return;
+            }
+            
+            const sanitized = sanitizeInput(rawInput).toLowerCase();
+            
+            // Validate format first
+            const formatCheck = validateAxiomFormat(sanitized);
+            if (!formatCheck.valid) {
+                alert('⚠️ ' + formatCheck.error);
+                return;
+            }
+            
             const expectedAxiom = 'sword legend pull magic kingdom artist stone destroy forget fire steel honey question';
             
             // Validate axiom
-            if (axiom !== expectedAxiom) {
+            if (sanitized !== expectedAxiom) {
                 alert('⚠️ Invalid axiom! Please enter the exact 13-word sequence.');
                 return;
             }
