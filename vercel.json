@@ -1,36 +1,24 @@
 {
-  "version": 2,
   "name": "excalibur-exs",
-  "builds": [
+  "public": true,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
     {
-      "src": "web/forge-ui/package.json",
-      "use": "@vercel/next"
+      "source": "/",
+      "destination": "/website/index.html"
     },
     {
-      "src": "website/**",
-      "use": "@vercel/static"
+      "source": "/web/(.*)",
+      "destination": "/web/$1"
     },
     {
-      "src": "admin/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/forge/(.*)",
-      "dest": "/web/forge-ui/$1"
+      "source": "/admin/(.*)",
+      "destination": "/admin/$1"
     },
     {
-      "src": "/admin/(.*)",
-      "dest": "/admin/$1"
-    },
-    {
-      "src": "/",
-      "dest": "/web/forge-ui"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/web/forge-ui/$1"
+      "source": "/(.*)",
+      "destination": "/website/$1"
     }
   ],
   "headers": [
@@ -59,4 +47,5 @@
   "env": {
     "DOMAIN": "www.excaliburcrypto.com"
   }
+  ]
 }
