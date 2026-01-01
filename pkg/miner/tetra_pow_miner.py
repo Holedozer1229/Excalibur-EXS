@@ -11,6 +11,11 @@ Rounds: 128 (unrolled)
 Difficulty: Configurable (default: 4 leading zero bytes)
 Hardness: 600,000 PBKDF2-HMAC-SHA512 iterations (HPP-1 protocol)
 
+MIGRATION NOTE: Tetra-PoW miners now use batched/fused kernel
+- See mining/tetrapow_dice_universal.py for the new batched implementation
+- Improved speed through batch processing and fused operations
+- Better modularity and maintainability
+
 Author: Travis D. Jones <holedozer@gmail.com>
 License: BSD 3-Clause
 """
@@ -18,53 +23,44 @@ License: BSD 3-Clause
 import hashlib
 import time
 import argparse
+import sys
+import os
 from typing import Tuple, List
+
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+try:
+    from mining.tetrapow_dice_universal import UniversalMiningKernel
+except ImportError:
+    # Try absolute import
+    from pkg.mining.tetrapow_dice_universal import UniversalMiningKernel
 
 
 class TetraPowMiner:
     """
     Ω′ Δ18 Tetra-PoW Miner implementing 128-round unrolled nonlinear hash algorithm.
+    
+    Now uses the universal batched/fused kernel for improved performance.
     """
     
     ROUNDS = 128
     DEFAULT_DIFFICULTY = 4
+    DEFAULT_BATCH_SIZE = 32
     
-    def __init__(self, difficulty: int = DEFAULT_DIFFICULTY):
+    def __init__(self, difficulty: int = DEFAULT_DIFFICULTY, batch_size: int = DEFAULT_BATCH_SIZE):
         """
         Initialize the Tetra-PoW miner.
         
         Args:
             difficulty: Number of leading zero bytes required in the hash
+            batch_size: Batch size for processing (default: 32)
         """
         self.difficulty = difficulty
+        self.batch_size = batch_size
         self.round_states = []
-        
-    def _nonlinear_transform(self, data: bytes, round_num: int) -> bytes:
-        """
-        Apply nonlinear transformation for a single round.
-        
-        The transformation uses multiple hash functions in a specific sequence
-        to create a nonlinear, unpredictable state progression.
-        
-        Args:
-            data: Input data for this round
-            round_num: Current round number (1-128)
-            
-        Returns:
-            Transformed bytes for next round
-        """
-        # Mix in the round number to make each round unique
-        round_salt = str(round_num).encode()
-        
-        # Apply multiple hash layers with different algorithms
-        h1 = hashlib.sha512(data + round_salt).digest()
-        h2 = hashlib.sha256(h1).digest()
-        h3 = hashlib.blake2b(h2, digest_size=32).digest()
-        
-        # XOR fold to increase nonlinearity
-        result = bytes(a ^ b for a, b in zip(h1[:32], h3))
-        
-        return result
+        # Initialize the universal batched kernel
+        self.kernel = UniversalMiningKernel(batch_size=batch_size)
     
     def _check_difficulty(self, hash_result: bytes) -> bool:
         """
@@ -80,7 +76,7 @@ class TetraPowMiner:
     
     def mine(self, axiom: str, nonce: int = 0, max_attempts: int = 1000000) -> Tuple[bool, bytes, int, List[bytes]]:
         """
-        Execute the 128-round Ω′ Δ18 mining algorithm.
+        Execute the 128-round Ω′ Δ18 mining algorithm using batched/fused kernel.
         
         Args:
             axiom: The 13-word axiom string
@@ -90,56 +86,45 @@ class TetraPowMiner:
         Returns:
             Tuple of (success, final_hash, successful_nonce, round_states)
         """
-        print(f"🔨 Starting Ω′ Δ18 Tetra-PoW Miner")
+        print(f"🔨 Starting Ω′ Δ18 Tetra-PoW Miner (Batched Mode)")
         print(f"📊 Difficulty: {self.difficulty} leading zero bytes")
         print(f"🎯 Target: {'00' * self.difficulty}...")
         print(f"⚡ Rounds: {self.ROUNDS}")
+        print(f"📦 Batch Size: {self.batch_size}")
         print()
         
         start_time = time.time()
-        attempts = 0
         
-        for attempt in range(max_attempts):
-            attempts += 1
-            current_nonce = nonce + attempt
-            
-            # Initialize with axiom and nonce
-            initial_state = f"{axiom}:{current_nonce}".encode()
-            
-            # Execute 128 rounds
-            state = initial_state
-            self.round_states = [state]
-            
-            for round_num in range(1, self.ROUNDS + 1):
-                state = self._nonlinear_transform(state, round_num)
-                self.round_states.append(state)
-                
-                # Progress indicator every 16 rounds
-                if round_num % 16 == 0 and attempts == 1:
-                    print(f"  Round {round_num}/{self.ROUNDS} complete")
-            
-            # Final hash
-            final_hash = hashlib.sha256(state).digest()
-            
-            # Check if we met the difficulty
-            if self._check_difficulty(final_hash):
-                elapsed = time.time() - start_time
-                print(f"\n✅ SUCCESS! Forge complete in {elapsed:.2f} seconds")
-                print(f"🎉 Nonce: {current_nonce}")
-                print(f"🔐 Hash: {final_hash.hex()}")
-                print(f"📈 Attempts: {attempts}")
-                return True, final_hash, current_nonce, self.round_states
-            
-            # Progress update
-            if attempts % 1000 == 0:
-                elapsed = time.time() - start_time
-                rate = attempts / elapsed if elapsed > 0 else 0
-                print(f"⛏️  Attempt {attempts}: {rate:.1f} H/s | Hash: {final_hash.hex()[:16]}...")
+        # Use the batched kernel for mining
+        success, found_nonce, final_hash, round_states = self.kernel.batch_mine(
+            axiom=axiom,
+            nonce_start=nonce,
+            max_attempts=max_attempts,
+            difficulty=self.difficulty,
+            rounds=self.ROUNDS
+        )
         
-        # Failed to find valid hash
         elapsed = time.time() - start_time
-        print(f"\n❌ Mining failed after {attempts} attempts in {elapsed:.2f} seconds")
-        return False, final_hash, current_nonce, self.round_states
+        
+        if success:
+            print(f"\n✅ SUCCESS! Forge complete in {elapsed:.2f} seconds")
+            print(f"🎉 Nonce: {found_nonce}")
+            print(f"🔐 Hash: {final_hash.hex()}")
+            
+            # Calculate attempts
+            attempts = found_nonce - nonce + 1
+            print(f"📈 Attempts: {attempts}")
+            
+            # Store round states for compatibility
+            self.round_states = round_states
+            
+            return True, final_hash, found_nonce, round_states
+        else:
+            elapsed = time.time() - start_time
+            print(f"\n❌ Mining failed after {max_attempts} attempts in {elapsed:.2f} seconds")
+            # Return last hash for compatibility (even though not valid)
+            last_hash = hashlib.sha256(f"{axiom}:{nonce + max_attempts - 1}".encode()).digest()
+            return False, last_hash, nonce + max_attempts - 1, []
     
     def verify(self, axiom: str, nonce: int) -> Tuple[bool, bytes]:
         """
@@ -152,16 +137,21 @@ class TetraPowMiner:
         Returns:
             Tuple of (valid, final_hash)
         """
-        initial_state = f"{axiom}:{nonce}".encode()
-        state = initial_state
+        # Use the batched kernel for single verification (batch size of 1)
+        results = self.kernel.fused_hash_computation(
+            axiom=axiom,
+            nonce_start=nonce,
+            count=1,
+            rounds=self.ROUNDS
+        )
         
-        for round_num in range(1, self.ROUNDS + 1):
-            state = self._nonlinear_transform(state, round_num)
+        if results:
+            _, final_hash, _ = results[0]
+            valid = self._check_difficulty(final_hash)
+            return valid, final_hash
         
-        final_hash = hashlib.sha256(state).digest()
-        valid = self._check_difficulty(final_hash)
-        
-        return valid, final_hash
+        # Fallback in case of error
+        return False, b''
 
 
 def main():
@@ -197,6 +187,13 @@ Examples:
     )
     
     parser.add_argument(
+        '--batch-size',
+        type=int,
+        default=32,
+        help='Batch size for processing (default: 32)'
+    )
+    
+    parser.add_argument(
         '--nonce',
         type=int,
         default=0,
@@ -227,7 +224,7 @@ Examples:
         print(f"    Received: {args.axiom}")
         print()
     
-    miner = TetraPowMiner(difficulty=args.difficulty)
+    miner = TetraPowMiner(difficulty=args.difficulty, batch_size=args.batch_size)
     
     if args.verify is not None:
         print(f"🔍 Verifying nonce {args.verify}...")

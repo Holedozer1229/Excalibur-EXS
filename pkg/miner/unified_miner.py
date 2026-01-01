@@ -8,6 +8,11 @@ A pure Python interface that combines:
 - Dice roll probabilistic mining
 - Unified interface for all mining operations
 
+MIGRATION NOTE: Unified miner now uses batched/fused kernel
+- See mining/tetrapow_dice_universal.py for the new batched implementation
+- All mining workflows now leverage batch processing for improved performance
+- Easy fusion composition enables modular mining operations
+
 Author: Travis D. Jones <holedozer@gmail.com>
 License: BSD 3-Clause
 """
@@ -29,10 +34,12 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 try:
     from tetra_pow_miner import TetraPowMiner
     from btc_faucet import BTCFaucet
+    from mining.tetrapow_dice_universal import UniversalMiningKernel
 except ImportError:
     # Try absolute import
     from pkg.miner.tetra_pow_miner import TetraPowMiner
     from pkg.miner.btc_faucet import BTCFaucet
+    from pkg.mining.tetrapow_dice_universal import UniversalMiningKernel
 
 
 @dataclass
@@ -83,6 +90,7 @@ class UnifiedMiner:
     - Lightning Network routing integration
     - Dice roll probabilistic mining
     - CPU-optimized mining algorithms
+    - Batched/fused kernel for improved performance
     """
     
     # Canonical axiom for EXS
@@ -95,13 +103,17 @@ class UnifiedMiner:
     DICE_SIDES = 100
     DICE_WIN_THRESHOLD = 95  # Need 95+ to win (5% chance)
     
+    # Batched mining configuration
+    DEFAULT_BATCH_SIZE = 32
+    
     def __init__(self, 
                  difficulty: int = 4,
                  merge_mining_enabled: bool = False,
                  lightning_routing_enabled: bool = False,
                  dice_mode_enabled: bool = False,
                  faucet_enabled: bool = False,
-                 btc_address: Optional[str] = None):
+                 btc_address: Optional[str] = None,
+                 batch_size: int = DEFAULT_BATCH_SIZE):
         """
         Initialize the Unified Miner.
         
@@ -112,6 +124,7 @@ class UnifiedMiner:
             dice_mode_enabled: Enable dice roll probabilistic mining
             faucet_enabled: Enable BTC faucet for auto-funding forge fees
             btc_address: BTC address for faucet claims (required if faucet_enabled)
+            batch_size: Batch size for processing (default: 32)
         """
         self.difficulty = difficulty
         self.merge_mining_enabled = merge_mining_enabled
@@ -119,9 +132,13 @@ class UnifiedMiner:
         self.dice_mode_enabled = dice_mode_enabled
         self.faucet_enabled = faucet_enabled
         self.btc_address = btc_address
+        self.batch_size = batch_size
         
-        # Initialize core miner
-        self.core_miner = TetraPowMiner(difficulty=difficulty)
+        # Initialize core miner with batched kernel
+        self.core_miner = TetraPowMiner(difficulty=difficulty, batch_size=batch_size)
+        
+        # Initialize universal kernel for dice operations
+        self.universal_kernel = UniversalMiningKernel(batch_size=batch_size)
         
         # Initialize faucet if enabled
         self.faucet = None
@@ -313,11 +330,13 @@ class UnifiedMiner:
                        axiom: str = None,
                        rolls: int = 100) -> List[DiceRollResult]:
         """
-        Dice roll probabilistic mining.
+        Dice roll probabilistic mining using batched kernel.
         
         This mode uses a probabilistic approach where each mining attempt is like
         rolling dice. If you roll high enough, you find a valid hash faster.
         This simulates the probabilistic nature of PoW mining.
+        
+        Now uses batched dice roll computation for improved performance.
         
         Args:
             axiom: The 13-word axiom
@@ -333,19 +352,34 @@ class UnifiedMiner:
         if axiom is None:
             axiom = self.CANONICAL_AXIOM
         
-        print(f"🎲 Dice Roll Mining")
+        print(f"🎲 Dice Roll Mining (Batched Mode)")
         print(f"   Rolls: {rolls}")
         print(f"   Target: {self.DICE_WIN_THRESHOLD}+ on d{self.DICE_SIDES}")
         print(f"   Win Rate: {(self.DICE_SIDES - self.DICE_WIN_THRESHOLD + 1) / self.DICE_SIDES * 100:.1f}%")
+        print(f"   Batch Size: {self.batch_size}")
         print()
         
         results = []
         wins = 0
         
-        for i in range(rolls):
-            # Roll the dice
-            roll = random.randint(1, self.DICE_SIDES)
-            nonce = random.randint(0, 1000000)
+        # Generate batched dice rolls using the universal kernel
+        server_seed = "unified_miner_seed_" + hashlib.sha256(axiom.encode()).hexdigest()[:16]
+        
+        # Prepare batch data
+        client_seeds = [f"client_seed_{i}" for i in range(rolls)]
+        nonces = [random.randint(0, 1000000) for _ in range(rolls)]
+        
+        # Use batched dice roll computation
+        batch_results = self.universal_kernel.batch_dice_roll_mine(
+            server_seed=server_seed,
+            client_seeds=client_seeds,
+            nonces=nonces,
+            max_value=self.DICE_SIDES * 100  # 10000 for 0.00-99.99 range
+        )
+        
+        for i, (hmac_value, nonce, roll_float, roll_int) in enumerate(batch_results):
+            # roll_float is in 0.00-99.99 range, convert to 1-100
+            roll = min(int(roll_float) + 1, 100)
             
             # Check if roll wins
             if roll >= self.DICE_WIN_THRESHOLD:
@@ -728,6 +762,9 @@ Examples:
     parser.add_argument('--payout-address', type=str,
                        help='Destination address for mining rewards/payouts')
     
+    parser.add_argument('--batch-size', type=int, default=UnifiedMiner.DEFAULT_BATCH_SIZE,
+                       help=f'Batch size for processing (default: {UnifiedMiner.DEFAULT_BATCH_SIZE})')
+    
     args = parser.parse_args()
     
     # Initialize unified miner with all features enabled
@@ -737,7 +774,8 @@ Examples:
         lightning_routing_enabled=True,
         dice_mode_enabled=True,
         faucet_enabled=args.enable_faucet or args.mode == 'faucet',
-        btc_address=args.btc_address
+        btc_address=args.btc_address,
+        batch_size=args.batch_size
     )
     
     print("⚔️  EXCALIBUR $EXS UNIFIED MINER ⚔️")
