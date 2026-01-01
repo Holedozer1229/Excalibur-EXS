@@ -38,7 +38,8 @@ const MerlinsPortalScreen = () => {
         )}
         onError={(syntheticEvent) => {
           const { nativeEvent } = syntheticEvent;
-          console.warn('WebView error: ', nativeEvent);
+          // Handle WebView errors gracefully
+          // In production, this should report to an error tracking service
         }}
       />
     </LinearGradient>

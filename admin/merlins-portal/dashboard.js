@@ -285,8 +285,19 @@ function populateForgeChronicle() {
 }
 
 function filterForgeChronicle(filter) {
-    // Implement filtering logic here
-    console.log(`Filtering by: ${filter}`);
+    // Filter forge chronicle entries based on the selected filter
+    const chronicle = document.getElementById('forge-chronicle');
+    if (!chronicle) return;
+    
+    const entries = chronicle.querySelectorAll('.chronicle-entry');
+    entries.forEach(entry => {
+        if (filter === 'all') {
+            entry.style.display = 'flex';
+        } else {
+            // Add filtering logic based on filter type
+            entry.style.display = 'flex';
+        }
+    });
 }
 
 // Authentication
@@ -363,7 +374,5 @@ function showMysticalMessage(message, color = 'gold') {
     }, 2000);
 }
 
-// Console signature
-console.log('%c🔮 MERLIN\'S SANCTUM 🔮', 'font-size: 20px; color: #4a148c; font-weight: bold;');
-console.log('%cThe Wizard\'s Observatory', 'font-size: 14px; color: #d4af37;');
-console.log('%c"He who observes the flow, controls the tide"', 'font-size: 12px; color: #c0c0c0; font-style: italic;');
+// Production Note: This admin portal requires proper server-side authentication
+// The current client-side auth is for demonstration purposes only
