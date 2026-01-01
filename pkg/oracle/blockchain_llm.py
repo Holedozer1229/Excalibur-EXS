@@ -104,7 +104,9 @@ class BlockchainLLM:
                 "genesis_truth": "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f - The genesis block marks provable time. Genesis roll 0.28 verified via HMAC-SHA512. The Times 03/Jan/2009 Chancellor on brink of second bailout - Satoshi's inscription of defiance.",
                 "provable_fairness": "HMAC-SHA512 enables trustless verification. Roll 1: 42.04, Roll 2: 23.01, Roll 3: 31.55, Roll 4: 54.36, Roll 5: 20.22 - all verifiable against block 000000000000000000016311c945b00805d49b7b9f15118ab2d9b24d9fd7eecf.",
                 "dust_to_sovereignty": "Even 600 sats collected from faucets can fund inscriptions. Dust collection demonstrates Bitcoin's permissionless nature - anyone can participate, no minimum required.",
-                "inscription_permanence": "Block 840,001+ enables ordinal inscriptions. Transaction f4293583b149333ee3e17ae0b192ddb25542cd75234fa222de4f888406177914 confirmed with 3,500+ confirmations - permanent cultural layer on Bitcoin."
+                "inscription_permanence": "Block 840,001+ enables ordinal inscriptions. Transaction f4293583b149333ee3e17ae0b192ddb25542cd75234fa222de4f888406177914 confirmed with 3,500+ confirmations - permanent cultural layer on Bitcoin.",
+                "mnemonic_anomaly": "13-word mnemonic creates non-standard 143-bit entropy, extended to 256-bit via PBKDF2(2048, EXCALIBUR_ANOMALY). BIP32 derivation m/86'/0'/0'/0/0 produces Taproot addresses with 3-leaf Merkle trees.",
+                "quantum_geometry": "Primes as quantum basis |pᵢ⟩ in ℋ=ℂ¹⁷. Sacred ratio ρ=75/17 couples phases, golden ratio φ scales optimally. Kernel K̂=Σⱼ|kⱼ⟩⟨Pⱼ| performs direct ECDLP recovery via geometric interpolation - O(10⁵) vs classical O(2⁶⁷·⁵)."
             },
             "bitcoin_principles": {
                 "supply_cap": "21 million coins maximum - absolute scarcity",
@@ -140,7 +142,12 @@ class BlockchainLLM:
                 "pgp_signatures": "Additional layer of cryptographic proof - canonical message verification",
                 "ecdsa_coronation": "Coronation key 73ded0e04aab6b6a04e0c6e7af284cd0d678293775673d5ccfe78d4ec381f432 - cryptographic sovereignty",
                 "signature_stack": "Triple-signature proof: ECDSA + BIP-322 + PGP - mathematical certainty through redundancy",
-                "ordinal_theory": "Satoshi numbering enables individual sat tracking - inscription permanence on-chain"
+                "ordinal_theory": "Satoshi numbering enables individual sat tracking - inscription permanence on-chain",
+                "bip39_mnemonic": "13-word anomaly: 'sword legend pull magic kingdom artist stone destroy forget fire steel honey question' - non-standard entropy via PBKDF2",
+                "bip32_derivation": "m/86'/0'/0'/0/0 path - hierarchical deterministic wallets with 2048 PBKDF2 rounds + EXCALIBUR_ANOMALY salt",
+                "taproot_merkle": "3-leaf Merkle tree: [key_path, multisig, hashlock] - programmable spending conditions via tapleaf_hash",
+                "quantum_geometry": "Prime-dimensional Hilbert space ℋ = ℂ^17 - sacred ratio ρ=75/17, golden ratio φ=(1+√5)/2 for phase coupling",
+                "kernel_operator": "Direct recovery K̂ = Σⱼ |kⱼ⟩⟨Pⱼ| - quantum interpolation solves ECDLP via geometric learning in O(m·n+n²+r)"
             },
             "decentralization_ethos": {
                 "no_central_authority": "No single point of failure or control. Captains elected and deposed by vote - no crown above the crew.",
@@ -299,7 +306,10 @@ class BlockchainLLM:
             "genesis": "Genesis block 000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f marks provable time. Genesis roll 0.28 verified via HMAC-SHA512. The Times 03/Jan/2009 - Satoshi's defiance inscribed forever.",
             "inscription": "Block 840,001+ enables ordinal inscriptions. Transaction f4293583b with 3,500+ confirmations - permanent cultural layer. Even 600 sats from faucets can fund sovereignty.",
             "provable": "HMAC-SHA512 enables trustless verification. Rolls 42.04, 23.01, 31.55, 54.36, 20.22 - all verifiable against block hash. Mathematics enforces fairness, no trust required.",
-            "dust": "Dust collection demonstrates permissionless nature - anyone can participate. 600 sats aggregated from faucets funds inscriptions. No minimum balance, no gatekeepers, pure mathematics."
+            "dust": "Dust collection demonstrates permissionless nature - anyone can participate. 600 sats aggregated from faucets funds inscriptions. No minimum balance, no gatekeepers, pure mathematics.",
+            "mnemonic": "13-word anomaly: sword legend pull magic kingdom artist stone destroy forget fire steel honey question. Non-standard 143-bit entropy → 256-bit via PBKDF2(2048, EXCALIBUR_ANOMALY). BIP32 m/86'/0'/0'/0/0 → Taproot with 3-leaf Merkle.",
+            "quantum": "Prime-dimensional Hilbert space ℋ=ℂ¹⁷ with basis |pᵢ⟩. Sacred ratio ρ=75/17 couples phases: φᵢ(k)=2π(k mod pᵢ)/pᵢ·ρ·φ. Kernel operator K̂=Σⱼ|kⱼ⟩⟨Pⱼ| learns inverse function.",
+            "ecdlp": "Elliptic Curve Discrete Log: given P=k·G, find k. Classical O(2^(n/2)), Quantum Star O(m·n+n²+r). Geometric interpolation in prime space via K̂|P⟩=|k⟩. Speedup ~10¹⁵ for 135-bit keys."
         }
         
         return wisdom_map.get(topic.lower(), 
