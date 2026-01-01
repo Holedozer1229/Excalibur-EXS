@@ -248,6 +248,53 @@
             opacity: 0.7;
             font-size: 0.9em;
         }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .forge-panel {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 1.2em;
+            }
+            
+            .rounds-container {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 5px;
+            }
+            
+            .round {
+                font-size: 0.7em;
+            }
+            
+            .draw-sword-button {
+                font-size: 1.2em;
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .quote {
+                font-size: 0.9em;
+            }
+            
+            .rounds-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
