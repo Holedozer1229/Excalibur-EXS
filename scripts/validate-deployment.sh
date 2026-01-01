@@ -84,7 +84,7 @@ echo "=== Checking Go Packages ==="
 check_dir "pkg/bitcoin"
 check_dir "pkg/crypto"
 check_dir "pkg/economy"
-check_dir "cmd/miner"
+check_dir "miners/tetra-pow-go"
 check_dir "cmd/rosetta"
 echo ""
 
@@ -102,7 +102,7 @@ check_file ".env.example"
 echo ""
 
 echo "=== Running Go Build Tests ==="
-if go build ./cmd/miner > /dev/null 2>&1; then
+if go build ./miners/tetra-pow-go > /dev/null 2>&1; then
     echo -e "${GREEN}✓${NC} Miner builds successfully"
 else
     echo -e "${RED}✗${NC} Miner build failed"

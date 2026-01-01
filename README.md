@@ -74,8 +74,9 @@ See:
 
 - **Rosetta API:** v1.4.10 for Coinbase, cross-exchange, and standardized integration (`pkg/rosetta/rosetta-exs.yaml`)
 - **Core Engine:**  
-  - Tetra-PoW miner: `pkg/miner/tetra_pow_miner.py`
+  - Tetra-PoW miners: `miners/tetra-pow-go/` (production) and `miners/tetra-pow-python/` (reference)
   - HPP-1 protocol: `pkg/foundry/exs_foundry.py`
+  - Universal kernel: `miners/lib/tetrapow_dice_universal.py`
 - **Economic Layer:**  
   - Tokenomics: `pkg/economy/tokenomics.json`
   - Treasury: `pkg/economy/treasury.go`
@@ -95,18 +96,83 @@ See:
 
 ```
 Excalibur-EXS/
+├── miners/              # Mining implementations (NEW!)
+│   ├── tetra-pow-go/    # Go production miner
+│   ├── tetra-pow-python/# Python reference miner
+│   ├── dice-miner/      # Probabilistic dice miner
+│   ├── universal-miner/ # Multi-strategy miner
+│   └── lib/             # Shared mining libraries
 ├── cmd/
-│   ├── miner/          # Ω′ Δ18 CLI miner
-│   └── rosetta/        # Go Rosetta API server
+│   ├── forge-api/       # Forge HTTP API
+│   └── rosetta/         # Go Rosetta API server
 ├── pkg/
-│   ├── crypto/         # Core cryptographic logic
-│   └── bitcoin/        # Taproot, Bech32m support
+│   ├── crypto/          # Core cryptographic logic
+│   ├── bitcoin/         # Taproot, Bech32m support
+│   ├── economy/         # Treasury and tokenomics
+│   └── foundry/         # Forge processing
 ├── web/
-│   └── forge-ui/       # Forge React/TypeScript UI
+│   ├── knights-round-table/ # Public forge UI
+│   └── forge-ui/        # Forge React/TypeScript UI
 ├── admin/
-│   └── merlins-portal/ # Admin dashboard
-└── docs/               # Documentation
+│   └── merlins-portal/  # Admin dashboard
+└── docs/                # Documentation
 ```
+
+## ⛏️ Mining Structure
+
+All mining implementations are now consolidated in the `miners/` directory for better organization and discoverability.
+
+### Available Miners
+
+- **Tetra-PoW Go** (`miners/tetra-pow-go/`) - Production miner with hardware acceleration
+- **Tetra-PoW Python** (`miners/tetra-pow-python/`) - Reference implementation, easy to modify
+- **Dice Miner** (`miners/dice-miner/`) - Probabilistic mining with provably fair cryptography
+- **Universal Miner** (`miners/universal-miner/`) - Multi-strategy miner supporting merge mining
+
+### Quick Start Mining
+
+```bash
+# Go miner (best performance)
+cd miners/tetra-pow-go
+go build -o tetra-pow-miner
+./tetra-pow-miner mine --data "Excalibur-EXS"
+
+# Python miner (easy to modify)
+cd miners/tetra-pow-python
+python3 tetra_pow_miner.py \
+  --axiom "sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
+
+# Dice miner (probabilistic)
+cd miners/dice-miner
+python3 dice_roll_miner.py mine --axiom "..."
+
+# Universal miner (merge mining)
+cd miners/universal-miner
+python3 unified_miner.py merge --chains BTC,LTC --axiom "..."
+```
+
+For detailed miner documentation, see [`miners/README.md`](miners/README.md)
+
+### Contributing New Consensus Engines
+
+We welcome contributions of new mining algorithms and consensus mechanisms! To add a new miner:
+
+1. Create a new directory under `miners/` with a descriptive name
+2. Implement your consensus algorithm
+3. Add a comprehensive README.md with:
+   - Algorithm description and security properties
+   - Installation and usage instructions
+   - Performance characteristics and benchmarks
+   - Integration examples
+4. Ensure compatibility with:
+   - The canonical 13-word axiom system
+   - Configurable difficulty targets
+   - P2TR vault address generation
+   - Treasury allocation (15% of rewards)
+5. Submit a pull request with tests and documentation
+
+See [`miners/README.md`](miners/README.md) for detailed contribution guidelines.
+
 
 ---
 ## 🧭 Getting Started
@@ -173,10 +239,17 @@ See: [`mobile-app/README.md`](mobile-app/README.md)
 ## 🧪 Development & Testing
 
 - **Go Tests:** `go test ./pkg/...`
+- **Integration Tests:** `./test.sh`
 - **Miner Benchmark:**  
   ```bash
-  cd cmd/miner
-  go run main.go benchmark --rounds 1000
+  # Go miner (fastest)
+  cd miners/tetra-pow-go
+  go build -o tetra-pow-miner
+  ./tetra-pow-miner benchmark --rounds 1000
+  
+  # Python miner
+  cd miners/tetra-pow-python
+  python3 tetra_pow_miner.py --axiom "test" --difficulty 2 --max-attempts 1000
   ```
 - **Rosetta API Health:**  
   ```bash
