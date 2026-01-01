@@ -178,6 +178,51 @@ function consultOracleLocal(query) {
                 tweak_method: 'SHA256(internalKey || prophecyHash)'
             }
         };
+    } else if (queryLower.includes('satoshi') || queryLower.includes('nakamoto') || queryLower.includes('bitcoin philosophy')) {
+        return {
+            category: 'Satoshi Nakamoto\'s Wisdom',
+            wisdom: 'The root problem with conventional currency is all the trust that\'s required to make it work. We eliminate trust through cryptographic proof.',
+            details: {
+                philosophy: 'Satoshi Nakamoto created Bitcoin to enable peer-to-peer electronic cash without trusted third parties',
+                key_principles: [
+                    'Decentralization: No single point of failure or control',
+                    'Trustlessness: Don\'t trust, verify through mathematics',
+                    'Proof-of-Work: Computational consensus solves Byzantine Generals\' Problem',
+                    'Fixed Supply: 21 million coin cap creates sound money',
+                    'Censorship Resistance: No entity can block transactions',
+                    'Peer-to-Peer: Direct value transfer without intermediaries'
+                ],
+                satoshi_quotes: 'It is better to have a system where no trust is needed at all',
+                relevance_to_exs: 'Excalibur $EXS inherits these principles with quantum-hardened security'
+            }
+        };
+    } else if (queryLower.includes('decentraliz') || queryLower.includes('trustless')) {
+        return {
+            category: 'Decentralization & Trustlessness',
+            wisdom: 'Camelot has no king but the protocol itself. Satoshi showed us a system where no trust is needed at all.',
+            details: {
+                overview: 'Decentralization removes single points of failure',
+                no_central_authority: 'No single entity controls the network',
+                permissionless: 'Anyone can participate without permission',
+                trustless_verification: 'Mathematical proofs replace human trust',
+                censorship_resistant: 'No one can block valid transactions',
+                self_custody: 'Be your own bank, control your own keys',
+                satoshi_principle: 'Peer-to-peer electronic cash allows direct payments without financial institutions'
+            }
+        };
+    } else if (queryLower.includes('sound money') || queryLower.includes('scarcity')) {
+        return {
+            category: 'Sound Money & Scarcity',
+            wisdom: '21 million $EXS total, like Bitcoin\'s 21 million coins. Absolute scarcity creates sound money.',
+            details: {
+                total_supply: '21,000,000 $EXS (absolute cap)',
+                forge_reward: '50 $EXS per forge',
+                scarcity_principle: 'Fixed supply prevents inflation and debasement',
+                store_of_value: 'Digital gold for preserving wealth over time',
+                satoshi_insight: 'Steady addition of coins is analogous to gold miners adding gold to circulation',
+                sound_money_properties: ['Scarcity', 'Durability', 'Divisibility', 'Portability', 'Fungibility']
+            }
+        };
     } else {
         return {
             category: 'General Protocol Wisdom',

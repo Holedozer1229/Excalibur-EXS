@@ -89,6 +89,66 @@ class BlockchainLLM:
                 "merlin_vector": "name|email|secret + AXIOM",
                 "portal_id_format": "MERLIN-{hash16}",
                 "access_control": "64-byte access key"
+            },
+            "satoshi_wisdom": {
+                "decentralization": "The root problem with conventional currency is all the trust that's required to make it work.",
+                "proof_of_work": "The proof-of-work chain is a solution to the Byzantine Generals' Problem.",
+                "mining_purpose": "The steady addition of a constant of amount of new coins is analogous to gold miners expending resources to add gold to circulation.",
+                "scarcity": "Once a predetermined number of coins have entered circulation, the incentive can transition entirely to transaction fees.",
+                "trust_minimization": "It is better to have a system where no trust is needed at all.",
+                "immutability": "The network timestamps transactions by hashing them into an ongoing chain of hash-based proof-of-work.",
+                "censorship_resistance": "A purely peer-to-peer version of electronic cash would allow online payments to be sent directly without going through a financial institution.",
+                "incentive_alignment": "By convention, the first transaction in a block is a special transaction that starts a new coin owned by the creator of the block.",
+                "longest_chain": "Nodes always consider the longest chain to be the correct one and will keep working on extending it.",
+                "difficulty_adjustment": "The proof-of-work difficulty is determined by a moving average targeting an average number of blocks per hour."
+            },
+            "bitcoin_principles": {
+                "supply_cap": "21 million coins maximum - absolute scarcity",
+                "halving": "Block reward halves every 210,000 blocks (~4 years)",
+                "difficulty_targeting": "Adjusted every 2016 blocks to maintain ~10 minute block time",
+                "utxo_model": "Unspent Transaction Output model for tracking coin ownership",
+                "scriptSig_scriptPubKey": "Bitcoin's scripting language for programmable money",
+                "merkle_trees": "Efficient verification of transaction inclusion in blocks",
+                "spv_clients": "Simplified Payment Verification for lightweight nodes",
+                "timestamping": "Blockchain provides proof of data existence at a point in time",
+                "double_spend_prevention": "Longest chain consensus prevents double spending",
+                "network_consensus": "Honest nodes control majority of CPU power"
+            },
+            "cryptographic_heritage": {
+                "sha256": "Cryptographic hash function for mining and merkle trees",
+                "ecdsa": "Elliptic Curve Digital Signature Algorithm for signatures",
+                "schnorr": "Efficient signature aggregation (Taproot upgrade)",
+                "merkle_root": "Single hash representing all transactions in block",
+                "difficulty_target": "Proof-of-work threshold adjusted for network hashrate",
+                "nonce_search": "Finding a nonce that produces a hash below target",
+                "hash_functions": "One-way functions for cryptographic security",
+                "public_key_crypto": "Asymmetric cryptography for address generation",
+                "digital_signatures": "Prove ownership without revealing private keys",
+                "hash_collision": "Computationally infeasible for SHA-256"
+            },
+            "decentralization_ethos": {
+                "no_central_authority": "No single point of failure or control",
+                "permissionless": "Anyone can participate without permission",
+                "trustless": "Don't trust, verify - mathematical guarantees",
+                "censorship_resistant": "No entity can block transactions",
+                "open_source": "Transparent code anyone can audit",
+                "node_sovereignty": "Run your own node, verify your own transactions",
+                "peer_to_peer": "Direct value transfer without intermediaries",
+                "global_accessibility": "Borderless, 24/7 access for everyone",
+                "self_custody": "Be your own bank, control your keys",
+                "network_effects": "Stronger with more participants"
+            },
+            "monetary_philosophy": {
+                "sound_money": "Fixed supply prevents inflation and debasement",
+                "store_of_value": "Digital gold for preserving wealth over time",
+                "medium_of_exchange": "Peer-to-peer electronic cash system",
+                "unit_of_account": "Divisible to 8 decimal places (satoshis)",
+                "scarcity_value": "Value derived from provable scarcity",
+                "energy_backing": "Backed by computational work and energy",
+                "time_preference": "Encourages saving over consumption",
+                "cantillon_effect": "No first-spender advantage, fair distribution",
+                "hyperbitcoinization": "Potential global adoption as reserve currency",
+                "sovereignty": "Financial freedom and individual empowerment"
             }
         }
     
@@ -187,7 +247,7 @@ class BlockchainLLM:
     
     def generate_wisdom(self, topic: str) -> str:
         """
-        Generate Arthurian wisdom related to the protocol.
+        Generate Arthurian wisdom related to the protocol, infused with Satoshi's philosophy.
         
         Args:
             topic: Topic to generate wisdom about
@@ -196,17 +256,25 @@ class BlockchainLLM:
             Wisdom string
         """
         wisdom_map = {
-            "mining": "As Arthur proved his worth by drawing Excalibur, so must miners prove theirs through the Ω′ Δ18 forge.",
-            "axiom": "The 13 words of power bind the protocol, each word a knight at the Round Table.",
-            "treasury": "Merlin guards the treasury with 1.2 million magical rounds, twice the strength of ordinary keys.",
-            "vault": "Each vault is a Taproot mystery, deterministic yet unlinkable, like the Lady's lake.",
-            "forge": "Every successful forge echoes through Camelot, rewarding the worthy with 50 $EXS.",
-            "difficulty": "Four leading zeros mark the challenge, a dragon's gate that few may pass.",
-            "prophecy": "The prophecy speaks through cryptographic proof, unbreakable and eternal."
+            "mining": "As Arthur proved his worth by drawing Excalibur, so must miners prove theirs through the Ω′ Δ18 forge. Satoshi taught us that steady mining adds value to circulation, like gold miners extracting precious metal.",
+            "axiom": "The 13 words of power bind the protocol, each word a knight at the Round Table. In Satoshi's vision, cryptographic proof replaces trust.",
+            "treasury": "Merlin guards the treasury with 1.2 million magical rounds, twice the strength of ordinary keys. As Satoshi said, the root problem with currency is the trust required - we eliminate it through mathematics.",
+            "vault": "Each vault is a Taproot mystery, deterministic yet unlinkable, like the Lady's lake. Self-custody means being your own bank, as Satoshi intended.",
+            "forge": "Every successful forge echoes through Camelot, rewarding the worthy with 50 $EXS. The network timestamps transactions in an ongoing chain of proof-of-work.",
+            "difficulty": "Four leading zeros mark the challenge, a dragon's gate that few may pass. Difficulty adjusts to maintain fair distribution, honoring Satoshi's design.",
+            "prophecy": "The prophecy speaks through cryptographic proof, unbreakable and eternal. Don't trust, verify - this is the way.",
+            "decentralization": "Camelot has no king but the protocol itself. Satoshi showed us a system where no trust is needed at all.",
+            "scarcity": "21 million $EXS total, like Bitcoin's 21 million coins. Absolute scarcity creates sound money.",
+            "trustless": "The Round Table requires no intermediaries. Peer-to-peer electronic cash flows directly between parties.",
+            "censorship": "No force in the realm can block a forge. Censorship resistance is freedom's foundation.",
+            "proof": "The proof-of-work chain solves the Byzantine Generals' Problem through computational consensus.",
+            "immutability": "What is forged in the blockchain cannot be undone. Immutability provides certainty.",
+            "sovereignty": "Control your keys, control your destiny. Financial sovereignty is individual empowerment.",
+            "sound_money": "Fixed supply prevents debasement. Sound money preserves wealth across time."
         }
         
         return wisdom_map.get(topic.lower(), 
-            "In the land of Excalibur, cryptographic truth reigns supreme.")
+            "In the land of Excalibur, cryptographic truth reigns supreme. As Satoshi taught: It is better to have a system where no trust is needed at all.")
     
     def export_knowledge_base(self) -> str:
         """
