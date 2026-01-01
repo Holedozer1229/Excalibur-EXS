@@ -10,7 +10,7 @@ echo ""
 
 # Test 1: Build all components
 echo "Test 1: Building all components..."
-cd cmd/miner && go build && cd ../..
+cd miners/tetra-pow-go && go build -o tetra-pow-miner && cd ../..
 cd cmd/rosetta && go build && cd ../..
 echo "✅ All binaries built successfully"
 echo ""
@@ -23,10 +23,10 @@ echo ""
 
 # Test 3: Test miner commands
 echo "Test 3: Testing miner CLI..."
-cd cmd/miner
-./miner --help > /dev/null
-./miner hpp1 --data "test" > /dev/null
-./miner benchmark --rounds 10 > /dev/null
+cd miners/tetra-pow-go
+./tetra-pow-miner --help > /dev/null
+./tetra-pow-miner hpp1 --data "test" > /dev/null
+./tetra-pow-miner benchmark --rounds 10 > /dev/null
 cd ../..
 echo "✅ Miner CLI works correctly"
 echo ""

@@ -1,7 +1,7 @@
 # Rosetta API Configuration for Excalibur $EXS Protocol
 # Specification: https://www.rosetta-api.org/
 
-version: "1.4.0"
+version: "1.4.10"
 
 network:
   blockchain: "Bitcoin"
@@ -19,7 +19,7 @@ currency:
   metadata:
     standard: "Bitcoin-Runes"
     max_supply: 21000000
-    reward_per_forge: 100
+    reward_per_forge: 50
     forge_fee_sats: 10000
     distribution:
       PoF: "60%"
