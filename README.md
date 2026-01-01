@@ -125,6 +125,13 @@ Excalibur-EXS/
 ---
 ## ⚡ Deployment Options
 
+- **Digital Ocean (Recommended):**  
+  One-command deployment to www.excaliburcrypto.com:
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/Holedozer1229/Excalibur-EXS/main/scripts/quick-deploy-digitalocean.sh | sudo bash
+  ```  
+  See [`DIGITAL_OCEAN_DEPLOY.md`](DIGITAL_OCEAN_DEPLOY.md) for complete guide
+
 - **Docker:**  
   ```bash
   docker-compose up -d
