@@ -382,6 +382,24 @@
             div.textContent = input;
             return div.innerHTML;
         }
+        
+        // Validate axiom format
+        function validateAxiomFormat(input) {
+            // Check if input contains exactly 13 words
+            const words = input.trim().split(/\s+/);
+            if (words.length !== 13) {
+                return { valid: false, error: 'The axiom must contain exactly 13 words.' };
+            }
+            
+            // Check each word contains only lowercase letters
+            for (const word of words) {
+                if (!/^[a-z]+$/.test(word)) {
+                    return { valid: false, error: 'Each word must contain only lowercase letters.' };
+                }
+            }
+            
+            return { valid: true };
+        }
 
         // Draw Sword button handler
         document.getElementById('draw-sword-btn').addEventListener('click', function() {
@@ -393,11 +411,19 @@
                 return;
             }
             
-            const axiom = sanitizeInput(rawInput).toLowerCase();
+            const sanitized = sanitizeInput(rawInput).toLowerCase();
+            
+            // Validate format first
+            const formatCheck = validateAxiomFormat(sanitized);
+            if (!formatCheck.valid) {
+                alert('⚠️ ' + formatCheck.error);
+                return;
+            }
+            
             const expectedAxiom = 'sword legend pull magic kingdom artist stone destroy forget fire steel honey question';
             
             // Validate axiom
-            if (axiom !== expectedAxiom) {
+            if (sanitized !== expectedAxiom) {
                 alert('⚠️ Invalid axiom! Please enter the exact 13-word sequence.');
                 return;
             }
