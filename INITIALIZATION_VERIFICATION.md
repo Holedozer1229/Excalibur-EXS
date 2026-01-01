@@ -242,6 +242,7 @@ All packages tested successfully:
 Excalibur-EXS/
 ├── LICENSE                          ✅ BSD 3-Clause
 ├── README.md                         ✅ Complete Manifesto
+├── forge_treasury_key.py            ✅ Treasury Admin Key Generator
 ├── .github/
 │   └── workflows/
 │       └── forge-exs.yml            ✅ Forge Trigger Action
@@ -258,7 +259,7 @@ Excalibur-EXS/
 │   ├── miner/
 │   │   └── tetra_pow_miner.py      ✅ Ω′ Δ18 Miner
 │   ├── foundry/
-│   │   └── exs_foundry.py          ✅ HPP-1 Protocol
+│   │   └── exs_foundry.py          ✅ HPP-1 Protocol (with custom 13-word tweak)
 │   ├── economy/
 │   │   ├── tokenomics.json         ✅ Economic Model
 │   │   └── treasury.go             ✅ Treasury Backend
@@ -284,9 +285,10 @@ Excalibur-EXS/
 ## Security Verification ✅
 
 - ✅ No secrets or credentials committed
-- ✅ HPP-1 quantum-hardening (600k iterations) implemented
+- ✅ HPP-1 quantum-hardening (600k iterations) implemented for forge keys
+- ✅ Enhanced treasury admin security (1.2M iterations via `forge_treasury_key.py`)
 - ✅ Tetra-PoW nonlinear state shifts (128 rounds)
-- ✅ Taproot privacy features enabled
+- ✅ Taproot privacy features enabled with custom 13-word axiom tweak
 - ✅ CLTV time-lock scripts for treasury security
 - ✅ All test suites passing
 

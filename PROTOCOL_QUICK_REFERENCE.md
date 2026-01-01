@@ -89,6 +89,17 @@ python3 pkg/foundry/exs_foundry.py
 go test ./pkg/...
 ```
 
+### Generate Treasury Admin Credentials
+```bash
+python3 forge_treasury_key.py
+```
+
+**Treasury Key Security:**
+- Uses **1.2 million rounds** PBKDF2-HMAC-SHA512 (2x forge key iterations)
+- Combines: `name|email|secret` with the 13-word AXIOM as "Merlin Vector"
+- Generates MERLIN-{id} portal ID and 64-byte access key
+- Controls entire $EXS Treasury - protect this secret carefully
+
 ---
 
 ## 📁 Key Files
@@ -98,6 +109,7 @@ go test ./pkg/...
 - `pkg/foundry/exs_foundry.py` - HPP-1 protocol
 - `pkg/economy/treasury.go` - Treasury backend
 - `pkg/economy/tokenomics.json` - Economic model
+- `forge_treasury_key.py` - Treasury admin credential generator
 
 ### Portals
 - `admin/merlins-portal/index.html` - Admin dashboard
@@ -116,8 +128,9 @@ go test ./pkg/...
 
 ## 🔐 Security Features
 
-1. **Quantum Hardening:** HPP-1 with 600,000 iterations
-2. **Nonlinear State Shifts:** 128-round cryptographic maze
+1. **Quantum Hardening:** HPP-1 with 600,000 iterations (forge keys)
+2. **Enhanced Treasury Security:** 1.2 million iterations for admin credentials
+3. **Nonlinear State Shifts:** 128-round cryptographic maze
 3. **Taproot Privacy:** P2TR conceals spending conditions
 4. **CLTV Time-Locks:** Treasury security via Bitcoin scripts
 5. **Axiomatic Unlinkability:** Deterministic yet unpredictable
