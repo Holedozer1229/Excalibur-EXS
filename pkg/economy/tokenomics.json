@@ -1,392 +1,205 @@
 {
-  "MaxSupply": 21000000,
-  "RewardPerForge": 100,
-  "ForgeFeeSats": 10000,
-  "Distribution": {
-    "PoF": 0.6,
-    "Treasury": 0.15,
-    "Liquidity": 0.2,
-    "Airdrop": 0.05
   "protocol": "Excalibur $EXS",
   "version": "1.0.0",
+  "axiom": "sword legend pull magic kingdom artist stone destroy forget fire steel honey question",
+  
   "supply": {
-    "total": 21000000,
-    "unit": "$EXS",
-    "description": "Total supply mirrors Bitcoin's scarcity model"
-  },
-  "forge_rewards": {
-    "amount_per_forge": 50,
-    "unit": "$EXS",
-    "halving": {
-      "enabled": true,
-      "interval_forges": 420000,
-      "description": "Reward halves every 420,000 forges (similar to Bitcoin's 210,000 block halving)"
-    }
-  },
-  "distribution": {
-    "proof_of_forge": {
-      "percentage": 60,
-      "amount": 12600000,
-      "description": "Miners who successfully complete Ω′ Δ18 forges"
-    },
-    "treasury": {
-      "percentage": 15,
-      "amount": 3150000,
-      "description": "Protocol development and infrastructure"
-    },
-    "liquidity": {
-      "percentage": 20,
-      "amount": 4200000,
-      "description": "DEX and CEX liquidity pools"
-    },
-    "airdrop": {
-      "percentage": 5,
-      "amount": 1050000,
-      "description": "Community rewards and early adopters"
-    }
-  },
-  "fee_structure": {
-    "treasury_fee": {
-      "rate": 0.01,
-      "description": "1% of all forge rewards automatically collected for treasury",
-      "collection": "automatic"
-    },
-    "forge_fee": {
-      "amount": 0.0001,
-      "unit": "BTC",
-      "description": "Per-forge fee to prevent spam and fund infrastructure",
-      "payment_method": "pre-forge"
-    }
-  },
-  "mining": {
-    "algorithm": "Ω′ Δ18 Tetra-PoW",
-    "rounds": 128,
-    "hardening": "HPP-1 (600,000 PBKDF2-HMAC-SHA512 iterations)",
-    "default_difficulty": 4,
-    "target_forge_time": "~10 minutes"
-  },
-  "address_format": {
-    "type": "P2TR",
-    "standard": "Taproot (BIP 341)",
-    "prefix": "bc1p",
-    "description": "All rewards distributed to Taproot addresses for maximum privacy"
-  },
-  "emission_schedule": {
-    "total_forges_to_max_supply": 420000,
-    "years_to_max_supply": 8,
-    "description": "Assuming ~10 minute average forge time"
-  },
-  "economic_properties": {
-    "deflationary": true,
-    "max_supply_capped": true,
-    "quantum_resistant": true,
-    "privacy_enhanced": true
-  },
-  "governance": {
-    "difficulty_adjustment": "manual",
-    "authority": "Merlin's Portal (Admin Dashboard)",
-    "treasury_management": "multi-sig",
-    "upgrade_process": "community_consensus"
-  },
-  "institutional": {
-    "rosetta_api_compliant": true,
-    "exchange_listing_ready": true,
-    "audit_status": "pending",
-    "regulatory_classification": "utility_token"
-  },
-  "metadata": {
-    "axiom": "sword legend pull magic kingdom artist stone destroy forget fire steel honey question",
-    "lead_architect": "Travis D Jones",
-    "email": "holedozer@gmail.com",
-    "license": "BSD-3-Clause",
-    "genesis_date": "2025",
-    "chain_type": "Bitcoin_fork"
     "total_cap": 21000000,
     "unit": "EXS",
     "decimals": 8,
-    "initial_supply": 0,
-    "mining_distribution": {
-      "proof_of_forge": {
-        "percentage": 60,
-        "allocation": 12600000,
-        "description": "Distributed to miners via Ω′ Δ18 Tetra-PoW forging"
-      },
-      "treasury": {
-        "percentage": 15,
-        "allocation": 3150000,
-        "description": "Protocol development, security audits, ecosystem grants"
-      },
-      "liquidity_pools": {
-        "percentage": 20,
-        "allocation": 4200000,
-        "description": "DEX/CEX liquidity, cross-chain bridges, trading pairs"
-      },
-      "airdrop_community": {
-        "percentage": 5,
-        "allocation": 1050000,
-        "description": "Community building, early adopters, governance participants"
+    "smallest_unit": "satoshi_exs"
+  },
+  
+  "forge_economics": {
+    "reward_per_forge": 50,
+    "halving_schedule": "none",
+    "total_possible_forges": 420000,
+    "difficulty_target": 4,
+    "difficulty_adjustment": "manual"
+  },
+  
+  "distribution": {
+    "proof_of_forge": {
+      "percent": 60,
+      "amount": 12600000,
+      "description": "Distributed to miners through Proof-of-Forge (PoF) rewards"
+    },
+    "treasury": {
+      "percent": 15,
+      "amount": 3150000,
+      "description": "Protocol treasury for development, maintenance, and grants",
+      "allocation_per_block": 7.5,
+      "rolling_release": {
+        "enabled": true,
+        "duration_months": 12,
+        "mini_outputs": 3,
+        "amount_per_mini_output": 2.5,
+        "cltv_locks": {
+          "output_1": {"blocks": 0, "description": "Immediately available"},
+          "output_2": {"blocks": 4320, "description": "Locked for ~1 month"},
+          "output_3": {"blocks": 8640, "description": "Locked for ~2 months"}
+        },
+        "description": "Treasury allocation split into 3 time-locked mini-outputs using Bitcoin CLTV scripts"
       }
+    },
+    "liquidity": {
+      "percent": 20,
+      "amount": 4200000,
+      "description": "Liquidity pools on decentralized exchanges (DEX)"
+    },
+    "airdrop": {
+      "percent": 5,
+      "amount": 1050000,
+      "description": "Community airdrops and early adopter rewards"
     }
   },
-  "mining": {
-    "algorithm": "Ω′ Δ18 Tetra-PoW",
-    "block_time_seconds": 600,
-    "initial_block_reward": 50,
-    "halving_interval_blocks": 210000,
-    "halving_schedule": [
-      { "era": 0, "blocks": "0-209999", "reward": 50 },
-      { "era": 1, "blocks": "210000-419999", "reward": 25 },
-      { "era": 2, "blocks": "420000-629999", "reward": 12.5 },
-      { "era": 3, "blocks": "630000-839999", "reward": 6.25 }
-    ],
-    "difficulty_adjustment": {
-      "algorithm": "King Arthur Dynamic",
-      "target_block_time": 600,
-      "adjustment_interval_blocks": 2016,
-      "max_adjustment_factor": 4
-    }
-  },
+  
   "fees": {
     "treasury_fee": {
-      "percentage": 1,
-      "applied_to": "all mining rewards",
-      "recipient": "protocol_treasury",
-      "purpose": "Sustainable development funding"
+      "percent": 1,
+      "basis": "forge_reward",
+      "description": "1% of each 50 $EXS forge reward goes to treasury",
+      "amount_per_forge": 0.5
     },
     "forge_fee": {
-      "amount_btc": 0.0001,
-      "purpose": "Spam prevention and Bitcoin network alignment",
-      "payable_in": ["BTC", "Lightning Network"]
+      "amount": 0.0001,
+      "currency": "BTC",
+      "description": "Bitcoin fee required to submit a forge transaction"
     },
-    "cross_chain_bridge_fee": {
-      "percentage": 0.3,
-      "applied_to": "bridge transactions",
-      "distribution": {
-        "treasury": 40,
-        "liquidity_providers": 40,
-        "validators": 20
-      }
-    },
-    "lightning_routing_fee": {
-      "base_fee_msat": 1000,
-      "fee_rate_ppm": 100,
-      "purpose": "Lightning channel routing rewards",
-      "distribution": {
-        "node_operator": 70,
-        "treasury": 20,
-        "liquidity_pool": 10
-      }
+    "transfer_fee": {
+      "amount": 0.00000546,
+      "currency": "BTC",
+      "description": "Minimum Bitcoin network fee for $EXS transfers"
     }
   },
-  "advanced_revenue_streams": {
-    "cross_chain_mining": {
-      "enabled": true,
-      "supported_chains": [
-        "Bitcoin",
-        "Ethereum",
-        "Polygon",
-        "Arbitrum",
-        "Optimism"
-      ],
-      "revenue_model": "Users mine $EXS by providing liquidity/staking on partner chains",
-      "reward_multipliers": {
-        "btc_locked": 2.0,
-        "eth_staked": 1.5,
-        "polygon_lp": 1.3,
-        "arbitrum_bridge": 1.2
-      },
-      "treasury_share_percentage": 10
+  
+  "technical_parameters": {
+    "mining_algorithm": "Ω′ Δ18",
+    "algorithm_description": "128-round unrolled nonlinear hash algorithm",
+    "hardness_protocol": "HPP-1",
+    "hpp1_iterations": 600000,
+    "hpp1_algorithm": "PBKDF2-HMAC-SHA512",
+    "vault_type": "Taproot (P2TR)",
+    "quantum_resistance": true
+  },
+  
+  "emission_schedule": {
+    "phase": "constant",
+    "reward_per_block": null,
+    "reward_per_forge": 50,
+    "estimated_time_per_forge": "variable",
+    "difficulty_adjustment_method": "manual_by_architect"
+  },
+  
+  "treasury_allocation": {
+    "development": {
+      "percent": 40,
+      "amount": 1260000,
+      "description": "Core protocol development and improvements"
     },
-    "smart_contract_futures": {
-      "enabled": true,
-      "description": "Derivative contracts on $EXS price movements",
-      "supported_products": [
-        "Perpetual Futures",
-        "Options",
-        "Prediction Markets"
-      ],
-      "fee_structure": {
-        "trading_fee_percentage": 0.05,
-        "funding_rate_cap": 0.01,
-        "liquidation_fee_percentage": 0.5
-      },
-      "revenue_distribution": {
-        "treasury": 30,
-        "liquidity_providers": 50,
-        "insurance_fund": 20
-      }
+    "grants": {
+      "percent": 30,
+      "amount": 945000,
+      "description": "Community grants and ecosystem development"
     },
-    "taproot_processing_network": {
-      "enabled": true,
-      "description": "Fee aggregation from Taproot P2TR transaction processing",
-      "services": [
-        "Batch transaction processing",
-        "Privacy-enhanced transfers",
-        "Multi-signature coordination",
-        "Lightning channel management"
-      ],
-      "fee_model": {
-        "base_processing_fee_sats": 100,
-        "privacy_premium_percentage": 5,
-        "batch_discount_percentage": 15
-      },
-      "revenue_split": {
-        "treasury": 25,
-        "node_operators": 50,
-        "liquidity_rewards": 25
-      }
+    "operations": {
+      "percent": 20,
+      "amount": 630000,
+      "description": "Infrastructure, hosting, and operational costs"
     },
-    "lightning_fee_routing": {
-      "enabled": true,
-      "description": "Revenue from Lightning Network fee routing optimization",
-      "features": [
-        "Optimal path finding",
-        "Channel rebalancing",
-        "Fee arbitrage",
-        "Multi-hop routing"
-      ],
-      "revenue_sources": {
-        "routing_fees": "Collected from successful Lightning payments",
-        "rebalancing_premiums": "Earned from channel liquidity optimization",
-        "arbitrage_profits": "From cross-channel fee differentials"
-      },
-      "distribution": {
-        "treasury": 15,
-        "routing_nodes": 60,
-        "exs_holders": 25
-      }
+    "reserve": {
+      "percent": 10,
+      "amount": 315000,
+      "description": "Emergency reserve for unforeseen circumstances"
     }
   },
-  "treasury_vault": {
-    "multi_sig_config": {
-      "required_signatures": 3,
-      "total_signers": 5,
-      "signers": [
-        "King Arthur (Lead Architect)",
-        "Merlin (Technical Lead)",
-        "Lancelot (Security Auditor)",
-        "Guinevere (Community Lead)",
-        "Galahad (Operations Manager)"
+  
+  "liquidity_strategy": {
+    "initial_dex_listing": {
+      "amount": 100000,
+      "description": "Initial liquidity for decentralized exchange listings"
+    },
+    "lp_incentives": {
+      "amount": 2100000,
+      "description": "Liquidity provider incentives over time"
+    },
+    "market_making": {
+      "amount": 2000000,
+      "description": "Market making and depth provision"
+    }
+  },
+  
+  "airdrop_distribution": {
+    "early_adopters": {
+      "percent": 50,
+      "amount": 525000,
+      "description": "First 1000 forge participants"
+    },
+    "community_builders": {
+      "percent": 30,
+      "amount": 315000,
+      "description": "Active community contributors and evangelists"
+    },
+    "strategic_partners": {
+      "percent": 20,
+      "amount": 210000,
+      "description": "Strategic partnerships and integrations"
+    }
+  },
+  
+  "governance": {
+    "model": "architect_led",
+    "lead_architect": "Travis D. Jones",
+    "email": "holedozer@gmail.com",
+    "transition_plan": "eventual_dao",
+    "voting_mechanism": "stake_weighted",
+    "proposal_threshold": 10000
+  },
+  
+  "roadmap": {
+    "phase_1": {
+      "name": "Genesis",
+      "status": "active",
+      "milestones": [
+        "Core protocol implementation",
+        "Double-portal architecture launch",
+        "Initial forge testing"
       ]
     },
-    "fund_allocation": {
-      "development": {
-        "percentage": 40,
-        "uses": ["Core protocol development", "Security audits", "Infrastructure"]
-      },
-      "marketing": {
-        "percentage": 20,
-        "uses": ["Exchange listings", "Partnerships", "Community growth"]
-      },
-      "operations": {
-        "percentage": 15,
-        "uses": ["Team salaries", "Legal compliance", "Administrative"]
-      },
-      "research": {
-        "percentage": 10,
-        "uses": ["Quantum resistance research", "Protocol optimization", "Academic partnerships"]
-      },
-      "grants": {
-        "percentage": 10,
-        "uses": ["Community projects", "Educational initiatives", "Open source contributions"]
-      },
-      "reserves": {
-        "percentage": 5,
-        "uses": ["Emergency fund", "Market stabilization", "Unforeseen expenses"]
-      }
+    "phase_2": {
+      "name": "Expansion",
+      "status": "planned",
+      "milestones": [
+        "DEX listings",
+        "Liquidity pool establishment",
+        "Community airdrop"
+      ]
     },
-    "vesting_schedule": {
-      "cliff_months": 6,
-      "vesting_period_months": 48,
-      "release_frequency": "monthly"
+    "phase_3": {
+      "name": "Integration",
+      "status": "planned",
+      "milestones": [
+        "Rosetta API completion",
+        "CEX listings (Coinbase, Kraken)",
+        "Wallet integrations"
+      ]
+    },
+    "phase_4": {
+      "name": "Maturity",
+      "status": "future",
+      "milestones": [
+        "DAO transition",
+        "Layer-2 solutions",
+        "Cross-chain bridges"
+      ]
     }
   },
-  "governance": {
-    "model": "Hybrid (Admin + Community)",
-    "voting_power": {
-      "exs_holdings": "1 EXS = 1 vote",
-      "forge_participation": "Bonus votes for active miners",
-      "treasury_contributors": "Weighted votes for ecosystem contributors"
-    },
-    "proposal_types": [
-      "Protocol upgrades",
-      "Fee adjustments",
-      "Treasury spending",
-      "Partnership approvals",
-      "Emergency actions"
-    ],
-    "quorum_requirements": {
-      "standard_proposal": "20% of circulating supply",
-      "critical_proposal": "40% of circulating supply",
-      "emergency_action": "King Arthur + 3/5 signers"
-    }
-  },
-  "reward_optimization": {
-    "dynamic_fee_adjustment": {
-      "enabled": true,
-      "adjusts_based_on": [
-        "Network congestion",
-        "Market conditions",
-        "Competitor rates",
-        "Treasury needs"
-      ],
-      "adjustment_frequency_hours": 24,
-      "max_change_per_adjustment": 10
-    },
-    "user_reward_bonuses": {
-      "long_term_holder_bonus": {
-        "12_months": 5,
-        "24_months": 12,
-        "48_months": 25,
-        "unit": "percentage increase in rewards"
-      },
-      "active_participant_bonus": {
-        "governance_votes": 2,
-        "liquidity_provision": 5,
-        "node_operation": 10,
-        "unit": "percentage increase in rewards"
-      },
-      "referral_rewards": {
-        "referee_bonus_percentage": 5,
-        "referrer_bonus_percentage": 3,
-        "max_referrals": 100
-      }
-    },
-    "profit_sharing": {
-      "enabled": true,
-      "distribution_frequency": "quarterly",
-      "eligible_activities": [
-        "Cross-chain mining revenue",
-        "Smart contract futures fees",
-        "Lightning routing profits",
-        "Taproot processing fees"
-      ],
-      "distribution_method": "Proportional to EXS holdings and participation level"
-    }
-  },
-  "sustainability": {
-    "buyback_program": {
-      "enabled": true,
-      "source": "10% of all treasury revenue",
-      "frequency": "monthly",
-      "method": "Open market purchases",
-      "disposition": "Burned or redistributed to stakers"
-    },
-    "burn_mechanism": {
-      "transaction_burn": "0.01% of every transaction",
-      "periodic_burn": "5% of treasury excess annually",
-      "deflationary_target": "Reduce circulating supply by 10% over 10 years"
-    }
-  },
+  
   "metadata": {
-    "launch_date": "2025-Q1",
-    "initial_exchange": "Decentralized",
-    "target_exchanges": ["Coinbase", "Binance", "Kraken", "OKX"],
-    "rosetta_compatible": true,
-    "eip_compatible": false,
-    "bitcoin_compatible": true,
-    "lead_architect": "Travis D Jones",
-    "contact": "holedozer@gmail.com",
-    "license": "BSD-3-Clause"
+    "created": "2025-12-20",
+    "last_updated": "2025-12-20",
+    "author": "Travis D. Jones <holedozer@gmail.com>",
+    "license": "BSD-3-Clause",
+    "repository": "https://github.com/Holedozer1229/Excalibur-EXS"
   }
 }

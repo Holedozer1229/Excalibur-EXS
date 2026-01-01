@@ -1,0 +1,35 @@
+# File: cmd/lancelot_guardian/config.yaml
+# Configuration for Lancelot Guardian monitoring service
+
+# Service URLs
+tetra_pow_url: http://localhost:8082
+diceminer_url: http://localhost:8083
+treasury_url: http://localhost:8080
+rosetta_url: http://localhost:8081
+
+# Monitoring settings
+check_interval: 60  # seconds between health checks
+
+# Alert channels (optional - configure as needed)
+alert_channels:
+  # Slack webhook for alerts
+  # slack_webhook: https://hooks.slack.com/services/YOUR/WEBHOOK/URL
+  
+  # Discord webhook for alerts
+  # discord_webhook: https://discord.com/api/webhooks/YOUR/WEBHOOK/URL
+  
+  # Email settings (if using)
+  # email:
+  #   smtp_server: smtp.gmail.com
+  #   smtp_port: 587
+  #   from_address: guardian@excaliburcrypto.com
+  #   to_addresses:
+  #     - admin@excaliburcrypto.com
+  #   username: your_username
+  #   password: your_password
+
+# Threshold settings for alerts
+thresholds:
+  min_hashrate: 1.0  # H/s - alert if hashrate drops below this
+  max_failed_checks: 3  # Alert after this many consecutive failures
+  cltv_unlock_warning_blocks: 1000  # Warn when CLTV unlock is within this many blocks

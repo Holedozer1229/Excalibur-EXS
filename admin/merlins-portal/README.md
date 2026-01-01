@@ -1,79 +1,50 @@
-# Merlin's Portal - Admin Dashboard
+# Merlin's Portal — Private Admin Dashboard
 
-The private administrative interface for managing the Excalibur $EXS Protocol.
+> *"The wizard's sanctum, where King Arthur commands the realm."*
 
-## 🎯 Purpose
+## Overview
 
-Merlin's Portal serves as the command center for King Arthur (protocol administrators) to monitor and adjust the network.
+Merlin's Portal is the private administrative interface for the Excalibur $EXS Protocol. Only the Lead Architect (King Arthur) has access to these controls.
 
-## 📂 Files
+## Features
 
-- **index.html** - Main dashboard HTML structure
-- **styles.css** - Royal-themed styling with purple and gold accents
-- **dashboard.js** - Interactive dashboard functionality
+### 1. Treasury Monitoring
+- Real-time tracking of Satoshi fees collected
+- $EXS treasury balance and distribution history
+- Fee analytics and revenue projections
 
-## 🔑 Features
+### 2. Difficulty Adjustment
+- Dynamic forge weight calibration
+- Difficulty target modification (leading zero bytes)
+- Historical difficulty charts
 
-### 💰 Treasury Monitoring
-- Real-time tracking of accumulated Satoshi fees (1% of all rewards)
-- $EXS reserve balance display
-- Treasury growth visualization over time
-- Fee collection statistics
+### 3. Global Anomaly Map
+- Real-time forge tracking across the network
+- Geographic distribution of miners
+- Anomaly detection and security alerts
 
-### ⚖️ Difficulty Adjustment
-- Manual forge weight calibration (difficulty: 1-10)
-- Current difficulty display
-- Average forge time monitoring
-- Network hash rate tracking
-- Historical adjustment log
+## Architecture
 
-### 🗺️ Global Anomaly Map
-- Visual representation of all active forges across the realm
-- Real-time forge activity feed
-- Filter by status (all/active/completed)
-- Forge tracking and monitoring
+This dashboard is built as a secure web application with:
+- **Backend**: Go-based API server
+- **Frontend**: React with real-time WebSocket connections
+- **Authentication**: Multi-factor authentication with hardware key support
 
-## 🚀 Usage
+## Access Control
 
-### Local Development
-```bash
-# Navigate to the admin portal
-cd admin/merlins-portal
+Access to Merlin's Portal is restricted to:
+- **Lead Architect**: Travis D. Jones (holedozer@gmail.com)
 
-# Open in browser (requires local web server for full functionality)
-python -m http.server 8080
+All access attempts are logged and monitored for security purposes.
 
-# Access at http://localhost:8080
-```
+## Deployment
 
-### Access Control
-⚠️ **Security Note**: In production, this dashboard should be protected by:
-- Authentication (OAuth, JWT, or similar)
+The admin dashboard runs on a private server with the following security measures:
+- VPN-only access
 - IP whitelisting
-- VPN/private network access
-- Multi-factor authentication
-- Role-based access control
-
-## 🔐 Security Considerations
-
-The admin portal should NEVER be publicly accessible. Implement proper authentication and authorization before deployment.
-
-## 📊 Data Sources
-
-In production, the dashboard would connect to:
-- Treasury backend API (`pkg/economy/treasury.go`)
-- Blockchain node for network statistics
-- Forge monitoring service
-- WebSocket for real-time updates
-
-## 🎨 Design Philosophy
-
-The design embodies the mystical nature of Merlin's wisdom combined with the power of King Arthur's authority:
-- Royal purple and gold color scheme
-- Clean, modern interface with medieval accents
-- Real-time data visualization
-- Intuitive controls for network management
+- End-to-end encryption
+- Regular security audits
 
 ---
 
-*"With great power comes great responsibility"*
+*"With great power comes great responsibility."*

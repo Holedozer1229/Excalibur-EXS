@@ -1,273 +1,168 @@
-# Contributing to Excalibur $EXS Protocol
+# Contributing to Excalibur $EXS
 
-Thank you for your interest in contributing to the Excalibur $EXS Protocol! This document provides guidelines for contributing to the project.
+Thank you for your interest in contributing to the Excalibur $EXS Protocol! This document provides guidelines for participating in the project.
 
-## 🎯 Vision
+## The Sacred Axiom
 
-The Excalibur $EXS Protocol embodies the spirit of King Arthur's legend—only those worthy enough can draw the sword from the stone. We welcome contributions that align with this vision of:
-- Decentralization and fairness
-- Strong cryptographic security
-- Quantum resistance
-- Privacy and sovereignty
-- Legendary craftsmanship in code
-
-## 🔱 Ways to Contribute
-
-### 1. Code Contributions
-- Bug fixes
-- Feature enhancements
-- Performance optimizations
-- Security improvements
-- Documentation updates
-
-### 2. Testing
-- Running test forges
-- Reporting bugs
-- Validating the Ω′ Δ18 algorithm
-- Stress testing the network
-
-### 3. Documentation
-- Improving README files
-- Writing tutorials
-- Creating examples
-- Translating documentation
-
-### 4. Community
-- Answering questions
-- Participating in discussions
-- Spreading the word about $EXS
-
-## 🚀 Getting Started
-
-### Prerequisites
-- Python 3.11+
-- Go 1.21+ (for treasury backend)
-- Git
-- Basic understanding of cryptography and blockchain
-
-### Setup Development Environment
-
-```bash
-# Clone the repository
-git clone https://github.com/Holedozer1229/Excalibur-EXS.git
-cd Excalibur-EXS
-
-# Test the miner
-python pkg/miner/tetra_pow_miner.py
-
-# Test the foundry
-python pkg/foundry/exs_foundry.py
-
-# Build treasury (Go)
-cd pkg/economy
-go build treasury.go
+```
+sword legend pull magic kingdom artist stone destroy forget fire steel honey question
 ```
 
-## 📝 Contribution Process
+All forge attempts must use this canonical 13-word sequence.
 
-### 1. Fork the Repository
-Fork the Excalibur-EXS repository to your GitHub account.
+## How to Contribute
 
-### 2. Create a Branch
-```bash
-git checkout -b feature/your-feature-name
-# or
-git checkout -b fix/bug-description
+### 1. Forge Participation
+
+To submit a successful forge claim:
+
+1. Run the Ω′ Δ18 miner:
+   ```bash
+   python pkg/miner/tetra_pow_miner.py \
+     --axiom "sword legend pull magic kingdom artist stone destroy forget fire steel honey question" \
+     --difficulty 4
+   ```
+
+2. When you find a valid nonce, create a Pull Request to the `main` (Camelot) branch with:
+   - **Title:** `Forge Claim: Nonce [YOUR_NONCE]`
+   - **Description:** Include your nonce, miner address, and proof details
+
+3. The GitHub Action "Forge Trigger" will automatically validate your claim
+
+4. If valid, your forge will be merged and you'll receive 49.5 $EXS (after 1% treasury fee)
+
+### 2. Code Contributions
+
+We welcome improvements to:
+- Mining algorithm optimizations
+- UI/UX enhancements for the Double-Portal Architecture
+- Treasury management features
+- Documentation improvements
+
+**Process:**
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Make your changes with clear commit messages
+4. Submit a Pull Request with a detailed description
+
+### 3. Bug Reports
+
+Found a bug? Please open an issue with:
+- Clear description of the problem
+- Steps to reproduce
+- Expected vs. actual behavior
+- System information (OS, Python/Go version, etc.)
+
+### 4. Security Vulnerabilities
+
+**DO NOT** open public issues for security vulnerabilities. Instead, email directly to:
+- **Travis D. Jones**: holedozer@gmail.com
+
+We take security seriously and will respond promptly.
+
+## Development Guidelines
+
+### Python Code (Miner & Foundry)
+- Follow PEP 8 style guidelines
+- Include docstrings for all functions
+- Add type hints where appropriate
+- Test with Python 3.10+
+
+### Go Code (Treasury & Backend)
+- Follow Go standard formatting (`go fmt`)
+- Write clear, idiomatic Go code
+- Include comments for exported functions
+- Test with Go 1.21+
+
+### Web Code (Portals)
+- Use semantic HTML
+- Keep JavaScript vanilla (no framework dependencies for now)
+- Ensure mobile responsiveness
+- Test in multiple browsers
+
+## Code Review Process
+
+1. All PRs require review before merging
+2. Forge claims are automatically validated by GitHub Actions
+3. Code contributions reviewed by Lead Architect or designated maintainers
+4. Be responsive to feedback and questions
+
+## Coding Standards
+
+### Git Commits
+- Use clear, descriptive commit messages
+- Start with a verb: "Add", "Fix", "Update", "Remove"
+- Reference issue numbers when applicable
+
+Example:
+```
+Add difficulty adjustment API endpoint
+
+Implements the difficulty adjustment feature for Merlin's Portal.
+Closes #123
 ```
 
-Branch naming convention:
-- `feature/` - New features
-- `fix/` - Bug fixes
-- `docs/` - Documentation updates
-- `refactor/` - Code refactoring
-- `test/` - Test additions or modifications
-
-### 3. Make Your Changes
-- Write clean, readable code
-- Follow existing code style
-- Add comments where necessary
-- Update documentation as needed
-
-### 4. Test Your Changes
-```bash
-# Test Python components
-python pkg/miner/tetra_pow_miner.py
-python pkg/foundry/exs_foundry.py
-
-# Build Go components
-cd pkg/economy && go build treasury.go
-```
-
-### 5. Commit Your Changes
-```bash
-git add .
-git commit -m "Brief description of changes"
-```
-
-Commit message format:
-- Use present tense ("Add feature" not "Added feature")
-- Use imperative mood ("Move cursor to..." not "Moves cursor to...")
-- First line should be a brief summary (50 chars or less)
-- Add detailed explanation in subsequent lines if needed
-
-### 6. Push to Your Fork
-```bash
-git push origin feature/your-feature-name
-```
-
-### 7. Create a Pull Request
-- Go to the original Excalibur-EXS repository
-- Click "New Pull Request"
-- Select your fork and branch
-- Fill out the PR template with details about your changes
-- Wait for review
-
-## ✅ Code Review Process
-
-1. **Automated Checks**: The Forge EXS workflow will run automatically
-   - Prophecy axiom validation
-   - Ω′ Δ18 miner execution
-   - HPP-1 foundry processing
-   - Treasury fee validation
-
-2. **Manual Review**: Project maintainers will review your code for:
-   - Code quality and style
-   - Security considerations
-   - Performance implications
-   - Documentation completeness
-
-3. **Feedback**: Address any requested changes
-
-4. **Merge**: Once approved, your PR will be merged into the main branch
-
-## 🎨 Code Style Guidelines
-
-### Python
-- Follow PEP 8 style guide
-- Use type hints where appropriate
-- Document classes and functions with docstrings
-- Keep functions focused and single-purpose
-
-```python
-def calculate_treasury_fee(base_reward: Decimal, fee_rate: Decimal) -> Decimal:
-    """
-    Calculate the treasury fee for a forge reward.
-    
-    Args:
-        base_reward: The base forge reward in $EXS
-        fee_rate: The treasury fee rate (e.g., 0.01 for 1%)
-        
-    Returns:
-        The calculated treasury fee amount
-    """
-    return base_reward * fee_rate
-```
-
-### Go
-- Follow Go standard formatting (`gofmt`)
-- Use meaningful variable names
-- Document exported functions and types
-- Handle errors appropriately
-
-```go
-// ProcessForge calculates and collects fees for a completed forge
-func (tm *TreasuryManager) ProcessForge(minerAddress string) (*ForgeResult, error) {
-    if minerAddress == "" {
-        return nil, fmt.Errorf("invalid miner address")
-    }
-    // ... implementation
-}
-```
-
-### JavaScript
-- Use ES6+ features
-- Use `const` and `let` instead of `var`
-- Use meaningful variable names
-- Add comments for complex logic
-
-```javascript
-/**
- * Verify the 13-word prophecy axiom
- * @param {string} userAxiom - The axiom entered by the user
- * @returns {boolean} - True if axiom is correct
- */
-function verifyAxiom(userAxiom) {
-    return userAxiom.trim().toLowerCase() === CORRECT_AXIOM.toLowerCase();
-}
-```
-
-## 🔐 Security Guidelines
-
-- **Never** commit private keys or secrets
-- Use secure random number generation
-- Validate all inputs
-- Follow cryptographic best practices
-- Report security vulnerabilities privately to holedozer@gmail.com
-
-## 🧪 Testing Guidelines
-
-- Write tests for new features
-- Ensure existing tests pass
-- Test edge cases
-- Document test scenarios
-
-## 📚 Documentation Guidelines
-
-- Update README.md if adding new features
+### Documentation
+- Update README.md for major changes
 - Add inline comments for complex logic
-- Create examples for new functionality
-- Keep documentation up-to-date
+- Update CHANGELOG.md (when available)
 
-## 🤝 Code of Conduct
+## Community Guidelines
 
-### Our Standards
-- Be respectful and inclusive
-- Welcome newcomers
-- Focus on constructive feedback
-- Collaborate openly
-- Maintain professionalism
+### Be Respectful
+- Treat all community members with respect
+- Welcome newcomers and help them get started
+- Provide constructive feedback
 
-### Unacceptable Behavior
-- Harassment or discrimination
-- Trolling or insulting comments
-- Personal attacks
-- Publishing others' private information
-- Unethical or illegal activity
+### Be Professional
+- Keep discussions on-topic
+- Avoid inflammatory or off-topic comments
+- Focus on the code, not the person
 
-## 📞 Getting Help
+### Be Collaborative
+- Share knowledge and help others learn
+- Credit others for their contributions
+- Work together towards common goals
 
-- **Issues**: Use GitHub Issues for bug reports and feature requests
-- **Discussions**: Use GitHub Discussions for questions and ideas
-- **Email**: Contact Travis D Jones at holedozer@gmail.com for sensitive matters
+## Economic Participation
 
-## 📜 License
+### Tokenomics Overview
+- **Supply Cap:** 21,000,000 $EXS
+- **Forge Reward:** 50 $EXS (49.5 $EXS to miner after 1% treasury fee)
+- **Distribution:** 60% PoF, 15% Treasury, 20% Liquidity, 5% Airdrop
 
-By contributing to Excalibur $EXS Protocol, you agree that your contributions will be licensed under the BSD 3-Clause License.
+### Fee Structure
+- **Treasury Fee:** 1% of all forge rewards
+- **Forge Fee:** 0.0001 BTC per forge submission
 
-## 🏆 Recognition
+## Getting Help
 
-Contributors will be recognized in:
-- The project README
-- Release notes
-- The Hall of Knights (contributors page)
+### Resources
+- **Repository:** https://github.com/Holedozer1229/Excalibur-EXS
+- **Issues:** https://github.com/Holedozer1229/Excalibur-EXS/issues
+- **Email:** holedozer@gmail.com
 
----
+### Questions?
+- Open a GitHub issue with the `question` label
+- Email the Lead Architect: holedozer@gmail.com
 
-## Special Notes for Forge Claims
+## License
 
-If you're submitting a forge claim (proof-of-work):
-
-1. Create your submission in `claims/` directory
-2. Include:
-   - The axiom used
-   - The nonce found
-   - The resulting hash
-   - Your P2TR address
-3. The GitHub Action will automatically validate your forge
-4. Successful forges will be recorded in the blockchain
+By contributing to Excalibur $EXS, you agree that your contributions will be licensed under the BSD 3-Clause License.
 
 ---
 
-Thank you for contributing to the Excalibur $EXS Protocol! Together, we forge the future of decentralized finance.
+## The Excalibur Creed
 
-*"Only the worthy may draw the sword"*
+> *"Only those who prove their worth through ancient axioms may draw the sword from the stone."*
+
+Let's build the future of decentralized proof systems together!
+
+**Lead Architect:** Travis D. Jones  
+**Email:** holedozer@gmail.com  
+**Protocol:** Excalibur $EXS  
+**Version:** 1.0.0
+
+---
+
+*Thank you for contributing to Excalibur $EXS!*
