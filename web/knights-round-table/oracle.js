@@ -178,49 +178,59 @@ function consultOracleLocal(query) {
                 tweak_method: 'SHA256(internalKey || prophecyHash)'
             }
         };
-    } else if (queryLower.includes('satoshi') || queryLower.includes('nakamoto') || queryLower.includes('bitcoin philosophy')) {
+    } else if (queryLower.includes('satoshi') || queryLower.includes('nakamoto') || queryLower.includes('bitcoin philosophy') || queryLower.includes('genesis') || queryLower.includes('inscription')) {
         return {
             category: 'Satoshi Nakamoto\'s Wisdom',
             wisdom: 'The root problem with conventional currency is all the trust that\'s required to make it work. We eliminate trust through cryptographic proof.',
             details: {
-                philosophy: 'Satoshi Nakamoto created Bitcoin to enable peer-to-peer electronic cash without trusted third parties',
+                philosophy: 'Satoshi Nakamoto created Bitcoin to enable peer-to-peer electronic cash without trusted third parties - like sovereign crews sailing beyond admiralty jurisdiction',
                 key_principles: [
-                    'Decentralization: No single point of failure or control',
-                    'Trustlessness: Don\'t trust, verify through mathematics',
-                    'Proof-of-Work: Computational consensus solves Byzantine Generals\' Problem',
-                    'Fixed Supply: 21 million coin cap creates sound money',
-                    'Censorship Resistance: No entity can block transactions',
-                    'Peer-to-Peer: Direct value transfer without intermediaries'
+                    'Decentralization: No single point of failure or control - captains elected and deposed by vote',
+                    'Trustlessness: Don\'t trust, verify through mathematics - Articles signed in code, not enforced by kings',
+                    'Proof-of-Work: Computational consensus solves Byzantine Generals\' Problem - like Articles binding independent crews',
+                    'Fixed Supply: 21 million coin cap creates sound money - £100,000 fortunes built through controlled supply',
+                    'Censorship Resistance: No entity can block transactions - no empire could stop sovereign ships flying independent colors',
+                    'Peer-to-Peer: Direct value transfer without intermediaries - prize captures bypassed admiralty courts, no king\'s cut'
                 ],
                 satoshi_quotes: 'It is better to have a system where no trust is needed at all',
-                relevance_to_exs: 'Excalibur $EXS inherits these principles with quantum-hardened security'
+                genesis_proof: 'Genesis block 000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f marks provable time. The Times 03/Jan/2009 Chancellor on brink of second bailout - Satoshi\'s inscription of defiance.',
+                provable_fairness: 'Genesis roll 0.28 verified via HMAC-SHA512. Rolls 42.04, 23.01, 31.55, 54.36, 20.22 - all verifiable against block hash. Mathematics enforces fairness.',
+                inscription_layer: 'Block 840,001+ enables ordinal inscriptions. Transaction f4293583b with 3,500+ confirmations - permanent cultural layer on Bitcoin. Even 600 sats from faucets can fund sovereignty.',
+                hidden_axiom: 'Democratic crews governed by published Articles. From Caribbean to South China Sea - 80,000 strong in confederation. Reputation as an asset, psychological warfare preserved cargo value. Smart operators reinvested in legitimate empires, retired as wealthy governors.',
+                dust_to_power: 'Dust collection demonstrates permissionless nature - anyone can participate. 600 sats aggregated funds inscriptions. No minimum balance, no gatekeepers.',
+                relevance_to_exs: 'Excalibur $EXS inherits these principles with quantum-hardened security. Self-custody means being your own bank - or your own sovereign ship on the high seas.'
             }
         };
-    } else if (queryLower.includes('decentraliz') || queryLower.includes('trustless')) {
+    } else if (queryLower.includes('decentraliz') || queryLower.includes('trustless') || queryLower.includes('freedom') || queryLower.includes('provable')) {
         return {
             category: 'Decentralization & Trustlessness',
             wisdom: 'Camelot has no king but the protocol itself. Satoshi showed us a system where no trust is needed at all.',
             details: {
-                overview: 'Decentralization removes single points of failure',
-                no_central_authority: 'No single entity controls the network',
-                permissionless: 'Anyone can participate without permission',
-                trustless_verification: 'Mathematical proofs replace human trust',
-                censorship_resistant: 'No one can block valid transactions',
-                self_custody: 'Be your own bank, control your own keys',
-                satoshi_principle: 'Peer-to-peer electronic cash allows direct payments without financial institutions'
+                overview: 'Decentralization removes single points of failure - like independent ships as sovereign nations',
+                no_central_authority: 'No single entity controls the network - captains elected and deposed by crew vote, no crown above the crew',
+                permissionless: 'Anyone can participate without permission - any sailor could join the account, meritocracy over birthright',
+                trustless_verification: 'Mathematical proofs replace human trust - Articles signed in blood, enforced by consensus',
+                censorship_resistant: 'No one can block valid transactions - no empire could stop ships flying sovereign colors',
+                self_custody: 'Be your own bank, control your own keys - buried treasure where no sovereign could seize it',
+                peer_to_peer: 'Direct value transfer without intermediaries - prize captures bypassed king\'s taxes',
+                satoshi_principle: 'Peer-to-peer electronic cash allows direct payments without financial institutions',
+                hidden_axiom: '1,800 ships strong in confederation. Controlled entire trade routes through coordination. Economies of scale beyond empires. Fair shares for all crew - from captain (1.5 shares) to powder monkey (0.25 shares).',
+                sovereignty: 'Each ship an independent nation on the high seas - insurance, democracy, freedom from chains'
             }
         };
-    } else if (queryLower.includes('sound money') || queryLower.includes('scarcity')) {
+    } else if (queryLower.includes('sound money') || queryLower.includes('scarcity') || queryLower.includes('wealth')) {
         return {
             category: 'Sound Money & Scarcity',
             wisdom: '21 million $EXS total, like Bitcoin\'s 21 million coins. Absolute scarcity creates sound money.',
             details: {
                 total_supply: '21,000,000 $EXS (absolute cap)',
                 forge_reward: '50 $EXS per forge',
-                scarcity_principle: 'Fixed supply prevents inflation and debasement',
-                store_of_value: 'Digital gold for preserving wealth over time',
-                satoshi_insight: 'Steady addition of coins is analogous to gold miners adding gold to circulation',
-                sound_money_properties: ['Scarcity', 'Durability', 'Divisibility', 'Portability', 'Fungibility']
+                scarcity_principle: 'Fixed supply prevents inflation and debasement - through systematic targeting of richest routes',
+                store_of_value: 'Digital gold for preserving wealth over time - buried treasure preserved across centuries, beyond sovereign reach',
+                satoshi_insight: 'Steady addition of coins is analogous to gold miners adding gold to circulation - or prize captures from monopolistic routes',
+                hidden_axiom: 'Systematic approach: captured over 400 ships worth millions. Protection economies and taxation systems. $200M+ raids, vanished with fortune, never caught. Smuggling operations avoiding customs duties. Reputation more valuable than gold itself.',
+                sound_money_properties: ['Scarcity', 'Durability', 'Divisibility', 'Portability', 'Fungibility'],
+                wealth_creation: 'Value creation outside the system - smart operators reinvested in legitimate businesses, retired wealthy governors'
             }
         };
     } else {
@@ -238,7 +248,7 @@ function consultOracleLocal(query) {
                     airdrop: '5%'
                 },
                 status: 'OPERATIONAL',
-                ask_specific: 'Try asking about: mining, forge, vault, treasury, axiom, difficulty'
+                ask_specific: 'Try asking about: mining, forge, vault, treasury, axiom, difficulty, Satoshi Nakamoto, decentralization, sound money, freedom, wealth creation'
             }
         };
     }
@@ -311,7 +321,14 @@ async function getDivination() {
             "The 13 words bind the protocol in eternal cryptographic truth.",
             "Each forge strengthens the kingdom, each miner a knight of honor.",
             "The oracle sees all transactions, immutable and eternal.",
-            "Wisdom flows from the blockchain like water from Avalon's springs."
+            "Wisdom flows from the blockchain like water from Avalon's springs.",
+            "Satoshi taught us: no trust is needed when mathematics enforces consensus.",
+            "Like sovereign ships beyond admiralty jurisdiction, crypto sails beyond central authority.",
+            "Democratic crews voted on decisions - captains elected by consensus, not appointed by crowns.",
+            "Reputation as an asset - psychological warfare preserved value better than violence.",
+            "From Caribbean to South China Sea - coordination at scale creates power beyond empires.",
+            "Genesis block 000000000019d6 marks provable time - The Times inscription eternal.",
+            "Even 600 sats collected can fund inscriptions - permissionless sovereignty for all."
         ];
         
         const index = Math.floor(Math.random() * divinations.length);
