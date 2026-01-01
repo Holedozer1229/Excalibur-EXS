@@ -24,7 +24,44 @@
     "treasury": {
       "percentage": 15,
       "amount": 3150000,
-      "description": "Protocol development, infrastructure, and revenue operations"
+      "description": "Protocol development, infrastructure, and revenue operations",
+      "allocation_per_block": 7.5,
+      "rolling_release": {
+        "enabled": true,
+        "duration_description": "12-month rolling release with staggered vesting",
+        "mini_outputs_per_block": 3,
+        "amount_per_mini_output": 2.5,
+        "cltv_time_locks": [
+          {
+            "output_number": 1,
+            "amount": 2.5,
+            "lock_blocks": 0,
+            "lock_duration": "immediate",
+            "purpose": "Operational expenses and immediate needs"
+          },
+          {
+            "output_number": 2,
+            "amount": 2.5,
+            "lock_blocks": 4320,
+            "lock_duration": "~30 days (1 month)",
+            "purpose": "Short-term development and infrastructure"
+          },
+          {
+            "output_number": 3,
+            "amount": 2.5,
+            "lock_blocks": 8640,
+            "lock_duration": "~60 days (2 months)",
+            "purpose": "Long-term reserves and strategic initiatives"
+          }
+        ],
+        "script_type": "Bitcoin CLTV (OP_CHECKLOCKTIMEVERIFY)",
+        "benefits": [
+          "Enforced vesting prevents premature spending",
+          "Rolling distribution ensures continuous fund availability",
+          "On-chain transparency and auditability",
+          "Proven Bitcoin script security"
+        ]
+      }
     },
     "liquidity": {
       "percentage": 20,

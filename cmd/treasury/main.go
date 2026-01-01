@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -13,13 +12,13 @@ import (
 )
 
 type Server struct {
-	treasury *economy.TreasuryManager
+	treasury *economy.Treasury
 	router   *mux.Router
 }
 
 func NewServer() *Server {
 	s := &Server{
-		treasury: economy.NewTreasuryManager(),
+		treasury: economy.NewTreasury(),
 		router:   mux.NewRouter(),
 	}
 	s.routes()
@@ -32,6 +31,7 @@ func (s *Server) routes() {
 	s.router.HandleFunc("/forge", s.handleForge()).Methods("POST")
 	s.router.HandleFunc("/balance", s.handleBalance()).Methods("GET")
 	s.router.HandleFunc("/distributions", s.handleDistributions()).Methods("GET")
+	s.router.HandleFunc("/mini-outputs", s.handleMiniOutputs()).Methods("GET")
 }
 
 func (s *Server) handleHealth() http.HandlerFunc {
@@ -46,7 +46,7 @@ func (s *Server) handleHealth() http.HandlerFunc {
 
 func (s *Server) handleStats() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		stats := s.treasury.GetTreasuryStats()
+		stats := s.treasury.GetStats()
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(stats)
 	}
@@ -64,11 +64,10 @@ func (s *Server) handleForge() http.HandlerFunc {
 			return
 		}
 
-		result, err := s.treasury.ProcessForge(req.MinerAddress)
-		if err != nil {
-			// Log actual error but return generic message
-			log.Printf("Forge processing error: %v", err)
-			http.Error(w, "Forge processing failed", http.StatusBadRequest)
+		result := s.treasury.ProcessForge(req.MinerAddress)
+		if result == nil {
+			log.Printf("Forge processing error: result is nil")
+			http.Error(w, "Forge processing failed", http.StatusInternalServerError)
 			return
 		}
 
@@ -79,22 +78,38 @@ func (s *Server) handleForge() http.HandlerFunc {
 
 func (s *Server) handleBalance() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		exs, sats := s.treasury.GetTreasuryBalance()
+		totalBalance := s.treasury.GetBalance()
+		spendableBalance := s.treasury.GetSpendableBalance()
+		lockedBalance := s.treasury.GetLockedBalance()
 		
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{
-			"exs_balance":  economy.FormatEXSAmount(exs),
-			"btc_balance":  economy.FormatBTCAmount(sats),
-			"sats_balance": sats.String(),
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"total_balance":     totalBalance,
+			"spendable_balance": spendableBalance,
+			"locked_balance":    lockedBalance,
+			"forge_fee_pool":    s.treasury.GetForgeFeePool(),
 		})
 	}
 }
 
 func (s *Server) handleDistributions() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		distributions := s.treasury.GetDistributionHistory(50)
+		distributions := s.treasury.GetDistributions()
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(distributions)
+	}
+}
+
+func (s *Server) handleMiniOutputs() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		miniOutputs := s.treasury.GetMiniOutputs()
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"mini_outputs":         miniOutputs,
+			"total_count":          len(miniOutputs),
+			"spendable_mini_outputs": s.treasury.GetSpendableMiniOutputs(),
+			"locked_mini_outputs":   s.treasury.GetLockedMiniOutputs(),
+		})
 	}
 }
 

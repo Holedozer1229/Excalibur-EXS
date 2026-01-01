@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "name": "excalibur-forge-ui",
+  "buildCommand": "cd web/forge-ui && npm install && npm run build",
+  "outputDirectory": "web/forge-ui/.next",
+  "framework": "nextjs",
+  "installCommand": "npm install",
+  "devCommand": "npm run dev",
+  "env": {
+    "NEXT_PUBLIC_TETRA_POW_URL": "@tetra_pow_url",
+    "NEXT_PUBLIC_DICE_ROLL_URL": "@dice_roll_url",
+    "NEXT_PUBLIC_TREASURY_URL": "@treasury_url",
+    "NEXT_PUBLIC_ROSETTA_URL": "@rosetta_url",
+    "NEXT_PUBLIC_GUARDIAN_URL": "@guardian_url"
+  },
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_TETRA_POW_URL": "https://tetra-pow.excaliburcrypto.com",
+      "NEXT_PUBLIC_DICE_ROLL_URL": "https://dice-roll.excaliburcrypto.com",
+      "NEXT_PUBLIC_TREASURY_URL": "https://treasury.excaliburcrypto.com",
+      "NEXT_PUBLIC_ROSETTA_URL": "https://rosetta.excaliburcrypto.com",
+      "NEXT_PUBLIC_GUARDIAN_URL": "https://guardian.excaliburcrypto.com"
+    }
+  },
+  "regions": ["iad1"],
+  "public": false
+}

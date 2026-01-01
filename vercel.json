@@ -1,36 +1,24 @@
 {
-  "version": 2,
   "name": "excalibur-exs",
-  "builds": [
+  "public": true,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
     {
-      "src": "website/**",
-      "use": "@vercel/static"
+      "source": "/",
+      "destination": "/website/index.html"
     },
     {
-      "src": "web/**",
-      "use": "@vercel/static"
+      "source": "/web/(.*)",
+      "destination": "/web/$1"
     },
     {
-      "src": "admin/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/",
-      "dest": "/website/index.html"
+      "source": "/admin/(.*)",
+      "destination": "/admin/$1"
     },
     {
-      "src": "/web/(.*)",
-      "dest": "/web/$1"
-    },
-    {
-      "src": "/admin/(.*)",
-      "dest": "/admin/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/website/$1"
+      "source": "/(.*)",
+      "destination": "/website/$1"
     }
   ],
   "headers": [
@@ -57,7 +45,7 @@
     }
   ],
   "env": {
-    "NOTE": "Environment variables in vercel.json are for build-time only. Set runtime variables in Vercel Dashboard: Settings > Environment Variables",
     "DOMAIN": "www.excaliburcrypto.com"
   }
+  ]
 }

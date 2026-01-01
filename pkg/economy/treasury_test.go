@@ -4,151 +4,191 @@ import (
 	"testing"
 )
 
-func TestTreasuryRecordForge(t *testing.T) {
+func TestProcessForge(t *testing.T) {
 	treasury := NewTreasury()
+	treasury.SetBlockHeight(1000)
 
-	// Test recording a valid forge
-	err := treasury.RecordForge(10000)
-	if err != nil {
-		t.Errorf("Expected no error, got %v", err)
+	// Test processing a valid forge
+	result := treasury.ProcessForge("bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr")
+	
+	if result == nil {
+		t.Fatal("Expected result, got nil")
 	}
 
-	if treasury.TotalForged != 1 {
-		t.Errorf("Expected TotalForged to be 1, got %d", treasury.TotalForged)
+	if result.ForgeID != 1 {
+		t.Errorf("Expected ForgeID to be 1, got %d", result.ForgeID)
 	}
 
-	if treasury.TreasuryBalance != 10000 {
-		t.Errorf("Expected TreasuryBalance to be 10000, got %d", treasury.TreasuryBalance)
+	if result.TotalReward != ForgeReward {
+		t.Errorf("Expected TotalReward to be %.2f, got %.2f", ForgeReward, result.TotalReward)
 	}
 
-	// Test recording invalid forge (negative fee)
-	err = treasury.RecordForge(-100)
-	if err == nil {
-		t.Error("Expected error for negative fee, got nil")
+	if result.TreasuryAllocation != TreasuryAllocation {
+		t.Errorf("Expected TreasuryAllocation to be %.2f, got %.2f", TreasuryAllocation, result.TreasuryAllocation)
 	}
 
-	// Test recording invalid forge (zero fee)
-	err = treasury.RecordForge(0)
-	if err == nil {
-		t.Error("Expected error for zero fee, got nil")
-	}
-}
-
-func TestVerifyProofDifficulty(t *testing.T) {
-	tests := []struct {
-		proof      string
-		difficulty int
-		expected   bool
-	}{
-		{"0000abc123def456", 4, true},
-		{"000abc123def456", 4, false},
-		{"0000000000000000", 4, true},
-		{"1000abc123def456", 4, false},
-		{"", 4, false},
-		{"000", 4, false},
+	if len(result.TreasuryMiniOutputs) != MiniOutputCount {
+		t.Errorf("Expected %d mini-outputs, got %d", MiniOutputCount, len(result.TreasuryMiniOutputs))
 	}
 
-	for _, tt := range tests {
-		result := verifyProofDifficulty(tt.proof, tt.difficulty)
-		if result != tt.expected {
-			t.Errorf("verifyProofDifficulty(%q, %d) = %v, want %v",
-				tt.proof, tt.difficulty, result, tt.expected)
+	// Verify mini-output amounts
+	for i, output := range result.TreasuryMiniOutputs {
+		if output.Amount != MiniOutputAmount {
+			t.Errorf("Mini-output %d: expected amount %.2f, got %.2f", i, MiniOutputAmount, output.Amount)
 		}
 	}
+
+	// Verify treasury balance
+	if treasury.GetBalance() != TreasuryAllocation {
+		t.Errorf("Expected treasury balance %.2f, got %.2f", TreasuryAllocation, treasury.GetBalance())
+	}
+
+	// Verify total forges
+	if treasury.GetTotalForges() != 1 {
+		t.Errorf("Expected 1 forge, got %d", treasury.GetTotalForges())
+	}
 }
 
-func TestClaimReward(t *testing.T) {
+func TestMiniOutputLocks(t *testing.T) {
 	treasury := NewTreasury()
-	tokenomics := &Tokenomics{
-		MaxSupply:      21000000,
-		RewardPerForge: 100,
-		ForgeFeeSats:   10000,
+	treasury.SetBlockHeight(1000)
+
+	// Process a forge to create mini-outputs
+	result := treasury.ProcessForge("bc1ptest")
+	
+	if len(result.TreasuryMiniOutputs) != 3 {
+		t.Fatalf("Expected 3 mini-outputs, got %d", len(result.TreasuryMiniOutputs))
 	}
 
-	// Test valid claim
-	address := "bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr"
-	validProof := "0000abc123def456789012345678901234567890123456789012345678901234"
-
-	reward, err := treasury.ClaimReward(address, validProof, tokenomics)
-	if err != nil {
-		t.Errorf("Expected no error for valid claim, got %v", err)
+	// Verify lock heights
+	expectedDelays := []uint32{MiniOutput1Delay, MiniOutput2Delay, MiniOutput3Delay}
+	for i, output := range result.TreasuryMiniOutputs {
+		expectedUnlock := result.BlockHeight + expectedDelays[i]
+		if output.UnlockHeight != expectedUnlock {
+			t.Errorf("Output %d: expected unlock height %d, got %d", i, expectedUnlock, output.UnlockHeight)
+		}
 	}
 
-	if reward != 100 {
-		t.Errorf("Expected reward to be 100, got %d", reward)
+	// Verify first output is immediately spendable
+	if !result.TreasuryMiniOutputs[0].IsSpendable {
+		t.Error("First mini-output should be immediately spendable")
 	}
 
-	if treasury.TotalRewards != 100 {
-		t.Errorf("Expected TotalRewards to be 100, got %d", treasury.TotalRewards)
+	// Verify second and third outputs are locked
+	if result.TreasuryMiniOutputs[1].IsSpendable {
+		t.Error("Second mini-output should be locked")
 	}
-
-	// Test invalid proof (insufficient difficulty)
-	invalidProof := "000abc123def456789012345678901234567890123456789012345678901234"
-	_, err = treasury.ClaimReward(address, invalidProof, tokenomics)
-	if err == nil {
-		t.Error("Expected error for invalid proof, got nil")
-	}
-
-	// Test max supply enforcement
-	treasury.TotalRewards = 20999950 // Close to max supply
-	_, err = treasury.ClaimReward(address, validProof, tokenomics)
-	if err == nil {
-		t.Error("Expected error when max supply is reached, got nil")
+	if result.TreasuryMiniOutputs[2].IsSpendable {
+		t.Error("Third mini-output should be locked")
 	}
 }
 
-func TestLoadTokenomics(t *testing.T) {
-	// Test loading valid tokenomics file
-	tokenomics, err := LoadTokenomics("tokenomics.json")
-	if err != nil {
-		t.Errorf("Expected no error loading tokenomics, got %v", err)
-	}
-
-	if tokenomics.MaxSupply != 21000000 {
-		t.Errorf("Expected MaxSupply to be 21000000, got %d", tokenomics.MaxSupply)
-	}
-
-	if tokenomics.RewardPerForge != 100 {
-		t.Errorf("Expected RewardPerForge to be 100, got %d", tokenomics.RewardPerForge)
-	}
-
-	if tokenomics.ForgeFeeSats != 10000 {
-		t.Errorf("Expected ForgeFeeSats to be 10000, got %d", tokenomics.ForgeFeeSats)
-	}
-
-	// Verify distribution percentages
-	if tokenomics.Distribution["PoF"] != 0.6 {
-		t.Errorf("Expected PoF distribution to be 0.6, got %f", tokenomics.Distribution["PoF"])
-	}
-
-	if tokenomics.Distribution["Treasury"] != 0.15 {
-		t.Errorf("Expected Treasury distribution to be 0.15, got %f", tokenomics.Distribution["Treasury"])
-	}
-}
-
-func TestGetTreasuryStats(t *testing.T) {
+func TestSetBlockHeight(t *testing.T) {
 	treasury := NewTreasury()
-	treasury.TotalForged = 10
-	treasury.TotalRewards = 1000
-	treasury.TreasuryBalance = 100000
-	treasury.Claims["addr1"] = 100
-	treasury.Claims["addr2"] = 200
+	initialHeight := uint32(1000)
+	treasury.SetBlockHeight(initialHeight)
 
-	stats := treasury.GetTreasuryStats()
+	// Process forge at the initial height
+	treasury.ProcessForge("bc1ptest")
 
-	if stats["total_forged"] != int64(10) {
-		t.Errorf("Expected total_forged to be 10, got %v", stats["total_forged"])
+	// Check locked balance (outputs 2 and 3 are locked)
+	lockedBalance := treasury.GetLockedBalance()
+	if lockedBalance != MiniOutputAmount*2 { // 2 locked outputs
+		t.Errorf("Expected locked balance %.2f, got %.2f", MiniOutputAmount*2, lockedBalance)
 	}
 
-	if stats["total_rewards"] != int64(1000) {
-		t.Errorf("Expected total_rewards to be 1000, got %v", stats["total_rewards"])
+	// Advance to height where second output unlocks
+	// Second output created at height 1000, unlocks at 1000 + 4320 = 5320
+	unlockHeight := initialHeight + BlockInterval
+	treasury.SetBlockHeight(unlockHeight)
+
+	// Check that second output is now spendable
+	lockedBalance = treasury.GetLockedBalance()
+	if lockedBalance != MiniOutputAmount { // Only 1 locked output remains
+		t.Errorf("Expected locked balance %.2f after unlock, got %.2f", MiniOutputAmount, lockedBalance)
 	}
 
-	if stats["treasury_balance"] != int64(100000) {
-		t.Errorf("Expected treasury_balance to be 100000, got %v", stats["treasury_balance"])
+	spendableBalance := treasury.GetSpendableBalance()
+	if spendableBalance != MiniOutputAmount*2 { // 2 spendable outputs
+		t.Errorf("Expected spendable balance %.2f, got %.2f", MiniOutputAmount*2, spendableBalance)
+	}
+}
+
+func TestGetStats(t *testing.T) {
+	treasury := NewTreasury()
+	treasury.SetBlockHeight(1000)
+	
+	// Process multiple forges
+	treasury.ProcessForge("bc1ptest1")
+	treasury.ProcessForge("bc1ptest2")
+
+	stats := treasury.GetStats()
+
+	if stats["total_forges"].(int) != 2 {
+		t.Errorf("Expected total_forges to be 2, got %v", stats["total_forges"])
 	}
 
-	if stats["unique_claimants"] != 2 {
-		t.Errorf("Expected unique_claimants to be 2, got %v", stats["unique_claimants"])
+	expectedBalance := TreasuryAllocation * 2
+	if stats["treasury_balance"].(float64) != expectedBalance {
+		t.Errorf("Expected treasury_balance to be %.2f, got %v", expectedBalance, stats["treasury_balance"])
+	}
+
+	if stats["mini_outputs_total"].(int) != 6 { // 2 forges × 3 outputs
+		t.Errorf("Expected 6 mini-outputs, got %v", stats["mini_outputs_total"])
+	}
+
+	if stats["mini_output_amount"].(float64) != MiniOutputAmount {
+		t.Errorf("Expected mini_output_amount to be %.2f, got %v", MiniOutputAmount, stats["mini_output_amount"])
+	}
+
+	if stats["block_interval"].(int) != BlockInterval {
+		t.Errorf("Expected block_interval to be %d, got %v", BlockInterval, stats["block_interval"])
+	}
+}
+
+func TestGetMiniOutputs(t *testing.T) {
+	treasury := NewTreasury()
+	treasury.SetBlockHeight(1000)
+
+	// Process forge
+	treasury.ProcessForge("bc1ptest")
+
+	// Get all mini-outputs
+	outputs := treasury.GetMiniOutputs()
+	if len(outputs) != 3 {
+		t.Errorf("Expected 3 mini-outputs, got %d", len(outputs))
+	}
+
+	// Get spendable mini-outputs
+	spendableOutputs := treasury.GetSpendableMiniOutputs()
+	if len(spendableOutputs) != 1 { // Only first output is immediately spendable
+		t.Errorf("Expected 1 spendable output, got %d", len(spendableOutputs))
+	}
+
+	// Get locked mini-outputs
+	lockedOutputs := treasury.GetLockedMiniOutputs()
+	if len(lockedOutputs) != 2 { // Second and third outputs are locked
+		t.Errorf("Expected 2 locked outputs, got %d", len(lockedOutputs))
+	}
+}
+
+func TestCalculateRuneDistribution(t *testing.T) {
+	treasury := NewTreasury()
+	treasury.SetBlockHeight(1000)
+	
+	// Process 10 forges
+	for i := 0; i < 10; i++ {
+		treasury.ProcessForge("bc1ptest")
+	}
+
+	distribution := treasury.CalculateRuneDistribution()
+
+	expectedTotal := float64(10) * ForgeReward
+	if distribution["total_minted"] != expectedTotal {
+		t.Errorf("Expected total_minted %.2f, got %.2f", expectedTotal, distribution["total_minted"])
+	}
+
+	if distribution["treasury"] != expectedTotal*0.15 {
+		t.Errorf("Expected treasury allocation %.2f, got %.2f", expectedTotal*0.15, distribution["treasury"])
 	}
 }

@@ -19,14 +19,25 @@ func main() {
 
 	// Create treasury
 	treasury := economy.NewTreasury()
+	treasury.SetBlockHeight(1000) // Start at block 1000
 
 	// Simulate 3 forges
 	for i := 1; i <= 3; i++ {
 		result := treasury.ProcessForge(fmt.Sprintf("bc1p_miner_%d", i))
-		fmt.Printf("Forge #%d:\n", result.ForgeID)
+		fmt.Printf("Forge #%d (Block %d):\n", result.ForgeID, result.BlockHeight)
 		fmt.Printf("  Miner:       %s\n", result.MinerAddress)
 		fmt.Printf("  Reward:      %.2f $EXS\n", result.MinerReward)
-		fmt.Printf("  Treasury:    %.2f $EXS\n", result.TreasuryFee)
+		fmt.Printf("  Treasury:    %.2f $EXS (split into %d mini-outputs)\n", 
+			result.TreasuryAllocation, len(result.TreasuryMiniOutputs))
+		fmt.Printf("  Mini-Outputs:\n")
+		for j, output := range result.TreasuryMiniOutputs {
+			status := "🔓 Unlocked"
+			if !output.IsSpendable {
+				status = "🔒 Locked"
+			}
+			fmt.Printf("    %d) %.1f $EXS - Unlock at block %d %s\n", 
+				j+1, output.Amount, output.UnlockHeight, status)
+		}
 		fmt.Println()
 	}
 
@@ -48,4 +59,6 @@ func main() {
 	
 	fmt.Println()
 	fmt.Printf("Final Treasury Balance: %.2f $EXS\n", treasury.GetBalance())
+	fmt.Printf("  Spendable: %.2f $EXS\n", treasury.GetSpendableBalance())
+	fmt.Printf("  Locked:    %.2f $EXS\n", treasury.GetLockedBalance())
 }
