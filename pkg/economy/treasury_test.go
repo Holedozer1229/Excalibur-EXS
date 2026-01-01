@@ -192,3 +192,128 @@ func TestCalculateRuneDistribution(t *testing.T) {
 		t.Errorf("Expected treasury allocation %.2f, got %.2f", expectedTotal*0.15, distribution["treasury"])
 	}
 }
+
+func TestProcessForgeFee(t *testing.T) {
+	treasury := NewTreasury()
+	
+	// Test processing 100 EXS minted with deposit requirement
+	mintedAmount := 100.0
+	treasuryFee, forgeFeeInSats, err := treasury.ProcessForgeFee(mintedAmount, true)
+	
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+	
+	// Verify 1% fee
+	expectedFee := mintedAmount * TreasuryFeePercent // 1.0 EXS
+	if treasuryFee != expectedFee {
+		t.Errorf("Expected treasury fee %.2f, got %.2f", expectedFee, treasuryFee)
+	}
+	
+	// Verify forge fee in satoshis
+	if forgeFeeInSats != ForgeFeeSats {
+		t.Errorf("Expected forge fee %d sats, got %d", ForgeFeeSats, forgeFeeInSats)
+	}
+	
+	// Verify treasury balance updated
+	if treasury.GetBalance() != expectedFee {
+		t.Errorf("Expected treasury balance %.2f, got %.2f", expectedFee, treasury.GetBalance())
+	}
+	
+	// Verify forge fee pool updated
+	if treasury.GetForgeFeePool() != ForgeFeesBTC {
+		t.Errorf("Expected forge fee pool %.8f BTC, got %.8f", ForgeFeesBTC, treasury.GetForgeFeePool())
+	}
+}
+
+func TestProcessForgeFeeWithoutDeposit(t *testing.T) {
+	treasury := NewTreasury()
+	
+	// Test processing without deposit requirement
+	mintedAmount := 50.0
+	treasuryFee, forgeFeeInSats, err := treasury.ProcessForgeFee(mintedAmount, false)
+	
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+	
+	// Verify 1% fee
+	expectedFee := mintedAmount * TreasuryFeePercent // 0.5 EXS
+	if treasuryFee != expectedFee {
+		t.Errorf("Expected treasury fee %.2f, got %.2f", expectedFee, treasuryFee)
+	}
+	
+	// Verify no forge fee when deposit not required
+	if forgeFeeInSats != 0 {
+		t.Errorf("Expected forge fee 0 sats, got %d", forgeFeeInSats)
+	}
+	
+	// Verify forge fee pool not updated
+	if treasury.GetForgeFeePool() != 0 {
+		t.Errorf("Expected forge fee pool 0 BTC, got %.8f", treasury.GetForgeFeePool())
+	}
+}
+
+func TestProcessForgeWithFee(t *testing.T) {
+	treasury := NewTreasury()
+	treasury.SetBlockHeight(1000)
+	
+	// Process forge with King's Tithe enabled
+	result, kingsTithe, err := treasury.ProcessForgeWithFee("bc1ptest", true)
+	
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+	
+	if result == nil {
+		t.Fatal("Expected result, got nil")
+	}
+	
+	// Verify King's Tithe is 1% of the original miner reward (42.5 EXS)
+	originalMinerReward := ForgeReward - TreasuryAllocation // 42.5 EXS
+	expectedKingsTithe := originalMinerReward * TreasuryFeePercent // 0.425 EXS
+	
+	if kingsTithe != expectedKingsTithe {
+		t.Errorf("Expected King's Tithe %.3f, got %.3f", expectedKingsTithe, kingsTithe)
+	}
+	
+	// Verify miner reward is reduced by King's Tithe
+	expectedFinalMinerReward := originalMinerReward - kingsTithe
+	if result.MinerReward != expectedFinalMinerReward {
+		t.Errorf("Expected final miner reward %.3f, got %.3f", expectedFinalMinerReward, result.MinerReward)
+	}
+	
+	// Verify treasury balance includes both allocation and King's Tithe
+	expectedTreasuryBalance := TreasuryAllocation + kingsTithe
+	if treasury.GetBalance() != expectedTreasuryBalance {
+		t.Errorf("Expected treasury balance %.3f, got %.3f", expectedTreasuryBalance, treasury.GetBalance())
+	}
+}
+
+func TestProcessForgeWithFeeDisabled(t *testing.T) {
+	treasury := NewTreasury()
+	treasury.SetBlockHeight(1000)
+	
+	// Process forge without King's Tithe
+	result, kingsTithe, err := treasury.ProcessForgeWithFee("bc1ptest", false)
+	
+	if err != nil {
+		t.Fatalf("Expected no error, got %v", err)
+	}
+	
+	// Verify no King's Tithe applied
+	if kingsTithe != 0 {
+		t.Errorf("Expected King's Tithe 0, got %.3f", kingsTithe)
+	}
+	
+	// Verify miner reward is standard (not reduced by tithe)
+	expectedMinerReward := ForgeReward - TreasuryAllocation
+	if result.MinerReward != expectedMinerReward {
+		t.Errorf("Expected miner reward %.3f, got %.3f", expectedMinerReward, result.MinerReward)
+	}
+	
+	// Verify treasury balance is standard allocation only
+	if treasury.GetBalance() != TreasuryAllocation {
+		t.Errorf("Expected treasury balance %.2f, got %.2f", TreasuryAllocation, treasury.GetBalance())
+	}
+}

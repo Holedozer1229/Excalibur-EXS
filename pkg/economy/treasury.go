@@ -20,11 +20,12 @@ import (
 
 // Constants for fee and reward calculations
 const (
-	ForgeReward         = 50.0  // 50 $EXS per forge (block reward)
-	TreasuryPercent     = 0.15  // 15% of block reward goes to treasury
-	TreasuryAllocation  = 7.5   // 7.5 $EXS per block (15% of 50 EXS)
-	TreasuryFeePercent  = 0.01  // 1% treasury fee (legacy, deprecated in favor of direct allocation)
+	ForgeReward         = 50.0   // 50 $EXS per forge (block reward)
+	TreasuryPercent     = 0.15   // 15% of block reward goes to treasury
+	TreasuryAllocation  = 7.5    // 7.5 $EXS per block (15% of 50 EXS)
+	TreasuryFeePercent  = 0.01   // 1% treasury fee (legacy, deprecated in favor of direct allocation)
 	ForgeFeesBTC        = 0.0001 // 0.0001 BTC per forge
+	ForgeFeeSats        = 10000  // 10,000 satoshis per forge (equivalent to ForgeFeesBTC)
 	TotalSupplyCap      = 21000000
 
 	// 12-month rolling treasury release constants
@@ -453,4 +454,68 @@ func (t *Treasury) PrintReport() {
 	fmt.Printf("  Liquidity:            %.2f $EXS (20%%)\n", distribution["liquidity"])
 	fmt.Printf("  Airdrop:              %.2f $EXS (5%%)\n", distribution["airdrop"])
 	fmt.Println("═══════════════════════════════════════════════════")
+}
+
+// ProcessForgeFee implements the King's Tithe fee collection system.
+//
+// For every 100 $EXS minted (2 forges at 50 EXS each), this function routes
+// 1 $EXS to the Treasury address. Additionally, it requires a ForgeFeeSats
+// (10,000 sats) deposit to the Foundry treasury for each forge.
+//
+// This function can be used in conjunction with ProcessForge or independently
+// to apply the 1% fee model described in the original tokenomics.
+//
+// Returns:
+//   - treasuryFee: Amount routed to treasury (1% of minted amount)
+//   - forgeFeeInSats: Required BTC deposit in satoshis
+//   - error: Any error encountered during processing
+func (t *Treasury) ProcessForgeFee(mintedAmount float64, requireDeposit bool) (treasuryFee float64, forgeFeeInSats int64, err error) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	// Calculate 1% treasury fee
+	treasuryFee = mintedAmount * TreasuryFeePercent
+
+	// Update treasury balance
+	t.balance += treasuryFee
+	t.totalFeesCollected += treasuryFee
+
+	// Handle forge fee deposit requirement
+	if requireDeposit {
+		forgeFeeInSats = ForgeFeeSats
+		t.forgeFeePoolBTC += ForgeFeesBTC
+	} else {
+		forgeFeeInSats = 0
+	}
+
+	return treasuryFee, forgeFeeInSats, nil
+}
+
+// ProcessForgeWithFee is a convenience function that combines ProcessForge and ProcessForgeFee.
+//
+// This function processes a forge using the standard 15% treasury allocation model
+// and then applies the additional 1% King's Tithe fee on top of the miner's reward.
+//
+// The 1% fee is calculated from the miner's portion (42.5 EXS) and routed to treasury.
+//
+// Returns the standard ForgeResult plus the additional fee information.
+func (t *Treasury) ProcessForgeWithFee(minerAddress string, applyKingsTithe bool) (*ForgeResult, float64, error) {
+	// Process the standard forge
+	result := t.ProcessForge(minerAddress)
+
+	if !applyKingsTithe {
+		return result, 0, nil
+	}
+
+	// Apply King's Tithe (1% of the miner's reward)
+	kingsTithe, _, err := t.ProcessForgeFee(result.MinerReward, false)
+	if err != nil {
+		return result, 0, err
+	}
+
+	// The King's Tithe is deducted from the miner's reward after initial allocation
+	// This ensures the treasury gets both the 15% allocation AND the 1% tithe
+	result.MinerReward -= kingsTithe
+
+	return result, kingsTithe, nil
 }
