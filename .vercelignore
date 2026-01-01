@@ -2,7 +2,7 @@
 # Prevent Vercel from trying to build or deploy certain directories
 
 # Development/alternative Next.js UI (not used in production)
-web/forge-ui
+/web/forge-ui
 
 # Build artifacts and dependencies (already in .gitignore, but explicit here)
 node_modules
@@ -10,28 +10,23 @@ node_modules
 .cache
 
 # Go backend (not deployed to Vercel)
-cmd
-pkg
+/cmd
+/pkg
 *.go
 
 # Python scripts (not deployed to Vercel)
 *.py
 
 # Build and test files
-test.sh
-scripts
+/test.sh
+/scripts
 
 # Docker files (not needed for Vercel deployment)
-docker
-docker-compose.yml
-Dockerfile
-
-# Documentation and markdown files (optional - uncomment if you don't want them deployed)
-# *.md
-# docs
+/docker
+/docker-compose.yml
 
 # Mobile app (not needed for web deployment)
-mobile-app
+/mobile-app
 
 # Ledger and backend data
-ledger
+/ledger
