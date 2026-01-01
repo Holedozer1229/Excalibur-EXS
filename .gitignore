@@ -129,6 +129,8 @@ logs/
 # Bitcoin/Crypto private keys (NEVER COMMIT THESE!)
 *.key
 *.pem
+# Allow default development SSL certificates in docker/nginx/ssl
+!docker/nginx/ssl/*.pem
 wallet.dat
 private_keys/
 secrets/
