@@ -149,6 +149,66 @@ class BlockchainLLM:
                 "cantillon_effect": "No first-spender advantage, fair distribution",
                 "hyperbitcoinization": "Potential global adoption as reserve currency",
                 "sovereignty": "Financial freedom and individual empowerment"
+            },
+            "jolly_roger": {
+                "symbol": "The Jolly Roger - skull and crossbones flag flown by pirates",
+                "meaning": "Symbol of freedom, sovereignty, and defiance of central authority",
+                "history": "Pirates operated outside government control, creating their own economies and rules",
+                "parallel_to_crypto": "Like pirates who rejected nation-state authority, crypto rejects central banking control",
+                "freedom": "The black flag represented freedom from tyranny and oppressive maritime law",
+                "democratic_crews": "Pirate ships were surprisingly democratic - crews voted on decisions",
+                "treasure": "Pirates sought treasure freely, much like miners seek cryptographic gold",
+                "code": "Pirates lived by their own code, just as crypto follows protocol rules",
+                "sovereignty": "Pirates were sovereign individuals on the high seas, crypto provides financial sovereignty",
+                "legend": "The Jolly Roger struck fear in centralized naval powers, just as Bitcoin challenges central banks",
+                "money_making": "The Jolly Roger was a business tool - it intimidated targets into surrendering without a fight, preserving loot and minimizing casualties",
+                "psychological_warfare": "Flying the Jolly Roger was marketing genius - fear made targets surrender their wealth peacefully",
+                "reputation_value": "A fearsome reputation was worth more than gold - it turned future raids into profitable, bloodless surrenders"
+            },
+            "famous_pirates": {
+                "blackbeard": "Edward Teach (Blackbeard) - Most feared pirate, master of psychological warfare, sailed Queen Anne's Revenge. MONEY STRATEGY: Built terrifying reputation with smoking beard fuses - targets surrendered without fight, preserving cargo value. Blockaded Charleston for ransom, made fortune through intimidation over combat.",
+                "calico_jack": "John Rackham (Calico Jack) - Famous for his Jolly Roger design with crossed swords, sailed with Anne Bonny. MONEY STRATEGY: Specialized in small, fast vessels for hit-and-run raids on merchant ships. Low overhead, high profit margins.",
+                "anne_bonny": "Anne Bonny - Fierce female pirate who refused to conform to societal expectations, fought alongside Calico Jack. MONEY STRATEGY: Targeted wealthy merchant vessels in Caribbean shipping lanes, knew high-value cargo routes intimately.",
+                "mary_read": "Mary Read - Female pirate who disguised as a man, fought fearlessly in naval battles. MONEY STRATEGY: Served on privateer ships earning shares of prizes, transitioned to piracy for better profit splits.",
+                "henry_morgan": "Henry Morgan - Privateer turned pirate, became Lieutenant Governor of Jamaica, amassed fortune of £100,000+. MONEY STRATEGY: Raided Spanish colonies and treasure fleets, reinvested in legitimate businesses and real estate, retired wealthy.",
+                "bartholomew_roberts": "Black Bart Roberts - Most successful pirate ever, captured over 400 ships worth millions. MONEY STRATEGY: Systematic approach to piracy - targeted richest shipping lanes, efficient crew operations, captured more wealth than any pirate in history.",
+                "william_kidd": "Captain Kidd - Privateer turned pirate, treasure worth $160+ million buried/lost. MONEY STRATEGY: Captured merchant vessel Quedagh Merchant with £70,000 cargo, one of richest single prizes in pirate history.",
+                "grace_omalley": "Grace O'Malley - Irish pirate queen who controlled shipping around Ireland, met Queen Elizabeth I as equal. MONEY STRATEGY: Controlled trade routes through taxation and 'protection fees', built legitimate trading empire alongside piracy.",
+                "ching_shih": "Ching Shih - Chinese pirate empress commanding 1,800 ships and 80,000 pirates, most powerful pirate in history. MONEY STRATEGY: Created organized pirate confederation with taxation system, protection rackets, controlled entire South China Sea trade, negotiated amnesty keeping her fortune.",
+                "francis_drake": "Sir Francis Drake - English privateer who circumnavigated globe, captured Spanish treasure worth $7+ billion today. MONEY STRATEGY: Raided Spanish treasure routes from New World, divided spoils with Queen Elizabeth, became knight and admiral.",
+                "samuel_bellamy": "Black Sam Bellamy - 'Prince of Pirates', believed in wealth redistribution. MONEY STRATEGY: Captured Whydah Gally with £20,000+ in gold, silver, and jewels - democratic profit-sharing made crews rich and loyal.",
+                "edward_low": "Edward Low - Notorious for violence, captured 100+ ships. MONEY STRATEGY: Brutal reputation made ships surrender immediately, minimizing damage to valuable cargo.",
+                "jean_lafitte": "Jean Lafitte - Smuggler and privateer with trading empire in New Orleans. MONEY STRATEGY: Ran sophisticated smuggling operation avoiding customs duties, sold goods below legal prices, made fortune in black market trade.",
+                "henry_avery": "Henry Avery - 'The Arch Pirate', pulled off richest pirate raid ever worth $200+ million today. MONEY STRATEGY: Captured Mughal treasure ship Ganj-i-Sawai with gems, gold, silver - vanished with fortune, never caught."
+            },
+            "pirate_philosophy": {
+                "freedom": "Pirates chose freedom over the chains of naval service and merchant exploitation",
+                "equality": "Pirate crews were remarkably egalitarian - all hands shared in the plunder",
+                "democracy": "Captains were elected and could be deposed by crew vote",
+                "meritocracy": "Skill and courage determined rank, not birthright or connections",
+                "code_of_conduct": "Pirates had their own codes and articles, self-governing through consensus",
+                "profit_sharing": "Treasure was divided fairly among crew based on agreed-upon shares",
+                "mutual_aid": "Pirates provided insurance for injuries - wounded members received compensation",
+                "defiance": "Pirates rejected the authority of empires and oppressive maritime laws",
+                "autonomy": "Ships operated as independent sovereign entities on the high seas",
+                "crypto_parallel": "Pirate ethos mirrors crypto values: decentralization, freedom, self-governance, and resistance to tyranny"
+            },
+            "pirate_money_making": {
+                "prize_capture": "Pirates captured merchant vessels loaded with valuable cargo - gold, silver, spices, cloth, rum, weapons",
+                "ransom_operations": "Held wealthy passengers for ransom, blockaded ports demanding payment",
+                "protection_rackets": "Charged merchant ships 'protection fees' to sail safely through pirate-controlled waters",
+                "smuggling_networks": "Operated sophisticated smuggling operations avoiding customs duties and taxes",
+                "treasure_fleet_raids": "Targeted Spanish treasure fleets carrying New World gold and silver to Europe",
+                "slave_trade_disruption": "Captured slave ships, sold cargo and freed slaves who often joined crews",
+                "port_raids": "Raided wealthy coastal towns and settlements for gold, jewels, and supplies",
+                "ship_resale": "Captured ships were sold or added to pirate fleets, multiplying earning potential",
+                "insider_information": "Paid informants in ports revealed richest cargo ships and their routes",
+                "diversification": "Successful pirates invested in legitimate businesses, land, and trading operations",
+                "economies_of_scale": "Pirate confederations like Ching Shih's created large-scale organized crime economies",
+                "low_overhead": "No taxes, no regulations, minimal crew wages compared to navies - high profit margins",
+                "risk_management": "Smart pirates knew when to fight, when to intimidate, and when to negotiate",
+                "reputation_as_asset": "Fearsome reputation reduced resistance, preserved cargo value, saved lives and ammunition",
+                "crypto_lesson": "Like pirates who created alternative economies outside government control, crypto creates financial systems outside central banking"
             }
         }
     
@@ -270,7 +330,16 @@ class BlockchainLLM:
             "proof": "The proof-of-work chain solves the Byzantine Generals' Problem through computational consensus.",
             "immutability": "What is forged in the blockchain cannot be undone. Immutability provides certainty.",
             "sovereignty": "Control your keys, control your destiny. Financial sovereignty is individual empowerment.",
-            "sound_money": "Fixed supply prevents debasement. Sound money preserves wealth across time."
+            "sound_money": "Fixed supply prevents debasement. Sound money preserves wealth across time.",
+            "jolly_roger": "The Jolly Roger flew as a symbol of freedom from tyranny. Like pirates who rejected empire, crypto rejects central banking control.",
+            "pirates": "Pirates created democratic, sovereign economies on the high seas. Crypto creates sovereign financial systems in cyberspace.",
+            "pirate_code": "Pirates governed themselves by code and consensus. Crypto governance flows from protocol and community.",
+            "treasure": "Pirates sought treasure beyond the reach of kings. Miners forge cryptographic gold beyond the reach of central banks.",
+            "freedom": "Pirates chose freedom over servitude. Bitcoiners choose sovereignty over subjugation.",
+            "pirate_money": "Pirates made fortunes through prize capture, protection rackets, and alternative economies. Crypto creates wealth through mining, staking, and decentralized finance.",
+            "blackbeard": "Blackbeard built wealth through reputation - fear was more valuable than violence. In crypto, trustless protocols are more valuable than trusted intermediaries.",
+            "ching_shih": "Ching Shih organized 80,000 pirates into a profitable confederation. DeFi protocols organize millions into decentralized financial networks.",
+            "wealth": "Pirates captured treasure from government-controlled trade routes. Crypto captures value from centrally-controlled financial systems."
         }
         
         return wisdom_map.get(topic.lower(), 

@@ -223,6 +223,93 @@ function consultOracleLocal(query) {
                 sound_money_properties: ['Scarcity', 'Durability', 'Divisibility', 'Portability', 'Fungibility']
             }
         };
+    } else if (queryLower.includes('jolly roger') || queryLower.includes('pirate flag')) {
+        return {
+            category: 'The Jolly Roger - Symbol of Freedom',
+            wisdom: 'The Jolly Roger flew as a symbol of freedom from tyranny. Like pirates who rejected empire, crypto rejects central banking control.',
+            details: {
+                symbol: 'Skull and crossbones - the famous black flag of pirates',
+                meaning: 'Symbol of freedom, sovereignty, and defiance of central authority',
+                history: 'Pirates operated outside government control, creating their own economies and rules',
+                parallel_to_crypto: 'Like pirates who rejected nation-state authority, crypto rejects central banking control',
+                freedom: 'The black flag represented freedom from tyranny and oppressive maritime law',
+                democratic_crews: 'Pirate ships were surprisingly democratic - crews voted on major decisions',
+                treasure_seeking: 'Pirates sought treasure freely, much like miners seek cryptographic gold',
+                sovereignty: 'Pirates were sovereign individuals on the high seas, crypto provides financial sovereignty',
+                legend: 'The Jolly Roger struck fear in centralized naval powers, just as Bitcoin challenges central banks',
+                crypto_connection: 'Both pirates and crypto enthusiasts value freedom, self-governance, and resistance to authority'
+            }
+        };
+    } else if (queryLower.includes('pirate') || queryLower.includes('blackbeard') || queryLower.includes('anne bonny')) {
+        return {
+            category: 'Famous Pirates & Their Money-Making Strategies',
+            wisdom: 'Pirates created democratic, sovereign economies on the high seas. Crypto creates sovereign financial systems in cyberspace.',
+            details: {
+                overview: 'Famous pirates who mastered wealth creation outside government control',
+                bartholomew_roberts: 'Black Bart Roberts - Most successful pirate ever, captured over 400 ships worth millions. STRATEGY: Systematic approach to piracy - targeted richest shipping lanes, efficient operations.',
+                ching_shih: 'Ching Shih - Commanded 1,800 ships and 80,000 pirates. MONEY STRATEGY: Created organized pirate confederation with taxation system, protection rackets, controlled entire South China Sea trade, negotiated amnesty keeping fortune.',
+                henry_avery: 'Henry Avery - Pulled off richest pirate raid ever worth $200+ million today. STRATEGY: Captured Mughal treasure ship with gems, gold, silver - vanished with fortune, never caught.',
+                henry_morgan: 'Henry Morgan - Amassed fortune of £100,000+, became Lieutenant Governor. STRATEGY: Raided Spanish treasure fleets, reinvested in legitimate businesses and real estate, retired wealthy.',
+                blackbeard: 'Edward Teach (Blackbeard) - MONEY STRATEGY: Built terrifying reputation with smoking beard fuses - targets surrendered without fight, preserving cargo value. Made fortune through intimidation over combat.',
+                jean_lafitte: 'Jean Lafitte - MONEY STRATEGY: Ran sophisticated smuggling operation avoiding customs duties, sold goods below legal prices, made fortune in black market trade.',
+                money_lessons: [
+                    'Prize Capture: Pirates captured merchant vessels with valuable cargo - gold, silver, spices, weapons',
+                    'Protection Rackets: Charged merchant ships fees to sail safely through controlled waters',
+                    'Ransom Operations: Held wealthy passengers for ransom, blockaded ports demanding payment',
+                    'Reputation as Asset: Fearsome reputation reduced resistance, preserved cargo value',
+                    'Diversification: Successful pirates invested in legitimate businesses and land',
+                    'Low Overhead: No taxes, no regulations - high profit margins',
+                    'Risk Management: Smart pirates knew when to fight, intimidate, or negotiate'
+                ],
+                crypto_parallel: 'Like pirates who created profitable alternative economies outside government control, crypto creates wealth outside central banking systems through mining, DeFi, and sovereign finance.'
+            }
+        };
+    } else if (queryLower.includes('pirate money') || queryLower.includes('pirate wealth') || queryLower.includes('pirate treasure')) {
+        return {
+            category: 'Pirate Money-Making Strategies',
+            wisdom: 'Pirates made fortunes through prize capture, protection rackets, and alternative economies. Crypto creates wealth through mining, staking, and decentralized finance.',
+            details: {
+                overview: 'How pirates created wealth outside traditional economic systems',
+                prize_capture: 'Captured merchant vessels loaded with valuable cargo - gold, silver, spices, cloth, rum, weapons',
+                treasure_fleets: 'Targeted Spanish treasure fleets carrying New World gold and silver to Europe',
+                ransom_operations: 'Held wealthy passengers for ransom, blockaded ports demanding payment',
+                protection_rackets: 'Charged merchant ships protection fees to sail safely through pirate-controlled waters',
+                smuggling_networks: 'Operated sophisticated smuggling operations avoiding customs duties and taxes',
+                port_raids: 'Raided wealthy coastal towns and settlements for gold, jewels, and supplies',
+                ship_resale: 'Captured ships were sold or added to pirate fleets, multiplying earning potential',
+                insider_information: 'Paid informants in ports revealed richest cargo ships and their routes',
+                economies_of_scale: 'Pirate confederations like Ching Shih\'s created large-scale organized economies',
+                low_overhead: 'No taxes, no regulations, minimal crew wages - high profit margins',
+                diversification: 'Successful pirates invested in legitimate businesses, land, and trading operations',
+                reputation_value: 'Fearsome reputation reduced resistance, preserved cargo value, saved ammunition',
+                profit_sharing: 'Democratic treasure division kept crews loyal and motivated',
+                crypto_lessons: [
+                    'Alternative Economies: Pirates created economies outside government control, like crypto creates finance outside central banks',
+                    'Decentralized Operations: Pirate crews were democratic and self-governing, like DAOs',
+                    'Value Capture: Pirates captured value from monopolistic trade routes, crypto captures value from monopolistic financial systems',
+                    'Network Effects: Larger pirate confederations were more powerful, like larger crypto networks',
+                    'Smart Contracts: Pirate codes and articles were binding agreements, like smart contracts on blockchain'
+                ]
+            }
+        };
+    } else if (queryLower.includes('pirate code') || queryLower.includes('pirate philosophy')) {
+        return {
+            category: 'Pirate Code & Philosophy',
+            wisdom: 'Pirates governed themselves by code and consensus. Crypto governance flows from protocol and community.',
+            details: {
+                overview: 'Pirates created surprisingly democratic and fair systems at sea',
+                democracy: 'Pirate crews voted on major decisions, captains could be deposed by vote',
+                equality: 'All crew members were equal - rank determined by skill, not birthright',
+                profit_sharing: 'Treasure divided fairly among crew based on agreed shares',
+                code_of_conduct: 'Pirates had written articles governing behavior and compensation',
+                mutual_aid: 'Pirates provided insurance for injuries - wounded members received compensation',
+                meritocracy: 'Skill and courage determined rank and respect',
+                freedom: 'Pirates chose freedom over exploitation by merchant companies and navies',
+                autonomy: 'Ships operated as independent sovereign entities on the high seas',
+                parallel: 'Pirate self-governance mirrors crypto\'s decentralized governance and consensus mechanisms',
+                legend: 'The pirate code was their protocol, enforced by consensus - much like blockchain protocols today'
+            }
+        };
     } else {
         return {
             category: 'General Protocol Wisdom',
@@ -238,7 +325,7 @@ function consultOracleLocal(query) {
                     airdrop: '5%'
                 },
                 status: 'OPERATIONAL',
-                ask_specific: 'Try asking about: mining, forge, vault, treasury, axiom, difficulty'
+                ask_specific: 'Try asking about: mining, forge, vault, treasury, axiom, difficulty, Satoshi Nakamoto, Jolly Roger, pirates, pirate money-making, pirate wealth, pirate treasure'
             }
         };
     }
@@ -311,7 +398,17 @@ async function getDivination() {
             "The 13 words bind the protocol in eternal cryptographic truth.",
             "Each forge strengthens the kingdom, each miner a knight of honor.",
             "The oracle sees all transactions, immutable and eternal.",
-            "Wisdom flows from the blockchain like water from Avalon's springs."
+            "Wisdom flows from the blockchain like water from Avalon's springs.",
+            "The Jolly Roger flies over decentralized seas - freedom reigns supreme.",
+            "Like pirates of old, crypto sailors navigate beyond the reach of empire.",
+            "Pirates governed by code and consensus, as does the blockchain.",
+            "The treasure of sovereignty lies in controlling your own keys.",
+            "Blackbeard's legend lives on in every sovereign transaction.",
+            "Ching Shih commanded 80,000 pirates - DeFi commands millions of participants.",
+            "Pirates captured value from monopolistic trade routes - crypto captures value from monopolistic banks.",
+            "Bartholomew Roberts took 400 ships - blockchain takes infinite value from centralized systems.",
+            "Henry Avery's $200 million heist was legendary - Bitcoin's market cap is legendary.",
+            "Pirates made fortunes outside the system - so do crypto miners and HODLers."
         ];
         
         const index = Math.floor(Math.random() * divinations.length);
