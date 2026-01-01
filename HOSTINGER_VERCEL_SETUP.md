@@ -20,7 +20,7 @@ Complete guide to connect your Hostinger domain (www.excaliburcrypto.com) to Ver
    ```bash
    npm install -g vercel
    vercel login
-   cd /path/to/Excalibur-EXS
+   cd ~/projects/Excalibur-EXS  # Replace with your actual project path
    vercel --prod
    ```
 
@@ -71,6 +71,8 @@ You need to configure these records:
 |------|------|-----------------|------|
 | A    | @    | 76.76.21.21     | 3600 |
 
+> **Note**: Vercel's A record IP may change. Always verify the current IP in your Vercel Dashboard when adding the domain. Vercel will display the correct IP address to use.
+
 **Instructions:**
 
 1. **Delete existing records** (if any):
@@ -116,7 +118,8 @@ nslookup www.excaliburcrypto.com
 # Or use dig
 dig www.excaliburcrypto.com
 
-# Expected result: CNAME pointing to cname.vercel-dns.com
+# Expected: CNAME record pointing to Vercel
+# You should see cname.vercel-dns.com in the output
 ```
 
 #### Online Tools:
@@ -246,7 +249,7 @@ dig www.excaliburcrypto.com CNAME
 curl -I https://www.excaliburcrypto.com
 
 # Deploy updates (after initial setup)
-cd /path/to/Excalibur-EXS
+cd ~/projects/Excalibur-EXS  # Replace with your actual path
 vercel --prod
 ```
 
