@@ -129,7 +129,7 @@ export default function MerlinsPortal() {
       const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
       // Verify against the expected hash (in production, this would be a secure backend check)
-      // For now, we'll simulate authentication
+      // TODO: Replace with actual secure backend authentication endpoint
       const response = await fetch('/api/admin/authenticate', {
         method: 'POST',
         headers: {
@@ -199,11 +199,13 @@ export default function MerlinsPortal() {
       });
 
       if (response.ok) {
+        // TODO: Replace with proper toast notification system
         alert('✅ Forge difficulty updated successfully');
       } else {
         throw new Error('Failed to update difficulty');
       }
     } catch (err: any) {
+      // TODO: Replace with proper toast notification system
       alert(`❌ Error: ${err.message}`);
     }
   };

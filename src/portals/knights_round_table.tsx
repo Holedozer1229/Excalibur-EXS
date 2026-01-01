@@ -20,6 +20,8 @@
 import React, { useState, useEffect } from 'react';
 
 // The canonical 13-word Arthurian Axiom
+// NOTE: This is displayed client-side for user reference only. 
+// Actual validation should be performed server-side.
 const CANONICAL_AXIOM = "sword legend pull magic kingdom artist stone destroy forget fire steel honey question";
 
 interface MiningRound {
@@ -104,6 +106,7 @@ export default function KnightsRoundTable() {
         setRoundStates(prev => [...prev, round]);
 
         // Slow down the visualization for user experience
+        // TODO: Make this configurable based on totalRounds to maintain reasonable completion time
         await new Promise(resolve => setTimeout(resolve, 50));
       }
 
@@ -157,6 +160,7 @@ export default function KnightsRoundTable() {
       });
 
       if (response.ok) {
+        // TODO: Replace with proper toast notification system
         alert('🎉 Claim request submitted! A Pull Request will be created for verification.');
       } else {
         throw new Error('Failed to submit claim request');

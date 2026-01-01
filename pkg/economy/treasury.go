@@ -23,9 +23,9 @@ const (
 	ForgeReward         = 50.0   // 50 $EXS per forge (block reward)
 	TreasuryPercent     = 0.15   // 15% of block reward goes to treasury
 	TreasuryAllocation  = 7.5    // 7.5 $EXS per block (15% of 50 EXS)
-	TreasuryFeePercent  = 0.01   // 1% treasury fee (legacy, deprecated in favor of direct allocation)
+	TreasuryFeePercent  = 0.01   // 1% treasury fee (King's Tithe model)
 	ForgeFeesBTC        = 0.0001 // 0.0001 BTC per forge
-	ForgeFeeSats        = 10000  // 10,000 satoshis per forge (equivalent to ForgeFeesBTC)
+	ForgeFeeSats        = 10000  // 10,000 satoshis per forge (= ForgeFeesBTC * 1e8)
 	TotalSupplyCap      = 21000000
 
 	// 12-month rolling treasury release constants
