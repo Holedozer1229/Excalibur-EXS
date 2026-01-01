@@ -1,0 +1,37 @@
+# Excalibur $EXS - Vercel Ignore File
+# Prevent Vercel from trying to build or deploy certain directories
+
+# Development/alternative Next.js UI (not used in production)
+web/forge-ui
+
+# Build artifacts and dependencies (already in .gitignore, but explicit here)
+node_modules
+.next
+.cache
+
+# Go backend (not deployed to Vercel)
+cmd
+pkg
+*.go
+
+# Python scripts (not deployed to Vercel)
+*.py
+
+# Build and test files
+test.sh
+scripts
+
+# Docker files (not needed for Vercel deployment)
+docker
+docker-compose.yml
+Dockerfile
+
+# Documentation and markdown files (optional - uncomment if you don't want them deployed)
+# *.md
+# docs
+
+# Mobile app (not needed for web deployment)
+mobile-app
+
+# Ledger and backend data
+ledger
