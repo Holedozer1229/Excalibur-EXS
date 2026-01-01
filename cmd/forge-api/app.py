@@ -5,7 +5,12 @@ import os
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
-from pkg.miner.tetra_pow_miner import TetraPowMiner
+try:
+    from miners.tetra_pow_python.tetra_pow_miner import TetraPowMiner
+except ImportError:
+    # Fallback to legacy import path for compatibility
+    from pkg.miner.tetra_pow_miner import TetraPowMiner
+
 from pkg.foundry.exs_foundry import ExsFoundry
 from pkg.revenue.revenue_manager import RevenueManager
 

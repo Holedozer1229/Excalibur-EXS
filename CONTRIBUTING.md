@@ -18,7 +18,16 @@ To submit a successful forge claim:
 
 1. Run the Ω′ Δ18 miner:
    ```bash
-   python pkg/miner/tetra_pow_miner.py \
+   # Go miner (recommended for production)
+   cd miners/tetra-pow-go
+   go build -o tetra-pow-miner
+   ./tetra-pow-miner mine \
+     --data "sword legend pull magic kingdom artist stone destroy forget fire steel honey question" \
+     --difficulty 4
+   
+   # OR Python miner (for development/testing)
+   cd miners/tetra-pow-python
+   python3 tetra_pow_miner.py \
      --axiom "sword legend pull magic kingdom artist stone destroy forget fire steel honey question" \
      --difficulty 4
    ```
@@ -31,7 +40,19 @@ To submit a successful forge claim:
 
 4. If valid, your forge will be merged and you'll receive 49.5 $EXS (after 1% treasury fee)
 
-### 2. Code Contributions
+### 2. Contributing New Miners
+
+We welcome new consensus algorithms and mining implementations! See [`miners/README.md`](miners/README.md) for detailed guidelines.
+
+**Quick checklist:**
+- Create directory under `miners/` with descriptive name
+- Implement algorithm with clear documentation
+- Ensure compatibility with axiom system and P2TR vaults
+- Add comprehensive README with usage examples
+- Include performance benchmarks
+- Submit PR with tests
+
+### 3. Code Contributions
 
 We welcome improvements to:
 - Mining algorithm optimizations
