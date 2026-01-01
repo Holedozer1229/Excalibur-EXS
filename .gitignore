@@ -70,6 +70,10 @@ go.sum
 # Go binaries (keep specific)
 cmd/miner/miner
 cmd/rosetta/rosetta
+miner
+rosetta
+treasury
+treasury-demo
 
 # IDEs and Editors
 .vscode/

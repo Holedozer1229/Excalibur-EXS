@@ -111,6 +111,8 @@ Excalibur-EXS/
 ---
 ## 🧭 Getting Started
 
+📖 **[Quick Start Guide](QUICKSTART.md)** - Get up and running in 5 minutes!
+
 **Knights:**
 1. Visit `/web/knights-round-table`
 2. Enter the 13-word Axiom
