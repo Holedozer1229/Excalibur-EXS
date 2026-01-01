@@ -103,6 +103,9 @@ yarn.lock
 .npm
 .eslintcache
 
+# Vercel
+.vercel
+
 # Temporary files
 *.tmp
 *.temp
