@@ -4,9 +4,11 @@ import { useState } from 'react'
 import VaultGenerator from '@/components/VaultGenerator'
 import MinerDashboard from '@/components/MinerDashboard'
 import NetworkStatus from '@/components/NetworkStatus'
+import ForgeInitiation from '@/src/components/ForgeInitiation'
+import TreasuryVisualization from '@/src/components/TreasuryVisualization'
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'vault' | 'miner' | 'network'>('vault')
+  const [activeTab, setActiveTab] = useState<'vault' | 'miner' | 'network' | 'forge' | 'treasury'>('forge')
 
   return (
     <main className="min-h-screen p-8">
@@ -20,12 +22,32 @@ export default function Home() {
             The Excalibur Anomaly Protocol ($EXS)
           </p>
           <p className="text-sm text-gray-400 mt-2">
-            Quantum-Hardened | Tetra-PoW | Taproot Vaults
+            Quantum-Hardened | Tetra-PoW | Taproot Vaults | 12-Month Rolling Treasury
           </p>
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-center space-x-4 mb-8">
+        <div className="flex justify-center flex-wrap gap-4 mb-8">
+          <button
+            onClick={() => setActiveTab('forge')}
+            className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+              activeTab === 'forge'
+                ? 'bg-purple-600 text-white card-glow'
+                : 'bg-slate-800 text-gray-300 hover:bg-slate-700'
+            }`}
+          >
+            ⚔️ Forge Initiation
+          </button>
+          <button
+            onClick={() => setActiveTab('treasury')}
+            className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+              activeTab === 'treasury'
+                ? 'bg-purple-600 text-white card-glow'
+                : 'bg-slate-800 text-gray-300 hover:bg-slate-700'
+            }`}
+          >
+            🏛️ Treasury
+          </button>
           <button
             onClick={() => setActiveTab('vault')}
             className={`px-6 py-3 rounded-lg font-semibold transition-all ${
@@ -60,6 +82,8 @@ export default function Home() {
 
         {/* Content */}
         <div className="transition-all duration-300">
+          {activeTab === 'forge' && <ForgeInitiation />}
+          {activeTab === 'treasury' && <TreasuryVisualization />}
           {activeTab === 'vault' && <VaultGenerator />}
           {activeTab === 'miner' && <MinerDashboard />}
           {activeTab === 'network' && <NetworkStatus />}
@@ -67,10 +91,10 @@ export default function Home() {
 
         {/* Footer */}
         <div className="mt-16 text-center text-sm text-gray-500">
-          <p>Ω′ Δ18 Tetra-PoW | HPP-1 (600,000 rounds) | 13-Word Prophecy Axiom</p>
+          <p>Ω′ Δ18 Tetra-PoW | HPP-1 (600,000 rounds) | 13-Word Prophecy Axiom | CLTV Mini-Outputs</p>
           <p className="mt-2">
             <a 
-              href="https://github.com/Holedozer1229/Excalibur-ESX" 
+              href="https://github.com/Holedozer1229/Excalibur-EXS" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-purple-400 hover:text-purple-300"
