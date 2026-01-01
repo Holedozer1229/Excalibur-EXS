@@ -133,7 +133,8 @@ Excalibur-EXS/
 
 - **Vercel:**  
   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Holedozer1229/Excalibur-EXS)  
-  See [`VERCEL_DEPLOY.md`](VERCEL_DEPLOY.md)
+  See [`VERCEL_DEPLOY.md`](VERCEL_DEPLOY.md)  
+  **Hostinger DNS Setup:** [`HOSTINGER_VERCEL_SETUP.md`](HOSTINGER_VERCEL_SETUP.md)
 
 - **GitHub Pages:**  
   See [`GITHUB_PAGES_DEPLOY.md`](GITHUB_PAGES_DEPLOY.md)

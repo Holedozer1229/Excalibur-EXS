@@ -101,15 +101,20 @@ After deploying, your site will be available at:
 - **Vercel URL**: `excalibur-exs.vercel.app` (or similar)
 - **Custom Domain**: Configure in Vercel Dashboard
 
-### Setting Up Custom Domain
-1. Go to Vercel Dashboard → Your Project → Settings → Domains
-2. Add: `www.excaliburcrypto.com`
-3. Configure DNS at your registrar:
-   - Type: `CNAME`
-   - Name: `www`
-   - Value: `cname.vercel-dns.com`
-4. Wait for DNS propagation (5-30 minutes)
-5. Vercel automatically provisions SSL certificate
+### Setting Up Custom Domain (Hostinger)
+
+**For Hostinger users (www.excaliburcrypto.com):**
+See the complete step-by-step guide: **[HOSTINGER_VERCEL_SETUP.md](HOSTINGER_VERCEL_SETUP.md)**
+
+**Quick Summary:**
+1. Deploy to Vercel first
+2. Go to Vercel Dashboard → Your Project → Settings → Domains
+3. Add: `www.excaliburcrypto.com`
+4. In Hostinger hPanel → Domains → excaliburcrypto.com → DNS Zone Editor:
+   - Add CNAME: `www` → `cname.vercel-dns.com`
+   - Add A record: `@` → `76.76.21.21` (optional, for apex domain)
+5. Wait for DNS propagation (5-30 minutes)
+6. Vercel automatically provisions SSL certificate
 
 ---
 
