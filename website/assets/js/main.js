@@ -438,10 +438,13 @@ document.querySelectorAll('.portal-gateway').forEach(portal => {
     });
 });
 
-// Track mystical events
+// Track mystical events (for analytics)
 function trackMysticalEvent(eventName, data) {
-    console.log(`⚔️ Mystical Event: ${eventName}`, data);
-    // Analytics integration would go here
+    // Analytics integration would go here in production
+    // Could integrate with Google Analytics, Mixpanel, etc.
+    if (typeof window.gtag !== 'undefined') {
+        window.gtag('event', eventName, data);
+    }
 }
 
 // Track portal entries
@@ -487,6 +490,5 @@ function revealSecretRune() {
     setTimeout(() => secret.remove(), 5000);
 }
 
-console.log('%c⚔️ EXCALIBUR $EXS ⚔️', 'font-size: 24px; color: #d4af37; font-weight: bold;');
-console.log('%cThe XIII Words: sword legend pull magic kingdom artist stone destroy forget fire steel honey question', 'font-size: 14px; color: #c0c0c0; font-style: italic;');
-console.log('%cΩ′ Δ18 Tetra-PoW • HPP-1 • 128 Rounds', 'font-size: 12px; color: #4a148c;');
+// Excalibur $EXS Protocol initialized
+// The XIII Words Axiom guides the forge

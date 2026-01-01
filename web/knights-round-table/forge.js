@@ -15,9 +15,26 @@ const forgeAgainBtn = document.getElementById('forge-again-btn');
 
 let axiomVerified = false;
 
+// Sanitize user input to prevent XSS
+function sanitizeInput(input) {
+    const div = document.createElement('div');
+    div.textContent = input;
+    return div.innerHTML;
+}
+
 // Axiom Verification
 verifyAxiomBtn.addEventListener('click', () => {
-    const userAxiom = axiomInput.value.trim().toLowerCase();
+    const rawInput = axiomInput.value.trim();
+    
+    // Validate input length
+    if (rawInput.length > 200) {
+        axiomStatus.textContent = '✗ Input too long. The Axiom consists of 13 words.';
+        axiomStatus.className = 'status-message error';
+        drawSwordBtn.disabled = true;
+        return;
+    }
+    
+    const userAxiom = sanitizeInput(rawInput).toLowerCase();
     const normalizedCorrectAxiom = CORRECT_AXIOM.toLowerCase();
     
     if (userAxiom === normalizedCorrectAxiom) {
@@ -184,6 +201,7 @@ function resetForge() {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Knights\' Round Table initialized');
-    console.log('Axiom:', CORRECT_AXIOM);
+    // Knights' Round Table initialized
+    // Note: This is a demonstration. In production, axiom validation
+    // should be performed server-side for security.
 });
