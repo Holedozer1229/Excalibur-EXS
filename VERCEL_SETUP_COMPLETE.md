@@ -31,9 +31,10 @@ The Excalibur $EXS website is now fully configured and ready to deploy to Vercel
 ## How to Deploy
 
 ### Option 1: One-Click Deploy (Recommended)
-Click the button in the README.md:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Holedozer1229/Excalibur-EXS)
+Click the button in the [README.md](README.md) or visit:
+```
+https://vercel.com/new/clone?repository-url=https://github.com/Holedozer1229/Excalibur-EXS
+```
 
 This will:
 1. Clone the repository to your Vercel account
@@ -172,5 +173,3 @@ If you encounter issues during deployment:
 ---
 
 **The prophecy unfolds. The realm awaits deployment.** ⚔️
-
-*Last Updated: 2026-01-01*
