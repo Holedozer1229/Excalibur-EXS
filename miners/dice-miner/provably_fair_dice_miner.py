@@ -36,14 +36,17 @@ from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
 
-# Add parent directory to path for imports
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add repository root to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 try:
-    from mining.tetrapow_dice_universal import UniversalMiningKernel
+    from miners.lib.tetrapow_dice_universal import UniversalMiningKernel
 except ImportError:
-    # Try absolute import
-    from pkg.mining.tetrapow_dice_universal import UniversalMiningKernel
+    # Fallback to legacy import paths for compatibility
+    try:
+        from pkg.mining.tetrapow_dice_universal import UniversalMiningKernel
+    except ImportError:
+        from mining.tetrapow_dice_universal import UniversalMiningKernel
 
 
 @dataclass

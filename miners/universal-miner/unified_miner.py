@@ -28,18 +28,23 @@ from typing import Dict, List, Tuple, Optional, Callable
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
 
-# Add parent directory to path for imports
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add repository root to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 try:
-    from tetra_pow_miner import TetraPowMiner
-    from btc_faucet import BTCFaucet
-    from mining.tetrapow_dice_universal import UniversalMiningKernel
+    from miners.tetra_pow_python.tetra_pow_miner import TetraPowMiner
+    from miners.universal_miner.btc_faucet import BTCFaucet
+    from miners.lib.tetrapow_dice_universal import UniversalMiningKernel
 except ImportError:
-    # Try absolute import
-    from pkg.miner.tetra_pow_miner import TetraPowMiner
-    from pkg.miner.btc_faucet import BTCFaucet
-    from pkg.mining.tetrapow_dice_universal import UniversalMiningKernel
+    # Fallback to legacy import paths for compatibility
+    try:
+        from pkg.miner.tetra_pow_miner import TetraPowMiner
+        from pkg.miner.btc_faucet import BTCFaucet
+        from pkg.mining.tetrapow_dice_universal import UniversalMiningKernel
+    except ImportError:
+        from tetra_pow_miner import TetraPowMiner
+        from btc_faucet import BTCFaucet
+        from mining.tetrapow_dice_universal import UniversalMiningKernel
 
 
 @dataclass
