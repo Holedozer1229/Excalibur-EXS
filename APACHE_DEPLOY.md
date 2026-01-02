@@ -1,15 +1,41 @@
 # Excalibur $EXS - Apache Deployment Guide
 
-Deploy the Excalibur $EXS website on Apache web server for production hosting.
+Deploy the Excalibur $EXS website on Apache web server for production hosting on AWS Ubuntu Server.
 
-## Quick Deploy (Ubuntu/Debian)
+## Quick Deploy (AWS Ubuntu Server)
 
 ### Prerequisites
 
-- Ubuntu 20.04+ or Debian 10+ server
-- Root or sudo access
-- Domain name pointing to your server IP
+- AWS EC2 instance with Ubuntu 20.04+ or Ubuntu 22.04 LTS
+- Root or sudo access (ubuntu user has sudo by default)
+- Domain name pointing to your server's Elastic IP
 - Apache 2.4+
+- Security Group configured to allow HTTP (80) and HTTPS (443)
+
+### AWS EC2 Setup
+
+If you haven't created an EC2 instance yet:
+
+1. **Launch EC2 Instance**:
+   - Go to AWS Console → EC2 → Launch Instance
+   - Choose **Ubuntu Server 22.04 LTS** AMI
+   - Instance type: **t2.micro** (free tier) or **t3.small** (recommended for production)
+   - Configure Security Group:
+     - SSH (22) - Your IP
+     - HTTP (80) - 0.0.0.0/0
+     - HTTPS (443) - 0.0.0.0/0
+   - Create or select an existing key pair
+   - Launch instance
+
+2. **Allocate Elastic IP** (optional but recommended):
+   - Go to EC2 → Elastic IPs → Allocate Elastic IP
+   - Associate with your instance
+   - Use this IP for DNS configuration
+
+3. **Connect to Instance**:
+   ```bash
+   ssh -i /path/to/your-key.pem ubuntu@YOUR_ELASTIC_IP
+   ```
 
 ### Step 1: Install Apache and Dependencies
 
@@ -280,6 +306,99 @@ curl -I -H "Accept-Encoding: gzip" https://www.excaliburcrypto.com
 
 ---
 
+## AWS-Specific Configuration
+
+### Security Group Configuration
+
+Ensure your EC2 Security Group allows:
+
+```
+Inbound Rules:
+- SSH (22): Your IP address or VPN IP range
+- HTTP (80): 0.0.0.0/0 (all traffic)
+- HTTPS (443): 0.0.0.0/0 (all traffic)
+
+Outbound Rules:
+- All traffic: 0.0.0.0/0 (default)
+```
+
+To modify Security Group:
+1. Go to EC2 Console → Security Groups
+2. Select your instance's security group
+3. Edit Inbound Rules
+4. Add/modify rules as needed
+
+### Elastic IP Best Practices
+
+Using an Elastic IP ensures your server IP doesn't change on reboot:
+
+```bash
+# After allocating Elastic IP in AWS Console
+# Associate it with your instance
+# Update your DNS records to point to the Elastic IP
+```
+
+**Important**: Elastic IPs are free when associated with a running instance, but cost $0.005/hour when not associated.
+
+### AWS Instance Sizing
+
+Recommended EC2 instance types for Apache deployment:
+
+| Instance Type | vCPU | RAM | Cost/Month | Use Case |
+|--------------|------|-----|------------|----------|
+| t2.micro | 1 | 1GB | Free tier | Development/Testing |
+| t3.small | 2 | 2GB | ~$15 | Small production sites |
+| t3.medium | 2 | 4GB | ~$30 | Medium traffic sites |
+| t3.large | 2 | 8GB | ~$60 | High traffic sites |
+
+**Recommended**: t3.small for production deployment
+
+### AWS Backup Strategy
+
+Create an AMI (Amazon Machine Image) after successful deployment:
+
+```bash
+# In AWS Console:
+# EC2 → Instances → Select your instance → Actions → Image → Create Image
+
+# Or via AWS CLI:
+aws ec2 create-image \
+  --instance-id i-1234567890abcdef0 \
+  --name "Excalibur-EXS-Apache-$(date +%Y%m%d)" \
+  --description "Excalibur EXS Apache deployment backup"
+```
+
+### CloudWatch Monitoring (Optional)
+
+Enable detailed monitoring for your EC2 instance:
+
+```bash
+# Install CloudWatch agent
+wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+sudo dpkg -i -E ./amazon-cloudwatch-agent.deb
+
+# Configure CloudWatch (requires IAM role with CloudWatch permissions)
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-config-wizard
+```
+
+Monitor Apache logs in CloudWatch:
+- CPU utilization
+- Network traffic
+- Disk usage
+- Apache access/error logs
+
+### AWS Cost Optimization
+
+Tips to reduce AWS costs:
+
+1. **Use t3 instances** instead of t2 (better performance per dollar)
+2. **Stop instance when not needed** (development only)
+3. **Use Reserved Instances** for long-term deployments (up to 72% savings)
+4. **Enable AWS Free Tier** (t2.micro free for 12 months)
+5. **Set up billing alerts** in AWS Console → Billing → Budgets
+
+---
+
 ## Monitoring & Maintenance
 
 ### Check Logs
@@ -333,6 +452,69 @@ sudo certbot renew --dry-run
 ---
 
 ## Troubleshooting
+
+### AWS-Specific Issues
+
+#### Issue: Cannot connect to server via HTTP/HTTPS
+
+**Solution**: Check Security Group settings
+
+```bash
+# Verify Security Group in AWS Console
+# EC2 → Security Groups → Select your SG → Inbound Rules
+# Ensure these rules exist:
+# - HTTP (80) from 0.0.0.0/0
+# - HTTPS (443) from 0.0.0.0/0
+
+# Test from your EC2 instance
+curl -I http://localhost
+curl -I http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+```
+
+#### Issue: DNS not resolving to Elastic IP
+
+**Solution**: Verify Elastic IP association and DNS records
+
+```bash
+# Check instance's public IP
+curl http://169.254.169.254/latest/meta-data/public-ipv4
+
+# Verify DNS resolution
+dig www.excaliburcrypto.com
+nslookup www.excaliburcrypto.com
+
+# Ensure DNS A records point to your Elastic IP
+```
+
+#### Issue: UFW firewall blocking connections
+
+**Solution**: AWS uses Security Groups, UFW may conflict
+
+```bash
+# Disable UFW on AWS (Security Groups handle firewall)
+sudo ufw disable
+
+# Or configure UFW to allow Apache
+sudo ufw allow 'Apache Full'
+sudo ufw allow OpenSSH
+sudo ufw enable
+```
+
+#### Issue: Certbot fails with connection timeout
+
+**Solution**: Verify port 80 is accessible from internet
+
+```bash
+# Test from external machine or use online tools
+# https://www.yougetsignal.com/tools/open-ports/
+# Check port 80 and 443
+
+# Ensure Apache is listening
+sudo netstat -tlnp | grep :80
+sudo netstat -tlnp | grep :443
+```
+
+### General Issues
 
 ### Issue: 403 Forbidden
 
@@ -402,20 +584,45 @@ If migrating from Nginx:
 
 ---
 
-## Automated Deployment Script
+## Automated Deployment Script (AWS Ubuntu)
 
-Create `/tmp/deploy-apache.sh`:
+### Quick One-Command Deployment
+
+For AWS Ubuntu instances, use the provided deployment script:
+
+```bash
+# SSH into your AWS EC2 Ubuntu instance
+ssh -i /path/to/your-key.pem ubuntu@YOUR_ELASTIC_IP
+
+# Run the automated deployment script
+curl -fsSL https://raw.githubusercontent.com/Holedozer1229/Excalibur-EXS/main/scripts/deploy-apache.sh | sudo bash
+```
+
+This script will:
+- ✓ Install Apache and all dependencies
+- ✓ Enable required Apache modules
+- ✓ Clone the repository
+- ✓ Deploy website files
+- ✓ Configure Apache virtual host
+- ✓ Set up firewall rules
+- ✓ Prompt for admin credentials
+
+**Note for AWS**: After running the script, make sure your Security Group allows HTTP (80) and HTTPS (443) traffic.
+
+### Manual Deployment Script
+
+If you prefer to create and review the script first:
 
 ```bash
 #!/bin/bash
 
-# Excalibur $EXS - Automated Apache Deployment
+# Excalibur $EXS - Automated Apache Deployment for AWS Ubuntu
 
 set -e
 
 echo "Installing Apache and dependencies..."
 sudo apt update
-sudo apt install -y apache2 certbot python3-certbot-apache
+sudo apt install -y apache2 apache2-utils certbot python3-certbot-apache
 
 echo "Enabling Apache modules..."
 sudo a2enmod rewrite ssl headers expires proxy proxy_http deflate
@@ -440,31 +647,30 @@ sudo a2dissite 000-default.conf
 sudo a2ensite excalibur-exs.conf
 sudo apache2ctl configtest
 
-echo "Configuring firewall..."
-sudo ufw allow 'Apache Full'
-sudo ufw allow OpenSSH
-
 echo "Restarting Apache..."
 sudo systemctl restart apache2
 
 echo "Setting up admin authentication..."
-echo "Please enter a password for the admin user:"
-sudo htpasswd -c /etc/apache2/.htpasswd admin
+echo "Please enter a username for the admin portal (or press Enter for 'admin'):"
+read -p "Username: " admin_username
+admin_username=${admin_username:-admin}
+sudo htpasswd -c /etc/apache2/.htpasswd "$admin_username"
 
 echo ""
 echo "Deployment complete!"
 echo ""
-echo "Next steps:"
-echo "1. Configure DNS to point to this server"
-echo "2. Run: sudo certbot --apache -d excaliburcrypto.com -d www.excaliburcrypto.com"
-echo "3. Visit: https://www.excaliburcrypto.com"
+echo "Next steps for AWS:"
+echo "1. Verify Security Group allows HTTP (80) and HTTPS (443)"
+echo "2. Configure DNS to point to your Elastic IP: $(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)"
+echo "3. Run: sudo certbot --apache -d excaliburcrypto.com -d www.excaliburcrypto.com"
+echo "4. Visit: https://www.excaliburcrypto.com"
 ```
 
-Run with:
+Save as `/tmp/deploy-apache-aws.sh` and run:
 
 ```bash
-chmod +x /tmp/deploy-apache.sh
-sudo /tmp/deploy-apache.sh
+chmod +x /tmp/deploy-apache-aws.sh
+sudo /tmp/deploy-apache-aws.sh
 ```
 
 ---

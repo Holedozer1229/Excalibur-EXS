@@ -130,15 +130,27 @@ A       www     YOUR_SERVER_IP
 
 ---
 
-### 🟧 Option 3: Apache
+### 🟧 Option 3: Apache (AWS Ubuntu)
 
-**Time: 15 minutes | Cost: $5-20/month | Performance: Good**
+**Time: 15 minutes | Cost: $3.50-16/month | Performance: Good**
+
+**Recommended for**: AWS EC2 Ubuntu instances, traditional hosting
+
+#### AWS EC2 Setup (if needed)
+
+1. Launch EC2 instance with **Ubuntu 22.04 LTS**
+2. Instance type: **t2.micro** (free tier) or **t3.small** (production)
+3. Configure Security Group:
+   - SSH (22) - Your IP
+   - HTTP (80) - 0.0.0.0/0
+   - HTTPS (443) - 0.0.0.0/0
+4. Allocate and associate an Elastic IP (optional but recommended)
 
 #### Quick Deploy
 
 ```bash
-# SSH into your server
-ssh root@YOUR_SERVER_IP
+# SSH into your AWS Ubuntu server
+ssh -i /path/to/your-key.pem ubuntu@YOUR_ELASTIC_IP
 
 # Run automated deployment
 curl -fsSL https://raw.githubusercontent.com/Holedozer1229/Excalibur-EXS/main/scripts/deploy-apache.sh | sudo bash
@@ -149,7 +161,7 @@ curl -fsSL https://raw.githubusercontent.com/Holedozer1229/Excalibur-EXS/main/sc
 ```bash
 # Install Apache
 sudo apt update
-sudo apt install -y apache2 certbot python3-certbot-apache
+sudo apt install -y apache2 apache2-utils certbot python3-certbot-apache
 
 # Enable modules
 sudo a2enmod rewrite ssl headers expires proxy proxy_http deflate
@@ -456,10 +468,13 @@ sudo systemctl restart apache2
 - **Pro**: $20/month (1TB bandwidth)
 
 ### Nginx/Apache (VPS)
+- **AWS EC2**: $3.50-16/month (t2.micro free tier, t3.small-medium recommended)
+- **AWS Lightsail**: $3.50-20/month (simplified AWS option)
 - **DigitalOcean**: $5-20/month (1-4GB RAM)
 - **Linode**: $5-20/month
-- **AWS Lightsail**: $3.50-20/month
 - **Vultr**: $5-20/month
+
+**Recommended for Apache**: AWS EC2 t3.small ($15/month) or t2.micro (free tier for 12 months)
 
 ### Domain Name
 - **Annual**: $10-15/year (.com)
