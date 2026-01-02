@@ -51,8 +51,8 @@ The oracle can answer questions about:
 
 ### Access the Oracle
 
-1. Navigate to `oracle.html` from Knights' Round Table
-2. Or directly access: `/web/knights-round-table/oracle.html`
+1. Navigate to the oracle from Knights' Round Table
+2. Or directly access: `/web/knights-round-table/oracle`
 
 ### Ask a Question
 
