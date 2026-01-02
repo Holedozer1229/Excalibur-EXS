@@ -21,6 +21,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import EmporiumDashboard from './components/EmporiumDashboard';
+import BlockchainEvents from './components/BlockchainEvents';
+import ProphecyHistory from './components/ProphecyHistory';
 
 // HPP-1 constants
 const HPP1_ITERATIONS = 600000;
@@ -80,7 +83,7 @@ export default function MerlinsPortal() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'mini-outputs' | 'distributions' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'mini-outputs' | 'distributions' | 'emporium' | 'settings'>('overview');
   
   // Forge difficulty settings
   const [forgeDifficulty, setForgeDifficulty] = useState<number>(4);
@@ -304,6 +307,7 @@ export default function MerlinsPortal() {
             { id: 'overview', label: '📊 Overview', icon: '📊' },
             { id: 'mini-outputs', label: '🔐 Mini-Outputs', icon: '🔐' },
             { id: 'distributions', label: '💰 Distributions', icon: '💰' },
+            { id: 'emporium', label: '🏛️ Emporium', icon: '🏛️' },
             { id: 'settings', label: '⚙️ Settings', icon: '⚙️' },
           ].map((tab) => (
             <button
@@ -516,6 +520,22 @@ export default function MerlinsPortal() {
               {distributions.length === 0 && (
                 <p className="text-center text-gray-500 py-8">No distributions yet</p>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Emporium Tab */}
+        {activeTab === 'emporium' && (
+          <div className="space-y-6">
+            {/* Emporium Dashboard */}
+            <div className="mb-8">
+              <EmporiumDashboard />
+            </div>
+
+            {/* Blockchain Events & Prophecy History */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <BlockchainEvents limit={20} autoRefresh={true} />
+              <ProphecyHistory limit={50} />
             </div>
           </div>
         )}
