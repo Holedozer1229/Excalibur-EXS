@@ -38,6 +38,12 @@ class GrailEnergyManager:
     inscriptions, eventually unlocking deeper protocol wisdom.
     """
     
+    # Configuration constants
+    ENERGY_PER_ZERO_BYTE = 10  # Energy gained per leading zero byte in hash
+    INSCRIPTION_ENERGY = 50    # Energy gained per inscription
+    KNIGHT_TRIAL_ENERGY = 25   # Energy bonus for knight trial
+    DRAGON_SLAIN_ENERGY = 200  # Energy bonus for slaying dragon
+    
     def __init__(self):
         """Initialize the Grail Energy Manager."""
         self.state = GrailState.SEALED
@@ -70,7 +76,7 @@ class GrailEnergyManager:
         """
         # Calculate energy based on hash difficulty
         leading_zeros = self._count_leading_zeros(hash_value)
-        energy_gained = leading_zeros * 10  # 10 energy per zero byte
+        energy_gained = leading_zeros * self.ENERGY_PER_ZERO_BYTE
         
         self.energy_level += energy_gained
         self.total_forges_witnessed += 1
@@ -106,7 +112,7 @@ class GrailEnergyManager:
             }
         
         # Add inscription energy
-        inscription_energy = 50
+        inscription_energy = self.INSCRIPTION_ENERGY
         self.energy_level += inscription_energy
         self.inscriptions_detected.append({
             "id": inscription_id,
@@ -168,7 +174,7 @@ class GrailEnergyManager:
         """
         if quest_type == "knight_trial":
             self.quest_progress["knight_trials"] += 1
-            energy_bonus = 25
+            energy_bonus = self.KNIGHT_TRIAL_ENERGY
             self.energy_level += energy_bonus
             
             return {
@@ -181,7 +187,7 @@ class GrailEnergyManager:
         elif quest_type == "dragon_slain":
             if not self.quest_progress["dragon_slain"]:
                 self.quest_progress["dragon_slain"] = True
-                energy_bonus = 200
+                energy_bonus = self.DRAGON_SLAIN_ENERGY
                 self.energy_level += energy_bonus
                 
                 return {

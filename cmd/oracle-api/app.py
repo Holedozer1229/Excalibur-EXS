@@ -56,6 +56,9 @@ CORS(app)  # Enable CORS for cross-origin requests
 app.config['JSON_SORT_KEYS'] = False
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max request size
 
+# Configuration constants
+MAX_QUERY_LENGTH = 500  # Maximum query length in characters
+
 # Initialize Oracle components
 oracle = ExcaliburOracle()
 divination_engine = DivinationEngine()
@@ -64,9 +67,19 @@ blockchain_monitor = BlockchainMonitor()
 llm = BlockchainLLM()
 
 # API Key management (in production, use env vars or secure storage)
+# Default keys are only for development - in production, set via environment variables
+_DEFAULT_DEV_KEY = 'dev_key_12345'
+_DEFAULT_PUBLIC_KEY = 'public_key_67890'
+
+if os.environ.get('ENV') == 'production':
+    # In production, require API keys to be set via environment variables
+    if not os.environ.get('ORACLE_API_KEY') or not os.environ.get('ORACLE_PUBLIC_KEY'):
+        logger.error("Production mode requires ORACLE_API_KEY and ORACLE_PUBLIC_KEY environment variables")
+        raise ValueError("API keys must be set via environment variables in production")
+
 API_KEYS = {
-    os.environ.get('ORACLE_API_KEY', 'dev_key_12345'): 'admin',
-    os.environ.get('ORACLE_PUBLIC_KEY', 'public_key_67890'): 'public'
+    os.environ.get('ORACLE_API_KEY', _DEFAULT_DEV_KEY): 'admin',
+    os.environ.get('ORACLE_PUBLIC_KEY', _DEFAULT_PUBLIC_KEY): 'public'
 }
 
 # Request tracking
@@ -188,8 +201,8 @@ def oracle_query():
         user_id = data.get('user_id')
         
         # Validate query length
-        if len(query) > 500:
-            return jsonify({'error': 'Query too long (max 500 characters)'}), 400
+        if len(query) > MAX_QUERY_LENGTH:
+            return jsonify({'error': f'Query too long (max {MAX_QUERY_LENGTH} characters)'}), 400
         
         logger.info(f"Oracle query: {query[:50]}...")
         
