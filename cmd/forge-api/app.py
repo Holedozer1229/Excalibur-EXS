@@ -281,6 +281,64 @@ def grail_status():
             'message': str(e)
         }), 500
 
+@app.route('/vault/generate', methods=['POST'])
+def generate_vault():
+    """
+    Generate a Taproot vault with custom or canonical seed.
+    
+    POST body:
+    {
+        "seed": "word1 word2 ... word13"  // Optional, defaults to canonical axiom
+    }
+    
+    Returns vault address and prophecy hash.
+    """
+    try:
+        data = request.get_json() or {}
+        seed_input = data.get('seed', '')
+        
+        # Parse seed or use canonical axiom
+        if seed_input:
+            seed_words = seed_input.strip().split()
+            if len(seed_words) != 13:
+                return jsonify({
+                    'error': f'Seed must contain exactly 13 words (got {len(seed_words)})',
+                    'example': 'word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12 word13'
+                }), 400
+            axiom = ' '.join(seed_words)
+            seed_type = 'custom'
+        else:
+            # Use canonical prophecy axiom
+            axiom = "sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
+            seed_words = axiom.split()
+            seed_type = 'canonical'
+        
+        # Generate HPP-1 key (using nonce 0 for vault generation)
+        hpp1_key = foundry.hpp1_derive_key(axiom, 0)
+        
+        # Generate Taproot vault address
+        vault_address = foundry.create_taproot_vault(hpp1_key, axiom)
+        
+        # Compute prophecy hash
+        import hashlib
+        prophecy_hash = hashlib.sha256(axiom.encode()).hexdigest()
+        
+        return jsonify({
+            'success': True,
+            'vault_address': vault_address,
+            'prophecy_hash': prophecy_hash,
+            'seed_type': seed_type,
+            'seed': axiom,
+            'network': 'mainnet',
+            'warning': '⚠️ Store your seed securely. Anyone with your seed can recreate this vault address.'
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'error': 'Vault generation failed',
+            'message': str(e)
+        }), 500
+
 if __name__ == '__main__':
     # WARNING: This is for development/testing only!
     # In production, use gunicorn as specified in Dockerfile.forge

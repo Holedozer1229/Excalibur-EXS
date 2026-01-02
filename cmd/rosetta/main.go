@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/Holedozer1229/Excalibur-EXS/pkg/bitcoin"
 	"github.com/Holedozer1229/Excalibur-EXS/pkg/crypto"
@@ -14,8 +15,10 @@ import (
 )
 
 var (
-	port    int
-	network string
+	port          int
+	network       string
+	customSeed    string
+	useDefaultSeed bool
 )
 
 // NetworkIdentifier represents the blockchain network
@@ -319,12 +322,43 @@ var validateCmd = &cobra.Command{
 var generateCmd = &cobra.Command{
 	Use:   "generate-vault",
 	Short: "Generate a new Taproot vault",
+	Long: `Generate a new Taproot vault using either a custom 13-word seed or the canonical prophecy axiom.
+	
+Examples:
+  # Use canonical prophecy axiom (default)
+  rosetta generate-vault
+  
+  # Use custom 13-word seed
+  rosetta generate-vault --seed "word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12 word13"
+  
+  # Generate for testnet
+  rosetta generate-vault --network testnet --seed "your 13 words here"`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// Example 13-word prophecy axiom
-		prophecyWords := []string{
-			"excalibur", "axiom", "quantum", "taproot", "omega",
-			"delta", "tetra", "proof", "work", "ambiguity",
-			"protocol", "vault", "prophecy",
+		var prophecyWords []string
+		
+		// If custom seed provided, parse it
+		if customSeed != "" {
+			// Split by spaces and validate
+			words := []string{}
+			for _, word := range strings.Fields(customSeed) {
+				words = append(words, strings.TrimSpace(word))
+			}
+			
+			if len(words) != 13 {
+				fmt.Printf("❌ Error: Seed must contain exactly 13 words (got %d)\n", len(words))
+				fmt.Println("\nExample: rosetta generate-vault --seed \"word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12 word13\"")
+				return
+			}
+			
+			prophecyWords = words
+			fmt.Println("🔑 Using custom seed")
+		} else {
+			// Use canonical prophecy axiom
+			prophecyWords = []string{
+				"sword", "legend", "pull", "magic", "kingdom", "artist",
+				"stone", "destroy", "forget", "fire", "steel", "honey", "question",
+			}
+			fmt.Println("🔑 Using canonical prophecy axiom")
 		}
 		
 		params := &chaincfg.MainNetParams
@@ -338,11 +372,15 @@ var generateCmd = &cobra.Command{
 			return
 		}
 		
-		fmt.Println("🔱 Taproot Vault Generated")
+		fmt.Println("\n🔱 Taproot Vault Generated")
 		fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-		fmt.Printf("Address: %s\n", vault.Address)
+		fmt.Printf("Address:  %s\n", vault.Address)
+		fmt.Printf("Network:  %s\n", network)
+		fmt.Printf("Seed:     %s\n", strings.Join(prophecyWords, " "))
 		fmt.Printf("Prophecy: %x\n", vault.ProphecyHash)
 		fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+		fmt.Println("\n⚠️  IMPORTANT: Store your seed securely. Anyone with access")
+		fmt.Println("   to your seed can recreate your vault address.")
 	},
 }
 
@@ -351,6 +389,7 @@ func init() {
 	serveCmd.Flags().StringVarP(&network, "network", "n", "mainnet", "Network (mainnet/testnet)")
 	
 	generateCmd.Flags().StringVarP(&network, "network", "n", "mainnet", "Network (mainnet/testnet)")
+	generateCmd.Flags().StringVarP(&customSeed, "seed", "s", "", "Custom 13-word seed (defaults to canonical prophecy axiom)")
 	
 	rootCmd.AddCommand(serveCmd)
 	rootCmd.AddCommand(validateCmd)

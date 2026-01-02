@@ -90,32 +90,67 @@ See:
 - **Nonlinear State Shifts:** 128 round cryptographic maze
 - **Taproot Privacy:** P2TR conceals spending conditions
 - **Axiomatic Unlinkability:** All outputs bound, yet unpredictable
+- **Zero-Torsion Validation:** Entropy uniformity checks prevent manipulation
+- **Rune Signatures:** Multi-layer cryptographic proof system
+
+---
+## ✨ New Modular Features (v2.0)
+
+### Prophecy System
+- **Rune Validation:** Cryptographic prophecy validation with ancient rune encoding
+- **Prophecy Engine:** Lifecycle management for cryptographic predictions
+- **Zero-Torsion Proofs:** Validates entropy uniformity for proof integrity
+
+### Mathematical Visualizations
+- **Möbius Trajectories:** Non-Euclidean geometric proof paths
+- **Berry Phase Calculations:** Quantum-inspired geometric phase analysis
+- **Curvature & Torsion:** Mathematical verification of cryptographic properties
+
+### Quest System
+- **Mining Quests:** Earn rewards by finding valid hashes
+- **Validation Quests:** Verify proofs for EXS rewards
+- **Puzzle Quests:** Solve cryptographic challenges
+- **Grail Quest:** Legendary 6-leading-zero challenge (1000 $EXS reward!)
+
+### Enhanced Oracle
+- **Unified Interface:** All subsystems accessible through enhanced oracle
+- **Blockchain Watcher:** Async real-time monitoring with error resilience
+- **Intelligent Guidance:** Context-aware protocol assistance
+
+See [QUICKSTART_ENHANCED.md](QUICKSTART_ENHANCED.md) for usage examples!
 
 ---
 ## 🏗️ Project Structure
 
 ```
 Excalibur-EXS/
-├── miners/              # Mining implementations (NEW!)
-│   ├── tetra-pow-go/    # Go production miner
-│   ├── tetra-pow-python/# Python reference miner
-│   ├── dice-miner/      # Probabilistic dice miner
-│   ├── universal-miner/ # Multi-strategy miner
-│   └── lib/             # Shared mining libraries
-├── cmd/
-│   ├── forge-api/       # Forge HTTP API
-│   └── rosetta/         # Go Rosetta API server
 ├── pkg/
-│   ├── crypto/          # Core cryptographic logic
-│   ├── bitcoin/         # Taproot, Bech32m support
-│   ├── economy/         # Treasury and tokenomics
-│   └── foundry/         # Forge processing
+│   ├── prophecy/         # 🆕 Prophecy validation & rune system
+│   ├── mathematics/      # 🆕 Möbius trajectories & Berry phases
+│   ├── engine/           # 🆕 Zero-torsion validation
+│   ├── quest/            # 🆕 Quest system & Grail Quest
+│   ├── oracle/           # 🆕 Enhanced oracle integration
+│   ├── crypto/           # Core cryptographic logic
+│   ├── bitcoin/          # Taproot, Bech32m support
+│   ├── economy/          # Treasury and tokenomics
+│   ├── foundry/          # Forge processing
+│   └── miner/            # Mining kernels
+├── miners/
+│   ├── tetra-pow-go/     # Go production miner
+│   ├── tetra-pow-python/ # Python reference miner
+│   ├── dice-miner/       # Probabilistic dice miner
+│   └── universal-miner/  # Multi-strategy miner
+├── cmd/
+│   ├── forge-api/        # Forge HTTP API
+│   └── rosetta/          # Go Rosetta API server
 ├── web/
 │   ├── knights-round-table/ # Public forge UI
-│   └── forge-ui/        # Forge React/TypeScript UI
+│   └── forge-ui/         # Forge React/TypeScript UI
 ├── admin/
-│   └── merlins-portal/  # Admin dashboard
-└── docs/                # Documentation
+│   └── merlins-portal/   # Admin dashboard
+├── docs/                 # Documentation
+├── Dockerfile            # 🆕 Complete system container
+└── ARCHITECTURE.md       # 🆕 System architecture guide
 ```
 
 ## ⛏️ Mining Structure
@@ -177,7 +212,9 @@ See [`miners/README.md`](miners/README.md) for detailed contribution guidelines.
 ---
 ## 🧭 Getting Started
 
-📖 **[Quick Start Guide](QUICKSTART.md)** - Get up and running in 5 minutes!
+📖 **[Quick Start Guide](QUICKSTART.md)** - Get up and running in 5 minutes!  
+📖 **[Enhanced Quickstart](QUICKSTART_ENHANCED.md)** - Complete guide with new modular features!  
+📐 **[Architecture Guide](ARCHITECTURE.md)** - Deep dive into system design
 
 ### Console Node (Recommended for Power Users)
 

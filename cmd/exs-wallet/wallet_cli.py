@@ -29,14 +29,21 @@ class ExcaliburWallet:
         self.data_dir.mkdir(parents=True, exist_ok=True)
     
     def create_wallet(self, name: str, use_prophecy: bool = True, 
-                     passphrase: Optional[str] = None) -> Dict[str, Any]:
+                     passphrase: Optional[str] = None,
+                     custom_seed: Optional[List[str]] = None) -> Dict[str, Any]:
         """Create a new HD wallet"""
         wallet_path = self.data_dir / f"{name}.json"
         if wallet_path.exists():
             raise ValueError(f"Wallet '{name}' already exists")
         
-        # Generate seed
-        if use_prophecy:
+        # Generate or use seed
+        if custom_seed:
+            # Validate custom seed
+            if len(custom_seed) != 13:
+                raise ValueError(f"Custom seed must contain exactly 13 words (got {len(custom_seed)})")
+            seed_words = custom_seed
+            use_prophecy = False  # Mark as custom seed
+        elif use_prophecy:
             seed_words = DEFAULT_PROPHECY
         else:
             # Generate random 24-word mnemonic (BIP39-like)
@@ -175,8 +182,11 @@ def main():
     create_parser = subparsers.add_parser('create', help='Create new wallet')
     create_parser.add_argument('name', help='Wallet name')
     create_parser.add_argument('--prophecy', action='store_true', default=True,
-                              help='Use 13-word prophecy axiom')
+                              help='Use canonical 13-word prophecy axiom (default)')
     create_parser.add_argument('--passphrase', '-p', help='Encryption passphrase')
+    create_parser.add_argument('--seed', '-s', help='Custom 13-word seed (space-separated)')
+    create_parser.add_argument('--random', action='store_true',
+                              help='Generate random 24-word seed instead of prophecy')
     
     # List wallets
     subparsers.add_parser('list', help='List all wallets')
@@ -199,16 +209,34 @@ def main():
     
     try:
         if args.command == 'create':
+            # Parse custom seed if provided
+            custom_seed = None
+            if args.seed:
+                seed_words = args.seed.strip().split()
+                if len(seed_words) != 13:
+                    print(f"Error: Custom seed must contain exactly 13 words (got {len(seed_words)})", file=sys.stderr)
+                    print("\nExample: --seed \"word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12 word13\"", file=sys.stderr)
+                    sys.exit(1)
+                custom_seed = seed_words
+            
+            # Determine use_prophecy flag
+            use_prophecy = args.prophecy and not args.random and not custom_seed
+            
             result = wallet.create_wallet(
                 args.name,
-                use_prophecy=args.prophecy,
-                passphrase=args.passphrase
+                use_prophecy=use_prophecy,
+                passphrase=args.passphrase,
+                custom_seed=custom_seed
             )
+            
+            seed_type = "canonical prophecy axiom" if use_prophecy else ("custom seed" if custom_seed else "random seed")
             print(f"✓ Wallet '{result['name']}' created successfully!")
+            print(f"  Seed type: {seed_type}")
             print(f"\nSeed phrase ({len(result['seed_words'])} words):")
             print("  " + " ".join(result['seed_words']))
             print(f"\nFirst address: {result['address']}")
             print("\n⚠️  IMPORTANT: Write down your seed phrase and store it securely!")
+            print("   Anyone with access to your seed can recreate your vault address.")
             
         elif args.command == 'list':
             wallets = wallet.list_wallets()
