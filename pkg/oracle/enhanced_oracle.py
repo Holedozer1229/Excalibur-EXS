@@ -5,6 +5,9 @@ Excalibur Enhanced Oracle Integration
 --------------------------------------
 Integrates all new modules with the existing oracle system.
 
+Note: Path manipulation is used for development. In production,
+use proper package installation.
+
 Author: Travis D. Jones <holedozer@gmail.com>
 License: BSD 3-Clause
 """
@@ -14,8 +17,10 @@ import os
 from typing import Dict, List, Optional
 from datetime import datetime, timezone
 
-# Add parent directory to path for imports
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Development import path adjustment
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
 
 # Import existing oracle
 from oracle.oracle_operator import ExcaliburOracle

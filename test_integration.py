@@ -12,8 +12,11 @@ License: BSD 3-Clause
 import sys
 import os
 
-# Add pkg to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'pkg'))
+# Note: This path manipulation is for testing purposes only.
+# In production, use proper package installation via pip install -e .
+pkg_path = os.path.join(os.path.dirname(__file__), 'pkg')
+if pkg_path not in sys.path:
+    sys.path.insert(0, pkg_path)
 
 def test_imports():
     """Test that all modules can be imported."""

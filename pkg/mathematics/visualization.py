@@ -10,6 +10,7 @@ License: BSD 3-Clause
 """
 
 import math
+import random
 from typing import List, Tuple, Dict
 
 
@@ -323,8 +324,6 @@ def main():
     
     # Histogram
     print("📊 Phase Distribution Histogram:")
-    import random
-    random.seed(42)
     phases = [random.uniform(-math.pi, math.pi) for _ in range(100)]
     histogram = viz.generate_histogram(phases, bins=8, width=40)
     print(histogram)

@@ -11,6 +11,7 @@ License: BSD 3-Clause
 
 import hashlib
 import hmac
+import math
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime, timezone
 import struct
@@ -73,7 +74,6 @@ class ZeroTorsionEngine:
                 byte_counts[byte] = byte_counts.get(byte, 0) + 1
             
             # Shannon entropy
-            import math
             entropy = 0.0
             total = len(chunk)
             for count in byte_counts.values():
