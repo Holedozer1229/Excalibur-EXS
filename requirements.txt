@@ -1,0 +1,16 @@
+# Requirements for Emporium of Man & Forge API
+# Python dependencies for the Excalibur-EXS backend services
+
+# Web framework
+flask>=3.0.0
+gunicorn>=21.2.0
+
+# HTTP client
+requests>=2.31.0
+
+# For structured logging (optional but recommended)
+python-json-logger>=2.0.7
+
+# For JWT authentication (Phase 2)
+pyjwt>=2.8.0
+cryptography>=41.0.7

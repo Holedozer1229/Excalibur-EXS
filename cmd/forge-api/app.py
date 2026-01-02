@@ -14,6 +14,7 @@ except ImportError:
 from pkg.foundry.exs_foundry import ExsFoundry
 from pkg.revenue.revenue_manager import RevenueManager
 from pkg.oracle.oracle_operator import ExcaliburOracle
+from pkg.emporium.emporium_endpoints import create_emporium_api
 
 app = Flask(__name__)
 
@@ -22,6 +23,9 @@ miner = TetraPowMiner(difficulty=4)
 foundry = ExsFoundry()
 revenue_manager = RevenueManager()
 oracle = ExcaliburOracle()  # Initialize Oracle
+
+# Initialize Emporium of Man API
+emporium_api = create_emporium_api(app)
 
 @app.route('/health', methods=['GET'])
 def health():

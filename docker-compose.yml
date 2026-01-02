@@ -53,6 +53,32 @@ services:
     volumes:
       - forge-data:/data
 
+  # Emporium of Man service
+  emporium:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.emporium
+    container_name: excalibur-emporium
+    ports:
+      - "5001:5000"
+    environment:
+      - FLASK_ENV=production
+      - ENV=production
+      - EMPORIUM_NETWORK=mainnet
+    restart: unless-stopped
+    networks:
+      - excalibur-net
+    volumes:
+      - emporium-data:/data
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
   # Redis for caching and rate limiting
   redis:
     image: redis:7-alpine
@@ -72,4 +98,5 @@ networks:
 volumes:
   treasury-data:
   forge-data:
+  emporium-data:
   redis-data:
