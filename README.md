@@ -339,8 +339,15 @@ See: [`mobile-app/README.md`](mobile-app/README.md)
 ---
 ## 📚 Documentation
 
+### Core Protocol Documentation
 - **Whitepaper:** [`docs/manifesto.md`](docs/manifesto.md)
+- **Genesis & Protocol Initialization:** [`docs/GENESIS.md`](docs/GENESIS.md)
+- **Tetra-PoW Blockchain Interaction:** [`docs/TETRAPOW_BLOCKCHAIN_INTERACTION.md`](docs/TETRAPOW_BLOCKCHAIN_INTERACTION.md)
+- **Mining Fees & Miner Rewards:** [`docs/MINING_FEES.md`](docs/MINING_FEES.md)
+
+### Integration & API Documentation
 - **Rosetta API Specs:** [`docs/rosetta.md`](docs/rosetta.md)
+- **Architecture Guide:** [`ARCHITECTURE.md`](ARCHITECTURE.md)
 
 ---
 ## 🤝 Contributing
