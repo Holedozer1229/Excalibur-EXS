@@ -156,7 +156,8 @@ export class MiningService {
    */
   private getDifficultyTarget(level: number): bigint {
     // Higher level = lower target = harder
-    return BigInt(2 ** 64) >> BigInt(level * 4);
+    // Use BigInt from the start to maintain precision
+    return (BigInt(2) ** BigInt(64)) >> BigInt(level * 4);
   }
 
   /**

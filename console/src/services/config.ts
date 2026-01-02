@@ -4,7 +4,7 @@
 
 import { Config, WalletConfig, MiningConfig } from '../types';
 
-// Use dynamic import for ESM module
+// Use CommonJS require for compatibility with ESM modules
 const Conf = require('conf');
 
 export class ConfigService {
