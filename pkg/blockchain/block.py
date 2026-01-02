@@ -72,6 +72,12 @@ class Block:
         """
         Validate the block hash.
         
+        NOTE: This validates hash integrity (correct calculation), not
+        proof-of-work difficulty. For premined blocks, difficulty validation
+        is not required as they are created by the protocol creator during
+        initialization. Competitive PoW mining validation would happen at
+        the network consensus layer.
+        
         Returns:
             True if block hash is valid, False otherwise
         """

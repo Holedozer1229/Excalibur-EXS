@@ -135,6 +135,11 @@ class PreMiner:
         """
         Mine premined blocks (blocks 1 through num_blocks - 1).
         
+        NOTE: This is deterministic premining for blockchain initialization,
+        not competitive proof-of-work mining. These blocks are created by
+        the protocol creator to establish the initial blockchain state
+        before network launch.
+        
         Returns:
             List of mined blocks
         """
@@ -153,7 +158,7 @@ class PreMiner:
             # Get previous block
             previous_block = self.blockchain.get_latest_block()
             
-            # Simulate mining by using a simple nonce
+            # Use deterministic nonce for premining (not competitive PoW)
             nonce = block_height * 1000 + 12345
             
             # Create the block
