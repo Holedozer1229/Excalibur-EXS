@@ -130,6 +130,7 @@ Excalibur-EXS/
 │   ├── engine/           # 🆕 Zero-torsion validation
 │   ├── quest/            # 🆕 Quest system & Grail Quest
 │   ├── oracle/           # 🆕 Enhanced oracle integration
+│   ├── blockchain/       # 🆕 Block structure & premining
 │   ├── crypto/           # Core cryptographic logic
 │   ├── bitcoin/          # Taproot, Bech32m support
 │   ├── economy/          # Treasury and tokenomics
@@ -148,6 +149,8 @@ Excalibur-EXS/
 │   └── forge-ui/         # Forge React/TypeScript UI
 ├── admin/
 │   └── merlins-portal/   # Admin dashboard
+├── scripts/
+│   └── premine.py        # 🆕 Blockchain premining script
 ├── docs/                 # Documentation
 ├── Dockerfile            # 🆕 Complete system container
 └── ARCHITECTURE.md       # 🆕 System architecture guide
@@ -214,7 +217,8 @@ See [`miners/README.md`](miners/README.md) for detailed contribution guidelines.
 
 📖 **[Quick Start Guide](QUICKSTART.md)** - Get up and running in 5 minutes!  
 📖 **[Enhanced Quickstart](QUICKSTART_ENHANCED.md)** - Complete guide with new modular features!  
-📐 **[Architecture Guide](ARCHITECTURE.md)** - Deep dive into system design
+📐 **[Architecture Guide](ARCHITECTURE.md)** - Deep dive into system design  
+⛏️ **[Premining Guide](docs/PREMINING.md)** - Initialize Genesis block and premined blocks
 
 ### Console Node (Recommended for Power Users)
 
