@@ -179,6 +179,26 @@ See [`miners/README.md`](miners/README.md) for detailed contribution guidelines.
 
 📖 **[Quick Start Guide](QUICKSTART.md)** - Get up and running in 5 minutes!
 
+### 🖥️ Console Application (NEW!)
+
+**Unified command-line interface for wallet, mining, and income generation:**
+
+```bash
+cd console
+npm install
+npm run build
+
+# Interactive mode (recommended for beginners)
+npm start interactive
+
+# Or use direct commands
+npm start wallet create          # Create quantum-hardened wallet
+npm start mine start             # Start Tetra-PoW mining
+npm start revenue stats          # View income statistics
+```
+
+See [`console/README.md`](console/README.md) for complete documentation.
+
 **Knights:**
 1. Visit `/web/knights-round-table`
 2. Enter the 13-word Axiom
