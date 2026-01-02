@@ -16,12 +16,10 @@ License: BSD 3-Clause
 """
 
 import hashlib
-import os
-import hmac
 import argparse
 import json
 from datetime import datetime, timezone
-from typing import Dict, List, Tuple
+from typing import Dict
 from decimal import Decimal
 
 # Constants matching the Excalibur protocol
@@ -81,11 +79,12 @@ class WarchestVault:
         # Derive private key from first 32 bytes
         self.private_key = master_key[:32].hex()
         
-        # Create vault address from second 32 bytes (simplified Taproot-style)
-        # In production, this would use proper secp256k1 and Bech32m encoding
+        # Create vault address from second 32 bytes
+        # Note: This is a simplified demonstration address format
+        # Production use requires proper Bitcoin secp256k1, Bech32m encoding, and Taproot
         address_material = hashlib.sha256(master_key[32:]).digest()
         address_hash = hashlib.sha256(address_material).hexdigest()[:40]
-        self.vault_address = f"bc1p{address_hash}"
+        self.vault_address = f"exs1p{address_hash}"  # Using 'exs1p' prefix for $EXS chain
         
         print("✅ Warchest Vault credentials generated successfully!\n")
     
@@ -211,7 +210,6 @@ class WarchestVault:
         return {
             'warchest_vault': {
                 'address': self.vault_address,
-                'private_key_hash': hashlib.sha256(self.private_key.encode()).hexdigest()[:16],
                 'security_protocol': f'HPP-1 ({HPP1_ITERATIONS:,} PBKDF2 iterations)'
             },
             'premining_summary': {
@@ -287,8 +285,8 @@ Examples:
     
     parser.add_argument(
         '--reward',
-        type=float,
-        default=50.0,
+        type=str,
+        default='50.0',
         help='Reward per block in EXS (default: 50.0)'
     )
     
@@ -322,7 +320,7 @@ Examples:
     # Simulate premining
     vault.simulate_premine(
         num_blocks=args.blocks,
-        reward_per_block=Decimal(str(args.reward))
+        reward_per_block=Decimal(args.reward)
     )
     
     # Generate and display summary
@@ -334,7 +332,26 @@ Examples:
     
     # Display credentials if requested
     if args.show_credentials:
-        vault.display_credentials()
+        print("=" * 80)
+        print("⚠️  WARNING: SENSITIVE CREDENTIALS WILL BE DISPLAYED!")
+        print("=" * 80)
+        print()
+        print("This will show the private key in your terminal.")
+        print("Terminal history may retain this information.")
+        print()
+        print("For production use:")
+        print("  - Run in a secure, private environment")
+        print("  - Clear terminal history after viewing")
+        print("  - Ensure no screen recording or logging is active")
+        print()
+        response = input("Continue? (yes/no): ").strip().lower()
+        if response == 'yes':
+            print()
+            vault.display_credentials()
+        else:
+            print()
+            print("Credential display cancelled for security.")
+            print()
     else:
         print("⚠️  Vault credentials hidden for security.")
         print("   Use --show-credentials flag to display them.\n")
