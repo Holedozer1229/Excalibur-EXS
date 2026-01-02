@@ -13,6 +13,7 @@ except ImportError:
 
 from pkg.foundry.exs_foundry import ExsFoundry
 from pkg.revenue.revenue_manager import RevenueManager
+from pkg.oracle.oracle_operator import ExcaliburOracle
 
 app = Flask(__name__)
 
@@ -20,6 +21,7 @@ app = Flask(__name__)
 miner = TetraPowMiner(difficulty=4)
 foundry = ExsFoundry()
 revenue_manager = RevenueManager()
+oracle = ExcaliburOracle()  # Initialize Oracle
 
 @app.route('/health', methods=['GET'])
 def health():
@@ -122,6 +124,147 @@ def process_revenue():
         return jsonify(result)
     except ValueError as e:
         return jsonify({'error': str(e)}), 400
+
+@app.route('/oracle', methods=['GET'])
+def oracle_endpoint():
+    """
+    Get Oracle status, prophecies, and Grail information.
+    
+    Returns comprehensive Oracle state including ergotropy level,
+    prophecy generation, and Grail achievement status.
+    """
+    try:
+        # Generate a divine message
+        prophecy = oracle.divine_message()
+        
+        # Get Oracle stats
+        stats = oracle.get_oracle_stats()
+        
+        # Check Grail status
+        grail_status = oracle.check_grail_status()
+        
+        # Monitor Genesis inscriptions
+        genesis_monitoring = oracle.monitor_genesis_inscriptions()
+        
+        return jsonify({
+            'oracle': {
+                'name': stats['oracle_name'],
+                'status': stats['status'],
+                'ergotropy_state': stats['ergotropy_state'],
+                'uptime': stats['uptime']
+            },
+            'prophecy': prophecy,
+            'statistics': {
+                'queries_processed': stats['queries_processed'],
+                'prophecies_delivered': stats['prophecies_delivered'],
+                'forges_validated': stats['forges_validated']
+            },
+            'grail': grail_status,
+            'genesis_monitoring': genesis_monitoring,
+            'timestamp': stats['timestamp']
+        })
+    except Exception as e:
+        # Robust error handling
+        return jsonify({
+            'error': 'Oracle encountered an error',
+            'message': str(e),
+            'status': 'ERROR'
+        }), 500
+
+@app.route('/speak', methods=['GET', 'POST'])
+def speak_endpoint():
+    """
+    Oracle speaks - delivers dynamic prophecy announcements.
+    
+    GET: Returns a random divine message
+    POST: Allows for custom prophecy queries with optional context
+    """
+    try:
+        if request.method == 'POST':
+            data = request.get_json() or {}
+            query = data.get('query', '')
+            include_grail = data.get('include_grail', False)
+            
+            # If query provided, interpret it
+            if query:
+                interpretation = oracle.interpret_prophecy(query)
+                response = {
+                    'type': 'prophecy_interpretation',
+                    'query': query,
+                    'interpretation': interpretation
+                }
+            else:
+                # Otherwise, provide a divine message
+                response = {
+                    'type': 'divine_message',
+                    'message': oracle.divine_message()
+                }
+            
+            # Add Grail status if requested
+            if include_grail:
+                grail_status = oracle.check_grail_status()
+                response['grail'] = grail_status
+                
+                if grail_status['grail_unlocked']:
+                    response['special_announcement'] = "🏆 The Holy Grail has been unlocked! The Oracle's power reaches its zenith!"
+        else:
+            # GET request - simple divine message
+            response = {
+                'type': 'divine_message',
+                'message': oracle.divine_message(),
+                'wisdom': oracle.llm.generate_wisdom('prophecy')
+            }
+        
+        # Always include ergotropy state
+        response['ergotropy_state'] = oracle.ergotropy_state
+        response['timestamp'] = oracle.get_oracle_stats()['timestamp']
+        
+        return jsonify(response)
+    except Exception as e:
+        # Robust error handling
+        return jsonify({
+            'error': 'Oracle speech failed',
+            'message': str(e),
+            'status': 'ERROR'
+        }), 500
+
+@app.route('/oracle/validate', methods=['POST'])
+def oracle_validate():
+    """
+    Validate a forge using Oracle intelligence.
+    """
+    try:
+        data = request.get_json()
+        axiom = data.get('axiom', '')
+        nonce = data.get('nonce')
+        hash_result = data.get('hash', '')
+        
+        if not all([axiom, nonce is not None, hash_result]):
+            return jsonify({'error': 'Missing required fields: axiom, nonce, hash'}), 400
+        
+        # Validate using Oracle
+        result = oracle.validate_forge(axiom, nonce, hash_result)
+        
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({
+            'error': 'Validation failed',
+            'message': str(e)
+        }), 500
+
+@app.route('/oracle/grail', methods=['GET'])
+def grail_status():
+    """
+    Get detailed Grail quest status.
+    """
+    try:
+        grail_status = oracle.check_grail_status()
+        return jsonify(grail_status)
+    except Exception as e:
+        return jsonify({
+            'error': 'Failed to retrieve Grail status',
+            'message': str(e)
+        }), 500
 
 if __name__ == '__main__':
     # WARNING: This is for development/testing only!
