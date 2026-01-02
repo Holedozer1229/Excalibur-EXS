@@ -185,12 +185,23 @@ def speak_endpoint():
             query = data.get('query', '')
             include_grail = data.get('include_grail', False)
             
+            # Input validation - check before stripping
+            if query:
+                if len(query) > 1000:
+                    return jsonify({
+                        'error': 'Query must be less than 1000 characters'
+                    }), 400
+                if not query.strip():
+                    return jsonify({
+                        'error': 'Query cannot be empty or only whitespace'
+                    }), 400
+            
             # If query provided, interpret it
             if query:
-                interpretation = oracle.interpret_prophecy(query)
+                interpretation = oracle.interpret_prophecy(query.strip())
                 response = {
                     'type': 'prophecy_interpretation',
-                    'query': query,
+                    'query': query.strip(),
                     'interpretation': interpretation
                 }
             else:

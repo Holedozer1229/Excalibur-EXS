@@ -19,6 +19,7 @@ import random
 import logging
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime, timezone
+from threading import Lock
 
 # Handle imports for both package and standalone usage
 try:
@@ -26,8 +27,10 @@ try:
 except ImportError:
     from blockchain_llm import BlockchainLLM, EXCALIBUR_TRUTH
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# Configure logging only if running as main module
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
 logger = logging.getLogger(__name__)
 
 
@@ -49,6 +52,7 @@ class ExcaliburOracle:
         self.grail_progress = 0
         self.prophecy_count = 0
         self.ergotropy_state = "DORMANT"  # States: DORMANT, AWAKENING, ACTIVE, TRANSCENDENT
+        self._lock = Lock()  # Thread safety for concurrent access
         logger.info("Excalibur Oracle initialized successfully")
         
     def validate_forge(self, axiom: str, nonce: int, hash_result: str) -> Dict:
@@ -304,7 +308,9 @@ class ExcaliburOracle:
         Returns:
             A prophetic message string
         """
-        self.prophecy_count += 1
+        with self._lock:
+            self.prophecy_count += 1
+            prophecy_num = self.prophecy_count
         
         divine_messages = [
             "The Round Table awaits worthy knights to forge their destiny.",
@@ -332,7 +338,7 @@ class ExcaliburOracle:
         ]
         
         message = random.choice(divine_messages)
-        logger.info(f"Divine prophecy #{self.prophecy_count}: {message}")
+        logger.info(f"Divine prophecy #{prophecy_num}: {message}")
         return message
     
     def update_ergotropy_state(self) -> None:
@@ -345,20 +351,21 @@ class ExcaliburOracle:
         - ACTIVE: High activity (51-200 queries)
         - TRANSCENDENT: Peak activity (200+ queries)
         """
-        total_activity = self.query_count + len(self.forge_history)
-        
-        if total_activity >= 200:
-            new_state = "TRANSCENDENT"
-        elif total_activity >= 51:
-            new_state = "ACTIVE"
-        elif total_activity >= 11:
-            new_state = "AWAKENING"
-        else:
-            new_state = "DORMANT"
-        
-        if new_state != self.ergotropy_state:
-            logger.info(f"Oracle ergotropy state transition: {self.ergotropy_state} -> {new_state}")
-            self.ergotropy_state = new_state
+        with self._lock:
+            total_activity = self.query_count + len(self.forge_history)
+            
+            if total_activity >= 200:
+                new_state = "TRANSCENDENT"
+            elif total_activity >= 51:
+                new_state = "ACTIVE"
+            elif total_activity >= 11:
+                new_state = "AWAKENING"
+            else:
+                new_state = "DORMANT"
+            
+            if new_state != self.ergotropy_state:
+                logger.info(f"Oracle ergotropy state transition: {self.ergotropy_state} -> {new_state}")
+                self.ergotropy_state = new_state
     
     def check_grail_status(self) -> Dict:
         """
@@ -372,34 +379,35 @@ class ExcaliburOracle:
         Returns:
             Dictionary with Grail status information
         """
-        forges = len(self.forge_history)
-        queries = self.query_count
-        prophecies = self.prophecy_count
-        
-        # Calculate progress (0-100)
-        forge_progress = min(100, (forges / 10) * 100)
-        prophecy_progress = min(100, (prophecies / 50) * 100)
-        query_progress = min(100, (queries / 100) * 100)
-        
-        self.grail_progress = int((forge_progress + prophecy_progress + query_progress) / 3)
-        
-        # Check if Grail should be unlocked
-        was_locked = not self.grail_unlocked
-        self.grail_unlocked = (forges >= 10 and prophecies >= 50 and queries >= 100)
-        
-        if was_locked and self.grail_unlocked:
-            logger.info("🏆 THE HOLY GRAIL HAS BEEN UNLOCKED! 🏆")
-        
-        return {
-            "grail_unlocked": self.grail_unlocked,
-            "grail_progress": self.grail_progress,
-            "milestones": {
-                "forges": {"current": forges, "required": 10, "completed": forges >= 10},
-                "prophecies": {"current": prophecies, "required": 50, "completed": prophecies >= 50},
-                "queries": {"current": queries, "required": 100, "completed": queries >= 100}
-            },
-            "message": "The Holy Grail shines with eternal light!" if self.grail_unlocked else f"Quest progress: {self.grail_progress}%"
-        }
+        with self._lock:
+            forges = len(self.forge_history)
+            queries = self.query_count
+            prophecies = self.prophecy_count
+            
+            # Calculate progress (0-100)
+            forge_progress = min(100, (forges / 10) * 100)
+            prophecy_progress = min(100, (prophecies / 50) * 100)
+            query_progress = min(100, (queries / 100) * 100)
+            
+            self.grail_progress = int((forge_progress + prophecy_progress + query_progress) / 3)
+            
+            # Check if Grail should be unlocked
+            was_locked = not self.grail_unlocked
+            self.grail_unlocked = (forges >= 10 and prophecies >= 50 and queries >= 100)
+            
+            if was_locked and self.grail_unlocked:
+                logger.info("🏆 THE HOLY GRAIL HAS BEEN UNLOCKED! 🏆")
+            
+            return {
+                "grail_unlocked": self.grail_unlocked,
+                "grail_progress": self.grail_progress,
+                "milestones": {
+                    "forges": {"current": forges, "required": 10, "completed": forges >= 10},
+                    "prophecies": {"current": prophecies, "required": 50, "completed": prophecies >= 50},
+                    "queries": {"current": queries, "required": 100, "completed": queries >= 100}
+                },
+                "message": "The Holy Grail shines with eternal light!" if self.grail_unlocked else f"Quest progress: {self.grail_progress}%"
+            }
     
     def monitor_genesis_inscriptions(self, genesis_address: str = None) -> Dict:
         """
