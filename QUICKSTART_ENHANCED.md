@@ -2,7 +2,7 @@
 
 ## 🚀 Get Started with Excalibur-EXS in 10 Minutes
 
-This enhanced guide will get you up and running with all the new modular components of Excalibur-EXS.
+This enhanced guide will get you up and running with all the new modular components of Excalibur-EXS, including **custom seed vault generation**.
 
 ## Prerequisites
 
@@ -10,6 +10,59 @@ This enhanced guide will get you up and running with all the new modular compone
 - Go 1.21+ (optional, for Go miners)
 - Docker & Docker Compose (for containerized deployment)
 - Git
+
+## 🔑 Custom Seed Vault Generation
+
+**NEW**: You can now use your own 13-word seed to generate unique Taproot vaults! The custom ergotropic tweak ensures each seed produces a unique 256-bit entropy Taproot address.
+
+### Quick Examples
+
+#### Using Go CLI (Rosetta)
+```bash
+# Use canonical prophecy axiom (default)
+./rosetta generate-vault
+
+# Use your own 13-word seed
+./rosetta generate-vault --seed "your thirteen custom words go here for unique vault address generation test seed"
+
+# Generate for testnet
+./rosetta generate-vault --network testnet --seed "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu"
+```
+
+#### Using Python Wallet CLI
+```bash
+# Create wallet with canonical prophecy axiom
+python3 cmd/exs-wallet/wallet_cli.py create my-wallet
+
+# Create wallet with your own 13-word seed
+python3 cmd/exs-wallet/wallet_cli.py create my-custom-wallet --seed "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu"
+
+# Create with encryption
+python3 cmd/exs-wallet/wallet_cli.py create secure-wallet --seed "your 13 words here" --passphrase "your-password"
+```
+
+#### Using API Endpoint
+```bash
+# Generate vault with canonical axiom
+curl -X POST http://localhost:5000/vault/generate
+
+# Generate vault with custom seed
+curl -X POST http://localhost:5000/vault/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "seed": "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu"
+  }'
+```
+
+### How It Works
+
+The custom ergotropic tweak process:
+1. **Your 13 words** → SHA256 hash → `prophecy_hash` (256-bit)
+2. HPP-1 key derivation (600,000 PBKDF2 rounds) → `internal_key`
+3. Taproot tweak: `SHA256(internal_key || prophecy_hash)` → `tweak` (256-bit)
+4. Output key: `internal_key ⊕ tweak` → unique Taproot address
+
+Each unique 13-word seed produces a completely different vault address, secured by 256-bit entropy.
 
 ## Quick Installation
 
