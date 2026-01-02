@@ -3,15 +3,15 @@
  */
 
 import * as bip39 from 'bip39';
-import { BIP32Factory } from 'bip32';
-import * as ecc from 'tiny-secp256k1';
+const BIP32 = require('bip32');
+const ecc = require('tiny-secp256k1');
 import { payments, networks, Network } from 'bitcoinjs-lib';
-import { bech32m } from 'bech32';
+const bech32 = require('bech32');
 import * as crypto from 'crypto';
 import { pbkdf2Sync } from 'pbkdf2';
 import { WalletConfig } from '../types';
 
-const bip32 = BIP32Factory(ecc);
+const bip32 = BIP32.BIP32Factory(ecc);
 
 // HPP-1 Quantum Hardening: 600,000 rounds
 const HPP1_ROUNDS = 600000;
@@ -132,10 +132,11 @@ export class WalletService {
                 this.network === networks.testnet ? 'tb' : 'bcrt';
     
     // Witness version 1 for Taproot
-    const words = bech32m.toWords(pubkey);
+    const words = bech32.toWords(pubkey);
     const data = [1, ...words]; // Prepend witness version
     
-    return bech32m.encode(hrp, data);
+    // Use bech32m encoding (version 2) for Taproot
+    return bech32.encode(hrp, data, 2147483647); // Max limit for bech32m
   }
 
   /**
@@ -143,7 +144,7 @@ export class WalletService {
    */
   validateTaprootAddress(address: string): boolean {
     try {
-      const decoded = bech32m.decode(address);
+      const decoded = bech32.decode(address, 90); // Max length for bech32m
       
       // Check HRP
       const validHrp = ['bc', 'tb', 'bcrt'].includes(decoded.prefix);
@@ -152,7 +153,7 @@ export class WalletService {
       const witnessVersion = decoded.words[0];
       
       // Check program length (should be 32 bytes for Taproot)
-      const program = Buffer.from(bech32m.fromWords(decoded.words.slice(1)));
+      const program = Buffer.from(bech32.fromWords(decoded.words.slice(1)));
       
       return validHrp && witnessVersion === 1 && program.length === 32;
     } catch (error) {

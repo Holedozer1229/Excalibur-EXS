@@ -2,14 +2,16 @@
  * Configuration Service - Manages application settings
  */
 
-import Conf from 'conf';
 import { Config, WalletConfig, MiningConfig } from '../types';
 
+// Use dynamic import for ESM module
+const Conf = require('conf');
+
 export class ConfigService {
-  private config: Conf<Config>;
+  private config: any;
 
   constructor(configName: string = 'excalibur-exs') {
-    this.config = new Conf<Config>({
+    this.config = new Conf({
       projectName: configName,
       defaults: {
         network: 'mainnet',
