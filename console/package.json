@@ -1,0 +1,82 @@
+{
+  "name": "excalibur-exs-console",
+  "version": "1.0.0",
+  "description": "Excalibur-EXS Console Node Application - Unified interface for mining, wallet management, and income generation",
+  "main": "dist/index.js",
+  "bin": {
+    "exs": "./dist/index.js",
+    "excalibur": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist",
+    "package": "npm run build && npm run package:all",
+    "package:all": "npm run package:linux && npm run package:macos && npm run package:windows",
+    "package:linux": "pkg dist/index.js --targets node18-linux-x64 --output ../bin/exs-linux",
+    "package:macos": "pkg dist/index.js --targets node18-macos-x64 --output ../bin/exs-macos",
+    "package:windows": "pkg dist/index.js --targets node18-win-x64 --output ../bin/exs-windows.exe",
+    "test": "jest",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": [
+    "excalibur",
+    "exs",
+    "blockchain",
+    "mining",
+    "taproot",
+    "quantum-hardened",
+    "cryptocurrency",
+    "wallet"
+  ],
+  "author": "Travis D Jones <holedozer@gmail.com>",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@types/bip32": "^1.0.2",
+    "axios": "^1.6.2",
+    "bech32": "^2.0.0",
+    "bip32": "^4.0.0",
+    "bip39": "^3.1.0",
+    "bitcoinjs-lib": "^6.1.5",
+    "chalk": "^4.1.2",
+    "cli-table3": "^0.6.3",
+    "commander": "^11.1.0",
+    "conf": "^11.0.2",
+    "ecpair": "^2.1.0",
+    "figlet": "^1.7.0",
+    "inquirer": "^8.2.6",
+    "node-localstorage": "^3.0.5",
+    "ora": "^5.4.1",
+    "pbkdf2": "^3.1.2",
+    "qrcode-terminal": "^0.12.0",
+    "tiny-secp256k1": "^2.2.3",
+    "update-notifier": "^6.0.2"
+  },
+  "devDependencies": {
+    "@types/figlet": "^1.5.8",
+    "@types/inquirer": "^8.2.10",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.5",
+    "@types/pbkdf2": "^3.1.2",
+    "@types/qrcode-terminal": "^0.12.2",
+    "@types/update-notifier": "^6.0.8",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "pkg": "^5.8.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "pkg": {
+    "assets": [
+      "dist/**/*"
+    ],
+    "outputPath": "../bin"
+  }
+}
