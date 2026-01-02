@@ -74,8 +74,9 @@ See:
 
 - **Rosetta API:** v1.4.10 for Coinbase, cross-exchange, and standardized integration (`pkg/rosetta/rosetta-exs.yaml`)
 - **Core Engine:**  
-  - Tetra-PoW miner: `pkg/miner/tetra_pow_miner.py`
+  - Tetra-PoW miners: `miners/tetra-pow-go/` (production) and `miners/tetra-pow-python/` (reference)
   - HPP-1 protocol: `pkg/foundry/exs_foundry.py`
+  - Universal kernel: `miners/lib/tetrapow_dice_universal.py`
 - **Economic Layer:**  
   - Tokenomics: `pkg/economy/tokenomics.json`
   - Treasury: `pkg/economy/treasury.go`
@@ -89,31 +90,170 @@ See:
 - **Nonlinear State Shifts:** 128 round cryptographic maze
 - **Taproot Privacy:** P2TR conceals spending conditions
 - **Axiomatic Unlinkability:** All outputs bound, yet unpredictable
+- **Zero-Torsion Validation:** Entropy uniformity checks prevent manipulation
+- **Rune Signatures:** Multi-layer cryptographic proof system
+
+---
+## ✨ New Modular Features (v2.0)
+
+### Prophecy System
+- **Rune Validation:** Cryptographic prophecy validation with ancient rune encoding
+- **Prophecy Engine:** Lifecycle management for cryptographic predictions
+- **Zero-Torsion Proofs:** Validates entropy uniformity for proof integrity
+
+### Mathematical Visualizations
+- **Möbius Trajectories:** Non-Euclidean geometric proof paths
+- **Berry Phase Calculations:** Quantum-inspired geometric phase analysis
+- **Curvature & Torsion:** Mathematical verification of cryptographic properties
+
+### Quest System
+- **Mining Quests:** Earn rewards by finding valid hashes
+- **Validation Quests:** Verify proofs for EXS rewards
+- **Puzzle Quests:** Solve cryptographic challenges
+- **Grail Quest:** Legendary 6-leading-zero challenge (1000 $EXS reward!)
+
+### Enhanced Oracle
+- **Unified Interface:** All subsystems accessible through enhanced oracle
+- **Blockchain Watcher:** Async real-time monitoring with error resilience
+- **Intelligent Guidance:** Context-aware protocol assistance
+
+See [QUICKSTART_ENHANCED.md](QUICKSTART_ENHANCED.md) for usage examples!
 
 ---
 ## 🏗️ Project Structure
 
 ```
 Excalibur-EXS/
-├── cmd/
-│   ├── miner/          # Ω′ Δ18 CLI miner
-│   └── rosetta/        # Go Rosetta API server
 ├── pkg/
-│   ├── crypto/         # Core cryptographic logic
-│   └── bitcoin/        # Taproot, Bech32m support
+│   ├── prophecy/         # 🆕 Prophecy validation & rune system
+│   ├── mathematics/      # 🆕 Möbius trajectories & Berry phases
+│   ├── engine/           # 🆕 Zero-torsion validation
+│   ├── quest/            # 🆕 Quest system & Grail Quest
+│   ├── oracle/           # 🆕 Enhanced oracle integration
+│   ├── blockchain/       # 🆕 Block structure & premining
+│   ├── crypto/           # Core cryptographic logic
+│   ├── bitcoin/          # Taproot, Bech32m support
+│   ├── economy/          # Treasury and tokenomics
+│   ├── foundry/          # Forge processing
+│   └── miner/            # Mining kernels
+├── miners/
+│   ├── tetra-pow-go/     # Go production miner
+│   ├── tetra-pow-python/ # Python reference miner
+│   ├── dice-miner/       # Probabilistic dice miner
+│   └── universal-miner/  # Multi-strategy miner
+├── cmd/
+│   ├── forge-api/        # Forge HTTP API
+│   └── rosetta/          # Go Rosetta API server
 ├── web/
-│   └── forge-ui/       # Forge React/TypeScript UI
+│   ├── knights-round-table/ # Public forge UI
+│   └── forge-ui/         # Forge React/TypeScript UI
 ├── admin/
-│   └── merlins-portal/ # Admin dashboard
-└── docs/               # Documentation
+│   └── merlins-portal/   # Admin dashboard
+├── scripts/
+│   └── premine.py        # 🆕 Blockchain premining script
+├── docs/                 # Documentation
+├── Dockerfile            # 🆕 Complete system container
+└── ARCHITECTURE.md       # 🆕 System architecture guide
 ```
+
+## ⛏️ Mining Structure
+
+All mining implementations are now consolidated in the `miners/` directory for better organization and discoverability.
+
+### Available Miners
+
+- **Tetra-PoW Go** (`miners/tetra-pow-go/`) - Production miner with hardware acceleration
+- **Tetra-PoW Python** (`miners/tetra-pow-python/`) - Reference implementation, easy to modify
+- **Dice Miner** (`miners/dice-miner/`) - Probabilistic mining with provably fair cryptography
+- **Universal Miner** (`miners/universal-miner/`) - Multi-strategy miner supporting merge mining
+
+### Quick Start Mining
+
+```bash
+# Go miner (best performance)
+cd miners/tetra-pow-go
+go build -o tetra-pow-miner
+./tetra-pow-miner mine --data "Excalibur-EXS"
+
+# Python miner (easy to modify)
+cd miners/tetra-pow-python
+python3 tetra_pow_miner.py \
+  --axiom "sword legend pull magic kingdom artist stone destroy forget fire steel honey question"
+
+# Dice miner (probabilistic)
+cd miners/dice-miner
+python3 dice_roll_miner.py mine --axiom "..."
+
+# Universal miner (merge mining)
+cd miners/universal-miner
+python3 unified_miner.py merge --chains BTC,LTC --axiom "..."
+```
+
+For detailed miner documentation, see [`miners/README.md`](miners/README.md)
+
+### Contributing New Consensus Engines
+
+We welcome contributions of new mining algorithms and consensus mechanisms! To add a new miner:
+
+1. Create a new directory under `miners/` with a descriptive name
+2. Implement your consensus algorithm
+3. Add a comprehensive README.md with:
+   - Algorithm description and security properties
+   - Installation and usage instructions
+   - Performance characteristics and benchmarks
+   - Integration examples
+4. Ensure compatibility with:
+   - The canonical 13-word axiom system
+   - Configurable difficulty targets
+   - P2TR vault address generation
+   - Treasury allocation (15% of rewards)
+5. Submit a pull request with tests and documentation
+
+See [`miners/README.md`](miners/README.md) for detailed contribution guidelines.
+
 
 ---
 ## 🧭 Getting Started
 
-📖 **[Quick Start Guide](QUICKSTART.md)** - Get up and running in 5 minutes!
+📖 **[Quick Start Guide](QUICKSTART.md)** - Get up and running in 5 minutes!  
+📖 **[Enhanced Quickstart](QUICKSTART_ENHANCED.md)** - Complete guide with new modular features!  
+📐 **[Architecture Guide](ARCHITECTURE.md)** - Deep dive into system design  
+⛏️ **[Premining Guide](docs/PREMINING.md)** - Initialize Genesis block and premined blocks
 
-**Knights:**
+### Console Node (Recommended for Power Users)
+
+```bash
+# Install binary
+wget https://github.com/Holedozer1229/Excalibur-EXS/releases/latest/download/excalibur-exs-linux-amd64.tar.gz
+tar -xzf excalibur-exs-linux-amd64.tar.gz
+sudo mv exs-node /usr/local/bin/
+
+# Create wallet
+exs-node wallet create my-wallet --passphrase "secure-password"
+
+# Start mining
+exs-node mine start --address bc1p... --threads 4
+
+# Start forge (Knights' Round Table features)
+exs-node forge start --address bc1p... --visualize
+
+# Consult oracle
+exs-node oracle ask "How do I mine effectively?"
+
+# View revenue streams
+exs-node revenue show
+
+# Dashboard
+exs-node dashboard
+```
+
+📖 **[Console Node Documentation](cmd/exs-node/README.md)**  
+📖 **[Deployment Guide](docs/CONSOLE_NODE_DEPLOYMENT.md)**  
+📖 **[AWS Bitcoin Integration](docs/AWS_BITCOIN_INTEGRATION.md)**
+
+### Web Interfaces
+
+**Knights (Public):**
 1. Visit `/web/knights-round-table`
 2. Enter the 13-word Axiom
 3. Click Draw the Sword
@@ -125,6 +265,13 @@ Excalibur-EXS/
 ---
 ## ⚡ Deployment Options
 
+- **Digital Ocean (Recommended):**  
+  One-command deployment to www.excaliburcrypto.com:
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/Holedozer1229/Excalibur-EXS/main/scripts/quick-deploy-digitalocean.sh | sudo bash
+  ```  
+  See [`DIGITAL_OCEAN_DEPLOY.md`](DIGITAL_OCEAN_DEPLOY.md) for complete guide
+
 - **Docker:**  
   ```bash
   docker-compose up -d
@@ -133,7 +280,8 @@ Excalibur-EXS/
 
 - **Vercel:**  
   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Holedozer1229/Excalibur-EXS)  
-  See [`VERCEL_DEPLOY.md`](VERCEL_DEPLOY.md)
+  See [`VERCEL_DEPLOY.md`](VERCEL_DEPLOY.md)  
+  **Hostinger DNS Setup:** [`HOSTINGER_VERCEL_SETUP.md`](HOSTINGER_VERCEL_SETUP.md)
 
 - **GitHub Pages:**  
   See [`GITHUB_PAGES_DEPLOY.md`](GITHUB_PAGES_DEPLOY.md)
@@ -165,10 +313,17 @@ See: [`mobile-app/README.md`](mobile-app/README.md)
 ## 🧪 Development & Testing
 
 - **Go Tests:** `go test ./pkg/...`
+- **Integration Tests:** `./test.sh`
 - **Miner Benchmark:**  
   ```bash
-  cd cmd/miner
-  go run main.go benchmark --rounds 1000
+  # Go miner (fastest)
+  cd miners/tetra-pow-go
+  go build -o tetra-pow-miner
+  ./tetra-pow-miner benchmark --rounds 1000
+  
+  # Python miner
+  cd miners/tetra-pow-python
+  python3 tetra_pow_miner.py --axiom "test" --difficulty 2 --max-attempts 1000
   ```
 - **Rosetta API Health:**  
   ```bash
@@ -184,8 +339,15 @@ See: [`mobile-app/README.md`](mobile-app/README.md)
 ---
 ## 📚 Documentation
 
+### Core Protocol Documentation
 - **Whitepaper:** [`docs/manifesto.md`](docs/manifesto.md)
+- **Genesis & Protocol Initialization:** [`docs/GENESIS.md`](docs/GENESIS.md)
+- **Tetra-PoW Blockchain Interaction:** [`docs/TETRAPOW_BLOCKCHAIN_INTERACTION.md`](docs/TETRAPOW_BLOCKCHAIN_INTERACTION.md)
+- **Mining Fees & Miner Rewards:** [`docs/MINING_FEES.md`](docs/MINING_FEES.md)
+
+### Integration & API Documentation
 - **Rosetta API Specs:** [`docs/rosetta.md`](docs/rosetta.md)
+- **Architecture Guide:** [`ARCHITECTURE.md`](ARCHITECTURE.md)
 
 ---
 ## 🤝 Contributing

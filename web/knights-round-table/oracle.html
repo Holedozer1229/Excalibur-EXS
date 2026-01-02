@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Excalibur Oracle - Ask the protocol oracle for wisdom and guidance">
+    <title>Excalibur Oracle - Protocol Wisdom</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a0033 0%, #2d004d 50%, #4d0080 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 3px solid #9d4edd;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 3em;
+            color: #9d4edd;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+            margin-bottom: 15px;
+        }
+        
+        .subtitle {
+            font-style: italic;
+            font-size: 1.2em;
+            opacity: 0.9;
+            color: #c77dff;
+        }
+        
+        .oracle-panel {
+            background: rgba(157, 78, 221, 0.1);
+            border: 2px solid #9d4edd;
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(157, 78, 221, 0.3);
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: #c77dff;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            text-align: center;
+            border-bottom: 1px solid #9d4edd;
+            padding-bottom: 10px;
+        }
+        
+        .query-input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #c77dff;
+            font-weight: bold;
+        }
+        
+        .query-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #9d4edd;
+            border-radius: 5px;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .query-input:focus {
+            outline: none;
+            border-color: #c77dff;
+            box-shadow: 0 0 10px rgba(157, 78, 221, 0.5);
+        }
+        
+        .oracle-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #9d4edd 0%, #c77dff 100%);
+            border: none;
+            border-radius: 5px;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+        
+        .oracle-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(157, 78, 221, 0.4);
+        }
+        
+        .oracle-button:active {
+            transform: translateY(0);
+        }
+        
+        .oracle-button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .quick-queries {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .quick-query-btn {
+            padding: 10px;
+            background: rgba(157, 78, 221, 0.2);
+            border: 1px solid #9d4edd;
+            border-radius: 5px;
+            color: #c77dff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9em;
+        }
+        
+        .quick-query-btn:hover {
+            background: rgba(157, 78, 221, 0.3);
+            border-color: #c77dff;
+        }
+        
+        .oracle-response {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #9d4edd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .oracle-response.active {
+            display: block;
+        }
+        
+        .response-wisdom {
+            color: #ffd700;
+            font-style: italic;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid #ffd700;
+        }
+        
+        .response-details {
+            color: #c77dff;
+            margin-top: 10px;
+        }
+        
+        .response-category {
+            color: #9d4edd;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .divination-panel {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .divination-text {
+            color: #ffd700;
+            font-size: 1.1em;
+            font-style: italic;
+            margin: 15px 0;
+        }
+        
+        .protocol-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: rgba(157, 78, 221, 0.2);
+            border: 1px solid #9d4edd;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-label {
+            color: #9d4edd;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            color: #ffd700;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background: rgba(157, 78, 221, 0.2);
+            border: 1px solid #9d4edd;
+            border-radius: 5px;
+            color: #c77dff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background: rgba(157, 78, 221, 0.3);
+            border-color: #c77dff;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #9d4edd;
+            margin: 20px 0;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(157, 78, 221, 0.3);
+            border-top: 3px solid #9d4edd;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔮 Excalibur Oracle</h1>
+            <p class="subtitle">"Seek wisdom from the blockchain's eternal intelligence"</p>
+        </header>
+        
+        <!-- Oracle Query Panel -->
+        <div class="oracle-panel">
+            <h2 class="section-title">📜 Ask the Oracle</h2>
+            
+            <div class="query-input-group">
+                <label for="oracle-query">Your Question:</label>
+                <textarea 
+                    id="oracle-query" 
+                    class="query-input" 
+                    placeholder="Ask about mining, forging, vaults, treasury, or the protocol..."
+                    maxlength="500"
+                ></textarea>
+            </div>
+            
+            <button id="ask-oracle-btn" class="oracle-button">
+                🔮 Consult the Oracle
+            </button>
+            
+            <div class="quick-queries">
+                <button class="quick-query-btn" onclick="quickQuery('How do I mine tokens?')">
+                    ⛏️ How to Mine
+                </button>
+                <button class="quick-query-btn" onclick="quickQuery('What is the forge process?')">
+                    ⚒️ Forge Process
+                </button>
+                <button class="quick-query-btn" onclick="quickQuery('How do vaults work?')">
+                    🔐 Vault Info
+                </button>
+                <button class="quick-query-btn" onclick="quickQuery('Tell me about the treasury?')">
+                    💰 Treasury
+                </button>
+                <button class="quick-query-btn" onclick="quickQuery('Satoshi Nakamoto philosophy')">
+                    🧠 Satoshi's Wisdom
+                </button>
+                <button class="quick-query-btn" onclick="quickQuery('What is sound money?')">
+                    💎 Sound Money
+                </button>
+                <button class="quick-query-btn" onclick="quickQuery('What is decentralization?')">
+                    🌐 Decentralization
+                </button>
+                <button class="quick-query-btn" onclick="quickQuery('How to create wealth with freedom?')">
+                    ⚡ Wealth & Freedom
+                </button>
+            </div>
+            
+            <!-- Oracle Response -->
+            <div id="oracle-response" class="oracle-response">
+                <div class="response-wisdom" id="oracle-wisdom"></div>
+                <div class="response-category" id="oracle-category"></div>
+                <div class="response-details" id="oracle-details"></div>
+            </div>
+        </div>
+        
+        <!-- Oracle Divination -->
+        <div class="oracle-panel">
+            <h2 class="section-title">✨ Oracle Divination</h2>
+            <p style="text-align: center; color: #c77dff; margin-bottom: 15px;">
+                Receive wisdom from the blockchain oracle
+            </p>
+            <button id="divination-btn" class="oracle-button" style="background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); color: #1a0033;">
+                ✨ Receive Divination
+            </button>
+            <div id="divination-result" class="divination-panel" style="display: none;">
+                <div class="divination-text" id="divination-text"></div>
+                <div style="color: #9d4edd; margin-top: 10px;" id="divination-status"></div>
+            </div>
+        </div>
+        
+        <!-- Protocol Stats -->
+        <div class="oracle-panel">
+            <h2 class="section-title">📊 Protocol Status</h2>
+            <div class="protocol-stats">
+                <div class="stat-box">
+                    <div class="stat-label">Oracle Status</div>
+                    <div class="stat-value" id="oracle-status">OPERATIONAL</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Taproot Address</div>
+                    <div class="stat-value" style="font-size: 0.7em; word-break: break-all;" id="taproot-addr">Loading...</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Queries Processed</div>
+                    <div class="stat-value" id="queries-count">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Protocol Version</div>
+                    <div class="stat-value">1.0.0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="index" class="back-link">⬅ Return to Knights' Round Table</a>
+        </div>
+    </div>
+    
+    <script src="oracle.js"></script>
+</body>
+</html>

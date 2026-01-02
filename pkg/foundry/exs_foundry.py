@@ -132,27 +132,38 @@ class ExsFoundry:
         
         return forge_result
     
-    def create_taproot_vault(self, hpp1_key: bytes) -> str:
+    def create_taproot_vault(self, hpp1_key: bytes, axiom: str) -> str:
         """
-        Create a Taproot (P2TR) vault from the HPP-1 derived key.
+        Create a Taproot (P2TR) vault using custom 13-word axiom as Taproot tweak.
         
-        This creates a unique, un-linkable Bitcoin Taproot address.
+        This creates a unique, un-linkable Bitcoin Taproot address where the
+        13-word axiom is used as the Taproot tweak, matching the protocol's
+        deterministic vault generation design.
         
         Args:
-            hpp1_key: The HPP-1 derived key
+            hpp1_key: The HPP-1 derived key (used as internal key material)
+            axiom: The 13-word axiom used as the Taproot tweak
             
         Returns:
             Taproot address string (bc1p...)
         """
-        # In production, this would use actual Bitcoin Taproot key derivation
-        # For now, we'll create a deterministic mock address
+        # Create prophecy hash from 13-word axiom (used as Taproot tweak)
+        prophecy_hash = hashlib.sha256(axiom.encode('utf-8')).digest()
         
-        # Derive x-only pubkey (32 bytes)
-        x_only_pubkey = hashlib.sha256(hpp1_key).digest()
+        # Derive internal key from HPP-1 key
+        internal_key = hashlib.sha256(hpp1_key).digest()
         
-        # Create Bech32m address (simplified)
-        # Real implementation would use proper Bech32m encoding
-        address_hash = hashlib.sha256(x_only_pubkey).hexdigest()[:40]
+        # Create taproot tweak using prophecy hash (13-word axiom)
+        # This matches the Go implementation: tweak = SHA256(internalKey || prophecyHash)
+        tweak = hashlib.sha256(internal_key + prophecy_hash).digest()
+        
+        # Derive output key: outputKey = internalKey + tweak (simplified)
+        # In production, this would use proper secp256k1 point addition
+        # For now, we XOR the tweak with internal key for deterministic output
+        output_key = bytes(a ^ b for a, b in zip(internal_key, tweak))
+        
+        # Create Bech32m address (simplified - real implementation uses proper Bech32m)
+        address_hash = hashlib.sha256(output_key).hexdigest()[:40]
         taproot_address = f"bc1p{address_hash}"
         
         return taproot_address
@@ -223,10 +234,11 @@ def main():
     print(f"Salt:      {result['salt'][:32]}...")
     print()
     
-    # Create Taproot vault
+    # Create Taproot vault using custom 13-word axiom as tweak
     hpp1_key = bytes.fromhex(result['hpp1_key'])
-    taproot_address = foundry.create_taproot_vault(hpp1_key)
+    taproot_address = foundry.create_taproot_vault(hpp1_key, axiom)
     print(f"Taproot Vault: {taproot_address}")
+    print(f"  (Generated using 13-word axiom as Taproot tweak)")
     print()
     
     # Show treasury stats

@@ -70,6 +70,7 @@ go.sum
 # Go binaries (keep specific)
 cmd/miner/miner
 cmd/rosetta/rosetta
+miners/tetra-pow-go/tetra-pow-miner
 miner
 rosetta
 treasury
@@ -102,6 +103,9 @@ package-lock.json
 yarn.lock
 .npm
 .eslintcache
+
+# Vercel
+.vercel
 
 # Temporary files
 *.tmp

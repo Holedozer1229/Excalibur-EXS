@@ -1,6 +1,6 @@
 # File: docker-compose.yml
-# Purpose: Orchestrate all EXS services (miners, treasury, guardian, UI)
-# Services: Tetra-PoW, Dice-Roll, Lancelot Guardian, Treasury, Rosetta, Forge UI
+# Purpose: Orchestrate all EXS services (miners, treasury, guardian, Oracle, UI)
+# Services: Tetra-PoW, Dice-Roll, Lancelot Guardian, Oracle API, Treasury, Rosetta, Forge UI
 
 version: '3.8'
 
@@ -62,6 +62,27 @@ services:
     networks:
       - exs-network
 
+  # Oracle API
+  oracle-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.oracle
+    container_name: exs-oracle
+    ports:
+      - "5001:5001"
+    environment:
+      - ENV=production
+      - ORACLE_API_KEY=${ORACLE_API_KEY:-dev_key_12345}
+      - ORACLE_PUBLIC_KEY=${ORACLE_PUBLIC_KEY:-public_key_67890}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - exs-network
+
   # Treasury API
   treasury:
     build:
@@ -102,11 +123,13 @@ services:
       - NEXT_PUBLIC_TREASURY_URL=http://treasury:8080
       - NEXT_PUBLIC_ROSETTA_URL=http://rosetta:8081
       - NEXT_PUBLIC_GUARDIAN_URL=http://lancelot-guardian:8084
+      - NEXT_PUBLIC_ORACLE_URL=http://oracle-api:5001
     depends_on:
       - tetra-pow-miner
       - dice-roll-miner
       - treasury
       - rosetta
+      - oracle-api
     restart: unless-stopped
     networks:
       - exs-network

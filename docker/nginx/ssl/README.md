@@ -1,42 +1,31 @@
-# SSL Certificates
+# SSL Certificates Directory
 
-This directory contains SSL certificates for the Excalibur website.
+This directory should contain SSL certificates for HTTPS.
 
-## Development Certificates (Default)
+## For Development/Testing
 
-Self-signed certificates are included for development purposes:
-- `fullchain.pem` - Certificate chain
-- `privkey.pem` - Private key
-
-**Note:** These are self-signed certificates that will show a browser warning. They are provided for immediate local development only.
-
-## Production Certificates
-
-For production deployment, replace these with proper SSL certificates:
-
-### Option 1: Let's Encrypt (Recommended)
+Generate self-signed certificates:
 
 ```bash
-# Install certbot
-sudo apt-get update
-sudo apt-get install certbot
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout docker/nginx/ssl/privkey.pem \
+  -out docker/nginx/ssl/fullchain.pem \
+  -subj "/CN=www.excaliburcrypto.com"
+```
 
-# Get certificate
+## For Production
+
+Use Let's Encrypt certificates:
+
+```bash
 sudo certbot certonly --standalone -d www.excaliburcrypto.com
-
-# Copy to Docker volume
 sudo cp /etc/letsencrypt/live/www.excaliburcrypto.com/fullchain.pem docker/nginx/ssl/
 sudo cp /etc/letsencrypt/live/www.excaliburcrypto.com/privkey.pem docker/nginx/ssl/
 ```
 
-### Option 2: Custom Certificate
+## Required Files
 
-Replace the files with your own certificates:
-- `fullchain.pem` - Your certificate with intermediate certificates
-- `privkey.pem` - Your private key
+- `fullchain.pem` - SSL certificate chain
+- `privkey.pem` - Private key
 
-## Security
-
-⚠️ **Never commit production private keys to version control!**
-
-The `.gitignore` file is configured to ignore `*.pem` files to prevent accidental commits of production certificates.
+**Note**: These files are gitignored for security and must be generated before starting Docker services.
