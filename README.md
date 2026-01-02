@@ -179,7 +179,40 @@ See [`miners/README.md`](miners/README.md) for detailed contribution guidelines.
 
 📖 **[Quick Start Guide](QUICKSTART.md)** - Get up and running in 5 minutes!
 
-**Knights:**
+### Console Node (Recommended for Power Users)
+
+```bash
+# Install binary
+wget https://github.com/Holedozer1229/Excalibur-EXS/releases/latest/download/excalibur-exs-linux-amd64.tar.gz
+tar -xzf excalibur-exs-linux-amd64.tar.gz
+sudo mv exs-node /usr/local/bin/
+
+# Create wallet
+exs-node wallet create my-wallet --passphrase "secure-password"
+
+# Start mining
+exs-node mine start --address bc1p... --threads 4
+
+# Start forge (Knights' Round Table features)
+exs-node forge start --address bc1p... --visualize
+
+# Consult oracle
+exs-node oracle ask "How do I mine effectively?"
+
+# View revenue streams
+exs-node revenue show
+
+# Dashboard
+exs-node dashboard
+```
+
+📖 **[Console Node Documentation](cmd/exs-node/README.md)**  
+📖 **[Deployment Guide](docs/CONSOLE_NODE_DEPLOYMENT.md)**  
+📖 **[AWS Bitcoin Integration](docs/AWS_BITCOIN_INTEGRATION.md)**
+
+### Web Interfaces
+
+**Knights (Public):**
 1. Visit `/web/knights-round-table`
 2. Enter the 13-word Axiom
 3. Click Draw the Sword

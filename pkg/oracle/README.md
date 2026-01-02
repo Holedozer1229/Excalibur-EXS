@@ -2,6 +2,17 @@
 
 On-chain intelligence system combining blockchain awareness with Arthurian knowledge.
 
+## Recent Enhancements ✨
+
+The Oracle has been enhanced with powerful new features:
+- 🔮 **Dynamic Prophecy Generation**: Random divine messages from the Oracle
+- ⚡ **Ergotropy State Tracking**: Activity-based Oracle states (DORMANT → AWAKENING → ACTIVE → TRANSCENDENT)
+- 🏆 **Grail Achievement System**: Quest-based milestones and progress tracking
+- 📡 **REST API Endpoints**: Comprehensive HTTP API for Oracle interaction (`/oracle`, `/speak`, `/oracle/grail`, `/oracle/validate`)
+- 📊 **Enhanced Logging**: Structured logging for all Oracle activities
+
+**📖 See [README_ENHANCEMENTS.md](./README_ENHANCEMENTS.md) for detailed documentation of new features and REST API usage.**
+
 ## Overview
 
 The Oracle package provides intelligent protocol operations through five main components:
