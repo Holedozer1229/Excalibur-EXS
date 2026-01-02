@@ -52,6 +52,10 @@ a2enmod proxy
 a2enmod proxy_http
 a2enmod deflate
 
+# Optional modules (for additional features)
+print_info "Enabling optional modules..."
+a2enmod ratelimit 2>/dev/null || print_warning "mod_ratelimit not available - rate limiting will be disabled"
+
 print_success "Apache modules enabled"
 
 # Step 3: Clone repository if not already in it
@@ -61,6 +65,7 @@ if [ ! -f "website/index.html" ]; then
     if [ -d "Excalibur-EXS" ]; then
         rm -rf Excalibur-EXS
     fi
+    print_warning "Cloning from GitHub - ensure you trust this repository"
     git clone https://github.com/Holedozer1229/Excalibur-EXS.git
     cd Excalibur-EXS
     print_success "Repository cloned"
@@ -72,11 +77,18 @@ fi
 print_info "Deploying website files..."
 mkdir -p /var/www/excalibur-exs
 
-cp -r website /var/www/excalibur-exs/
-cp -r web /var/www/excalibur-exs/
-cp -r admin /var/www/excalibur-exs/
-cp index.html /var/www/excalibur-exs/
-cp .htaccess /var/www/excalibur-exs/
+# Check if source directories exist
+if [ ! -d "website" ] || [ ! -d "web" ] || [ ! -d "admin" ]; then
+    print_error "Required directories (website, web, admin) not found!"
+    print_error "Please ensure you're in the correct repository directory"
+    exit 1
+fi
+
+cp -r website /var/www/excalibur-exs/ || { print_error "Failed to copy website/"; exit 1; }
+cp -r web /var/www/excalibur-exs/ || { print_error "Failed to copy web/"; exit 1; }
+cp -r admin /var/www/excalibur-exs/ || { print_error "Failed to copy admin/"; exit 1; }
+cp index.html /var/www/excalibur-exs/ || { print_error "Failed to copy index.html"; exit 1; }
+cp .htaccess /var/www/excalibur-exs/ || { print_error "Failed to copy .htaccess"; exit 1; }
 
 print_success "Website files deployed"
 
@@ -126,8 +138,14 @@ print_success "Apache restarted and enabled"
 # Step 10: Setup admin authentication
 print_info "Setting up admin authentication..."
 echo ""
-echo "Please create a password for the admin portal:"
-htpasswd -c /etc/apache2/.htpasswd admin
+echo "IMPORTANT: For security, choose a non-default username and strong password"
+echo "Please create a username for the admin portal:"
+read -p "Username: " admin_username
+if [ -z "$admin_username" ]; then
+    admin_username="admin"
+    print_warning "Using default username 'admin' - consider changing for better security"
+fi
+htpasswd -c /etc/apache2/.htpasswd "$admin_username"
 
 # Step 11: Check Apache status
 if systemctl is-active --quiet apache2; then

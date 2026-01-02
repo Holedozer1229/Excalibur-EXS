@@ -68,14 +68,12 @@ Options -Indexes
 
 # Protect sensitive files
 <FilesMatch "^\.">
-    Order allow,deny
-    Deny from all
+    Require all denied
 </FilesMatch>
 
 # Protect git files
 <FilesMatch "^\.git">
-    Order allow,deny
-    Deny from all
+    Require all denied
 </FilesMatch>
 
 # Custom Error Pages
