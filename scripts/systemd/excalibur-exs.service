@@ -1,0 +1,41 @@
+[Unit]
+Description=Excalibur-EXS Console Node
+Documentation=https://github.com/Holedozer1229/Excalibur-EXS
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=excalibur
+Group=excalibur
+WorkingDirectory=/home/excalibur
+
+# Environment
+Environment="HOME=/home/excalibur"
+Environment="DATADIR=/home/excalibur/.excalibur-exs/data"
+
+# Start command
+ExecStart=/usr/local/bin/exs-node node start --mode full
+
+# Restart policy
+Restart=always
+RestartSec=10
+TimeoutStopSec=30
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=excalibur-exs
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target
