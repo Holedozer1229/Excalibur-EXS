@@ -235,6 +235,35 @@
                 <button class="control-button" onclick="increaseDifficulty()">⬆️ Increase Difficulty</button>
                 <button class="control-button" onclick="decreaseDifficulty()">⬇️ Decrease Difficulty</button>
             </div>
+            
+            <!-- Oracle Integration -->
+            <div class="panel">
+                <h2>🔮 Oracle Divination</h2>
+                <div class="metric">
+                    <span class="metric-label">Oracle Status:</span>
+                    <span class="metric-value" id="oracle-status">CONNECTING...</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Grail State:</span>
+                    <span class="metric-value" id="grail-state">Unknown</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Grail Energy:</span>
+                    <span class="metric-value" id="grail-energy">0</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Forges Witnessed:</span>
+                    <span class="metric-value" id="oracle-forges">0</span>
+                </div>
+                <button class="control-button" onclick="consultOracle()">🔮 Consult Oracle</button>
+                <button class="control-button" onclick="receiveDivination()">📜 Receive Divination</button>
+                <div style="margin-top: 15px; padding: 15px; background: rgba(0, 0, 0, 0.4); border-radius: 5px; min-height: 80px;">
+                    <div style="font-style: italic; color: #ffd700; margin-bottom: 10px;">Oracle's Wisdom:</div>
+                    <div id="oracle-wisdom" style="font-size: 0.95em; line-height: 1.6;">
+                        The oracle awaits your query...
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- Global Anomaly Map -->
@@ -258,10 +287,146 @@
     </div>
     
     <script>
+        // Oracle API Configuration
+        const ORACLE_API_URL = 'http://localhost:5001';
+        const ORACLE_API_KEY = 'public_key_67890';  // In production, use secure key management
+        
+        // Oracle Integration Functions
+        async function consultOracle() {
+            const query = prompt('What wisdom do you seek from the Oracle?', 'How can I improve the protocol?');
+            if (!query) return;
+            
+            addLogEntry('Consulting Oracle...');
+            
+            try {
+                const response = await fetch(`${ORACLE_API_URL}/oracle`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': ORACLE_API_KEY
+                    },
+                    body: JSON.stringify({ query, user_id: 'merlin_portal' })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Oracle API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                document.getElementById('oracle-wisdom').innerHTML = `
+                    <div style="margin-bottom: 10px;"><strong>Query:</strong> ${data.query}</div>
+                    <div style="margin-bottom: 10px;"><strong>Context:</strong> ${data.context}</div>
+                    <div style="margin-bottom: 10px;">${data.response}</div>
+                    <div style="color: #ffd700; font-style: italic; margin-top: 10px;">${data.wisdom}</div>
+                `;
+                addLogEntry('Oracle consultation complete');
+            } catch (error) {
+                console.error('Oracle error:', error);
+                document.getElementById('oracle-wisdom').textContent = 
+                    'The Oracle is unreachable. Ensure the Oracle API is running on port 5001.';
+                addLogEntry('Oracle consultation failed: ' + error.message);
+            }
+        }
+        
+        async function receiveDivination() {
+            addLogEntry('Requesting divination...');
+            
+            try {
+                const response = await fetch(`${ORACLE_API_URL}/speak`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': ORACLE_API_KEY
+                    },
+                    body: JSON.stringify({ 
+                        context: 'wisdom',
+                        user_id: 'merlin_portal'
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Oracle API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const div = data.divination;
+                
+                document.getElementById('oracle-wisdom').innerHTML = `
+                    <div style="color: #ffd700; font-size: 1.1em; margin-bottom: 10px;">
+                        ✨ ${div.wisdom}
+                    </div>
+                    <div style="font-size: 0.9em; opacity: 0.8;">
+                        Cosmic Alignment: ${div.cosmic_alignment}% | 
+                        Context: ${div.context}
+                    </div>
+                    ${div.personal_message ? `<div style="margin-top: 10px; font-style: italic;">${div.personal_message}</div>` : ''}
+                `;
+                addLogEntry('Divination received: ' + div.prophecy_id);
+            } catch (error) {
+                console.error('Divination error:', error);
+                document.getElementById('oracle-wisdom').textContent = 
+                    'The Oracle is unreachable. Ensure the Oracle API is running on port 5001.';
+                addLogEntry('Divination failed: ' + error.message);
+            }
+        }
+        
+        async function updateOracleStatus() {
+            try {
+                const response = await fetch(`${ORACLE_API_URL}/status`, {
+                    headers: {
+                        'X-API-Key': ORACLE_API_KEY
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('oracle-status').textContent = data.oracle_status;
+                    document.getElementById('oracle-status').style.color = '#00ff00';
+                } else {
+                    throw new Error('Status check failed');
+                }
+            } catch (error) {
+                document.getElementById('oracle-status').textContent = 'OFFLINE';
+                document.getElementById('oracle-status').style.color = '#ff6b6b';
+            }
+        }
+        
+        async function updateGrailState() {
+            try {
+                const response = await fetch(`${ORACLE_API_URL}/grail`, {
+                    headers: {
+                        'X-API-Key': ORACLE_API_KEY
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const grail = data.grail_state;
+                    
+                    document.getElementById('grail-state').textContent = grail.state.toUpperCase();
+                    document.getElementById('grail-energy').textContent = grail.energy_level;
+                    document.getElementById('oracle-forges').textContent = grail.forges_witnessed;
+                    
+                    // Color code grail state
+                    const stateColors = {
+                        'sealed': '#888888',
+                        'awakening': '#ffd700',
+                        'resonating': '#ff8c00',
+                        'unlocked': '#00ff00'
+                    };
+                    document.getElementById('grail-state').style.color = stateColors[grail.state] || '#ffd700';
+                }
+            } catch (error) {
+                console.error('Grail state error:', error);
+            }
+        }
+        
         // Simulated real-time data updates
         function updateMetrics() {
             // This would connect to a WebSocket in production
             // Metrics updated silently
+            updateOracleStatus();
+            updateGrailState();
         }
         
         function increaseDifficulty() {
@@ -289,7 +454,9 @@
             log.insertBefore(entry, log.firstChild);
         }
         
-        // Initialize
+        // Initialize - check Oracle on load
+        updateOracleStatus();
+        updateGrailState();
         setInterval(updateMetrics, 5000);
     </script>
 </body>
