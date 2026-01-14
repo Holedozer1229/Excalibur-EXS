@@ -8,12 +8,23 @@
 ---
 ## 🚀 Overview
 
-Excalibur-EXS ($EXS) is a quantum-hardened, ambiguity-focused fork of Bitcoin. Utilizing the pioneering **Ω′ Δ18 Tetra-PoW** miner, Excalibur forges unique, un-linkable Taproot (P2TR) vaults through the sacred **13-word prophecy axiom**. Its architecture is designed for maximal security, privacy, and institutional compatibility.
+Excalibur-EXS ($EXS) is a luxury, status-driven cryptocurrency where users "forge" EXS tokens through a quantum-hardened **Proof-of-Forge** ritual. By speaking the sacred 13-word prophecy, completing cryptographic derivation, and sending Bitcoin to a deterministic Taproot address, users mint 50 EXS tokens and join an exclusive digital kingdom.
 
-- **Ω′ Δ18 Tetra-PoW:** 128-round nonlinear mining algorithm
-- **HPP-1 Quantum-Hardening:** 600,000 PBKDF2-HMAC-SHA512 rounds
-- **Taproot Native:** P2TR vaults via deterministic axiomatic addresses
-- **Rosetta Construction API:** Exchange & institutional integration
+### Key Features
+
+- **🔮 Proof-of-Forge Protocol**: 5-step cryptographic ritual combining prophecy, Tetra-POW, and Taproot
+- **⚡ Quantum-Hardened**: 600,000 PBKDF2 iterations (HPP-1) for post-quantum security
+- **👑 Founder Swords NFTs**: 13 exclusive NFTs granting perpetual revenue sharing (1-2% of forge fees)
+- **🏛️ Cross-Chain Architecture**: Bitcoin security meets Ethereum programmability
+- **💎 Fixed Supply**: 21,000,000 EXS tokens (no inflation)
+- **🌐 Transparent**: All allocations verifiable on-chain
+
+### Launch System Components
+
+- **Smart Contracts**: Production-ready Solidity (ERC-20, ERC-721, Forge Verification, DAO)
+- **Cryptographic Core**: Complete Proof-of-Forge implementation (Go + Rust)
+- **Blockchain Node**: Rust-based foundation with P2P networking
+- **Launch Documentation**: Comprehensive whitepaper, transparency framework, 7-day launch plan
 
 ---
 ## 📜 The 13-Word Prophecy Axiom
@@ -35,7 +46,78 @@ Every forge begins with these words, binding the protocol’s entropy and ensuri
   - P2TR vault & reward generation
 
 ---
-## 💰 Tokenomics & Economic Model
+
+## 🎯 Launch System (NEW)
+
+### Production-Ready Components
+
+The Excalibur EXS ecosystem is built on a comprehensive launch system ready for production deployment:
+
+#### 1. Smart Contracts (`/contracts/`)
+- ✅ **ExcaliburToken.sol**: ERC-20 with vesting schedules (4-year linear for founders/dev)
+- ✅ **FounderSwordsNFT.sol**: 13 exclusive NFTs with perpetual 1-2% revenue sharing
+- ✅ **ForgeVerifier.sol**: BTC oracle integration for proof verification
+- ✅ **TreasuryDAO.sol**: Multi-sig treasury with configurable thresholds
+
+#### 2. Proof-of-Forge Implementation
+- ✅ **Go Implementation** (`pkg/crypto/proof_of_forge.go`): Production-ready
+- ✅ **Rust Implementation** (`blockchain/src/crypto/mod.rs`): Node foundation
+- ✅ **5-Step Pipeline**: Prophecy → Tetra-POW → PBKDF2 → Zetahash → Taproot
+
+#### 3. Blockchain Node (`/blockchain/`)
+- ✅ Rust-based foundation with CLI
+- ✅ Complete crypto module
+- ✅ Module structure for P2P, consensus, storage, RPC
+- 🚧 Full node implementation in progress
+
+#### 4. Launch Documentation (`/docs/`)
+- ✅ **WHITEPAPER.md**: 15KB technical specification
+- ✅ **TRANSPARENCY.md**: On-chain verification framework
+- ✅ **LAUNCH_PLAN.md**: Hour-by-hour 7-day execution plan
+- ✅ **IMPLEMENTATION_COMPLETE.md**: Full system summary
+
+### Quick Start (Launch System)
+
+```bash
+# 1. Deploy smart contracts (requires Hardhat)
+cd contracts/
+npm install
+npm run deploy -- --network sepolia  # testnet first!
+
+# 2. Test Proof-of-Forge derivation
+cd ../blockchain/
+cargo build --release
+cargo run --release -- forge --network testnet
+
+# 3. Review launch documentation
+cat docs/WHITEPAPER.md
+cat docs/LAUNCH_PLAN.md
+```
+
+### Tokenomics (Launch System)
+
+| Allocation | Amount | Percentage | Status |
+|------------|--------|------------|--------|
+| **Proof-of-Forge Rewards** | 10,500,000 EXS | 50% | Mintable per forge |
+| **Development Fund** | 3,150,000 EXS | 15% | 4-year vesting |
+| **Treasury** | 2,100,000 EXS | 10% | DAO controlled |
+| **Community Fund** | 2,100,000 EXS | 10% | Grants |
+| **Founder Allocation** | 2,100,000 EXS | 10% | 4-year vesting |
+| **Liquidity** | 1,050,000 EXS | 5% | 2-year lock |
+
+**Forge Dynamics**:
+- Forge Reward: 50 EXS per successful forge
+- Dynamic Fee: 1 BTC → 21 BTC (increases every 10k forges)
+- Maximum Forges: 210,000 total
+
+**Founder Swords NFTs**:
+- 13 unique swords with perpetual revenue sharing
+- Revenue Share: 1-2% of ALL forge fees
+- Governance: Veto power for Swords 0-3
+- Benefits: Physical sword, annual summit, priority access
+
+---
+## 💰 Original Tokenomics & Economic Model (Legacy)
 
 - **Total Supply:** 21,000,000 $EXS (fixed)
 - **Forge Reward:** 50 $EXS per successful forge
