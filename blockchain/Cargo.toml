@@ -1,0 +1,65 @@
+[package]
+name = "excalibur-blockchain"
+version = "1.0.0"
+edition = "2021"
+authors = ["Travis D Jones <holedozer@gmail.com>"]
+license = "BSD-3-Clause"
+description = "Excalibur EXS Blockchain - Core Rust blockchain with Proof-of-Forge consensus"
+
+[dependencies]
+# Cryptography
+sha2 = "0.10"
+sha3 = "0.10"
+pbkdf2 = { version = "0.12", features = ["simple"] }
+hmac = "0.12"
+bitcoin = { version = "0.31", features = ["std", "secp-recovery"] }
+secp256k1 = { version = "0.28", features = ["std", "recovery"] }
+bech32 = "0.9"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+bincode = "1.3"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+futures = "0.3"
+
+# P2P Networking (libp2p)
+libp2p = { version = "0.53", features = ["tcp", "noise", "mplex", "gossipsub", "kad", "identify", "macros"] }
+
+# Storage
+rocksdb = "0.21"
+
+# CLI
+clap = { version = "4.4", features = ["derive"] }
+
+# Utilities
+hex = "0.4"
+chrono = { version = "0.4", features = ["serde"] }
+rand = "0.8"
+
+[dev-dependencies]
+tempfile = "3.8"
+criterion = "0.5"
+
+[lib]
+name = "excalibur_blockchain"
+path = "src/lib.rs"
+
+[[bin]]
+name = "excalibur-node"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
