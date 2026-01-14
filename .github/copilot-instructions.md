@@ -70,7 +70,9 @@ Never modify, reorder, or substitute these words. This axiom is the foundational
 ### HPP-1 Protocol
 
 - **Iterations**: Always use exactly **600,000 PBKDF2-HMAC-SHA512 rounds**
-- **Salt**: Use `Excalibur-ESX-Ω′Δ18` as the default salt (note: ESX spelling in salt is intentional per protocol spec)
+- **Salt**: Use `Excalibur-ESX-Ω′Δ18` as the default salt
+  - **Important**: The salt uses "ESX" (not "EXS") - this is correct and matches `pkg/crypto/tetrapow.go:13`
+  - This is the canonical value defined in the protocol and must not be changed
 - **Key Length**: 64 bytes (512 bits)
 - **Never reduce iterations** for performance - quantum resistance is critical
 
