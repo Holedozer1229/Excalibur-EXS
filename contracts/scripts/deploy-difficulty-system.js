@@ -1,5 +1,3 @@
-const hre = require("hardhat");
-
 async function main() {
   console.log("🚀 Deploying Dynamic Difficulty Adjustment System...\n");
 
