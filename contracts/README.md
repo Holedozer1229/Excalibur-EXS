@@ -22,16 +22,36 @@ Production-ready Solidity smart contracts for the Excalibur EXS cryptocurrency e
   - Revenue claiming for NFT holders
   - Metadata for each sword (name, revenue share, etc.)
 
-### 3. ForgeVerifier.sol
+### 3. ForgeVerifier.sol / ForgeVerifierV2.sol
 - **Purpose**: Verifies Bitcoin payments and mints EXS rewards
 - **Features**:
   - Oracle-based BTC payment verification
-  - Dynamic forge fee calculation (1 BTC → 21 BTC cap)
+  - Dynamic forge fee calculation with three-layer difficulty system
   - Proof submission and verification
   - Integration with ExcaliburToken for minting
   - Fee distribution to Founder Sword holders
+  - **NEW**: ForgeVerifierV2 includes advanced difficulty adjustment (see below)
 
-### 4. TreasuryDAO.sol
+### 4. Dynamic Difficulty Adjustment System (NEW)
+A sophisticated three-layer difficulty mechanism for fair, predictable forge fee progression.
+
+**Contracts**:
+- **ForgeDifficulty.sol**: Three-layer fee calculation (base, demand, time)
+- **ForgingVelocity.sol**: Tracks forging rate and calculates velocity multipliers
+- **FounderAdvantage.sol**: Provides discounts and shields for early forgers
+- **DifficultyTriggers.sol**: Manages automatic difficulty adjustments
+
+**Key Features**:
+- Starting fee: 0.1 BTC, progressively increasing
+- Era-based caps (Founder: 0.11 BTC → Legendary: 21 BTC)
+- Founder advantages: 25% discount first 10 forges, 10% permanent
+- Demand multiplier based on forging velocity (target: 500/week)
+- 1% monthly time appreciation (compounded)
+- BTC price normalization for stable USD value
+
+📖 **[Full Documentation](./DIFFICULTY_SYSTEM.md)**
+
+### 5. TreasuryDAO.sol
 - **Purpose**: Multi-sig treasury management
 - **Features**:
   - Multi-signature transactions
