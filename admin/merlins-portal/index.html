@@ -172,6 +172,8 @@
             }
         }
     </style>
+    <!-- Excalibur Configuration -->
+    <script src="/website/assets/js/config.js"></script>
 </head>
 <body>
     <!-- Security Warning Banner -->
@@ -287,9 +289,9 @@
     </div>
     
     <script>
-        // Oracle API Configuration
-        const ORACLE_API_URL = 'http://localhost:5001';
-        const ORACLE_API_KEY = 'public_key_67890';  // In production, use secure key management
+        // Oracle API Configuration - Using environment-aware config
+        const ORACLE_API_URL = window.ExcaliburConfig?.oracleApiUrl || 'https://oracle.excaliburcrypto.com';
+        const ORACLE_API_KEY = window.ExcaliburConfig?.oracleApiKey || 'public_key_67890';  // In production, use secure key management
         
         // Oracle Integration Functions
         async function consultOracle() {
