@@ -291,15 +291,26 @@
     <script>
         // Oracle API Configuration - Using environment-aware config
         const ORACLE_API_URL = window.ExcaliburConfig?.oracleApiUrl || 'https://oracle.excaliburcrypto.com';
-        // SECURITY NOTE: In production, API key should be managed securely via environment variables
-        // This fallback is for development/demonstration purposes only
-        const ORACLE_API_KEY = window.ExcaliburConfig?.oracleApiKey || (() => {
+        
+        // SECURITY NOTE: API key should be managed securely via environment variables in production
+        // This function determines the API key based on environment
+        function getOracleApiKey() {
+            const configKey = window.ExcaliburConfig?.oracleApiKey;
+            if (configKey) {
+                return configKey;
+            }
+            
+            // If no key is configured and we're in production, fail gracefully
             if (window.ExcaliburConfig?.isProduction) {
                 console.error('Oracle API key not configured! Oracle features will not work.');
-                return null;  // Fail gracefully in production if no key configured
+                return null;
             }
-            return 'public_key_67890';  // Development fallback only
-        })();
+            
+            // Development fallback only
+            return 'public_key_67890';
+        }
+        
+        const ORACLE_API_KEY = getOracleApiKey();
         
         // Oracle Integration Functions
         async function consultOracle() {

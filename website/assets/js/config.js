@@ -28,10 +28,20 @@
         oracleApiUrl = ORACLE_API_URLS.staging;
     }
     
+    // Determine environment
+    let environment;
+    if (isLocalhost) {
+        environment = 'development';
+    } else if (isProduction) {
+        environment = 'production';
+    } else {
+        environment = 'staging';
+    }
+    
     // API Configuration object
     window.ExcaliburConfig = {
         // Environment
-        environment: isLocalhost ? 'development' : (isProduction ? 'production' : 'staging'),
+        environment: environment,
         isProduction: isProduction,
         isDevelopment: isLocalhost,
         
