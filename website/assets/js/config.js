@@ -37,7 +37,10 @@
         
         // Oracle API
         oracleApiUrl: oracleApiUrl,
-        oracleApiKey: 'public_key_67890', // In production, this should be managed securely
+        // SECURITY WARNING: API keys should be managed via secure environment variables in production
+        // This is a public demo key for development purposes only
+        // In production, configure proper authentication and authorization
+        oracleApiKey: isProduction ? null : 'public_key_67890',  // Only use in development
         
         // Bitcoin Network
         bitcoinNetwork: isProduction ? 'mainnet' : 'testnet',
@@ -65,10 +68,12 @@
             forgeAttempt: 1  // forge attempts per minute
         },
         
-        // App Store Links (update when apps are published)
+        // App Store Links (IMPORTANT: Update these when apps are published)
+        // These are placeholder URLs as specified in the website
+        // Remove or update these links when actual mobile apps are available
         appStores: {
-            ios: 'https://apps.apple.com/app/excalibur-exs',
-            android: 'https://play.google.com/store/apps/details?id=com.excaliburcrypto.exs'
+            ios: 'https://apps.apple.com/app/excalibur-exs',  // Placeholder - update when app is published
+            android: 'https://play.google.com/store/apps/details?id=com.excaliburcrypto.exs'  // Placeholder - update when app is published
         },
         
         // External Links
