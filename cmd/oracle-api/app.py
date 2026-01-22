@@ -136,6 +136,30 @@ def log_request():
 # Health & Status Endpoints
 # ============================================================================
 
+@app.route('/', methods=['GET'])
+def root():
+    """Root endpoint - welcome message and basic info."""
+    log_request()
+    return jsonify({
+        'service': 'Excalibur $EXS Oracle API',
+        'status': 'OPERATIONAL',
+        'version': '1.0.0',
+        'description': 'Production-ready REST API for Oracle functionality',
+        'endpoints': {
+            'health': '/health',
+            'status': '/status (requires API key)',
+            'oracle_query': '/oracle (POST, requires API key)',
+            'divination': '/speak (POST, requires API key)',
+            'forge_validation': '/validate (POST, requires API key)',
+            'grail_state': '/grail (requires API key)',
+            'blockchain_status': '/blockchain/status (requires API key)'
+        },
+        'documentation': 'Visit /health for service health check',
+        'protocol': 'Excalibur $EXS',
+        'timestamp': datetime.now(timezone.utc).isoformat()
+    })
+
+
 @app.route('/health', methods=['GET'])
 def health():
     """Health check endpoint."""

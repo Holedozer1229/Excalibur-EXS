@@ -10,12 +10,19 @@ node_modules
 .cache
 
 # Go backend (not deployed to Vercel)
-/cmd
-/pkg
+/cmd/forge-api
+/cmd/lancelot_guardian
+/cmd/diceminer
+/cmd/exs-wallet
 *.go
 
-# Python scripts (not deployed to Vercel)
-*.py
+# Python scripts not needed for Oracle API
+/scripts/*.py
+/test*.py
+k_solver.py
+warchest_vault.py
+forge_treasury_key.py
+omega_fingerprint.py
 
 # Build and test files
 /test.sh
@@ -30,3 +37,6 @@ node_modules
 
 # Ledger and backend data
 /ledger
+
+# Miners (not needed for Oracle API)
+/miners
