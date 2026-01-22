@@ -164,7 +164,7 @@ After deployment, verify these URLs work:
 
 - [ ] Main site: `https://www.excaliburcrypto.com/`
 - [ ] Knights' Portal: `https://www.excaliburcrypto.com/web/knights-round-table/`
-- [ ] Oracle: `https://www.excaliburcrypto.com/web/knights-round-table/oracle` ✅ FIXED
+- [ ] Oracle: `https://holedozer1229.github.io/Excalibur-EXS/web/knights-round-table/oracle` ✅ FIXED
 - [ ] Merlin's Portal: `https://www.excaliburcrypto.com/admin/merlins-portal/`
 
 ## Technical Details
@@ -275,6 +275,6 @@ If the Oracle still returns 404:
 **Status**: ✅ RESOLVED
 
 The Oracle is now accessible at:
-`https://www.excaliburcrypto.com/web/knights-round-table/oracle`
+`https://holedozer1229.github.io/Excalibur-EXS/web/knights-round-table/oracle`
 
 ⚔️ **EXCALIBUR $EXS** ⚔️

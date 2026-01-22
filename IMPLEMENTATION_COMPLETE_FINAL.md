@@ -75,7 +75,7 @@ All platforms now support:
 
 ✅ Main Site: `https://www.excaliburcrypto.com/`  
 ✅ Knights' Portal: `https://www.excaliburcrypto.com/web/knights-round-table/`  
-✅ **Oracle**: `https://www.excaliburcrypto.com/web/knights-round-table/oracle` (FIXED)  
+✅ **Oracle**: `https://holedozer1229.github.io/Excalibur-EXS/web/knights-round-table/oracle` (FIXED)  
 ✅ Admin Portal: `https://www.excaliburcrypto.com/admin/merlins-portal/`
 
 ---
