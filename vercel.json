@@ -1,31 +1,27 @@
 {
   "version": 2,
-  "name": "excalibur-exs",
+  "name": "excalibur-exs-oracle",
   "public": true,
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "rewrites": [
+  "builds": [
     {
-      "source": "/assets/(.*)",
-      "destination": "/website/assets/$1"
-    },
-    {
-      "source": "/web/(.*)",
-      "destination": "/web/$1"
-    },
-    {
-      "source": "/admin/(.*)",
-      "destination": "/admin/$1"
-    },
-    {
-      "source": "/",
-      "destination": "/website/index.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/website/$1"
+      "src": "cmd/oracle-api/app.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
     }
   ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "cmd/oracle-api/app.py"
+    }
+  ],
+  "functions": {
+    "cmd/oracle-api/app.py": {
+      "includeFiles": "pkg/**"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",
@@ -45,6 +41,18 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-API-Key, Content-Type"
         }
       ]
     }
