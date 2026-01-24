@@ -447,5 +447,5 @@ sudo apt autoremove -y
 
 ---
 
-**Support:** holedozer@gmail.com  
+**Support:** holedozer@icloud.com  
 **Documentation:** https://github.com/Holedozer1229/Excalibur-EXS

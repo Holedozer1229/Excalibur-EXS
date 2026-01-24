@@ -438,7 +438,7 @@ When ready for production:
 - **Documentation:** Repository `/docs` folder
 - **Oracle Deployment:** [ORACLE_DEPLOYMENT.md](ORACLE_DEPLOYMENT.md)
 - **GitHub Issues:** https://github.com/Holedozer1229/Excalibur-EXS/issues
-- **Email:** holedozer@gmail.com
+- **Email:** holedozer@icloud.com
 
 ---
 

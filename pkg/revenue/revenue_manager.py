@@ -5,7 +5,7 @@ Multi-Stream Revenue Generation System
 This module implements various revenue-generating activities to fund the treasury
 vault while providing fair rewards to users.
 
-Lead Architect: Travis D Jones (holedozer@gmail.com)
+Lead Architect: Travis D Jones (holedozer@icloud.com)
 """
 
 from typing import Dict, List, Tuple

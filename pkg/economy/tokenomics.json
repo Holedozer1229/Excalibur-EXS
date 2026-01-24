@@ -150,7 +150,7 @@
   "governance": {
     "model": "architect_led",
     "lead_architect": "Travis D. Jones",
-    "email": "holedozer@gmail.com",
+    "email": "holedozer@icloud.com",
     "transition_plan": "eventual_dao",
     "voting_mechanism": "stake_weighted",
     "proposal_threshold": 10000
@@ -198,7 +198,7 @@
   "metadata": {
     "created": "2025-12-20",
     "last_updated": "2025-12-20",
-    "author": "Travis D. Jones <holedozer@gmail.com>",
+    "author": "Travis D. Jones <holedozer@icloud.com>",
     "license": "BSD-3-Clause",
     "repository": "https://github.com/Holedozer1229/Excalibur-EXS"
   }

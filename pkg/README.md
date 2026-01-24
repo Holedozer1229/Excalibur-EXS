@@ -67,4 +67,4 @@ go run cmd/treasury-demo/main.go
 
 ---
 
-*Lead Architect: Travis D. Jones <holedozer@gmail.com>*
+*Lead Architect: Travis D. Jones <holedozer@icloud.com>*

@@ -77,7 +77,7 @@ Found a bug? Please open an issue with:
 ### 4. Security Vulnerabilities
 
 **DO NOT** open public issues for security vulnerabilities. Instead, email directly to:
-- **Travis D. Jones**: holedozer@gmail.com
+- **Travis D. Jones**: holedozer@icloud.com
 
 We take security seriously and will respond promptly.
 
@@ -161,11 +161,11 @@ Closes #123
 ### Resources
 - **Repository:** https://github.com/Holedozer1229/Excalibur-EXS
 - **Issues:** https://github.com/Holedozer1229/Excalibur-EXS/issues
-- **Email:** holedozer@gmail.com
+- **Email:** holedozer@icloud.com
 
 ### Questions?
 - Open a GitHub issue with the `question` label
-- Email the Lead Architect: holedozer@gmail.com
+- Email the Lead Architect: holedozer@icloud.com
 
 ## License
 
@@ -180,7 +180,7 @@ By contributing to Excalibur $EXS, you agree that your contributions will be lic
 Let's build the future of decentralized proof systems together!
 
 **Lead Architect:** Travis D. Jones  
-**Email:** holedozer@gmail.com  
+**Email:** holedozer@icloud.com  
 **Protocol:** Excalibur $EXS  
 **Version:** 1.0.0
 

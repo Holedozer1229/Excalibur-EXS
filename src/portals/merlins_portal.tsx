@@ -13,7 +13,7 @@
  * - CLTV time-locked mini-output management
  * - Treasury distribution history
  * 
- * Author: Travis D. Jones <holedozer@gmail.com>
+ * Author: Travis D. Jones <holedozer@icloud.com>
  * License: BSD 3-Clause
  * Copyright (c) 2025, Travis D. Jones
  */

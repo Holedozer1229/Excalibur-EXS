@@ -4,7 +4,7 @@ Excalibur $EXS Mining Kernel Package
 This package contains optimized batched/fused mining kernels for Tetra-PoW
 and dice roll mining operations, plus Stratum-compliant mining architecture.
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

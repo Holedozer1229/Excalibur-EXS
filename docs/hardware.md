@@ -327,7 +327,7 @@ Hardware acceleration subsystem is part of Excalibur $EXS and is licensed under 
 
 ---
 
-**Lead Architect**: Travis D Jones (holedozer@gmail.com)  
+**Lead Architect**: Travis D Jones (holedozer@icloud.com)  
 **Protocol**: Excalibur $EXS  
 **Algorithm**: Ω′ Δ18 Tetra-PoW  
 **Version**: 2.0.0

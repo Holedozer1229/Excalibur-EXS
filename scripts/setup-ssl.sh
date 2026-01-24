@@ -6,7 +6,7 @@
 set -e
 
 DOMAIN="excaliburcrypto.com"
-EMAIL="holedozer@gmail.com"
+EMAIL="holedozer@icloud.com"
 
 echo "╔═══════════════════════════════════════════════════════════╗"
 echo "║         EXCALIBUR \$EXS - SSL Certificate Setup          ║"

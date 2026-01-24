@@ -11,7 +11,7 @@ Features:
 - Comprehensive logging and reporting
 - Secure credential display with security warnings
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

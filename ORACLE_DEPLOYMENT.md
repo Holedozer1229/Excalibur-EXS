@@ -333,7 +333,7 @@ tail -f /var/log/excalibur-oracle-error.log
 
 For issues or questions:
 - GitHub Issues: https://github.com/Holedozer1229/Excalibur-EXS/issues
-- Email: holedozer@gmail.com
+- Email: holedozer@icloud.com
 
 ---
 

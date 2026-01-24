@@ -301,7 +301,7 @@ The test suite is ready for execution once network access to Solidity compiler b
 
 For questions or issues:
 - Lead Architect: Travis D Jones
-- Email: holedozer@gmail.com
+- Email: holedozer@icloud.com
 
 ## License
 

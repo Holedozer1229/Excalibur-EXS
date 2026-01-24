@@ -2,7 +2,7 @@
 name = "excalibur-blockchain"
 version = "1.0.0"
 edition = "2021"
-authors = ["Travis D Jones <holedozer@gmail.com>"]
+authors = ["Travis D Jones <holedozer@icloud.com>"]
 license = "BSD-3-Clause"
 description = "Excalibur EXS Blockchain - Core Rust blockchain with Proof-of-Forge consensus"
 

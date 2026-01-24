@@ -776,7 +776,7 @@ Before launching the Excalibur mainnet:
 For questions about Genesis implementation:
 
 - **Lead Architect**: Travis D. Jones
-- **Email**: holedozer@gmail.com
+- **Email**: holedozer@icloud.com
 - **Repository**: https://github.com/Holedozer1229/Excalibur-EXS
 
 ---

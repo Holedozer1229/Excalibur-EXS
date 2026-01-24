@@ -5,7 +5,7 @@ Excalibur Mathematical Visualizer
 ----------------------------------
 Generates ASCII and data visualizations for mathematical concepts.
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

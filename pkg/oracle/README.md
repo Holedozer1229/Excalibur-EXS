@@ -373,4 +373,4 @@ gunicorn --bind 0.0.0.0:5001 \
 
 BSD 3-Clause License
 
-Copyright (c) 2025, Travis D. Jones (holedozer@gmail.com)
+Copyright (c) 2025, Travis D. Jones (holedozer@icloud.com)

@@ -4,7 +4,7 @@
  * Main dashboard for the Emporium of Man functionality within Merlin's Portal.
  * Displays Sovereign Vault status, Grail achievements, blockchain events, and prophecy history.
  * 
- * Author: Travis D. Jones <holedozer@gmail.com>
+ * Author: Travis D. Jones <holedozer@icloud.com>
  * License: BSD 3-Clause
  * Copyright (c) 2025, Travis D. Jones
  */

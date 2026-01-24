@@ -7,7 +7,7 @@
 // - $EXS Rune distribution to treasury and liquidity providers
 // - Treasury balance tracking and reporting
 //
-// Author: Travis D. Jones <holedozer@gmail.com>
+// Author: Travis D. Jones <holedozer@icloud.com>
 // License: BSD 3-Clause
 
 package economy

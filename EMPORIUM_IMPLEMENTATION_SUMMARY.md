@@ -329,7 +329,7 @@ The system is production-ready and can be deployed using Docker Compose. All cor
 ## Contact & Support
 
 **Author:** Travis D. Jones  
-**Email:** holedozer@gmail.com  
+**Email:** holedozer@icloud.com  
 **Repository:** https://github.com/Holedozer1229/Excalibur-EXS  
 **Issues:** https://github.com/Holedozer1229/Excalibur-EXS/issues
 

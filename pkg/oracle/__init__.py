@@ -10,7 +10,7 @@ This package provides on-chain intelligence through:
 - GrailEnergyManager: Grail state and energy tracking
 - BlockchainMonitor: Block monitoring and inscription detection
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

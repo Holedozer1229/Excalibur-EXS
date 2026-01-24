@@ -408,7 +408,7 @@
   "governance": {
     "model": "architect_led_transitioning_to_dao",
     "lead_architect": "Travis D. Jones",
-    "email": "holedozer@gmail.com",
+    "email": "holedozer@icloud.com",
     "transition_plan": "Progressive decentralization over 3 years",
     "voting_mechanism": "quadratic_stake_weighted",
     "proposal_threshold": 10000,
@@ -419,7 +419,7 @@
     "created": "2025-12-20",
     "last_updated": "2025-12-21",
     "version": "2.0.0",
-    "author": "Travis D. Jones <holedozer@gmail.com>",
+    "author": "Travis D. Jones <holedozer@icloud.com>",
     "license": "BSD-3-Clause",
     "repository": "https://github.com/Holedozer1229/Excalibur-EXS",
     "changelog": [

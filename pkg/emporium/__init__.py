@@ -4,7 +4,7 @@ Emporium of Man - Sovereign Vault and Grail Management System
 This package implements the Emporium of Man functionality for Merlin's Portal,
 including Sovereign Vault management, blockchain monitoring, and prophecy inscription mechanics.
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 Copyright (c) 2025, Travis D. Jones
 """

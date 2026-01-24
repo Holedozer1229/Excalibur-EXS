@@ -13,7 +13,7 @@ Features:
 - Auto-fund forge fees
 - Integration with unified miner
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

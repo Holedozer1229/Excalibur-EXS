@@ -13,7 +13,7 @@ Features:
 - Kernel-agnostic design
 - Full Taproot + SegWit support
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

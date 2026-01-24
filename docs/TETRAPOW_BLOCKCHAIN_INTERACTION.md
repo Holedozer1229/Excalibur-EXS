@@ -1474,7 +1474,7 @@ class TetraPoWCache:
 For technical questions about Tetra-PoW:
 
 - **Lead Architect**: Travis D. Jones
-- **Email**: holedozer@gmail.com
+- **Email**: holedozer@icloud.com
 - **Repository**: https://github.com/Holedozer1229/Excalibur-EXS
 
 ---

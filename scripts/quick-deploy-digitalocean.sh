@@ -20,7 +20,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 DOMAIN="excaliburcrypto.com"
-EMAIL="holedozer@gmail.com"
+EMAIL="holedozer@icloud.com"
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then 

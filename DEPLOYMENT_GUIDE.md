@@ -543,7 +543,7 @@ The prophecy unfolds. The realm is open. The sword awaits.
 ## 📞 Support
 
 - **GitHub Issues**: https://github.com/Holedozer1229/Excalibur-EXS/issues
-- **Email**: holedozer@gmail.com
+- **Email**: holedozer@icloud.com
 - **Documentation**: Repository README
 
 ---

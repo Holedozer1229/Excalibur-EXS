@@ -162,7 +162,7 @@ curl -fsSL https://raw.githubusercontent.com/Holedozer1229/Excalibur-EXS/main/sc
 If you encounter issues:
 1. Check logs: `sudo tail -f /var/log/nginx/error.log`
 2. Test config: `sudo nginx -t`
-3. Contact: holedozer@gmail.com
+3. Contact: holedozer@icloud.com
 
 ---
 

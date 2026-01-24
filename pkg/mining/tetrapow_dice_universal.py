@@ -19,7 +19,7 @@ Performance Benefits:
 - Vectorization opportunities for SIMD operations
 - Shared computation across multiple hashes
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

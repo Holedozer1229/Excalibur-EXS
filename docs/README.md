@@ -293,7 +293,7 @@ The three new comprehensive documents are deeply interconnected:
 
 - **Questions about documentation**: Check the specific doc's "Contact" section
 - **Technical issues**: [GitHub Issues](https://github.com/Holedozer1229/Excalibur-EXS/issues)
-- **General inquiries**: holedozer@gmail.com
+- **General inquiries**: holedozer@icloud.com
 - **Website**: [www.excaliburcrypto.com](https://www.excaliburcrypto.com)
 
 ---

@@ -9,7 +9,7 @@ that resolves Bitcoin's current problems:
 - Tail emission for long-term security
 - Adaptive fee market with surge pricing
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

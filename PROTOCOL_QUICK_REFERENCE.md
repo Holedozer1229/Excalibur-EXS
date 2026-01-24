@@ -3,7 +3,7 @@
 ## 🎯 Protocol Overview
 
 **Name:** Excalibur $EXS Protocol  
-**Lead Architect:** Travis D. Jones (holedozer@gmail.com)  
+**Lead Architect:** Travis D. Jones (holedozer@icloud.com)  
 **License:** BSD 3-Clause  
 **Status:** Production Ready
 
@@ -174,7 +174,7 @@ See deployment documentation for details.
 ## 📞 Contact
 
 **Lead Architect:** Travis D. Jones  
-**Email:** holedozer@gmail.com  
+**Email:** holedozer@icloud.com  
 **Repository:** https://github.com/Holedozer1229/Excalibur-EXS  
 **Website:** https://www.excaliburcrypto.com
 

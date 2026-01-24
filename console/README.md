@@ -366,13 +366,13 @@ BSD 3-Clause License - see [LICENSE](../LICENSE) for details.
 ## Support
 
 - **Issues**: [GitHub Issues](https://github.com/Holedozer1229/Excalibur-EXS/issues)
-- **Email**: holedozer@gmail.com
+- **Email**: holedozer@icloud.com
 - **Documentation**: [Main README](../README.md)
 
 ## Author
 
 **Travis D Jones**  
-Email: holedozer@gmail.com
+Email: holedozer@icloud.com
 
 ---
 

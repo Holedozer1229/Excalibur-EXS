@@ -240,7 +240,7 @@ See `PRODUCTION_TODO.md` for complete checklist.
 ## 💬 Support
 
 - **Lead Architect**: Travis D Jones
-- **Email**: holedozer@gmail.com
+- **Email**: holedozer@icloud.com
 - **GitHub Issues**: https://github.com/Holedozer1229/Excalibur-EXS/issues
 - **Repository**: https://github.com/Holedozer1229/Excalibur-EXS
 

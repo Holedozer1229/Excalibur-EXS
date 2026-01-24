@@ -248,7 +248,7 @@ sudo certbot renew --dry-run
 ## 📞 Support
 
 - **Repository**: https://github.com/Holedozer1229/Excalibur-EXS
-- **Email**: holedozer@gmail.com
+- **Email**: holedozer@icloud.com
 - **AWS Support**: https://console.aws.amazon.com/support/
 
 ---

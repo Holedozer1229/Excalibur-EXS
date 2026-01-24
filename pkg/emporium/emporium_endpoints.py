@@ -16,7 +16,7 @@ Endpoints:
 - POST /emporium/inscriptions/record - Record new inscription
 - GET  /emporium/leaderboard - Get Grail leaderboard
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 Copyright (c) 2025, Travis D. Jones
 """

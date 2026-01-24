@@ -5,7 +5,7 @@ Excalibur Möbius Trajectory Module
 -----------------------------------
 Generates and analyzes Möbius trajectories for cryptographic proofs.
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

@@ -255,7 +255,7 @@ View logs in Actions tab, check for:
 ## Support
 
 - GitHub Pages Docs: https://docs.github.com/pages
-- Email: holedozer@gmail.com
+- Email: holedozer@icloud.com
 - Repository: https://github.com/Holedozer1229/Excalibur-EXS
 
 ## Alternative Deployments

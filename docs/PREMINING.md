@@ -196,5 +196,5 @@ For the actual network launch:
 ## Author
 
 Travis D. Jones  
-Email: holedozer@gmail.com  
+Email: holedozer@icloud.com  
 License: BSD 3-Clause

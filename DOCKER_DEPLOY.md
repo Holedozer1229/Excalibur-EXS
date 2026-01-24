@@ -392,7 +392,7 @@ docker-compose exec redis redis-cli FLUSHALL
 ## Support
 
 For issues or questions:
-- Email: holedozer@gmail.com
+- Email: holedozer@icloud.com
 - Repository: https://github.com/Holedozer1229/Excalibur-EXS
 - Documentation: See `README.md` and `PRODUCTION_TODO.md`
 

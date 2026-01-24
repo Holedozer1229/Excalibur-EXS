@@ -16,7 +16,7 @@ MIGRATION NOTE: Tetra-PoW miners now use batched/fused kernel
 - Improved speed through batch processing and fused operations
 - Better modularity and maintainability
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

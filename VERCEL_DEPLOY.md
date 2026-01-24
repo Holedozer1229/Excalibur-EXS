@@ -201,7 +201,7 @@ Or use Dashboard → Deployments → Select → Promote to Production
 ## Support
 
 - Vercel Documentation: https://vercel.com/docs
-- Email: holedozer@gmail.com
+- Email: holedozer@icloud.com
 - Repository: https://github.com/Holedozer1229/Excalibur-EXS
 
 ## Alternative: GitHub Pages

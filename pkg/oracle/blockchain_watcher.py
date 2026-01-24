@@ -5,7 +5,7 @@ Excalibur Async Blockchain Watcher
 -----------------------------------
 Asynchronous blockchain monitoring with resilient error handling.
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

@@ -333,7 +333,7 @@ python3 wallet_cli.py --help
 
 ## Support
 
-- Email: holedozer@gmail.com
+- Email: holedozer@icloud.com
 - Repository: https://github.com/Holedozer1229/Excalibur-EXS
 - Issues: https://github.com/Holedozer1229/Excalibur-EXS/issues
 

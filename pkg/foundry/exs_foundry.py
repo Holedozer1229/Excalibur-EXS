@@ -12,7 +12,7 @@ HPP-1 Specifications:
 - Treasury Fee: 1% of all rewards
 - Forge Fee: 0.0001 BTC per forge
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

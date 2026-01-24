@@ -94,4 +94,4 @@ BSD-3-Clause License - See LICENSE file
 
 ## Author
 
-Travis D Jones <holedozer@gmail.com>
+Travis D Jones <holedozer@icloud.com>

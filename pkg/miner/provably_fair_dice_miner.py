@@ -20,7 +20,7 @@ MIGRATION NOTE: Dice miner now uses batched/fused kernel
 - Batched dice roll operations improve performance significantly
 - Universal fusion enables easy composition with other mining operations
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

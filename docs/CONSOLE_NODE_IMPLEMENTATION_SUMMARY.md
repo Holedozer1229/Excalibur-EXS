@@ -336,5 +336,5 @@ The application is ready for deployment and provides a powerful alternative to w
 
 **Implementation Date**: January 2, 2026  
 **Version**: 1.0.0  
-**Lead Architect**: Travis D Jones (holedozer@gmail.com)  
+**Lead Architect**: Travis D Jones (holedozer@icloud.com)  
 **Repository**: https://github.com/Holedozer1229/Excalibur-EXS

@@ -202,7 +202,7 @@ npx hardhat compile
 
 For questions about oracle integration tests:
 - Lead Architect: Travis D Jones
-- Email: holedozer@gmail.com
+- Email: holedozer@icloud.com
 
 ## License
 

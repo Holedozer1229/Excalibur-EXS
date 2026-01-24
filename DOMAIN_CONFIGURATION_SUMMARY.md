@@ -193,7 +193,7 @@ www.excaliburcrypto.com
 
 ### Need Help?
 - **GitHub Issues**: https://github.com/Holedozer1229/Excalibur-EXS/issues
-- **Email**: holedozer@gmail.com
+- **Email**: holedozer@icloud.com
 
 ---
 
@@ -222,4 +222,4 @@ Everything is already correctly configured:
 
 **Created**: December 2025  
 **Repository**: https://github.com/Holedozer1229/Excalibur-EXS  
-**Lead Architect**: Travis D Jones (holedozer@gmail.com)
+**Lead Architect**: Travis D Jones (holedozer@icloud.com)

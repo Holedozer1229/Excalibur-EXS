@@ -11,7 +11,7 @@ Provides endpoints for:
 - Grail state management
 - Blockchain monitoring
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 
