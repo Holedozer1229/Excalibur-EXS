@@ -31,16 +31,17 @@
         
         header {
             text-align: center;
-            padding: 40px 0;
+            padding: 40px 0 25px;
             border-bottom: 3px solid #ffd700;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
         }
         
         .nav-links {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
         }
         
         .nav-link {
@@ -72,16 +73,68 @@
         }
         
         h1 {
-            font-size: 3em;
+            font-size: 3.1em;
             color: #ffd700;
             text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         
         .quote {
             font-style: italic;
-            font-size: 1.2em;
+            font-size: 1.15em;
             opacity: 0.9;
+        }
+
+        .status-ribbon {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.12), rgba(255, 215, 0, 0.04));
+            border-radius: 999px;
+            color: #ffd700;
+            font-weight: bold;
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.15);
+            margin-top: 18px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4ade80;
+            box-shadow: 0 0 0 6px rgba(74, 222, 128, 0.18);
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 15px 0 35px;
+        }
+
+        .status-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: #e4e4e4;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        }
+
+        .status-card .label {
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.75em;
+            color: #c7c7c7;
+        }
+
+        .status-card .value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ffd700;
+            margin-top: 6px;
         }
         
         .forge-panel {
@@ -339,11 +392,33 @@
         <header>
             <h1>⚔️ KNIGHTS' ROUND TABLE ⚔️</h1>
             <p class="quote">"Only those who prove their worth through ancient axioms may draw the sword from the stone."</p>
+            <div class="status-ribbon">
+                <span class="status-dot"></span>
+                <span>Mainnet forging online</span>
+            </div>
             <div class="nav-links">
                 <a href="oracle" class="nav-link oracle">🔮 Consult the Oracle</a>
                 <a href="../admin/merlins-portal/" class="nav-link" style="background: rgba(30, 58, 138, 0.2); border-color: #1e3a8a; color: #60a5fa;">
                     🧙 Merlin's Portal
                 </a>
+            </div>
+            <div class="status-grid">
+                <div class="status-card">
+                    <div class="label">Treasury</div>
+                    <div class="value">1.2M EXS</div>
+                </div>
+                <div class="status-card">
+                    <div class="label">Difficulty</div>
+                    <div class="value">Δ18</div>
+                </div>
+                <div class="status-card">
+                    <div class="label">Network</div>
+                    <div class="value">Mainnet</div>
+                </div>
+                <div class="status-card">
+                    <div class="label">Guardian</div>
+                    <div class="value">Armed</div>
+                </div>
             </div>
         </header>
         
