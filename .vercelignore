@@ -1,42 +1,106 @@
 # Excalibur $EXS - Vercel Ignore File
-# Prevent Vercel from trying to build or deploy certain directories
+# Static website deployment - ignore backend and build artifacts
 
-# Development/alternative Next.js UI (not used in production)
-/web/forge-ui
+# Backend services (not deployed with static site)
+/cmd
+/pkg
 
-# Build artifacts and dependencies (already in .gitignore, but explicit here)
+# Build artifacts and dependencies
 node_modules
 .next
 .cache
+dist
+target
+*.pyc
+__pycache__
 
-# Go backend (not deployed to Vercel)
-/cmd/forge-api
-/cmd/lancelot_guardian
-/cmd/diceminer
-/cmd/exs-wallet
+# Go files
 *.go
+go.mod
+go.sum
 
-# Python scripts not needed for Oracle API
-/scripts/*.py
-/test*.py
-k_solver.py
-warchest_vault.py
-forge_treasury_key.py
-omega_fingerprint.py
+# Python scripts
+*.py
+!vercel-build.py
+requirements.txt
 
 # Build and test files
 /test.sh
 /scripts
+/tests
+/test_*.py
 
-# Docker files (not needed for Vercel deployment)
+# Docker files
 /docker
-/docker-compose.yml
+/docker-compose*.yml
+Dockerfile
 
-# Mobile app (not needed for web deployment)
+# Mobile app
 /mobile-app
+
+# Blockchain node
+/blockchain
 
 # Ledger and backend data
 /ledger
 
-# Miners (not needed for Oracle API)
+# Miners
 /miners
+
+# Notebooks
+/notebooks
+
+# Contracts (deployed separately)
+/contracts
+
+# Console
+/console
+
+# Documentation (include README.md but exclude others)
+APACHE_DEPLOY.md
+AWS_APACHE_QUICKSTART.md
+CONTRIBUTING.md
+DEPLOY.md
+DEPLOYMENT_*.md
+DEPLOY_NOW.md
+DIGITAL_OCEAN_DEPLOY.md
+DOCKER_DEPLOY.md
+DOMAIN_CONFIGURATION_SUMMARY.md
+EMPORIUM_*.md
+GITHUB_PAGES_DEPLOY.md
+HOSTINGER_VERCEL_SETUP.md
+IMPLEMENTATION_*.md
+INITIALIZATION_VERIFICATION.md
+LAUNCH_READINESS_REPORT.md
+MERGE_RESOLUTION.md
+MINING_STRUCTURE_SUMMARY.md
+ORACLE_*.md
+PREMINING_IMPLEMENTATION_SUMMARY.md
+PRODUCTION_TODO.md
+PROTOCOL_QUICK_REFERENCE.md
+QUICKSTART*.md
+SETUP.md
+TESTNET_DEPLOYMENT.md
+TETRA_POW_ENHANCEMENT.md
+VERCEL_*.md
+VERIFICATION_SUMMARY.md
+WARCHEST_VAULT_README.md
+FINAL_LAUNCH_READINESS_REPORT.md
+
+# Large binaries
+treasury
+treasury-demo
+
+# Config files
+.env*
+*.yaml
+*.yml
+!vercel.json
+rosetta-exs.yaml
+
+# Apache
+/apache
+.htaccess
+
+# Admin portal (if separate deployment needed)
+/admin
