@@ -76,6 +76,10 @@ rosetta
 treasury
 treasury-demo
 
+# Root-level Go binaries (from test builds)
+/tetra-pow-go
+/tetra-pow-miner
+
 # IDEs and Editors
 .vscode/
 .idea/
