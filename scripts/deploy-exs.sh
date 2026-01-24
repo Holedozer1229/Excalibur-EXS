@@ -9,6 +9,15 @@ echo "🗡️  Excalibur EXS Deployment Script"
 echo "=================================="
 echo ""
 
+# Ensure launch readiness before deploying
+echo "🔍 Running launch readiness validation..."
+if ! ./scripts/validate-deployment.sh; then
+    echo "❌ Launch readiness check failed. Resolve issues above before deploying."
+    exit 1
+fi
+echo "✅ Launch readiness confirmed."
+echo ""
+
 # Check if Docker is installed
 if ! command -v docker &> /dev/null; then
     echo "❌ Docker is not installed. Please install Docker first."
