@@ -2,7 +2,7 @@
   "version": 2,
   "name": "excalibur-exs",
   "public": true,
-  "comment": "Main Excalibur EXS static website deployment",
+  "comment": "Main Excalibur EXS static website deployment (www.excaliburcrypto.com) - NOT for Oracle API. For Oracle API deployment to oracle.excaliburcrypto.com, use vercel-oracle-api.json",
   "routes": [
     {
       "src": "^/$",
