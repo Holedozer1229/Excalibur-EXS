@@ -95,14 +95,27 @@ class ExcaliburOracle:
             "oracle_wisdom": self._get_validation_wisdom(llm_result["verdict"])
         }
         
-        # Record valid forges
+        # Record valid forges and update cache
         if llm_result["verdict"] == "VALID":
-            self.forge_history.append({
+            forge_entry = {
                 "nonce": nonce,
                 "hash": hash_result,
                 "timestamp": oracle_result["timestamp"],
                 "oracle_id": oracle_result["oracle_id"]
-            })
+            }
+            self.forge_history.append(forge_entry)
+            
+            # Incrementally update daily cache
+            forge_date = datetime.fromisoformat(oracle_result["timestamp"]).date()
+            today = datetime.now().date()
+            if forge_date == today:
+                if self._daily_forge_cache_date == today:
+                    self._daily_forge_cache += 1
+                else:
+                    # New day, recalculate
+                    self._daily_forge_cache_date = today
+                    self._daily_forge_cache = 1
+            
             logger.info(f"Valid forge recorded: nonce={nonce}, hash={hash_result[:16]}...")
             
         # Update ergotropy state and check Grail status
@@ -307,14 +320,12 @@ class ExcaliburOracle:
         # Deterministic divination based on time
         index = int(time.time()) % len(divinations)
         
-        # Cache forge count by date for performance
+        # Use cached forge count (updated incrementally)
         today = datetime.now().date()
         if self._daily_forge_cache_date != today:
+            # Initialize cache for new day if not already set
             self._daily_forge_cache_date = today
-            self._daily_forge_cache = sum(
-                1 for f in self.forge_history 
-                if datetime.fromisoformat(f["timestamp"]).date() == today
-            )
+            self._daily_forge_cache = 0
         
         return {
             "divination": divinations[index],

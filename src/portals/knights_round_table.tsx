@@ -100,6 +100,8 @@ export default function KnightsRoundTable() {
 
       // Batch generate all rounds first to avoid triggering 128 re-renders
       const batchSize = 16; // Update UI every 16 rounds for smoother experience
+      let lastBatchIndex = 0;
+      
       for (let i = 0; i < totalRounds; i++) {
         const roundHash = await generateRoundHash(axiomInput, i);
         const round: MiningRound = {
@@ -114,7 +116,9 @@ export default function KnightsRoundTable() {
         if ((i + 1) % batchSize === 0 || i === totalRounds - 1) {
           setCurrentRound(i + 1);
           setMiningProgress(((i + 1) / totalRounds) * 100);
-          dispatchRoundStates({ type: 'ADD_ROUNDS', rounds: rounds.slice(i + 1 - (rounds.length % batchSize || batchSize)) });
+          const batchToAdd = rounds.slice(lastBatchIndex);
+          dispatchRoundStates({ type: 'ADD_ROUNDS', rounds: batchToAdd });
+          lastBatchIndex = rounds.length;
           
           // Reduce delay for better UX
           await new Promise(resolve => setTimeout(resolve, 50));

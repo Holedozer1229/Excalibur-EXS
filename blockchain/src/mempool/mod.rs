@@ -84,7 +84,7 @@ impl ForgePool {
     }
 
     /// Remove a forge from the mempool
-    pub fn remove_forge(&self, proof_hash: &[u8; 32]) -> Result<ForgeTransaction> {
+    pub fn remove_forge(&self, proof_hash: &[u8; 32]) -> Result<Arc<ForgeTransaction>> {
         let mut pending = self.pending.write().unwrap();
         let mut priority_queue = self.priority_queue.write().unwrap();
 
@@ -94,7 +94,7 @@ impl ForgePool {
 
         priority_queue.remove(&(*proof_hash, entry.priority));
 
-        Ok(Arc::try_unwrap(entry.forge).unwrap_or_else(|arc| (*arc).clone()))
+        Ok(entry.forge)
     }
 
     /// Get a forge from the mempool
