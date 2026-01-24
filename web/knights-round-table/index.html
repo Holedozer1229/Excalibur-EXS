@@ -492,26 +492,41 @@
     </div>
     
     <script>
-        // Lightweight status placeholders; replace with live data sources when available
+        // Lightweight status placeholders; replace with live data sources when available.
+        // Recommended data sources:
+        // - Treasury balance: /api/treasury/balance (EXS)
+        // - Difficulty: /api/forge/difficulty
+        // - Network health/name: /api/network/status
+        // - Guardian status: /api/guardian/health
+
+        function getEl(id) {
+            return document.getElementById(id);
+        }
+
         function updateStatusUI(status) {
-            const dot = document.getElementById('network-dot');
-            const statusLabel = document.getElementById('network-status');
-            const treasuryEl = document.getElementById('treasury-balance');
-            const diffEl = document.getElementById('difficulty-level');
-            const networkEl = document.getElementById('network-name');
-            const guardianEl = document.getElementById('guardian-status');
+            const dot = getEl('network-dot');
+            const statusLabel = getEl('network-status');
+            const treasuryEl = getEl('treasury-balance');
+            const diffEl = getEl('difficulty-level');
+            const networkEl = getEl('network-name');
+            const guardianEl = getEl('guardian-status');
 
             const setValue = (el, value, ok = true) => {
+                if (!el) return;
                 el.textContent = value;
                 el.classList.remove('loading', 'error');
                 if (!ok) el.classList.add('error');
             };
 
-            statusLabel.textContent = status.networkStatus;
-            dot.style.background = status.networkHealthy ? '#4ade80' : '#f87171';
-            dot.style.boxShadow = status.networkHealthy 
-                ? '0 0 0 6px rgba(74, 222, 128, 0.18)'
-                : '0 0 0 6px rgba(248, 113, 113, 0.18)';
+            if (statusLabel) {
+                statusLabel.textContent = status.networkStatus;
+            }
+            if (dot) {
+                dot.style.background = status.networkHealthy ? '#4ade80' : '#f87171';
+                dot.style.boxShadow = status.networkHealthy 
+                    ? '0 0 0 6px rgba(74, 222, 128, 0.18)'
+                    : '0 0 0 6px rgba(248, 113, 113, 0.18)';
+            }
 
             setValue(treasuryEl, status.treasury || '--');
             setValue(diffEl, status.difficulty || '--');
@@ -522,13 +537,16 @@
         function loadStatus() {
             const placeholders = ['treasury-balance', 'difficulty-level', 'network-name', 'guardian-status'];
             placeholders.forEach(id => {
-                const el = document.getElementById(id);
-                el.textContent = 'Loading...';
-                el.classList.add('loading');
+                const el = getEl(id);
+                if (el) {
+                    el.textContent = 'Loading...';
+                    el.classList.add('loading');
+                }
             });
 
-            // Placeholder data; wire to real endpoints when available
-            const mockStatus = {
+            // Toggle mock vs live via window.EXS_STATUS_CONFIG = { useMock: false, mockStatus: {...}, fetchStatus: async () => ({ ... }) }
+            const cfg = window.EXS_STATUS_CONFIG || {};
+            const mockStatus = cfg.mockStatus || {
                 treasury: '1.2M EXS',
                 difficulty: 'Δ18',
                 network: 'Mainnet',
@@ -538,8 +556,15 @@
                 networkStatus: 'Mainnet forging online'
             };
 
-            // Simulate async fetch
-            setTimeout(() => updateStatusUI(mockStatus), 300);
+            const applyStatus = (data) => updateStatusUI(data || mockStatus);
+
+            if (cfg.useMock === false && typeof cfg.fetchStatus === 'function') {
+                cfg.fetchStatus()
+                    .then(applyStatus)
+                    .catch(() => applyStatus(mockStatus));
+            } else {
+                setTimeout(() => applyStatus(mockStatus), 200);
+            }
         }
 
         document.addEventListener('DOMContentLoaded', loadStatus);
