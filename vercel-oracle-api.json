@@ -3,15 +3,6 @@
   "name": "excalibur-exs-oracle-api",
   "public": true,
   "comment": "Oracle API deployment configuration - Deploy this separately to oracle.excaliburcrypto.com",
-  "builds": [
-    {
-      "src": "cmd/oracle-api/app.py",
-      "use": "@vercel/python",
-      "config": {
-        "maxLambdaSize": "50mb"
-      }
-    }
-  ],
   "routes": [
     {
       "src": "/(.*)",
@@ -20,6 +11,9 @@
   ],
   "functions": {
     "cmd/oracle-api/app.py": {
+      "runtime": "python3.9",
+      "maxDuration": 10,
+      "memory": 1024,
       "includeFiles": "pkg/**"
     }
   },
