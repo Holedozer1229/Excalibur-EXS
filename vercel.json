@@ -2,7 +2,6 @@
   "version": 2,
   "name": "excalibur-exs-oracle",
   "public": true,
-  "comment": "This deployment is specifically for the Oracle API service (oracle.excaliburcrypto.com), not the main website",
   "builds": [
     {
       "src": "cmd/oracle-api/app.py",
