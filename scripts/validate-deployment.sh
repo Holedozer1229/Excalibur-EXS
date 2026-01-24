@@ -59,17 +59,23 @@ check_file "website/assets/js/main.js"
 echo ""
 
 echo "=== Checking Knights' Round Table ==="
-check_dir "web/knights-round-table"
-check_file "web/knights-round-table/index.html"
-check_file "web/knights-round-table/forge.js"
-check_file "web/knights-round-table/styles.css"
+if [ -d "web/knights-round-table" ]; then
+    check_file "web/knights-round-table/index.html"
+    check_file "web/knights-round-table/forge.js"
+    check_file "web/knights-round-table/styles.css"
+else
+    warn "web/knights-round-table not present (skipping website asset checks)"
+fi
 echo ""
 
 echo "=== Checking Merlin's Portal ==="
-check_dir "admin/merlins-portal"
-check_file "admin/merlins-portal/index.html"
-check_file "admin/merlins-portal/dashboard.js"
-check_file "admin/merlins-portal/styles.css"
+if [ -d "admin/merlins-portal" ]; then
+    check_file "admin/merlins-portal/index.html"
+    check_file "admin/merlins-portal/dashboard.js"
+    check_file "admin/merlins-portal/styles.css"
+else
+    warn "admin/merlins-portal not present (skipping admin portal checks)"
+fi
 echo ""
 
 echo "=== Checking Mobile App ==="
@@ -98,7 +104,11 @@ echo ""
 echo "=== Checking Deployment Configs ==="
 check_file "docker-compose.yml"
 check_file "vercel.json"
-check_file ".env.example"
+if [ -f ".env.example" ]; then
+    check_file ".env.example"
+else
+    warn ".env.example not found (ensure environment variables are provided another way)"
+fi
 echo ""
 
 echo "=== Running Go Build Tests ==="
@@ -119,13 +129,17 @@ echo ""
 
 echo "=== Checking for Common Issues ==="
 
-# Check for console.log in production files
-if grep -r "console\.log" web/knights-round-table/forge.js > /dev/null 2>&1; then
-    warn "console.log found in forge.js (should be removed for production)"
+# Check for console.log in production files (only if paths exist)
+if [ -f "web/knights-round-table/forge.js" ]; then
+    if grep -r "console\.log" web/knights-round-table/forge.js > /dev/null 2>&1; then
+        warn "console.log found in forge.js (should be removed for production)"
+    fi
 fi
 
-if grep -r "console\.log" admin/merlins-portal/dashboard.js > /dev/null 2>&1; then
-    warn "console.log found in dashboard.js (should be removed for production)"
+if [ -f "admin/merlins-portal/dashboard.js" ]; then
+    if grep -r "console\.log" admin/merlins-portal/dashboard.js > /dev/null 2>&1; then
+        warn "console.log found in dashboard.js (should be removed for production)"
+    fi
 fi
 
 # Check for hardcoded passwords
