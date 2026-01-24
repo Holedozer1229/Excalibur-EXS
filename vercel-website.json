@@ -9,16 +9,8 @@
       "destination": "/website/index.html"
     },
     {
-      "source": "/web/knights-round-table/(.*)",
-      "destination": "/web/knights-round-table/$1"
-    },
-    {
       "source": "/web/(.*)",
       "destination": "/web/$1"
-    },
-    {
-      "source": "/admin/merlins-portal/(.*)",
-      "destination": "/admin/merlins-portal/$1"
     },
     {
       "source": "/admin/(.*)",
@@ -64,8 +56,5 @@
         }
       ]
     }
-  ],
-  "env": {
-    "DOMAIN": "www.excaliburcrypto.com"
-  }
+  ]
 }

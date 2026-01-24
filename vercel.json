@@ -47,8 +47,5 @@
         }
       ]
     }
-  ],
-  "env": {
-    "DOMAIN": "www.excaliburcrypto.com"
-  }
+  ]
 }
