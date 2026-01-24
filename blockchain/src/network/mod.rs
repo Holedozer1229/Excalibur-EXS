@@ -201,13 +201,13 @@ impl NetworkManager {
                 }
             }
             SwarmEvent::ConnectionEstablished { peer_id, .. } => {
-                tracing::info!("Connected to peer: {}", peer_id);
+                tracing::debug!("Connected to peer: {}", peer_id);
                 let _ = self.event_sender
                     .send(NetworkEvent::PeerConnected(peer_id))
                     .await;
             }
             SwarmEvent::ConnectionClosed { peer_id, .. } => {
-                tracing::info!("Disconnected from peer: {}", peer_id);
+                tracing::debug!("Disconnected from peer: {}", peer_id);
                 let _ = self.event_sender
                     .send(NetworkEvent::PeerDisconnected(peer_id))
                     .await;

@@ -280,7 +280,11 @@ mod tests {
     #[test]
     fn test_difficulty_check() {
         let engine = ConsensusEngine::new(2, 600);
-        let hash_with_2_zeros = [0u8, 0u8, 1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8, 9u8, 10u8, 11u8, 12u8, 13u8, 14u8, 15u8, 16u8, 17u8, 18u8, 19u8, 20u8, 21u8, 22u8, 23u8, 24u8, 25u8, 26u8, 27u8, 28u8, 29u8, 30u8];
+        // Create hash with 2 leading zeros
+        let mut hash_with_2_zeros = [1u8; 32];
+        hash_with_2_zeros[0] = 0;
+        hash_with_2_zeros[1] = 0;
+        
         assert!(engine.check_difficulty(&hash_with_2_zeros, 2));
         assert!(!engine.check_difficulty(&hash_with_2_zeros, 3));
     }

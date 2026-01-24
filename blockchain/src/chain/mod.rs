@@ -13,6 +13,7 @@ pub struct ChainStore {
 /// Key prefixes for different data types
 const BLOCK_PREFIX: &[u8] = b"blk:";
 const BLOCK_HASH_PREFIX: &[u8] = b"bhash:";
+const BLOCK_HASH_KEY: &[u8] = b"bhash:";
 const FORGE_PREFIX: &[u8] = b"forge:";
 const META_PREFIX: &[u8] = b"meta:";
 const HEIGHT_KEY: &[u8] = b"meta:height";
@@ -187,9 +188,6 @@ impl ChainStore {
         [FORGE_PREFIX, proof_hash].concat()
     }
 }
-
-// Add missing constant
-const BLOCK_HASH_KEY: &[u8] = b"bhash:";
 
 #[cfg(test)]
 mod tests {
