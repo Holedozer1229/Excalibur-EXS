@@ -2,7 +2,7 @@
   "version": 2,
   "name": "excalibur-exs-oracle-api",
   "public": true,
-  "comment": "Oracle API service deployment for oracle.excaliburcrypto.com - Deploy this separately from the main website",
+  "comment": "Oracle API deployment configuration - Deploy this separately to oracle.excaliburcrypto.com",
   "builds": [
     {
       "src": "cmd/oracle-api/app.py",
@@ -59,6 +59,6 @@
     }
   ],
   "env": {
-    "ORACLE_API_DOMAIN": "oracle.excaliburcrypto.com"
+    "DOMAIN": "www.excaliburcrypto.com"
   }
 }

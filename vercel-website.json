@@ -2,27 +2,37 @@
   "version": 2,
   "name": "excalibur-exs-website",
   "public": true,
-  "comment": "Static website deployment for www.excaliburcrypto.com - This is the default deployment configuration",
-  "rewrites": [
+  "comment": "Main Excalibur EXS website deployment configuration for www.excaliburcrypto.com",
+  "builds": [
     {
-      "source": "/",
-      "destination": "/website/index.html"
+      "src": "website/**",
+      "use": "@vercel/static"
     },
     {
-      "source": "/web/(.*)",
-      "destination": "/web/$1"
+      "src": "index.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "^/$",
+      "dest": "/index.html"
     },
     {
-      "source": "/admin/(.*)",
-      "destination": "/admin/$1"
+      "src": "^/website/(.*)",
+      "dest": "/website/$1"
     },
     {
-      "source": "/assets/(.*)",
-      "destination": "/website/assets/$1"
+      "src": "^/web/knights-round-table/(.*)",
+      "dest": "/web/knights-round-table/$1"
     },
     {
-      "source": "/(.*)",
-      "destination": "/website/$1"
+      "src": "^/web/forge-ui/(.*)",
+      "dest": "/web/forge-ui/$1"
+    },
+    {
+      "src": "^/(.*)",
+      "dest": "/$1"
     }
   ],
   "headers": [
@@ -30,25 +40,38 @@
       "source": "/(.*)",
       "headers": [
         {
-          "key": "Strict-Transport-Security",
-          "value": "max-age=31536000; includeSubDomains"
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
         },
         {
           "key": "X-Frame-Options",
           "value": "SAMEORIGIN"
         },
         {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
         }
       ]
     },
     {
-      "source": "/assets/(.*)",
+      "source": "/website/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=31536000"
+        }
+      ]
+    },
+    {
+      "source": "/website/assets/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -56,5 +79,14 @@
         }
       ]
     }
-  ]
+  ],
+  "redirects": [
+    {
+      "source": "/web/knights-round-table",
+      "destination": "/web/knights-round-table/",
+      "permanent": true
+    }
+  ],
+  "trailingSlash": false,
+  "cleanUrls": true
 }

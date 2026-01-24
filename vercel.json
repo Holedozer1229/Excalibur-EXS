@@ -1,24 +1,24 @@
 {
   "version": 2,
-  "name": "excalibur-exs-website",
+  "name": "excalibur-exs",
   "public": true,
-  "comment": "Main website deployment for Excalibur $EXS (www.excaliburcrypto.com)",
-  "rewrites": [
+  "comment": "Main Excalibur EXS static website deployment",
+  "routes": [
     {
-      "source": "/",
-      "destination": "/website/index.html"
+      "src": "^/$",
+      "dest": "/index.html"
     },
     {
-      "source": "/web/(.*)",
-      "destination": "/web/$1"
+      "src": "^/website/(.*)",
+      "dest": "/website/$1"
     },
     {
-      "source": "/admin/(.*)",
-      "destination": "/admin/$1"
+      "src": "^/web/knights-round-table/(.*)",
+      "dest": "/web/knights-round-table/$1"
     },
     {
-      "source": "/(.*)",
-      "destination": "/website/$1"
+      "src": "^/(.*\\.(html|css|js|png|jpg|jpeg|gif|svg|ico|json|woff|woff2|ttf|eot))",
+      "dest": "/$1"
     }
   ],
   "headers": [
@@ -26,26 +26,41 @@
       "source": "/(.*)",
       "headers": [
         {
-          "key": "Strict-Transport-Security",
-          "value": "max-age=31536000; includeSubDomains"
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
         },
         {
           "key": "X-Frame-Options",
           "value": "SAMEORIGIN"
         },
         {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
         },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    },
+    {
+      "source": "/website/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
+    },
+    {
+      "source": "/website/assets/(.*)",
+      "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
         }
       ]
     }
-  ]
+  ],
+  "cleanUrls": true
 }

@@ -1,68 +1,106 @@
 # Excalibur $EXS - Vercel Ignore File
-# For static website deployment (vercel.json / vercel-website.json)
-# Excludes backend code and build artifacts not needed for frontend
+# Static website deployment - ignore backend and build artifacts
 
-# Go backend services (not deployed to Vercel frontend)
+# Backend services (not deployed with static site)
 /cmd
 /pkg
-*.go
-go.mod
-go.sum
 
-# Python backend scripts (use vercel-oracle-api.json for Oracle API deployment)
-*.py
-requirements.txt
-
-# Blockchain and backend data
-/ledger
-/blockchain
-/contracts
-/treasury
-/treasury-demo
-
-# Development and build artifacts
+# Build artifacts and dependencies
 node_modules
 .next
 .cache
 dist
-build
+target
+*.pyc
+__pycache__
 
-# Docker deployment files
+# Go files
+*.go
+go.mod
+go.sum
+
+# Python scripts
+*.py
+!vercel-build.py
+requirements.txt
+
+# Build and test files
+/test.sh
+/scripts
+/tests
+/test_*.py
+
+# Docker files
 /docker
-docker-compose.yml
-docker-compose.exs.yml
+/docker-compose*.yml
 Dockerfile
 
-# Mobile app source
+# Mobile app
 /mobile-app
 
-# Mining and backend tools
+# Blockchain node
+/blockchain
+
+# Ledger and backend data
+/ledger
+
+# Miners
 /miners
+
+# Notebooks
 /notebooks
 
-# Test files
-test.sh
-test_*.py
+# Contracts (deployed separately)
+/contracts
 
-# Documentation (keep only if needed, otherwise exclude to reduce deploy size)
-# Uncomment to exclude:
-# *.md
-# /docs
+# Console
+/console
 
-# Scripts and tooling
-/scripts
-launch_exe.sh
+# Documentation (include README.md but exclude others)
+APACHE_DEPLOY.md
+AWS_APACHE_QUICKSTART.md
+CONTRIBUTING.md
+DEPLOY.md
+DEPLOYMENT_*.md
+DEPLOY_NOW.md
+DIGITAL_OCEAN_DEPLOY.md
+DOCKER_DEPLOY.md
+DOMAIN_CONFIGURATION_SUMMARY.md
+EMPORIUM_*.md
+GITHUB_PAGES_DEPLOY.md
+HOSTINGER_VERCEL_SETUP.md
+IMPLEMENTATION_*.md
+INITIALIZATION_VERIFICATION.md
+LAUNCH_READINESS_REPORT.md
+MERGE_RESOLUTION.md
+MINING_STRUCTURE_SUMMARY.md
+ORACLE_*.md
+PREMINING_IMPLEMENTATION_SUMMARY.md
+PRODUCTION_TODO.md
+PROTOCOL_QUICK_REFERENCE.md
+QUICKSTART*.md
+SETUP.md
+TESTNET_DEPLOYMENT.md
+TETRA_POW_ENHANCEMENT.md
+VERCEL_*.md
+VERIFICATION_SUMMARY.md
+WARCHEST_VAULT_README.md
+FINAL_LAUNCH_READINESS_REPORT.md
+
+# Large binaries
+treasury
+treasury-demo
+
+# Config files
+.env*
+*.yaml
+*.yml
+!vercel.json
 rosetta-exs.yaml
 
-# Apache configuration (not needed for Vercel)
+# Apache
 /apache
 .htaccess
 
-# Git and GitHub
-.git
-.github
-
-# Environment files
-.env
-.env.local
-.env.example
+# Admin portal (if separate deployment needed)
+/admin

@@ -1,302 +1,628 @@
-# ⚔️ Excalibur $EXS - Vercel Deployment Complete
+# Vercel Deployment Guide - Excalibur EXS
 
-## ✅ Status: DEPLOYMENT CONFIGURATIONS READY
+## Overview
 
-The Excalibur $EXS repository now has properly configured Vercel deployment files for all services!
-
----
-
-## 📋 What Was Fixed
-
-### 1. Configuration Files Created/Updated
-
-#### ✅ `vercel.json` (Root - Static Website)
-- **Purpose**: Default deployment for the main static website
-- **Target**: www.excaliburcrypto.com
-- **Content**: Serves website/, web/, and admin/ directories
-- **Routes**:
-  - `/` → Main landing page (website/index.html)
-  - `/web/knights-round-table/` → Knights' Portal
-  - `/admin/merlins-portal/` → Merlin's Sanctum
-  - `/assets/*` → Static assets (CSS, JS)
-
-#### ✅ `vercel-website.json` (Explicit Website Config)
-- **Purpose**: Alternative/explicit configuration for static website
-- **Same as root vercel.json but with more detailed routing**
-- **Use**: Can be used with `vercel --config vercel-website.json`
-
-#### ✅ `vercel-oracle-api.json` (Oracle API Service)
-- **Purpose**: Separate deployment for Oracle API serverless function
-- **Target**: oracle.excaliburcrypto.com
-- **Content**: Python serverless function (cmd/oracle-api/app.py)
-- **Runtime**: @vercel/python
-- **Includes**: pkg/** directory for dependencies
-
-#### ✅ `web/forge-ui/vercel.json` (Next.js Forge UI)
-- **Purpose**: Separate deployment for Next.js Forge UI application
-- **Target**: forge.excaliburcrypto.com (or similar subdomain)
-- **Framework**: Next.js 14
-- **Environment Variables**: API endpoints pre-configured
-
-### 2. `.vercelignore` Updated
-- ✅ Excludes Go backend code (cmd/, pkg/, *.go)
-- ✅ Excludes Python scripts (for website deployment)
-- ✅ Excludes blockchain/ledger data
-- ✅ Excludes Docker files
-- ✅ Excludes mobile app source
-- ✅ Excludes build artifacts (node_modules, .next, etc.)
-- ✅ Keeps website/, web/, admin/ directories for deployment
-
-### 3. Security Headers Configured
-All deployments include proper security headers:
-- `Strict-Transport-Security`: Forces HTTPS
-- `X-Frame-Options`: Prevents clickjacking
-- `X-Content-Type-Options`: Prevents MIME sniffing
-- `X-XSS-Protection`: Browser XSS protection
-- `Cache-Control`: Optimized caching for static assets
+This guide provides comprehensive instructions for deploying the Excalibur-EXS project to Vercel. The project consists of multiple components that can be deployed separately or together.
 
 ---
 
-## 🚀 How to Deploy
+## Deployment Options
 
-### Deployment Strategy
+### Option 1: Main Website (Recommended for Landing Page)
 
-The Excalibur $EXS project requires **THREE separate Vercel projects**:
+Deploy the static marketing website with automatic redirects.
 
-#### 1. Main Website (Static)
-**Domain**: www.excaliburcrypto.com  
-**Config**: `vercel.json` or `vercel-website.json`  
-**Content**: Landing page, Knights' Portal, Merlin's Sanctum
+**Configuration File:** `vercel-website.json`
 
+#### Features:
+- Static HTML/CSS/JS website
+- Optimized asset caching
+- Security headers
+- Clean URLs
+- Professional landing page
+
+#### Deploy Command:
 ```bash
-# From repository root
+# Using Vercel CLI
+vercel --prod --config vercel-website.json
+
+# Or via Vercel Dashboard
+# 1. Import repository
+# 2. Select vercel-website.json as config
+# 3. Deploy
+```
+
+#### Domain Setup:
+- **Production:** www.excaliburcrypto.com
+- **Preview:** excalibur-exs-*.vercel.app
+
+---
+
+### Option 2: Oracle API Service
+
+Deploy the Python-based Oracle API for backend services.
+
+**Configuration File:** `vercel.json` (root)
+
+#### Features:
+- Python Flask/FastAPI backend
+- Oracle query endpoint
+- CORS enabled
+- API key authentication
+- 50MB Lambda size limit
+
+#### Deploy Command:
+```bash
 vercel --prod
 ```
 
-Or use Vercel Dashboard:
-1. Import repository: `Holedozer1229/Excalibur-EXS`
-2. Vercel auto-detects `vercel.json`
-3. Deploy to production
-4. Add custom domain: `www.excaliburcrypto.com`
+#### Endpoints:
+- `POST /api/oracle/query` - Query the oracle
+- `GET /api/oracle/status` - Check service status
+- `POST /api/oracle/prophecy` - Validate prophecy
 
-#### 2. Oracle API (Serverless Function)
-**Domain**: oracle.excaliburcrypto.com  
-**Config**: `vercel-oracle-api.json`  
-**Content**: Python API for oracle services
+---
 
+### Option 3: Forge UI (Next.js Application)
+
+Deploy the React/Next.js forge interface.
+
+**Configuration File:** `web/forge-ui/vercel.json`
+
+#### Features:
+- Next.js 13+ with App Router
+- TypeScript support
+- Tailwind CSS
+- Real-time forge monitoring
+- Wallet integration
+
+#### Deploy Command:
 ```bash
-# From repository root
-vercel --config vercel-oracle-api.json --prod
-```
-
-Or create separate Vercel project:
-1. Import same repository: `Holedozer1229/Excalibur-EXS`
-2. Override settings:
-   - Build Command: (leave empty)
-   - Output Directory: (leave empty)
-   - Root Directory: `./`
-3. In project settings, specify `vercel-oracle-api.json` as config
-4. Add custom domain: `oracle.excaliburcrypto.com`
-
-#### 3. Forge UI (Next.js App) - Optional
-**Domain**: forge.excaliburcrypto.com (or app.excaliburcrypto.com)  
-**Config**: `web/forge-ui/vercel.json`  
-**Content**: Next.js application for mining interface
-
-```bash
-# From repository root
 cd web/forge-ui
 vercel --prod
 ```
 
-Or create separate Vercel project:
-1. Import same repository: `Holedozer1229/Excalibur-EXS`
-2. Set Root Directory: `web/forge-ui`
-3. Vercel auto-detects Next.js
-4. Add environment variables (see below)
-5. Deploy to production
-
----
-
-## 🔧 Environment Variables
-
-### Main Website (vercel.json)
-No environment variables required. Static files only.
-
-### Oracle API (vercel-oracle-api.json)
-Set in Vercel Dashboard → Settings → Environment Variables:
+#### Environment Variables Required:
 ```
-ORACLE_API_DOMAIN=oracle.excaliburcrypto.com
-```
-
-Add any additional API keys or secrets as needed.
-
-### Forge UI (web/forge-ui/vercel.json)
-Required environment variables:
-```
-NEXT_PUBLIC_TETRA_POW_URL=https://tetra-pow.excaliburcrypto.com
-NEXT_PUBLIC_DICE_ROLL_URL=https://dice-roll.excaliburcrypto.com
+NEXT_PUBLIC_TETRA_POW_URL=https://tetrapow.excaliburcrypto.com
+NEXT_PUBLIC_DICE_ROLL_URL=https://diceroll.excaliburcrypto.com
 NEXT_PUBLIC_TREASURY_URL=https://treasury.excaliburcrypto.com
 NEXT_PUBLIC_ROSETTA_URL=https://rosetta.excaliburcrypto.com
 NEXT_PUBLIC_GUARDIAN_URL=https://guardian.excaliburcrypto.com
+NEXT_PUBLIC_NETWORK=mainnet
 ```
 
 ---
 
-## 🌐 Domain Configuration
+## Step-by-Step Deployment
 
-### For Hostinger Domains
+### Prerequisites
 
-If using Hostinger for domain registration (excaliburcrypto.com):
+1. **Vercel Account**
+   - Sign up at https://vercel.com
+   - Install Vercel CLI: `npm i -g vercel`
 
-1. **Deploy to Vercel first** to get your Vercel URL
-2. **In Vercel Dashboard** → Project → Settings → Domains:
-   - Add: `www.excaliburcrypto.com`
-   - Add: `oracle.excaliburcrypto.com`
-   - Add: `forge.excaliburcrypto.com` (if using Forge UI)
-3. **In Hostinger hPanel** → Domains → DNS Zone Editor:
-   - Add CNAME record:
-     - Name: `www`
-     - Points to: `cname.vercel-dns.com`
-     - TTL: 14400
-   - Add CNAME record:
-     - Name: `oracle`
-     - Points to: `cname.vercel-dns.com`
-     - TTL: 14400
-   - Add CNAME record:
-     - Name: `forge`
-     - Points to: `cname.vercel-dns.com`
-     - TTL: 14400
-4. **Wait for DNS propagation** (5-30 minutes)
-5. **SSL is automatic** - Vercel provisions certificates
+2. **GitHub Integration**
+   - Connect your GitHub account to Vercel
+   - Enable automatic deployments
 
-See [HOSTINGER_VERCEL_SETUP.md](HOSTINGER_VERCEL_SETUP.md) for detailed instructions.
+3. **Domain Configuration** (Optional)
+   - Add custom domain in Vercel dashboard
+   - Update DNS records at your registrar
 
 ---
 
-## ✅ Verification Checklist
+### Deploying Main Website
 
-After deployment, verify:
+#### Step 1: Prepare Environment
+```bash
+cd /path/to/Excalibur-EXS
+```
 
-### Main Website
-- [ ] https://www.excaliburcrypto.com/ loads
-- [ ] Landing page displays correctly
-- [ ] CSS and JavaScript load properly
-- [ ] Navigation works
-- [ ] `/web/knights-round-table/` accessible
-- [ ] `/admin/merlins-portal/` accessible
-- [ ] HTTPS certificate valid
-- [ ] Security headers present (check browser dev tools)
+#### Step 2: Login to Vercel
+```bash
+vercel login
+```
 
-### Oracle API
-- [ ] https://oracle.excaliburcrypto.com/ responds
-- [ ] API endpoints return valid JSON
-- [ ] CORS headers configured correctly
-- [ ] Function executes without timeout
-- [ ] HTTPS certificate valid
+#### Step 3: Deploy
+```bash
+# Preview deployment
+vercel --config vercel-website.json
 
-### Forge UI (if deployed)
-- [ ] https://forge.excaliburcrypto.com/ loads
-- [ ] Next.js app renders correctly
-- [ ] API endpoints are reachable
-- [ ] All tabs functional
-- [ ] No console errors
-- [ ] Mobile responsive
+# Production deployment
+vercel --prod --config vercel-website.json
+```
+
+#### Step 4: Verify Deployment
+1. Visit the provided URL
+2. Check all pages load correctly
+3. Verify asset loading (CSS, JS, images)
+4. Test navigation and links
 
 ---
 
-## 🐛 Troubleshooting
+### Deploying Oracle API
 
-### Issue: "Build failed" or "No such file or directory"
+#### Step 1: Check Dependencies
+```bash
+# Ensure requirements.txt is up to date
+cat requirements.txt
 
-**Solution**: Check that you're using the correct config file:
-- Main website: `vercel.json` (default)
-- Oracle API: `vercel --config vercel-oracle-api.json`
-- Forge UI: Deploy from `web/forge-ui/` directory
+# Should include:
+# Flask==2.3.0
+# flask-cors==4.0.0
+# Or your API framework
+```
 
-### Issue: "404 Not Found" on assets
+#### Step 2: Test Locally
+```bash
+# Test the Oracle API
+cd cmd/oracle-api
+python3 app.py
 
-**Solution**: Verify routes in vercel.json:
-- Assets should be at `/website/assets/`
-- Routes correctly map `/assets/*` → `/website/assets/$1`
+# Should start on http://localhost:5000
+```
 
-### Issue: Oracle API deployment includes website files
+#### Step 3: Deploy to Vercel
+```bash
+cd /path/to/Excalibur-EXS
+vercel --prod
+```
 
-**Solution**: Create separate Vercel project for Oracle API using `vercel-oracle-api.json`
+#### Step 4: Set Environment Variables
+```bash
+# Via CLI
+vercel env add DOMAIN production
 
-### Issue: Environment variables not loading
+# Or via Vercel Dashboard
+# Project Settings > Environment Variables
+```
 
-**Solution**: 
-- Add in Vercel Dashboard → Settings → Environment Variables
-- For Next.js client-side: Must start with `NEXT_PUBLIC_`
-- Redeploy after adding variables
+---
 
-### Issue: CORS errors on Oracle API
+### Deploying Forge UI
 
-**Solution**: Verify `vercel-oracle-api.json` includes CORS headers:
+#### Step 1: Install Dependencies
+```bash
+cd web/forge-ui
+npm install
+```
+
+#### Step 2: Build Locally (Test)
+```bash
+npm run build
+npm start
+```
+
+#### Step 3: Configure Environment
+Create `.env.production`:
+```
+NEXT_PUBLIC_TETRA_POW_URL=https://tetrapow.excaliburcrypto.com
+NEXT_PUBLIC_DICE_ROLL_URL=https://diceroll.excaliburcrypto.com
+NEXT_PUBLIC_TREASURY_URL=https://treasury.excaliburcrypto.com
+NEXT_PUBLIC_ROSETTA_URL=https://rosetta.excaliburcrypto.com
+NEXT_PUBLIC_GUARDIAN_URL=https://guardian.excaliburcrypto.com
+NEXT_PUBLIC_NETWORK=mainnet
+```
+
+#### Step 4: Deploy
+```bash
+vercel --prod
+```
+
+---
+
+## Domain Configuration
+
+### Using Custom Domain
+
+#### Step 1: Add Domain in Vercel
+1. Go to Project Settings
+2. Click "Domains"
+3. Add your domain (e.g., www.excaliburcrypto.com)
+
+#### Step 2: Configure DNS
+Add these records at your DNS provider (e.g., Hostinger):
+
+```
+# Main website
+Type: CNAME
+Name: www
+Value: cname.vercel-dns.com
+
+# Root domain redirect
+Type: A
+Name: @
+Value: 76.76.21.21
+
+# Oracle API subdomain
+Type: CNAME
+Name: oracle
+Value: cname.vercel-dns.com
+
+# Forge UI subdomain
+Type: CNAME
+Name: forge
+Value: cname.vercel-dns.com
+```
+
+#### Step 3: Verify SSL
+- Vercel automatically provisions SSL certificates
+- Wait 24-48 hours for DNS propagation
+- Check HTTPS access
+
+---
+
+## Multi-Project Setup
+
+Deploy multiple services under one domain:
+
+### Project Structure:
+```
+www.excaliburcrypto.com         → Main Website
+oracle.excaliburcrypto.com      → Oracle API
+forge.excaliburcrypto.com       → Forge UI
+api.excaliburcrypto.com         → General API
+```
+
+### Configuration:
+
+#### Main Website
 ```json
-"Access-Control-Allow-Origin": "*"
-"Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+{
+  "name": "excalibur-website",
+  "alias": ["www.excaliburcrypto.com", "excaliburcrypto.com"]
+}
+```
+
+#### Oracle API
+```json
+{
+  "name": "excalibur-oracle",
+  "alias": ["oracle.excaliburcrypto.com"]
+}
+```
+
+#### Forge UI
+```json
+{
+  "name": "excalibur-forge",
+  "alias": ["forge.excaliburcrypto.com"]
+}
 ```
 
 ---
 
-## 📊 Deployment Matrix
+## CI/CD with GitHub
 
-| Service | Config File | Domain | Type | Deployment |
-|---------|------------|--------|------|------------|
-| Main Website | `vercel.json` | www.excaliburcrypto.com | Static HTML | Separate Vercel Project #1 |
-| Oracle API | `vercel-oracle-api.json` | oracle.excaliburcrypto.com | Python Serverless | Separate Vercel Project #2 |
-| Forge UI | `web/forge-ui/vercel.json` | forge.excaliburcrypto.com | Next.js App | Separate Vercel Project #3 |
+### Automatic Deployments
 
----
+#### Step 1: Connect GitHub
+1. Go to Vercel Dashboard
+2. Import your GitHub repository
+3. Select the branch (e.g., `main`)
 
-## 🔄 Continuous Deployment
+#### Step 2: Configure Build Settings
 
-Once connected to GitHub, Vercel automatically deploys:
+**Website:**
+- Build Command: (none, static files)
+- Output Directory: `website`
+- Install Command: (none)
 
-- **Production**: Pushes to `main` branch
-- **Preview**: Pushes to feature branches
-- **Pull Requests**: Automatic preview deployments with unique URLs
+**Forge UI:**
+- Build Command: `npm run build`
+- Output Directory: `.next`
+- Install Command: `npm install`
 
-Enable GitHub integration:
-1. Vercel Dashboard → Project → Settings → Git
-2. Connect repository
-3. Select production branch (`main`)
-4. Save settings
+**Oracle API:**
+- Build Command: (none)
+- Output Directory: (auto-detected)
+- Install Command: `pip install -r requirements.txt`
 
-Every commit triggers automatic deployment!
+#### Step 3: Set Environment Variables
+Go to Project Settings > Environment Variables and add:
+- Production variables
+- Preview variables
+- Development variables
 
----
-
-## 📞 Support & Resources
-
-- **Vercel Documentation**: https://vercel.com/docs
-- **Next.js Documentation**: https://nextjs.org/docs
-- **Repository Issues**: https://github.com/Holedozer1229/Excalibur-EXS/issues
-- **Email Support**: holedozer@gmail.com
-
----
-
-## 🎯 Success Criteria
-
-Deployment is successful when:
-
-1. ✅ Main website loads at www.excaliburcrypto.com
-2. ✅ All pages accessible (home, Knights' Portal, Merlin's Sanctum)
-3. ✅ Assets load correctly (CSS, JS, images)
-4. ✅ Security headers present (check with curl or browser dev tools)
-5. ✅ HTTPS enabled with valid certificate
-6. ✅ No console errors
-7. ✅ Mobile responsive design works
-8. ✅ Oracle API responds at oracle.excaliburcrypto.com (if deployed)
-9. ✅ Forge UI functional at forge.excaliburcrypto.com (if deployed)
+### Deployment Triggers:
+- ✅ Push to `main` → Production deployment
+- ✅ Push to any branch → Preview deployment
+- ✅ Pull request → Preview deployment with URL
 
 ---
 
-**⚔️ "The sword is drawn. The forge is lit. The realm is deployed."**
+## Performance Optimization
+
+### Caching Strategy
+
+**Static Assets:**
+```json
+{
+  "headers": [
+    {
+      "source": "/website/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**HTML Pages:**
+```json
+{
+  "headers": [
+    {
+      "source": "/website/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, s-maxage=31536000"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Edge Functions
+
+For dynamic content, use Vercel Edge Functions:
+
+```typescript
+// api/hello.ts
+export const config = {
+  runtime: 'edge',
+};
+
+export default function handler(req: Request) {
+  return new Response(JSON.stringify({ message: 'Hello from the Edge!' }), {
+    headers: { 'content-type': 'application/json' },
+  });
+}
+```
 
 ---
 
-**Last Updated**: January 2026  
-**Status**: ✅ Ready for Production
+## Security Best Practices
+
+### Headers Configuration
+
+```json
+{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Environment Variables
+- Never commit secrets to Git
+- Use Vercel's encrypted environment variables
+- Rotate API keys regularly
+- Use different keys for production and preview
+
+### Rate Limiting
+Implement rate limiting for API endpoints:
+
+```python
+from flask_limiter import Limiter
+
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["100 per hour"]
+)
+
+@app.route("/api/oracle/query")
+@limiter.limit("10 per minute")
+def query():
+    # Handle request
+    pass
+```
+
+---
+
+## Monitoring & Analytics
+
+### Vercel Analytics
+Enable in Project Settings:
+- Real User Monitoring (RUM)
+- Web Vitals tracking
+- Performance insights
+
+### Custom Monitoring
+```typescript
+// Send custom events
+import { sendAnalytics } from '@vercel/analytics';
+
+sendAnalytics({
+  name: 'forge_initiated',
+  data: {
+    prophecy: '13-word-axiom',
+    timestamp: Date.now()
+  }
+});
+```
+
+### Error Tracking
+```typescript
+// pages/_error.tsx
+import * as Sentry from '@sentry/nextjs';
+
+export default function Error({ statusCode }: { statusCode: number }) {
+  Sentry.captureException(new Error(`Error ${statusCode}`));
+  return <p>An error occurred: {statusCode}</p>;
+}
+```
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### 1. Build Fails
+```
+Error: Module not found
+```
+**Solution:** Check `package.json` dependencies and run `npm install`
+
+#### 2. Environment Variables Not Working
+```
+Error: undefined is not an object
+```
+**Solution:** Ensure variables are prefixed with `NEXT_PUBLIC_` for client-side access
+
+#### 3. 404 on Dynamic Routes
+**Solution:** Add proper rewrites in `vercel.json`:
+```json
+{
+  "rewrites": [
+    {
+      "source": "/forge/:path*",
+      "destination": "/forge"
+    }
+  ]
+}
+```
+
+#### 4. CORS Errors
+**Solution:** Add CORS headers in `vercel.json`:
+```json
+{
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+## Cost Estimation
+
+### Vercel Pricing (as of 2024)
+
+**Hobby Plan (Free):**
+- 100 GB bandwidth/month
+- 1000 serverless function invocations/day
+- Unlimited preview deployments
+
+**Pro Plan ($20/month):**
+- 1 TB bandwidth/month
+- 100,000 serverless function invocations/day
+- Analytics included
+- Custom domains
+
+**Enterprise:**
+- Custom pricing
+- Dedicated support
+- SLA guarantees
+
+**Estimated Usage (Excalibur-EXS):**
+- Website: ~50 GB/month bandwidth
+- Oracle API: ~10,000 invocations/day
+- Forge UI: ~30 GB/month bandwidth
+
+**Recommendation:** Pro Plan for production
+
+---
+
+## Rollback Procedure
+
+### Rollback to Previous Deployment
+
+```bash
+# List deployments
+vercel ls
+
+# Promote a specific deployment
+vercel promote [deployment-url]
+
+# Or via Dashboard
+# Deployments > Select deployment > Promote to Production
+```
+
+### Instant Rollback
+```bash
+# Alias previous deployment
+vercel alias set [old-deployment-url] www.excaliburcrypto.com
+```
+
+---
+
+## Testing Checklist
+
+Before deploying to production:
+
+- [ ] All pages load correctly
+- [ ] Assets (CSS, JS, images) load properly
+- [ ] Navigation works on all pages
+- [ ] Forms submit successfully
+- [ ] API endpoints respond correctly
+- [ ] Mobile responsive design works
+- [ ] HTTPS enabled
+- [ ] Custom domain configured
+- [ ] Analytics tracking works
+- [ ] Error pages display correctly
+- [ ] Performance metrics are acceptable
+- [ ] Security headers are set
+
+---
+
+## Support & Resources
+
+- **Vercel Documentation:** https://vercel.com/docs
+- **Vercel CLI:** https://vercel.com/docs/cli
+- **Next.js Docs:** https://nextjs.org/docs
+- **GitHub Repository:** https://github.com/Holedozer1229/Excalibur-EXS
+- **Support Email:** holedozer@gmail.com
+
+---
+
+## Deployment Complete
+
+Your Excalibur-EXS project is now live on Vercel! 🎉
+
+**Next Steps:**
+1. Monitor deployment performance
+2. Set up custom domain
+3. Configure analytics
+4. Test all functionality
+5. Share with users
+
+For issues or questions, contact the development team or refer to the documentation.

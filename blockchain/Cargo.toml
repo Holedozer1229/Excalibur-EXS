@@ -34,7 +34,7 @@ tokio = { version = "1", features = ["full"] }
 futures = "0.3"
 
 # P2P Networking (libp2p)
-libp2p = { version = "0.53", features = ["tcp", "noise", "mplex", "gossipsub", "kad", "identify", "macros"] }
+libp2p = { version = "0.53", features = ["tcp", "noise", "yamux", "gossipsub", "kad", "identify", "macros"] }
 
 # Storage
 rocksdb = "0.21"
