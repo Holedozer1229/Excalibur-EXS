@@ -489,7 +489,7 @@ node dist/index.js mine start --optimization power_save
 
 - Documentation: [README.md](README.md)
 - Issues: [GitHub Issues](https://github.com/Holedozer1229/Excalibur-EXS/issues)
-- Email: holedozer@gmail.com
+- Email: holedozer@icloud.com
 
 ---
 

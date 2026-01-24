@@ -33,7 +33,7 @@ This dashboard is built as a secure web application with:
 ## Access Control
 
 Access to Merlin's Portal is restricted to:
-- **Lead Architect**: Travis D. Jones (holedozer@gmail.com)
+- **Lead Architect**: Travis D. Jones (holedozer@icloud.com)
 
 All access attempts are logged and monitored for security purposes.
 

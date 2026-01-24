@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-LABEL maintainer="Travis D. Jones <holedozer@gmail.com>"
+LABEL maintainer="Travis D. Jones <holedozer@icloud.com>"
 LABEL description="Excalibur $EXS Protocol - Oracle API Service"
 
 WORKDIR /app

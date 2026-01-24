@@ -5,7 +5,7 @@ Excalibur-EXS Integration Test
 -------------------------------
 Comprehensive test of all enhanced modules working together.
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

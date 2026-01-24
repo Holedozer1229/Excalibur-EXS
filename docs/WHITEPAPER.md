@@ -559,7 +559,7 @@ The protocol is designed to last centuries, with governance transitioning to the
 **Version**: 1.0  
 **Date**: January 2026  
 **Author**: Travis D Jones  
-**Contact**: holedozer@gmail.com  
+**Contact**: holedozer@icloud.com  
 **Website**: www.excaliburcrypto.com  
 **License**: BSD-3-Clause
 

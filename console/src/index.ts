@@ -3,7 +3,7 @@
  * Excalibur-EXS Console Application
  * Unified command-line interface for the Excalibur Anomaly Protocol
  * 
- * Lead Architect: Travis D Jones (holedozer@gmail.com)
+ * Lead Architect: Travis D Jones (holedozer@icloud.com)
  * License: BSD-3-Clause
  */
 

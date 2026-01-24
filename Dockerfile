@@ -55,7 +55,7 @@ RUN cd forge-ui && npm install --production || echo "No npm install needed"
 # Stage 4: Final Runtime
 FROM python:3.11-slim
 
-LABEL maintainer="Travis D. Jones <holedozer@gmail.com>"
+LABEL maintainer="Travis D. Jones <holedozer@icloud.com>"
 LABEL description="Excalibur-EXS Complete System"
 LABEL version="2.0.0"
 

@@ -9,7 +9,7 @@ This module implements a blockchain-aware LLM system that combines
 the Excalibur protocol's cryptographic foundations with on-chain
 intelligence and Arthurian legend knowledge.
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

@@ -481,4 +481,4 @@ The Oracle is now ready for production deployment and further enhancement.
 **Prepared by:** GitHub Copilot  
 **Date:** January 2, 2026  
 **Version:** 1.0.0  
-**Contact:** Travis D. Jones <holedozer@gmail.com>
+**Contact:** Travis D. Jones <holedozer@icloud.com>

@@ -460,12 +460,12 @@ docker-compose -f docker-compose.exs.yml logs -f oracle-api
 
 BSD 3-Clause License
 
-Copyright (c) 2025, Travis D. Jones (holedozer@gmail.com)
+Copyright (c) 2025, Travis D. Jones (holedozer@icloud.com)
 
 ## Contact
 
 - **Author:** Travis D. Jones
-- **Email:** holedozer@gmail.com
+- **Email:** holedozer@icloud.com
 - **Project:** Excalibur $EXS Protocol
 
 ---

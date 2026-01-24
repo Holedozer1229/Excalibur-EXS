@@ -486,6 +486,6 @@ All requirements from the problem statement have been met and exceeded, with pro
 ---
 
 **Lead Architect:** Travis D Jones  
-**Email:** holedozer@gmail.com  
+**Email:** holedozer@icloud.com  
 **Project:** Excalibur-EXS Console Application  
 **Completion Date:** January 2, 2026

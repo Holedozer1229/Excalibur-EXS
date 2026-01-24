@@ -8,7 +8,7 @@ Integrates all new modules with the existing oracle system.
 Note: Path manipulation is used for development. In production,
 use proper package installation.
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

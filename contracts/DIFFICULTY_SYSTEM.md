@@ -349,7 +349,7 @@ npx hardhat test test/FounderAdvantage.test.js
 
 For questions or issues:
 - Developer: Travis D Jones
-- Email: holedozer@gmail.com
+- Email: holedozer@icloud.com
 - GitHub: Holedozer1229/Excalibur-EXS
 
 ---

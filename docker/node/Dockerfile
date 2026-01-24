@@ -23,7 +23,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o exs-node
 # Stage 2: Final image
 FROM ubuntu:22.04
 
-LABEL maintainer="Travis D Jones <holedozer@gmail.com>"
+LABEL maintainer="Travis D Jones <holedozer@icloud.com>"
 LABEL description="Excalibur-EXS Console Node"
 LABEL version="1.0.0"
 

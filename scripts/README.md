@@ -112,5 +112,5 @@ scripts/
 ## 👨‍💻 Author
 
 Travis D. Jones  
-Email: holedozer@gmail.com  
+Email: holedozer@icloud.com  
 License: BSD 3-Clause

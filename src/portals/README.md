@@ -290,7 +290,7 @@ npm run dev
 
 **License**: BSD 3-Clause  
 **Copyright**: (c) 2025, Travis D. Jones  
-**Author**: Travis D. Jones <holedozer@gmail.com>
+**Author**: Travis D. Jones <holedozer@icloud.com>
 
 All code in this directory is subject to the BSD 3-Clause License as specified in the repository root LICENSE file.
 

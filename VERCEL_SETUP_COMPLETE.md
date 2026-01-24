@@ -173,7 +173,7 @@ This keeps deployments fast and secure by only deploying frontend assets.
 If you encounter issues during deployment:
 1. Check the [Vercel Documentation](https://vercel.com/docs)
 2. Review the [VERCEL_DEPLOY.md](VERCEL_DEPLOY.md) guide
-3. Contact: holedozer@gmail.com
+3. Contact: holedozer@icloud.com
 
 ---
 

@@ -370,4 +370,4 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines.
 
 **Last Updated**: 2026-01-02  
 **Version**: 2.0.0  
-**Maintainer**: Travis D. Jones <holedozer@gmail.com>
+**Maintainer**: Travis D. Jones <holedozer@icloud.com>

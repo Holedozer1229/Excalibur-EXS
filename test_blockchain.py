@@ -4,7 +4,7 @@ Tests for Excalibur $EXS Blockchain and Premining
 
 This test suite validates the blockchain structure and premining functionality.
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

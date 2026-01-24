@@ -5,7 +5,7 @@ Excalibur Grail Quest
 ---------------------
 Special legendary quest for finding the Holy Grail.
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

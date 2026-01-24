@@ -427,7 +427,7 @@ sudo systemctl restart nginx
 
 **Issues?**
 - GitHub: https://github.com/Holedozer1229/Excalibur-EXS/issues
-- Email: holedozer@gmail.com
+- Email: holedozer@icloud.com
 
 **Documentation:**
 - Main README: [README.md](README.md)
@@ -453,5 +453,5 @@ The realm is open. The portals are active. The prophecy unfolds.
 *"The digital realm now mirrors the legend. The sword is drawn, and the kingdom awaits."*
 
 Lead Architect: Travis D Jones  
-Email: holedozer@gmail.com  
+Email: holedozer@icloud.com  
 License: BSD 3-Clause

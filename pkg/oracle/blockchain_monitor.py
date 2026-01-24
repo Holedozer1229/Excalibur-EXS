@@ -11,7 +11,7 @@ This module monitors the Bitcoin blockchain for:
 - Protocol-related transactions
 - Forge confirmation tracking
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

@@ -338,13 +338,13 @@ BSD 3-Clause License
 
 ## Author
 
-Travis D. Jones <holedozer@gmail.com>
+Travis D. Jones <holedozer@icloud.com>
 
 ## Support
 
 For issues or questions:
 - GitHub Issues: https://github.com/Holedozer1229/Excalibur-EXS/issues
-- Email: holedozer@gmail.com
+- Email: holedozer@icloud.com
 
 ---
 

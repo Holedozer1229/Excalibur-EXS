@@ -399,7 +399,7 @@ See: `VERCEL_DEPLOYMENT_COMPLETE.md`
 
 ### Contact
 - **Lead Architect:** Travis D Jones
-- **Email:** holedozer@gmail.com
+- **Email:** holedozer@icloud.com
 - **Repository:** https://github.com/Holedozer1229/Excalibur-EXS
 
 ---

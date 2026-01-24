@@ -5,7 +5,7 @@
 #
 # Rosetta API Documentation: https://www.rosetta-api.org/
 #
-# Author: Travis D. Jones <holedozer@gmail.com>
+# Author: Travis D. Jones <holedozer@icloud.com>
 # License: BSD 3-Clause
 
 network:
@@ -159,7 +159,7 @@ indexer:
 
 metadata:
   lead_architect: "Travis D. Jones"
-  contact: "holedozer@gmail.com"
+  contact: "holedozer@icloud.com"
   repository: "https://github.com/Holedozer1229/Excalibur-EXS"
   documentation: "https://github.com/Holedozer1229/Excalibur-EXS/wiki"
   rosetta_version: "1.4.10"

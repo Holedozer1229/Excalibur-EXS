@@ -11,7 +11,7 @@ This module handles the core oracle logic including:
 - Quest state tracking and progression
 - Wisdom generation based on protocol state
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

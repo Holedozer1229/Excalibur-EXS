@@ -610,7 +610,7 @@ Before deploying to production:
 - **Vercel CLI:** https://vercel.com/docs/cli
 - **Next.js Docs:** https://nextjs.org/docs
 - **GitHub Repository:** https://github.com/Holedozer1229/Excalibur-EXS
-- **Support Email:** holedozer@gmail.com
+- **Support Email:** holedozer@icloud.com
 
 ---
 

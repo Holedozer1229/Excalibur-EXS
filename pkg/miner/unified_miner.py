@@ -13,7 +13,7 @@ MIGRATION NOTE: Unified miner now uses batched/fused kernel
 - All mining workflows now leverage batch processing for improved performance
 - Easy fusion composition enables modular mining operations
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

@@ -250,4 +250,4 @@ BSD 3-Clause
 
 ## Author
 
-Travis D. Jones <holedozer@gmail.com>
+Travis D. Jones <holedozer@icloud.com>

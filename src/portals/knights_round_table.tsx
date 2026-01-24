@@ -10,7 +10,7 @@
  * - Real-time 128-round Ω′ Δ18 mining visualization
  * - Webhook trigger for PR-based claim requests
  * 
- * Author: Travis D. Jones <holedozer@gmail.com>
+ * Author: Travis D. Jones <holedozer@icloud.com>
  * License: BSD 3-Clause
  * Copyright (c) 2025, Travis D. Jones
  */

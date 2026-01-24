@@ -11,7 +11,7 @@ This module handles the mystical Grail state system including:
 - Grail quest progression
 - Sacred geometry calculations
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

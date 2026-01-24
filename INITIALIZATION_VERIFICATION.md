@@ -1,7 +1,7 @@
 # Excalibur $EXS Protocol - Initialization Verification Report
 
 **Date:** 2026-01-01  
-**Lead Architect:** Travis D. Jones (holedozer@gmail.com)  
+**Lead Architect:** Travis D. Jones (holedozer@icloud.com)  
 **Protocol:** Excalibur $EXS  
 **Status:** ✅ FULLY INITIALIZED
 
@@ -18,7 +18,7 @@ The Excalibur $EXS Protocol has been successfully initialized with all core comp
 ### LICENSE
 - **Status:** ✅ Implemented
 - **Location:** `/LICENSE`
-- **Details:** BSD 3-Clause License with copyright assigned to Travis D Jones (holedozer@gmail.com)
+- **Details:** BSD 3-Clause License with copyright assigned to Travis D Jones (holedozer@icloud.com)
 - **Verification:** File exists and contains correct copyright notice
 
 ### README.md

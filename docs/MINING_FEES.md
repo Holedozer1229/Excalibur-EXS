@@ -1124,7 +1124,7 @@ print(f"Treasury: {treasury_share:.8f} $EXS + fees")
 For questions about fees and rewards:
 
 - **Lead Architect**: Travis D. Jones
-- **Email**: holedozer@gmail.com
+- **Email**: holedozer@icloud.com
 - **Repository**: https://github.com/Holedozer1229/Excalibur-EXS
 
 ---

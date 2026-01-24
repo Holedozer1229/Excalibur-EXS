@@ -324,7 +324,7 @@ Shows:
 
 ### Help
 - **GitHub Issues:** https://github.com/Holedozer1229/Excalibur-EXS/issues
-- **Email:** holedozer@gmail.com
+- **Email:** holedozer@icloud.com
 - **Repository:** https://github.com/Holedozer1229/Excalibur-EXS
 
 ---

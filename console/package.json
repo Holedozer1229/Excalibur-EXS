@@ -31,7 +31,7 @@
     "cryptocurrency",
     "wallet"
   ],
-  "author": "Travis D Jones <holedozer@gmail.com>",
+  "author": "Travis D Jones <holedozer@icloud.com>",
   "license": "BSD-3-Clause",
   "dependencies": {
     "@types/bip32": "^1.0.2",

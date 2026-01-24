@@ -288,7 +288,7 @@ BSD 3-Clause License - See [LICENSE](../LICENSE)
 ## 👨‍💻 Lead Architect
 
 **Travis D Jones**  
-Email: holedozer@gmail.com
+Email: holedozer@icloud.com
 
 ---
 

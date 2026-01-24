@@ -5,7 +5,7 @@ Excalibur Berry Phase Calculator
 ---------------------------------
 Calculates geometric Berry phases for cryptographic proofs.
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

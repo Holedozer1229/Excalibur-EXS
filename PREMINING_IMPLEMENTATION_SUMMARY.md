@@ -297,5 +297,5 @@ The Excalibur $EXS blockchain is now ready for initialization before network lau
 
 **Implementation Date:** January 2, 2026  
 **Author:** Travis D. Jones  
-**Email:** holedozer@gmail.com  
+**Email:** holedozer@icloud.com  
 **License:** BSD 3-Clause

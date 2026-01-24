@@ -14,7 +14,7 @@ echo ""
 DOMAIN="excaliburcrypto.com"
 WEB_ROOT="/var/www/$DOMAIN"
 NGINX_CONFIG="/etc/nginx/sites-available/$DOMAIN"
-SSL_EMAIL="holedozer@gmail.com"
+SSL_EMAIL="holedozer@icloud.com"
 
 # Colors
 GREEN='\033[0;32m'

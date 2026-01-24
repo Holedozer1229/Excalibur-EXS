@@ -165,7 +165,7 @@ Key limitations:
 
 For security concerns or questions about production deployment:
 - Lead Architect: Travis D Jones
-- Email: holedozer@gmail.com
+- Email: holedozer@icloud.com
 
 ---
 

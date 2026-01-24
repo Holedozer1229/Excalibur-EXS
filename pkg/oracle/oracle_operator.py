@@ -9,7 +9,7 @@ This module provides an oracle that operates on the blockchain LLM to
 provide intelligent protocol operations, forge validation, and prophecy
 interpretation.
 
-Author: Travis D. Jones <holedozer@gmail.com>
+Author: Travis D. Jones <holedozer@icloud.com>
 License: BSD 3-Clause
 """
 

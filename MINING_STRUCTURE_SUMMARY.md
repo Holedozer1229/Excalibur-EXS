@@ -280,7 +280,7 @@ Potential future improvements:
 
 For questions or suggestions about the mining structure:
 
-- **Email:** holedozer@gmail.com
+- **Email:** holedozer@icloud.com
 - **Issues:** [GitHub Issues](https://github.com/Holedozer1229/Excalibur-EXS/issues)
 - **Pull Requests:** [GitHub PRs](https://github.com/Holedozer1229/Excalibur-EXS/pulls)
 

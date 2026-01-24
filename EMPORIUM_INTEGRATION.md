@@ -411,7 +411,7 @@ For issues and questions:
 
 - **GitHub Issues**: https://github.com/Holedozer1229/Excalibur-EXS/issues
 - **Documentation**: See `pkg/emporium/README.md`
-- **Email**: holedozer@gmail.com
+- **Email**: holedozer@icloud.com
 
 ## Next Steps
 

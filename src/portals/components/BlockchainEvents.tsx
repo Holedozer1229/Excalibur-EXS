@@ -4,7 +4,7 @@
  * Displays live blockchain events for the Emporium of Man system.
  * Shows recent inscriptions, blocks, and transactions in real-time.
  * 
- * Author: Travis D. Jones <holedozer@gmail.com>
+ * Author: Travis D. Jones <holedozer@icloud.com>
  * License: BSD 3-Clause
  * Copyright (c) 2025, Travis D. Jones
  */

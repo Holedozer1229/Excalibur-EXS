@@ -266,7 +266,7 @@ sudo systemctl restart nginx
 
 ## Support Contacts
 
-- **Lead Architect**: Travis D Jones (holedozer@gmail.com)
+- **Lead Architect**: Travis D Jones (holedozer@icloud.com)
 - **Repository**: https://github.com/Holedozer1229/Excalibur-EXS
 - **Issues**: https://github.com/Holedozer1229/Excalibur-EXS/issues
 

@@ -166,7 +166,7 @@ For detailed instructions, see:
 
 ### Support
 - **GitHub Issues**: https://github.com/Holedozer1229/Excalibur-EXS/issues
-- **Email**: holedozer@gmail.com
+- **Email**: holedozer@icloud.com
 - **Logs**: `sudo tail -f /var/log/nginx/error.log`
 
 ---
@@ -225,7 +225,7 @@ The prophecy unfolds. The realm is open. The sword awaits.
 
 **Repository**: https://github.com/Holedozer1229/Excalibur-EXS  
 **Lead Architect**: Travis D Jones  
-**Email**: holedozer@gmail.com  
+**Email**: holedozer@icloud.com  
 **License**: BSD 3-Clause
 
 *"The code is forged. The domain awaits. Deploy the legend."*

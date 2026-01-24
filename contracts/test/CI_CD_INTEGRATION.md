@@ -443,7 +443,7 @@ Set up monitoring for:
 
 For CI/CD setup questions:
 - Lead Architect: Travis D Jones
-- Email: holedozer@gmail.com
+- Email: holedozer@icloud.com
 
 ## License
 

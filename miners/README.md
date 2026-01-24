@@ -224,7 +224,7 @@ All miners are licensed under the BSD 3-Clause License. See [LICENSE](../LICENSE
 ## Support
 
 - **Issues:** [GitHub Issues](https://github.com/Holedozer1229/Excalibur-EXS/issues)
-- **Email:** holedozer@gmail.com
+- **Email:** holedozer@icloud.com
 - **Documentation:** [Main README](../README.md)
 
 ---

@@ -381,7 +381,7 @@ BSD 3-Clause License - See [LICENSE](../../LICENSE)
 ## Support
 
 - **Issues:** [GitHub Issues](https://github.com/Holedozer1229/Excalibur-EXS/issues)
-- **Email:** holedozer@gmail.com
+- **Email:** holedozer@icloud.com
 - **Main Documentation:** [Miners README](../README.md)
 
 ---
