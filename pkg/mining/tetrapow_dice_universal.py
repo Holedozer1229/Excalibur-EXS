@@ -138,11 +138,7 @@ class UniversalMiningKernel:
                 batch_data.append(initial_state)
                 batch_nonces.append(nonce)
             
-            # Execute rounds in batched fashion
-            batch_round_states = [[] for _ in range(batch_count)]
-            for i in range(batch_count):
-                batch_round_states[i].append(batch_data[i])
-            
+            # Execute rounds in batched fashion (only store final hash, not all intermediate states)
             for round_num in range(1, rounds + 1):
                 # Batched nonlinear transform
                 batch_data = self.batch_nonlinear_transform(
@@ -150,10 +146,6 @@ class UniversalMiningKernel:
                     round_num, 
                     fusion_sequence
                 )
-                
-                # Store round states
-                for i in range(batch_count):
-                    batch_round_states[i].append(batch_data[i])
             
             # Final hash for each in batch
             for i in range(batch_count):
@@ -161,7 +153,7 @@ class UniversalMiningKernel:
                 results.append((
                     batch_nonces[i],
                     final_hash,
-                    batch_round_states[i]
+                    [batch_data[i]]  # Only store final state instead of all 128 intermediate states
                 ))
         
         return results

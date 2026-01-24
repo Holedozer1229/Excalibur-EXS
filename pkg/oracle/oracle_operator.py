@@ -17,6 +17,7 @@ import hashlib
 import time
 import random
 import logging
+import re
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime, timezone
 from threading import Lock
@@ -33,7 +34,6 @@ if __name__ == "__main__":
 
 logger = logging.getLogger(__name__)
 
-
 class ExcaliburOracle:
     """
     Oracle operator for the Excalibur protocol.
@@ -41,6 +41,18 @@ class ExcaliburOracle:
     Provides intelligent validation, prophecy interpretation, and
     protocol guidance using the Blockchain LLM.
     """
+    
+    # Compile regex pattern for efficient keyword matching
+    KEYWORD_PATTERN = re.compile(r'\b(sword|mining|forge|treasury|vault|taproot|axiom)\b', re.IGNORECASE)
+    KEYWORD_MAP = {
+        "sword": "excalibur_legend",
+        "mining": "protocol_mechanics",
+        "forge": "protocol_mechanics",
+        "treasury": "treasury_control",
+        "vault": "cryptographic_foundation",
+        "taproot": "cryptographic_foundation",
+        "axiom": "cryptographic_foundation"
+    }
     
     def __init__(self):
         """Initialize the Excalibur Oracle."""
@@ -53,6 +65,9 @@ class ExcaliburOracle:
         self.prophecy_count = 0
         self.ergotropy_state = "DORMANT"  # States: DORMANT, AWAKENING, ACTIVE, TRANSCENDENT
         self._lock = Lock()  # Thread safety for concurrent access
+        # Cache for forge count by day
+        self._daily_forge_cache = {}
+        self._daily_forge_cache_date = None
         logger.info("Excalibur Oracle initialized successfully")
         
     def validate_forge(self, axiom: str, nonce: int, hash_result: str) -> Dict:
@@ -128,10 +143,10 @@ class ExcaliburOracle:
         query_lower = query.lower()
         category = None
         
-        for keyword, cat in keyword_map.items():
-            if keyword in query_lower:
-                category = cat
-                break
+        # Use compiled regex for O(1) keyword matching
+        match = self.KEYWORD_PATTERN.search(query_lower)
+        if match:
+            category = self.KEYWORD_MAP[match.group(1).lower()]
         
         if category:
             knowledge = self.llm.query_knowledge(category)
@@ -292,12 +307,20 @@ class ExcaliburOracle:
         # Deterministic divination based on time
         index = int(time.time()) % len(divinations)
         
+        # Cache forge count by date for performance
+        today = datetime.now().date()
+        if self._daily_forge_cache_date != today:
+            self._daily_forge_cache_date = today
+            self._daily_forge_cache = sum(
+                1 for f in self.forge_history 
+                if datetime.fromisoformat(f["timestamp"]).date() == today
+            )
+        
         return {
             "divination": divinations[index],
             "oracle_wisdom": "The future is written in the blockchain.",
             "protocol_status": "OPERATIONAL",
-            "forges_today": len([f for f in self.forge_history 
-                                if datetime.fromisoformat(f["timestamp"]).date() == datetime.now().date()]),
+            "forges_today": self._daily_forge_cache,
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
     

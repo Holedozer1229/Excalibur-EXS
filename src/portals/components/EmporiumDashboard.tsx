@@ -11,7 +11,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 interface VaultData {
   vault_id: string;
@@ -63,8 +63,8 @@ export default function EmporiumDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'quests' | 'leaderboard'>('overview');
 
-  // Fetch vault status
-  const fetchVaultStatus = async () => {
+  // Fetch vault status with stable reference
+  const fetchVaultStatus = useCallback(async () => {
     if (!vaultId) return;
 
     setLoading(true);
@@ -84,7 +84,7 @@ export default function EmporiumDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [vaultId]);
 
   // Grail level colors
   const getGrailLevelColor = (level: string): string => {

@@ -17,7 +17,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer, useCallback } from 'react';
 
 // The canonical 13-word Arthurian Axiom
 // NOTE: This is displayed client-side for user reference only. 
@@ -43,7 +43,15 @@ export default function KnightsRoundTable() {
   const [isMining, setIsMining] = useState<boolean>(false);
   const [miningProgress, setMiningProgress] = useState<number>(0);
   const [currentRound, setCurrentRound] = useState<number>(0);
-  const [roundStates, setRoundStates] = useState<MiningRound[]>([]);
+  // Use useReducer for efficient batch updates
+  const [roundStates, dispatchRoundStates] = useReducer(
+    (state: MiningRound[], action: { type: 'ADD_ROUNDS', rounds: MiningRound[] } | { type: 'RESET' }) => {
+      if (action.type === 'RESET') return [];
+      if (action.type === 'ADD_ROUNDS') return [...state, ...action.rounds];
+      return state;
+    },
+    []
+  );
   const [miningResult, setMiningResult] = useState<MiningResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showClaimForm, setShowClaimForm] = useState<boolean>(false);
@@ -53,7 +61,7 @@ export default function KnightsRoundTable() {
   const isAxiomValid = userWords.length === 13 && userWords.join(' ') === CANONICAL_AXIOM;
 
   // Simulate the 128-round Ω′ Δ18 mining process
-  const startForge = async () => {
+  const startForge = useCallback(async () => {
     if (!isAxiomValid) {
       setError('The Axiom does not match the sacred prophecy. The Sword remains in the Stone.');
       return;
@@ -62,7 +70,7 @@ export default function KnightsRoundTable() {
     setIsMining(true);
     setError(null);
     setMiningResult(null);
-    setRoundStates([]);
+    dispatchRoundStates({ type: 'RESET' });
     setCurrentRound(0);
     setMiningProgress(0);
 
@@ -90,11 +98,9 @@ export default function KnightsRoundTable() {
 
       const result = await response.json();
 
-      // Simulate round-by-round visualization
+      // Batch generate all rounds first to avoid triggering 128 re-renders
+      const batchSize = 16; // Update UI every 16 rounds for smoother experience
       for (let i = 0; i < totalRounds; i++) {
-        setCurrentRound(i + 1);
-        setMiningProgress(((i + 1) / totalRounds) * 100);
-
         const roundHash = await generateRoundHash(axiomInput, i);
         const round: MiningRound = {
           round: i + 1,
@@ -103,11 +109,16 @@ export default function KnightsRoundTable() {
         };
         
         rounds.push(round);
-        setRoundStates(prev => [...prev, round]);
-
-        // Slow down the visualization for user experience
-        // TODO: Make this configurable based on totalRounds to maintain reasonable completion time
-        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        // Batch update state every 16 rounds instead of every round
+        if ((i + 1) % batchSize === 0 || i === totalRounds - 1) {
+          setCurrentRound(i + 1);
+          setMiningProgress(((i + 1) / totalRounds) * 100);
+          dispatchRoundStates({ type: 'ADD_ROUNDS', rounds: rounds.slice(i + 1 - (rounds.length % batchSize || batchSize)) });
+          
+          // Reduce delay for better UX
+          await new Promise(resolve => setTimeout(resolve, 50));
+        }
       }
 
       const endTime = Date.now();
@@ -129,7 +140,7 @@ export default function KnightsRoundTable() {
     } finally {
       setIsMining(false);
     }
-  };
+  }, [isAxiomValid, axiomInput]);
 
   // Generate a simulated round hash for visualization
   const generateRoundHash = async (input: string, round: number): Promise<string> => {
