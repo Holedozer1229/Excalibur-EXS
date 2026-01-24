@@ -36,8 +36,11 @@ pub struct JsonRpcError {
     pub data: Option<Value>,
 }
 
-/// RPC method handler
-type RpcHandler = Arc<dyn Fn(Option<Value>) -> Result<Value> + Send + Sync>;
+/// RPC method handler (async)
+use std::future::Future;
+use std::pin::Pin;
+
+type RpcHandler = Arc<dyn Fn(Option<Value>) -> Pin<Box<dyn Future<Output = Result<Value>> + Send>> + Send + Sync>;
 
 /// JSON-RPC server
 pub struct RpcServer {
@@ -76,107 +79,130 @@ impl RpcServer {
         
         // getblockcount - Get current block height
         self.register_handler("getblockcount", move |_params| {
-            let state = futures::executor::block_on(state.read());
-            Ok(json!(state.chain_height))
+            let state = Arc::clone(&state);
+            Box::pin(async move {
+                let state = state.read().await;
+                Ok(json!(state.chain_height))
+            })
         });
 
         let state = Arc::clone(&self.state);
         
         // getinfo - Get general blockchain info
         self.register_handler("getinfo", move |_params| {
-            let state = futures::executor::block_on(state.read());
-            Ok(json!({
-                "version": state.version,
-                "blocks": state.chain_height,
-                "forges": state.total_forges,
-                "connections": state.peer_count,
-                "network": "mainnet",
-                "difficulty": 2,
-            }))
+            let state = Arc::clone(&state);
+            Box::pin(async move {
+                let state = state.read().await;
+                Ok(json!({
+                    "version": state.version,
+                    "blocks": state.chain_height,
+                    "forges": state.total_forges,
+                    "connections": state.peer_count,
+                    "network": "mainnet",
+                    "difficulty": 2,
+                }))
+            })
         });
 
         // getblock - Get block by height
         self.register_handler("getblock", |params| {
-            let height = params
-                .and_then(|p| p.as_u64())
-                .ok_or_else(|| anyhow!("Missing or invalid 'height' parameter"))?;
-            
-            // This would normally fetch from chain store
-            Ok(json!({
-                "height": height,
-                "hash": format!("{:064x}", height),
-                "forges": [],
-                "timestamp": 0,
-            }))
+            Box::pin(async move {
+                let height = params
+                    .and_then(|p| p.as_u64())
+                    .ok_or_else(|| anyhow!("Missing or invalid 'height' parameter"))?;
+                
+                // This would normally fetch from chain store
+                Ok(json!({
+                    "height": height,
+                    "hash": format!("{:064x}", height),
+                    "forges": [],
+                    "timestamp": 0,
+                }))
+            })
         });
 
         // getforge - Get forge transaction by proof hash
         self.register_handler("getforge", |params| {
-            let proof_hash = params
-                .and_then(|p| p.as_str())
-                .ok_or_else(|| anyhow!("Missing or invalid 'proof_hash' parameter"))?;
-            
-            // This would normally fetch from chain store
-            Ok(json!({
-                "proof_hash": proof_hash,
-                "prophecy": "sword legend pull magic kingdom artist stone destroy forget fire steel honey question",
-                "taproot_address": "bc1p...",
-                "timestamp": 0,
-            }))
+            Box::pin(async move {
+                let proof_hash = params
+                    .and_then(|p| p.as_str())
+                    .ok_or_else(|| anyhow!("Missing or invalid 'proof_hash' parameter"))?;
+                
+                // This would normally fetch from chain store
+                Ok(json!({
+                    "proof_hash": proof_hash,
+                    "prophecy": "sword legend pull magic kingdom artist stone destroy forget fire steel honey question",
+                    "taproot_address": "bc1p...",
+                    "timestamp": 0,
+                }))
+            })
         });
 
         // submitforge - Submit a new forge transaction
         self.register_handler("submitforge", |params| {
-            let forge_data = params
-                .ok_or_else(|| anyhow!("Missing forge data"))?;
-            
-            // This would normally validate and add to mempool
-            Ok(json!({
-                "success": true,
-                "txid": "0000000000000000000000000000000000000000000000000000000000000000",
-            }))
+            Box::pin(async move {
+                let forge_data = params
+                    .ok_or_else(|| anyhow!("Missing forge data"))?;
+                
+                // This would normally validate and add to mempool
+                Ok(json!({
+                    "success": true,
+                    "txid": "0000000000000000000000000000000000000000000000000000000000000000",
+                }))
+            })
         });
 
         let state = Arc::clone(&self.state);
         
         // getpeerinfo - Get connected peers
         self.register_handler("getpeerinfo", move |_params| {
-            let state = futures::executor::block_on(state.read());
-            Ok(json!({
-                "peer_count": state.peer_count,
-                "peers": [],
-            }))
+            let state = Arc::clone(&state);
+            Box::pin(async move {
+                let state = state.read().await;
+                Ok(json!({
+                    "peer_count": state.peer_count,
+                    "peers": [],
+                }))
+            })
         });
 
         // validatepropohecy - Validate a prophecy
         self.register_handler("validateprophecy", |params| {
-            let prophecy = params
-                .and_then(|p| p.as_str())
-                .ok_or_else(|| anyhow!("Missing or invalid 'prophecy' parameter"))?;
-            
-            let is_valid = prophecy == "sword legend pull magic kingdom artist stone destroy forget fire steel honey question";
-            
-            Ok(json!({
-                "valid": is_valid,
-                "prophecy": prophecy,
-            }))
+            Box::pin(async move {
+                let prophecy = params
+                    .and_then(|p| p.as_str())
+                    .ok_or_else(|| anyhow!("Missing or invalid 'prophecy' parameter"))?;
+                
+                let is_valid = prophecy == "sword legend pull magic kingdom artist stone destroy forget fire steel honey question";
+                
+                Ok(json!({
+                    "valid": is_valid,
+                    "prophecy": prophecy,
+                }))
+            })
         });
 
         // getdifficulty - Get current mining difficulty
         self.register_handler("getdifficulty", |_params| {
-            Ok(json!(2))
+            Box::pin(async move {
+                Ok(json!(2))
+            })
         });
     }
 
     /// Register a custom RPC handler
-    pub fn register_handler<F>(&mut self, method: &str, handler: F)
+    pub fn register_handler<F, Fut>(&mut self, method: &str, handler: F)
     where
-        F: Fn(Option<Value>) -> Result<Value> + Send + Sync + 'static,
+        F: Fn(Option<Value>) -> Fut + Send + Sync + 'static,
+        Fut: Future<Output = Result<Value>> + Send + 'static,
     {
         let handlers = Arc::clone(&self.handlers);
+        let wrapper = Arc::new(move |params: Option<Value>| {
+            Box::pin(handler(params)) as Pin<Box<dyn Future<Output = Result<Value>> + Send>>
+        });
         futures::executor::block_on(async {
             let mut handlers = handlers.write().await;
-            handlers.insert(method.to_string(), Arc::new(handler));
+            handlers.insert(method.to_string(), wrapper);
         });
     }
 
@@ -217,7 +243,7 @@ impl RpcServer {
         drop(handlers);
 
         // Execute handler
-        match handler(request.params) {
+        match handler(request.params).await {
             Ok(result) => JsonRpcResponse {
                 jsonrpc: "2.0".to_string(),
                 result: Some(result),
