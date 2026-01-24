@@ -63,10 +63,12 @@ impl ForgePool {
             timestamp: forge.timestamp,
             fee: self.min_fee,
         };
+        
+        let proof_hash = forge.proof_hash;
 
-        // Create entry
+        // Create entry (transfer ownership to Arc without cloning)
         let entry = MempoolEntry {
-            forge: Arc::new(forge.clone()),
+            forge: Arc::new(forge),
             priority,
             added_at: std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
@@ -75,10 +77,10 @@ impl ForgePool {
         };
 
         // Add to mempool
-        pending.insert(forge.proof_hash, entry);
-        priority_queue.insert((forge.proof_hash, priority));
+        pending.insert(proof_hash, entry);
+        priority_queue.insert((proof_hash, priority));
 
-        tracing::info!("Added forge to mempool: {:?}", hex::encode(&forge.proof_hash));
+        tracing::info!("Added forge to mempool: {:?}", hex::encode(&proof_hash));
 
         Ok(())
     }

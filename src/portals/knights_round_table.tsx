@@ -118,7 +118,7 @@ export default function KnightsRoundTable() {
           setMiningProgress(((i + 1) / totalRounds) * 100);
           const batchToAdd = rounds.slice(lastBatchIndex);
           dispatchRoundStates({ type: 'ADD_ROUNDS', rounds: batchToAdd });
-          lastBatchIndex = rounds.length;
+          lastBatchIndex = i + 1;
           
           // Reduce delay for better UX
           await new Promise(resolve => setTimeout(resolve, 50));

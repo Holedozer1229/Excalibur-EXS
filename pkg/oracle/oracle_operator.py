@@ -66,7 +66,7 @@ class ExcaliburOracle:
         self.ergotropy_state = "DORMANT"  # States: DORMANT, AWAKENING, ACTIVE, TRANSCENDENT
         self._lock = Lock()  # Thread safety for concurrent access
         # Cache for forge count by day
-        self._daily_forge_cache = {}
+        self._daily_forge_cache = 0
         self._daily_forge_cache_date = None
         logger.info("Excalibur Oracle initialized successfully")
         
