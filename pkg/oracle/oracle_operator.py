@@ -142,17 +142,6 @@ class ExcaliburOracle:
         """
         self.query_count += 1
         
-        # Map query keywords to knowledge categories
-        keyword_map = {
-            "sword": "excalibur_legend",
-            "mining": "protocol_mechanics",
-            "forge": "protocol_mechanics",
-            "treasury": "treasury_control",
-            "vault": "cryptographic_foundation",
-            "taproot": "cryptographic_foundation",
-            "axiom": "cryptographic_foundation"
-        }
-        
         query_lower = query.lower()
         category = None
         
