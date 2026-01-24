@@ -1,64 +1,66 @@
 {
   "version": 2,
-  "name": "excalibur-exs-oracle",
+  "name": "excalibur-exs",
   "public": true,
-  "comment": "This deployment is specifically for the Oracle API service (oracle.excaliburcrypto.com), not the main website",
-  "builds": [
-    {
-      "src": "cmd/oracle-api/app.py",
-      "use": "@vercel/python",
-      "config": {
-        "maxLambdaSize": "50mb"
-      }
-    }
-  ],
+  "comment": "Main Excalibur EXS static website deployment",
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "cmd/oracle-api/app.py"
+      "src": "^/$",
+      "dest": "/index.html"
+    },
+    {
+      "src": "^/website/(.*)",
+      "dest": "/website/$1"
+    },
+    {
+      "src": "^/web/knights-round-table/(.*)",
+      "dest": "/web/knights-round-table/$1"
+    },
+    {
+      "src": "^/(.*\\.(html|css|js|png|jpg|jpeg|gif|svg|ico|json|woff|woff2|ttf|eot))",
+      "dest": "/$1"
     }
   ],
-  "functions": {
-    "cmd/oracle-api/app.py": {
-      "includeFiles": "pkg/**"
-    }
-  },
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
         {
-          "key": "Strict-Transport-Security",
-          "value": "max-age=31536000; includeSubDomains"
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
         },
         {
           "key": "X-Frame-Options",
           "value": "SAMEORIGIN"
         },
         {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
         },
         {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    },
+    {
+      "source": "/website/(.*)",
+      "headers": [
         {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, OPTIONS"
-        },
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
+    },
+    {
+      "source": "/website/assets/(.*)",
+      "headers": [
         {
-          "key": "Access-Control-Allow-Headers",
-          "value": "X-API-Key, Content-Type"
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     }
   ],
-  "env": {
-    "DOMAIN": "www.excaliburcrypto.com"
-  }
+  "cleanUrls": true
 }
