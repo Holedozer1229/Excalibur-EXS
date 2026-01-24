@@ -136,6 +136,14 @@
             color: #ffd700;
             margin-top: 6px;
         }
+
+        .status-card .value.loading {
+            opacity: 0.6;
+        }
+
+        .status-card .value.error {
+            color: #f87171;
+        }
         
         .forge-panel {
             background: rgba(255, 255, 255, 0.05);
@@ -392,9 +400,9 @@
         <header>
             <h1>⚔️ KNIGHTS' ROUND TABLE ⚔️</h1>
             <p class="quote">"Only those who prove their worth through ancient axioms may draw the sword from the stone."</p>
-            <div class="status-ribbon">
-                <span class="status-dot"></span>
-                <span>Mainnet forging online</span>
+            <div class="status-ribbon" id="network-ribbon" aria-live="polite">
+                <span class="status-dot" id="network-dot"></span>
+                <span id="network-status">Checking network...</span>
             </div>
             <div class="nav-links">
                 <a href="oracle" class="nav-link oracle">🔮 Consult the Oracle</a>
@@ -405,19 +413,19 @@
             <div class="status-grid">
                 <div class="status-card">
                     <div class="label">Treasury</div>
-                    <div class="value">1.2M EXS</div>
+                    <div class="value" id="treasury-balance">--</div>
                 </div>
                 <div class="status-card">
                     <div class="label">Difficulty</div>
-                    <div class="value">Δ18</div>
+                    <div class="value" id="difficulty-level">--</div>
                 </div>
                 <div class="status-card">
                     <div class="label">Network</div>
-                    <div class="value">Mainnet</div>
+                    <div class="value" id="network-name">--</div>
                 </div>
                 <div class="status-card">
                     <div class="label">Guardian</div>
-                    <div class="value">Armed</div>
+                    <div class="value" id="guardian-status">--</div>
                 </div>
             </div>
         </header>
@@ -484,6 +492,58 @@
     </div>
     
     <script>
+        // Lightweight status placeholders; replace with live data sources when available
+        function updateStatusUI(status) {
+            const dot = document.getElementById('network-dot');
+            const statusLabel = document.getElementById('network-status');
+            const treasuryEl = document.getElementById('treasury-balance');
+            const diffEl = document.getElementById('difficulty-level');
+            const networkEl = document.getElementById('network-name');
+            const guardianEl = document.getElementById('guardian-status');
+
+            const setValue = (el, value, ok = true) => {
+                el.textContent = value;
+                el.classList.remove('loading', 'error');
+                if (!ok) el.classList.add('error');
+            };
+
+            statusLabel.textContent = status.networkStatus;
+            dot.style.background = status.networkHealthy ? '#4ade80' : '#f87171';
+            dot.style.boxShadow = status.networkHealthy 
+                ? '0 0 0 6px rgba(74, 222, 128, 0.18)'
+                : '0 0 0 6px rgba(248, 113, 113, 0.18)';
+
+            setValue(treasuryEl, status.treasury || '--');
+            setValue(diffEl, status.difficulty || '--');
+            setValue(networkEl, status.network || '--', status.networkHealthy);
+            setValue(guardianEl, status.guardian || '--', status.guardianHealthy);
+        }
+
+        function loadStatus() {
+            const placeholders = ['treasury-balance', 'difficulty-level', 'network-name', 'guardian-status'];
+            placeholders.forEach(id => {
+                const el = document.getElementById(id);
+                el.textContent = 'Loading...';
+                el.classList.add('loading');
+            });
+
+            // Placeholder data; wire to real endpoints when available
+            const mockStatus = {
+                treasury: '1.2M EXS',
+                difficulty: 'Δ18',
+                network: 'Mainnet',
+                guardian: 'Armed',
+                networkHealthy: true,
+                guardianHealthy: true,
+                networkStatus: 'Mainnet forging online'
+            };
+
+            // Simulate async fetch
+            setTimeout(() => updateStatusUI(mockStatus), 300);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadStatus);
+
         // Initialize 128 rounds
         const roundsContainer = document.getElementById('rounds-container');
         for (let i = 1; i <= 128; i++) {
