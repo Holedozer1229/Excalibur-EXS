@@ -1,42 +1,68 @@
 # Excalibur $EXS - Vercel Ignore File
-# Prevent Vercel from trying to build or deploy certain directories
+# For static website deployment (vercel.json / vercel-website.json)
+# Excludes backend code and build artifacts not needed for frontend
 
-# Development/alternative Next.js UI (not used in production)
-/web/forge-ui
+# Go backend services (not deployed to Vercel frontend)
+/cmd
+/pkg
+*.go
+go.mod
+go.sum
 
-# Build artifacts and dependencies (already in .gitignore, but explicit here)
+# Python backend scripts (use vercel-oracle-api.json for Oracle API deployment)
+*.py
+requirements.txt
+
+# Blockchain and backend data
+/ledger
+/blockchain
+/contracts
+/treasury
+/treasury-demo
+
+# Development and build artifacts
 node_modules
 .next
 .cache
+dist
+build
 
-# Go backend (not deployed to Vercel)
-/cmd/forge-api
-/cmd/lancelot_guardian
-/cmd/diceminer
-/cmd/exs-wallet
-*.go
-
-# Python scripts not needed for Oracle API
-/scripts/*.py
-/test*.py
-k_solver.py
-warchest_vault.py
-forge_treasury_key.py
-omega_fingerprint.py
-
-# Build and test files
-/test.sh
-/scripts
-
-# Docker files (not needed for Vercel deployment)
+# Docker deployment files
 /docker
-/docker-compose.yml
+docker-compose.yml
+docker-compose.exs.yml
+Dockerfile
 
-# Mobile app (not needed for web deployment)
+# Mobile app source
 /mobile-app
 
-# Ledger and backend data
-/ledger
-
-# Miners (not needed for Oracle API)
+# Mining and backend tools
 /miners
+/notebooks
+
+# Test files
+test.sh
+test_*.py
+
+# Documentation (keep only if needed, otherwise exclude to reduce deploy size)
+# Uncomment to exclude:
+# *.md
+# /docs
+
+# Scripts and tooling
+/scripts
+launch_exe.sh
+rosetta-exs.yaml
+
+# Apache configuration (not needed for Vercel)
+/apache
+.htaccess
+
+# Git and GitHub
+.git
+.github
+
+# Environment files
+.env
+.env.local
+.env.example

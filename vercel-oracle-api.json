@@ -1,0 +1,64 @@
+{
+  "version": 2,
+  "name": "excalibur-exs-oracle-api",
+  "public": true,
+  "comment": "Oracle API service deployment for oracle.excaliburcrypto.com - Deploy this separately from the main website",
+  "builds": [
+    {
+      "src": "cmd/oracle-api/app.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "cmd/oracle-api/app.py"
+    }
+  ],
+  "functions": {
+    "cmd/oracle-api/app.py": {
+      "includeFiles": "pkg/**"
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-API-Key, Content-Type"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "ORACLE_API_DOMAIN": "oracle.excaliburcrypto.com"
+  }
+}

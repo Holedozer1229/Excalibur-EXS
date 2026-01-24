@@ -2,19 +2,31 @@
   "version": 2,
   "name": "excalibur-exs-website",
   "public": true,
-  "comment": "Main website deployment for Excalibur $EXS (www.excaliburcrypto.com)",
+  "comment": "Static website deployment for www.excaliburcrypto.com - This is the default deployment configuration",
   "rewrites": [
     {
       "source": "/",
       "destination": "/website/index.html"
     },
     {
+      "source": "/web/knights-round-table/(.*)",
+      "destination": "/web/knights-round-table/$1"
+    },
+    {
       "source": "/web/(.*)",
       "destination": "/web/$1"
     },
     {
+      "source": "/admin/merlins-portal/(.*)",
+      "destination": "/admin/merlins-portal/$1"
+    },
+    {
       "source": "/admin/(.*)",
       "destination": "/admin/$1"
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": "/website/assets/$1"
     },
     {
       "source": "/(.*)",
@@ -40,7 +52,12 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
-        },
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
         {
           "key": "Cache-Control",
           "value": "public, max-age=31536000, immutable"
