@@ -15,7 +15,7 @@ struct ForgePriority {
 /// Mempool entry
 #[derive(Debug, Clone)]
 struct MempoolEntry {
-    forge: ForgeTransaction,
+    forge: Arc<ForgeTransaction>,
     priority: ForgePriority,
     added_at: u64,
 }
@@ -63,10 +63,12 @@ impl ForgePool {
             timestamp: forge.timestamp,
             fee: self.min_fee,
         };
+        
+        let proof_hash = forge.proof_hash;
 
-        // Create entry
+        // Create entry (transfer ownership to Arc without cloning)
         let entry = MempoolEntry {
-            forge: forge.clone(),
+            forge: Arc::new(forge),
             priority,
             added_at: std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
@@ -75,16 +77,16 @@ impl ForgePool {
         };
 
         // Add to mempool
-        pending.insert(forge.proof_hash, entry);
-        priority_queue.insert((forge.proof_hash, priority));
+        pending.insert(proof_hash, entry);
+        priority_queue.insert((proof_hash, priority));
 
-        tracing::info!("Added forge to mempool: {:?}", hex::encode(&forge.proof_hash));
+        tracing::info!("Added forge to mempool: {:?}", hex::encode(&proof_hash));
 
         Ok(())
     }
 
     /// Remove a forge from the mempool
-    pub fn remove_forge(&self, proof_hash: &[u8; 32]) -> Result<ForgeTransaction> {
+    pub fn remove_forge(&self, proof_hash: &[u8; 32]) -> Result<Arc<ForgeTransaction>> {
         let mut pending = self.pending.write().unwrap();
         let mut priority_queue = self.priority_queue.write().unwrap();
 
@@ -98,9 +100,9 @@ impl ForgePool {
     }
 
     /// Get a forge from the mempool
-    pub fn get_forge(&self, proof_hash: &[u8; 32]) -> Option<ForgeTransaction> {
+    pub fn get_forge(&self, proof_hash: &[u8; 32]) -> Option<Arc<ForgeTransaction>> {
         let pending = self.pending.read().unwrap();
-        pending.get(proof_hash).map(|entry| entry.forge.clone())
+        pending.get(proof_hash).map(|entry| Arc::clone(&entry.forge))
     }
 
     /// Check if a forge is in the mempool
@@ -116,7 +118,7 @@ impl ForgePool {
     }
 
     /// Get forges for inclusion in a new block
-    pub fn get_forges_for_block(&self, max_forges: usize) -> Vec<ForgeTransaction> {
+    pub fn get_forges_for_block(&self, max_forges: usize) -> Vec<Arc<ForgeTransaction>> {
         let pending = self.pending.read().unwrap();
         let priority_queue = self.priority_queue.read().unwrap();
 
@@ -124,7 +126,7 @@ impl ForgePool {
             .iter()
             .rev() // Highest priority first
             .take(max_forges)
-            .filter_map(|(hash, _)| pending.get(hash).map(|entry| entry.forge.clone()))
+            .filter_map(|(hash, _)| pending.get(hash).map(|entry| Arc::clone(&entry.forge)))
             .collect()
     }
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -112,22 +113,26 @@ func verifyAxiom(axiom string) bool {
 
 func simulateForging() {
 	rounds := 128
+	ticker := time.NewTicker(50 * time.Millisecond)
+	defer ticker.Stop()
+	
 	for i := 0; i < rounds; i++ {
 		if i%16 == 0 {
 			fmt.Printf("\nRounds %3d-%3d: ", i, i+15)
 		}
 		fmt.Print("█")
-		time.Sleep(50 * time.Millisecond)
+		<-ticker.C
 	}
 	fmt.Println()
 }
 
 func generateMockHash(length int) string {
-	hash := ""
+	var hash strings.Builder
+	hash.Grow(length)
 	for i := 0; i < length; i++ {
-		hash += "a"
+		hash.WriteString("a")
 	}
-	return hash
+	return hash.String()
 }
 
 func init() {

@@ -265,13 +265,16 @@ func (s *SPVClient) connectPeer(peer *Peer) {
 	// This would establish a TCP connection to the peer
 	// and perform the Bitcoin protocol handshake
 	
-	// For now, just mark as connected after a delay
-	time.Sleep(2 * time.Second)
-	
-	s.peersMu.Lock()
-	peer.Connected = true
-	peer.LastSeen = time.Now()
-	s.peersMu.Unlock()
+	// For now, mark as connected after a delay using context-aware timer
+	select {
+	case <-s.ctx.Done():
+		return
+	case <-time.After(2 * time.Second):
+		s.peersMu.Lock()
+		peer.Connected = true
+		peer.LastSeen = time.Now()
+		s.peersMu.Unlock()
+	}
 }
 
 // computeMerkleRoot computes the merkle root from a tx hash and proof
