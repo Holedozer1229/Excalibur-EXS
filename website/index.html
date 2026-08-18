@@ -3,437 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Excalibur $EXS Protocol - The Prophetic Forge of Digital Steel">
-    <meta name="keywords" content="Excalibur, EXS, cryptocurrency, axiom, prophecy, Arthurian">
-    <title>⚔️ EXCALIBUR · The Prophecy Unfolds</title>
-    <link rel="stylesheet" href="assets/css/main.css">
+    <title>⚔️ EXCALIBUR $EXS · The Prophetic Forge of Digital Steel</title>
+    <meta name="description" content="Unleash the supreme cryptographic weapon of zkSync Era. Arthurian legend forged in bulletproof zero-knowledge proofs and decentralized guardian consensus.">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #03050c;
+            --neon-cyan: #00ffcc;
+            --neon-purple: #a855f7;
+            --gold: #d4af37;
+            --card-bg: rgba(6, 9, 22, 0.85);
+            --border-glow: rgba(0, 255, 204, 0.4);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-deep);
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: hidden;
+            position: relative;
+        }
+        .matrix-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 20%, rgba(168, 85, 247, 0.15) 0%, rgba(3, 5, 12, 0.95) 70%),
+                        linear-gradient(to bottom, #03050c, #050814);
+            z-index: -1;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+            background: rgba(3, 5, 12, 0.9);
+            backdrop-filter: blur(12px);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+        }
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 15px rgba(0, 255, 204, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.85rem;
+        }
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 8px rgba(0, 255, 204, 0.5);
+        }
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 8rem 2rem 4rem 2rem;
+            position: relative;
+        }
+        .badge {
+            background: rgba(0, 255, 204, 0.1);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 0.35rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+        }
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-weight: 900;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 30%, var(--neon-cyan) 70%, var(--neon-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(0, 255, 204, 0.3);
+        }
+        .hero p {
+            max-width: 42rem;
+            color: #94a3b8;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+        }
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn {
+            padding: 0.9rem 2.2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .btn-primary {
+            background: var(--neon-cyan);
+            color: #03050c;
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.4);
+            border: none;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 35px rgba(0, 255, 204, 0.7);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+        }
+        .btn-secondary:hover {
+            background: rgba(0, 255, 204, 0.1);
+            transform: translateY(-2px);
+        }
+        .grid-section {
+            padding: 5rem 10%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 2.5rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.2);
+        }
+        .card h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--neon-cyan);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .card p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        footer {
+            text-align: center;
+            padding: 3rem;
+            border-top: 1px solid rgba(0, 255, 204, 0.15);
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+    </style>
 </head>
 <body>
-    <!-- Mystical Background Elements -->
-    <div class="mystical-overlay"></div>
-    <canvas id="rune-canvas"></canvas>
+    <div class="matrix-bg"></div>
 
-    <!-- Ancient Seal -->
-    <div class="ancient-seal">
-        <div class="seal-ring rotating-slow">
-            <div class="rune-text">⚔ ᛋᚹᛟᚱᛞ · ᛚᛖᚷᛖᚾᛞ · ᛈᚢᛚᛚ · ᛗᚨᚷᛁᚲ ⚔</div>
-        </div>
-    </div>
+    <header>
+        <div class="logo">⚔️ EXCALIBUR $EXS</div>
+        <nav class="nav-links">
+            <a href="#forge">The Forge</a>
+            <a href="#prophecy">The Prophecy</a>
+            <a href="https://wormhole-das-uejpylwx.manus.space" target="_blank">Guardian Command Center</a>
+        </nav>
+    </header>
 
-    <nav class="ethereal-nav">
-        <div class="sigil">⚔️</div>
-        <div class="nav-runes">
-            <a href="#prophecy" class="rune-link" data-meaning="The Beginning">ᛈᚱᛟᛈᚺᛖᚲᚤ</a>
-            <a href="#forge" class="rune-link" data-meaning="The Trial">ᚠᛟᚱᚷᛖ</a>
-            <a href="#portals" class="rune-link" data-meaning="The Gateways">ᛈᛟᚱᛏᚨᛚᛋ</a>
-            <a href="#axiom" class="rune-link" data-meaning="The Truth">ᚨᚲᛋᛁᛟᛗ</a>
-        </div>
-    </nav>
-
-    <!-- Hero: The Awakening -->
-    <section class="awakening-chamber">
-        <div class="stone-altar">
-            <div class="excalibur-embed">
-                <div class="sword-blade shimmer"></div>
-                <div class="sword-crossguard"></div>
-                <div class="sword-grip"></div>
-                <div class="sword-pommel pulse-glow"></div>
-            </div>
-            <div class="altar-stone">
-                <div class="stone-inscription">
-                    <span class="ancient-text">Hic Iacet Arthurus Rex Quondam Rexque Futurus</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="prophecy-scroll">
-            <h1 class="title-arcane">
-                <span class="glow-text">EXCALIBVR</span>
-                <span class="subtitle-mystic">$EXS · Ω′ Δ18</span>
-            </h1>
-            <p class="scroll-text cryptic-message">
-                "In the age when steel becomes cipher and stone becomes chain,<br/>
-                thirteen words shall unlock the vault of digital sovereignty.<br/>
-                Only those who speak the ancient tongue may forge the future."
-            </p>
-            <div class="call-to-arms">
-                <a href="/web/knights-round-table/" class="btn-mystical primary">
-                    <span class="btn-rune">⚔</span>
-                    <span class="btn-text">Enter The Round Table</span>
-                    <span class="btn-glow"></span>
-                </a>
-                <a href="#axiom" class="btn-mystical secondary">
-                    <span class="btn-rune">🔮</span>
-                    <span class="btn-text">Decode The Prophecy</span>
-                </a>
-            </div>
-        </div>
-
-        <div class="floating-runes">
-            <span class="rune float-1">ᛋ</span>
-            <span class="rune float-2">ᛚ</span>
-            <span class="rune float-3">ᛈ</span>
-            <span class="rune float-4">ᛗ</span>
-            <span class="rune float-5">ᚲ</span>
-            <span class="rune float-6">ᚨ</span>
-            <span class="rune float-7">ᛊ</span>
-            <span class="rune float-8">ᛞ</span>
+    <section class="hero">
+        <div class="badge">⚔️ zkSync Era Mainnet Deployed (Chain ID 324)</div>
+        <h1>THE PROPHETIC FORGE OF DIGITAL STEEL</h1>
+        <p>
+            Arthurian legend forged in zero-knowledge arithmetic AIR traces, SphinxHash Fp Feistels, and decentralized guardian consensus. Uncompromising security meets supreme cryptographic design.
+        </p>
+        <div class="cta-group">
+            <a href="https://wormhole-das-uejpylwx.manus.space" target="_blank" class="btn btn-primary">Enter Dashboard &amp; Vault</a>
+            <a href="#forge" class="btn btn-secondary">Explore Architecture</a>
         </div>
     </section>
 
-    <!-- The XIII Words Prophecy -->
-    <section id="prophecy" class="prophecy-chamber">
-        <div class="chamber-walls">
-            <h2 class="section-header-mystic">
-                <span class="header-ornament">✦</span>
-                THE XIII WORDS
-                <span class="header-ornament">✦</span>
-            </h2>
-            
-            <div class="axiom-revelation">
-                <div class="revelation-container">
-                    <div class="word-grid">
-                        <div class="word-rune" data-word="1" data-cipher="ᛋ">SWORD</div>
-                        <div class="word-rune" data-word="2" data-cipher="ᛚ">LEGEND</div>
-                        <div class="word-rune" data-word="3" data-cipher="ᛈ">PULL</div>
-                        <div class="word-rune" data-word="4" data-cipher="ᛗ">MAGIC</div>
-                        <div class="word-rune" data-word="5" data-cipher="ᚲ">KINGDOM</div>
-                        <div class="word-rune" data-word="6" data-cipher="ᚨ">ARTIST</div>
-                        <div class="word-rune" data-word="7" data-cipher="ᛊ">STONE</div>
-                        <div class="word-rune" data-word="8" data-cipher="ᛞ">DESTROY</div>
-                        <div class="word-rune" data-word="9" data-cipher="ᚠ">FORGET</div>
-                        <div class="word-rune" data-word="10" data-cipher="ᚠ">FIRE</div>
-                        <div class="word-rune" data-word="11" data-cipher="ᛊ">STEEL</div>
-                        <div class="word-rune" data-word="12" data-cipher="ᚺ">HONEY</div>
-                        <div class="word-rune" data-word="13" data-cipher="ᚲ">QUESTION</div>
-                    </div>
-                    <p class="axiom-cipher">
-                        <span class="cipher-label">The Cipher:</span>
-                        <code class="cipher-text">ᛋᚹᛟᚱᛞ · ᛚᛖᚷᛖᚾᛞ · ᛈᚢᛚᛚ · ᛗᚨᚷᛁᚲ · ᚲᛁᚾᚷᛞᛟᛗ · ᚨᚱᛏᛁᛋᛏ · ᛊᛏᛟᚾᛖ · ᛞᛖᛊᛏᚱᛟᚤ · ᚠᛟᚱᚷᛖᛏ · ᚠᛁᚱᛖ · ᛊᛏᛖᛖᛚ · ᚺᛟᚾᛖᚤ · ᚲᚢᛖᛊᛏᛁᛟᚾ</code>
-                    </p>
-                </div>
-                <div class="axiom-meaning">
-                    <p class="cryptic-verse">
-                        "Thirteen keys unlock the vault. Each word a guardian, each syllable a seal.<br/>
-                        Speak them in sequence, bind them in hash, and the digital steel shall answer."
-                    </p>
-                </div>
-            </div>
+    <section id="forge" class="grid-section">
+        <div class="card">
+            <h3>Arthurian Core</h3>
+            <p>Built upon the thirteen prophetic words and recursive cryptographic geometry, binding digital sovereignty to immutable mathematics.</p>
+        </div>
+        <div class="card">
+            <h3>zkSync Era Mainnet</h3>
+            <p>Fully live on Chain ID 324 with URUU_GhostOracle, URUU_QuarryV2, and URUU_Stake contracts secured by strict RBAC and Zod validation.</p>
+        </div>
+        <div class="card">
+            <h3>Fail-Closed Defense</h3>
+            <p>Zero unattended broadcasting. Every transaction requires explicit user-approved wallet signature gates with bulletproof preflight checks.</p>
         </div>
     </section>
 
-    <!-- The Ω′ Δ18 Mystery -->
-    <section id="forge" class="alchemical-forge">
-        <div class="forge-sanctum">
-            <h2 class="section-header-mystic">
-                <span class="header-ornament">◈</span>
-                Ω′ Δ18 · THE TETRA-CRUCIBLE
-                <span class="header-ornament">◈</span>
-            </h2>
-            
-            <div class="alchemy-grid">
-                <div class="alchemical-process">
-                    <div class="process-sigil">☿</div>
-                    <h3 class="process-title">128 Transmutations</h3>
-                    <p class="process-text cryptic">
-                        "As mercury flows through lead, so hash flows through state.<br/>
-                        128 chambers, each a crucible of transformation."
-                    </p>
-                </div>
-                
-                <div class="alchemical-process">
-                    <div class="process-sigil">🜔</div>
-                    <h3 class="process-title">HPP-1 Tempering</h3>
-                    <p class="process-text cryptic">
-                        "600,000 strikes of the forge-hammer.<br/>
-                        PBKDF2-HMAC-SHA512 · The quantum-proof annealing."
-                    </p>
-                </div>
-                
-                <div class="alchemical-process">
-                    <div class="process-sigil">⚚</div>
-                    <h3 class="process-title">Prophecy Binding</h3>
-                    <p class="process-text cryptic">
-                        "The XIII words become seed.<br/>
-                        SHA-512 commits the utterance to eternity."
-                    </p>
-                </div>
-                
-                <div class="alchemical-process">
-                    <div class="process-sigil">🜏</div>
-                    <h3 class="process-title">P2TR Inscription</h3>
-                    <p class="process-text cryptic">
-                        "Taproot conceals what Schnorr reveals.<br/>
-                        bc1p... the address of the initiated."
-                    </p>
-                </div>
-            </div>
-
-            <div class="forge-ritual">
-                <div class="ritual-phases">
-                    <div class="phase">
-                        <span class="phase-number">I</span>
-                        <span class="phase-name">Invocation · XIII Words Spoken</span>
-                    </div>
-                    <div class="phase-arrow">→</div>
-                    <div class="phase">
-                        <span class="phase-number">II</span>
-                        <span class="phase-name">Transformation · 128 Rounds</span>
-                    </div>
-                    <div class="phase-arrow">→</div>
-                    <div class="phase">
-                        <span class="phase-number">III</span>
-                        <span class="phase-name">Tempering · 600k Iterations</span>
-                    </div>
-                    <div class="phase-arrow">→</div>
-                    <div class="phase">
-                        <span class="phase-number">IV</span>
-                        <span class="phase-name">Manifestation · 50 $EXS</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- The Dual Portals -->
-    <section id="portals" class="portal-nexus">
-        <div class="nexus-chamber">
-            <h2 class="section-header-mystic">
-                <span class="header-ornament">⟐</span>
-                THE SACRED GATEWAYS
-                <span class="header-ornament">⟐</span>
-            </h2>
-
-            <div class="portals-layout">
-                <!-- Knights Portal -->
-                <div class="portal-gateway knights-gate">
-                    <div class="portal-frame">
-                        <div class="frame-runes top">⚔ ᚲᚾᛁᚷᚺᛏᛋ ⚔</div>
-                        <div class="portal-interior">
-                            <div class="portal-sigil">
-                                <div class="sigil-circle">
-                                    <div class="sigil-sword">⚔</div>
-                                    <div class="sigil-ring rotating"></div>
-                                </div>
-                            </div>
-                            <h3 class="portal-title">The Round Table</h3>
-                            <p class="portal-desc cryptic">
-                                "Where the worthy gather. Where steel is proven.<br/>
-                                Speak the XIII words. Draw the blade. Claim your runes."
-                            </p>
-                            <ul class="portal-mysteries">
-                                <li>◆ The Axiom Chamber</li>
-                                <li>◆ The Drawing Ritual</li>
-                                <li>◆ 128 Visions Unfold</li>
-                                <li>◆ P2TR Inscription</li>
-                            </ul>
-                            <a href="/web/knights-round-table/" class="portal-enter">
-                                <span>⚔ Cross The Threshold ⚔</span>
-                            </a>
-                        </div>
-                        <div class="frame-runes bottom">⟐ ᛈᚢᛒᛚᛁᚲ · ᚨᚲᚲᛖᛊᛊ ⟐</div>
-                    </div>
-                </div>
-
-                <!-- Merlin's Portal -->
-                <div class="portal-gateway merlins-gate">
-                    <div class="portal-frame">
-                        <div class="frame-runes top">🧙 ᛗᛖᚱᛚᛁᚾ 🧙</div>
-                        <div class="portal-interior">
-                            <div class="portal-sigil">
-                                <div class="sigil-circle">
-                                    <div class="sigil-staff">🔮</div>
-                                    <div class="sigil-ring rotating-reverse"></div>
-                                </div>
-                            </div>
-                            <h3 class="portal-title">The Wizard's Sanctum</h3>
-                            <p class="portal-desc cryptic">
-                                "The architect's chamber. The seer's observatory.<br/>
-                                Treasury flows. Difficulty bends. The map reveals all."
-                            </p>
-                            <ul class="portal-mysteries">
-                                <li>◇ Treasury Scrying</li>
-                                <li>◇ Forge Weight Adjustment</li>
-                                <li>◇ Global Anomaly Sight</li>
-                                <li>◇ Network Divination</li>
-                            </ul>
-                            <a href="/admin/merlins-portal/" class="portal-enter admin">
-                                <span>🔮 Enter The Sanctum 🔮</span>
-                            </a>
-                        </div>
-                        <div class="frame-runes bottom">⟐ ᚱᛖᛊᛏᚱᛁᚲᛏᛖᛞ · ᚨᚲᚲᛖᛊᛊ ⟐</div>
-                    </div>
-                </div>
-
-                <!-- Mobile Portal -->
-                <div class="portal-gateway mobile-gate">
-                    <div class="portal-frame">
-                        <div class="frame-runes top">📱 ᛗᛟᛒᛁᛚᛖ 📱</div>
-                        <div class="portal-interior">
-                            <div class="portal-sigil">
-                                <div class="sigil-circle">
-                                    <div class="sigil-mobile">📱</div>
-                                    <div class="sigil-ring rotating"></div>
-                                </div>
-                            </div>
-                            <h3 class="portal-title">The Pocket Forge</h3>
-                            <p class="portal-desc cryptic">
-                                "Carry the blade wherever thy quest leads.<br/>
-                                The Prophecy in palm. The Forge in pocket. Power unbound."
-                            </p>
-                            <ul class="portal-mysteries">
-                                <li>◈ XIII Words On-The-Go</li>
-                                <li>◈ Mobile Wallet Binding</li>
-                                <li>◈ Forge From Anywhere</li>
-                                <li>◈ Real-Time Treasury Vision</li>
-                            </ul>
-                            <div class="app-badges">
-                                <!-- Placeholder URL per requirements - update with actual App Store URL when app is published -->
-                                <a href="https://apps.apple.com/app/excalibur-exs" class="badge-link" target="_blank" rel="noopener">
-                                    <div class="app-badge apple-badge">
-                                        <span class="badge-icon">🍎</span>
-                                        <div class="badge-text">
-                                            <span class="badge-small">Download on the</span>
-                                            <span class="badge-large">App Store</span>
-                                        </div>
-                                    </div>
-                                </a>
-                                <!-- Placeholder URL per requirements - update with actual Google Play URL when app is published -->
-                                <a href="https://play.google.com/store/apps/details?id=com.excaliburcrypto.exs" class="badge-link" target="_blank" rel="noopener">
-                                    <div class="app-badge google-badge">
-                                        <span class="badge-icon">▶</span>
-                                        <div class="badge-text">
-                                            <span class="badge-small">GET IT ON</span>
-                                            <span class="badge-large">Google Play</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="frame-runes bottom">⟐ ᛁᛟᛊ · ᚨᚾᛞᚱᛟᛁᛞ ⟐</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- The Economic Codex -->
-    <section id="axiom" class="economic-codex">
-        <div class="codex-pages">
-            <h2 class="section-header-mystic">
-                <span class="header-ornament">◉</span>
-                THE ECONOMIC CODEX
-                <span class="header-ornament">◉</span>
-            </h2>
-
-            <div class="codex-grid">
-                <div class="codex-entry">
-                    <div class="entry-seal">XXI</div>
-                    <div class="entry-text">
-                        <span class="entry-number">21,000,000</span>
-                        <span class="entry-label">Total $EXS Runes</span>
-                    </div>
-                </div>
-                <div class="codex-entry">
-                    <div class="entry-seal">L</div>
-                    <div class="entry-text">
-                        <span class="entry-number">50</span>
-                        <span class="entry-label">Per Forge Success</span>
-                    </div>
-                </div>
-                <div class="codex-entry">
-                    <div class="entry-seal">%</div>
-                    <div class="entry-text">
-                        <span class="entry-number">1%</span>
-                        <span class="entry-label">Treasury Tithe</span>
-                    </div>
-                </div>
-                <div class="codex-entry">
-                    <div class="entry-seal">฿</div>
-                    <div class="entry-text">
-                        <span class="entry-number">0.0001</span>
-                        <span class="entry-label">BTC Forge Fee</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="distribution-scroll">
-                <h3 class="scroll-title">The Distribution Parchment</h3>
-                <div class="distribution-bars">
-                    <div class="dist-entry" data-percent="60">
-                        <span class="dist-label">60% · Proof-of-Forge Warriors</span>
-                        <div class="dist-bar" style="width: 60%"></div>
-                    </div>
-                    <div class="dist-entry" data-percent="20">
-                        <span class="dist-label">20% · Liquidity Pools</span>
-                        <div class="dist-bar" style="width: 20%"></div>
-                    </div>
-                    <div class="dist-entry" data-percent="15">
-                        <span class="dist-label">15% · The Treasury</span>
-                        <div class="dist-bar" style="width: 15%"></div>
-                    </div>
-                    <div class="dist-entry" data-percent="5">
-                        <span class="dist-label">5% · Airdrop to the Faithful</span>
-                        <div class="dist-bar" style="width: 5%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- The Final Call -->
-    <section class="final-invocation">
-        <div class="invocation-content">
-            <div class="quote-marks opening">"</div>
-            <p class="invocation-text">
-                Whosoever speaks the XIII words true,<br/>
-                And endures the 128 transmutations,<br/>
-                Shall draw forth digital steel from algorithmic stone,<br/>
-                And be crowned in the currency of the future age.
-            </p>
-            <div class="quote-marks closing">"</div>
-            <a href="/web/knights-round-table/" class="final-cta">
-                <span class="cta-icon">⚔️</span>
-                <span class="cta-text">Prove Thy Worth</span>
-                <span class="cta-icon">⚔️</span>
-            </a>
-        </div>
-    </section>
-
-    <!-- Cryptic Footer -->
-    <footer class="ancient-footer">
-        <div class="footer-runes">
-            <div class="footer-section">
-                <h4 class="footer-header">ᛈᚱᛟᛏᛟᚲᛟᛚ</h4>
-                <ul class="footer-links">
-                    <li><a href="https://github.com/Holedozer1229/Excalibur-EXS">⟐ The Codex (GitHub)</a></li>
-                    <li><a href="https://github.com/Holedozer1229/Excalibur-EXS/blob/main/README.md">⟐ The Manifesto</a></li>
-                    <li><a href="https://github.com/Holedozer1229/Excalibur-EXS/blob/main/CONTRIBUTING.md">⟐ Join The Order</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4 class="footer-header">ᚷᚨᛏᛖᚹᚨᚤᛋ</h4>
-                <ul class="footer-links">
-                    <li><a href="/web/knights-round-table/">⚔ Knights' Portal</a></li>
-                    <li><a href="/admin/merlins-portal/">🔮 Wizard's Sanctum</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4 class="footer-header">ᚲᛟᚾᛏᚨᚲᛏ</h4>
-                <p class="footer-text cryptic">
-                    The Architect: Travis D Jones<br/>
-                    Cipher: holedozer@icloud.com<br/>
-                    License: BSD-III
-                </p>
-            </div>
-        </div>
-        <div class="footer-seal">
-            <p class="seal-text">MMXXV · Excalibur $EXS Protocol</p>
-            <p class="seal-motto">Hic Iacet Arthurus Rex Quondam Rexque Futurus</p>
-            <p class="seal-warning cryptic">⚠ Prototype Grimoire · Not For Mortal Coin ⚠</p>
-        </div>
+    <footer>
+        <p>&copy; 2026 Excalibur $EXS Protocol &amp; Wormhole Guardian Network. All rights reserved.</p>
     </footer>
-
-    <script src="assets/js/main.js"></script>
 </body>
 </html>
