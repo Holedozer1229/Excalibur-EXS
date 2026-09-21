@@ -1,227 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚔️ EXCALIBUR $EXS · The Prophetic Forge of Digital Steel</title>
-    <meta name="description" content="Unleash the supreme cryptographic weapon of zkSync Era. Arthurian legend forged in bulletproof zero-knowledge proofs and decentralized guardian consensus.">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-deep: #03050c;
-            --neon-cyan: #00ffcc;
-            --neon-purple: #a855f7;
-            --gold: #d4af37;
-            --card-bg: rgba(6, 9, 22, 0.85);
-            --border-glow: rgba(0, 255, 204, 0.4);
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: var(--bg-deep);
-            color: #e2e8f0;
-            font-family: 'JetBrains Mono', monospace;
-            overflow-x: hidden;
-            position: relative;
-        }
-        .matrix-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 20%, rgba(168, 85, 247, 0.15) 0%, rgba(3, 5, 12, 0.95) 70%),
-                        linear-gradient(to bottom, #03050c, #050814);
-            z-index: -1;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 5%;
-            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
-            background: rgba(3, 5, 12, 0.9);
-            backdrop-filter: blur(12px);
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 100;
-        }
-        .logo {
-            font-family: 'Cinzel', serif;
-            font-weight: 900;
-            font-size: 1.5rem;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 15px rgba(0, 255, 204, 0.6);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            font-size: 0.85rem;
-        }
-        .nav-links a {
-            color: #94a3b8;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        .nav-links a:hover {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 8px rgba(0, 255, 204, 0.5);
-        }
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 8rem 2rem 4rem 2rem;
-            position: relative;
-        }
-        .badge {
-            background: rgba(0, 255, 204, 0.1);
-            border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            padding: 0.35rem 1rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
-        }
-        h1 {
-            font-family: 'Cinzel', serif;
-            font-weight: 900;
-            font-size: clamp(2.5rem, 6vw, 5rem);
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, #ffffff 30%, var(--neon-cyan) 70%, var(--neon-purple) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 40px rgba(0, 255, 204, 0.3);
-        }
-        .hero p {
-            max-width: 42rem;
-            color: #94a3b8;
-            font-size: 1rem;
-            line-height: 1.6;
-            margin-bottom: 2.5rem;
-        }
-        .cta-group {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .btn {
-            padding: 0.9rem 2.2rem;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        .btn-primary {
-            background: var(--neon-cyan);
-            color: #03050c;
-            box-shadow: 0 0 25px rgba(0, 255, 204, 0.4);
-            border: none;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 35px rgba(0, 255, 204, 0.7);
-        }
-        .btn-secondary {
-            background: transparent;
-            color: var(--neon-cyan);
-            border: 1px solid var(--neon-cyan);
-        }
-        .btn-secondary:hover {
-            background: rgba(0, 255, 204, 0.1);
-            transform: translateY(-2px);
-        }
-        .grid-section {
-            padding: 5rem 10%;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-glow);
-            border-radius: 16px;
-            padding: 2.5rem;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 30px rgba(0, 255, 204, 0.2);
-        }
-        .card h3 {
-            font-family: 'Cinzel', serif;
-            color: var(--neon-cyan);
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-        }
-        .card p {
-            color: #94a3b8;
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-        footer {
-            text-align: center;
-            padding: 3rem;
-            border-top: 1px solid rgba(0, 255, 204, 0.15);
-            color: #64748b;
-            font-size: 0.8rem;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXCALIBUR $EXS · The Prophetic Forge of Digital Steel</title>
+<meta name="description" content="Excalibur $EXS — a proof-of-forge protocol. Thirteen-word AXIOM, 128-round Omega-Prime Delta-18 mining, 21M fixed supply.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="EXCALIBUR $EXS · The Prophetic Forge of Digital Steel">
+<meta property="og:description" content="Thirteen words. 128 rounds. 21 million coins. Draw the sword.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07060d; --bg2:#0d0a18; --panel:#100c20;
+  --gold:#d4af37; --gold-dim:#9a7d24; --ember:#ff9d45;
+  --ink:#ece7d9; --muted:#9b93a8; --line:rgba(212,175,55,.18);
+  --violet:#7c5cff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.65;overflow-x:hidden}
+::selection{background:rgba(212,175,55,.35)}
+h1,h2,h3,.display{font-family:'Cinzel',serif}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* backdrop */
+#stars{position:fixed;inset:0;z-index:-2;background:
+  radial-gradient(1200px 600px at 50% -10%, rgba(124,92,255,.14), transparent 60%),
+  radial-gradient(900px 500px at 85% 110%, rgba(212,175,55,.07), transparent 60%), var(--bg)}
+#embers{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 4vw;background:rgba(7,6,13,.78);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{font-family:'Cinzel',serif;font-weight:900;font-size:1.15rem;color:var(--gold);letter-spacing:.06em;text-decoration:none}
+.brand small{color:var(--muted);font-weight:500;font-size:.8rem;letter-spacing:.14em}
+.links{display:flex;gap:1.6rem;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase}
+.links a{color:var(--muted);text-decoration:none;transition:color .25s}
+.links a:hover{color:var(--gold)}
+.nav-cta{border:1px solid var(--gold);color:var(--gold)!important;padding:.45rem 1.1rem;border-radius:6px}
+.nav-cta:hover{background:rgba(212,175,55,.12)}
+@media(max-width:760px){.links{gap:.9rem;font-size:.68rem}.nav-cta{display:none}}
+
+/* hero */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:7rem 6vw 4rem;position:relative}
+.sigil{font-size:3.2rem;filter:drop-shadow(0 0 18px rgba(212,175,55,.55));animation:hover 5s ease-in-out infinite}
+@keyframes hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.kicker{display:inline-block;margin:1.4rem 0 1.2rem;padding:.4rem 1.2rem;border:1px solid var(--line);border-radius:999px;
+  font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);background:rgba(212,175,55,.06)}
+.hero h1{font-size:clamp(2.4rem,6.5vw,4.8rem);font-weight:900;line-height:1.12;max-width:20ch;
+  background:linear-gradient(160deg,#fff 20%,var(--gold) 55%,var(--ember) 90%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{max-width:44rem;color:var(--muted);margin:1.4rem 0 2.4rem;font-size:1.02rem}
+.cta-row{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-block;padding:.95rem 2.2rem;border-radius:8px;font-weight:600;font-size:.92rem;text-decoration:none;transition:transform .25s,box-shadow .25s;letter-spacing:.04em}
+.btn-gold{background:linear-gradient(135deg,#e8c65a,#b8912c);color:#171106;box-shadow:0 6px 30px rgba(212,175,55,.35)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 38px rgba(212,175,55,.55)}
+.btn-ghost{border:1px solid var(--line);color:var(--ink)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px)}
+.axiom-line{margin-top:3rem;max-width:46rem;color:var(--muted);font-size:.85rem}
+.axiom-line code{color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:.82rem}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--line);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:0}
+.stat{background:var(--bg);padding:2.2rem 1.5rem;text-align:center}
+.stat b{display:block;font-family:'Cinzel',serif;font-size:1.9rem;color:var(--gold);font-weight:700}
+.stat span{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+
+/* sections */
+section.block{padding:6rem 6vw;max-width:1200px;margin:0 auto}
+.eyebrow{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+h2.title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;margin-bottom:1rem;line-height:1.2}
+.lede{color:var(--muted);max-width:46rem;margin-bottom:3rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1.4rem}
+.card{background:linear-gradient(180deg,var(--panel),#0a0716);border:1px solid var(--line);border-radius:14px;padding:2rem;
+  transition:transform .3s,border-color .3s,box-shadow .3s;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-6px);border-color:rgba(212,175,55,.55);box-shadow:0 18px 50px rgba(0,0,0,.5)}
+.card .icon{font-size:1.7rem;margin-bottom:1rem;display:block}
+.card h3{font-size:1.15rem;margin-bottom:.7rem;color:#fff}
+.card p{color:var(--muted);font-size:.92rem}
+.card .tag{position:absolute;top:1.1rem;right:1.1rem;font-size:.62rem;letter-spacing:.2em;padding:.25rem .7rem;border-radius:999px;
+  text-transform:uppercase;border:1px solid var(--line);color:var(--muted)}
+.tag.live{color:#7dffb0;border-color:rgba(125,255,176,.4)}
+.tag.research{color:var(--ember);border-color:rgba(255,157,69,.4)}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* tokenomics */
+.bars{margin-top:1rem}
+.bar-row{display:grid;grid-template-columns:150px 1fr 70px;gap:1rem;align-items:center;margin-bottom:1.1rem;font-size:.88rem}
+.bar-row .lbl{color:var(--ink)}
+.bar-track{height:12px;background:#1a142e;border-radius:999px;overflow:hidden}
+.bar-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--gold-dim),var(--gold));transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
+.bar-row .pct{font-family:'JetBrains Mono',monospace;color:var(--gold);text-align:right}
+.note{margin-top:2rem;padding:1.2rem 1.4rem;border-left:3px solid var(--gold);background:rgba(212,175,55,.05);color:var(--muted);font-size:.9rem;border-radius:0 8px 8px 0}
+
+/* code */
+pre{background:#050409;border:1px solid var(--line);border-radius:12px;padding:1.4rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;line-height:1.7;color:#c9bfa8;margin-top:1.6rem}
+pre .c{color:#6b6478} pre .k{color:var(--gold)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.4rem;margin-top:2.5rem;counter-reset:step}
+.step{border:1px solid var(--line);border-radius:12px;padding:1.8rem;position:relative;background:rgba(16,12,32,.6)}
+.step::before{counter-increment:step;content:counter(step,decimal-leading-zero);font-family:'Cinzel',serif;font-size:2rem;color:var(--gold);opacity:.85}
+.step h4{margin:.8rem 0 .5rem;font-size:1rem}
+.step p{color:var(--muted);font-size:.88rem}
+
+/* footer */
+footer{border-top:1px solid var(--line);padding:3rem 6vw;text-align:center;color:var(--muted);font-size:.82rem}
+footer .fbrand{font-family:'Cinzel',serif;color:var(--gold);font-size:1.05rem;margin-bottom:.6rem}
+footer a{color:var(--muted)} footer a:hover{color:var(--gold)}
+</style>
 </head>
 <body>
-    <div class="matrix-bg"></div>
+<canvas id="stars"></canvas><canvas id="embers"></canvas>
 
-    <header>
-        <div class="logo">⚔️ EXCALIBUR $EXS</div>
-        <nav class="nav-links">
-            <a href="#forge">The Forge</a>
-            <a href="#prophecy">The Prophecy</a>
-            <a href="https://wormhole-das-uejpylwx.manus.space" target="_blank">Guardian Command Center</a>
-        </nav>
-    </header>
+<nav>
+  <a class="brand" href="#top">⚔ EXCALIBUR <small>$EXS</small></a>
+  <div class="links">
+    <a href="#protocol">Protocol</a>
+    <a href="#mining">Mining</a>
+    <a href="#tokenomics">Tokenomics</a>
+    <a href="#research">Research</a>
+    <a class="nav-cta" href="https://github.com/Holedozer1229/Excalibur-EXS" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</nav>
 
-    <section class="hero">
-        <div class="badge">⚔️ zkSync Era Mainnet Deployed (Chain ID 324)</div>
-        <h1>THE PROPHETIC FORGE OF DIGITAL STEEL</h1>
-        <p>
-            Arthurian legend forged in zero-knowledge arithmetic AIR traces, SphinxHash Fp Feistels, and decentralized guardian consensus. Uncompromising security meets supreme cryptographic design.
-        </p>
-        <div class="cta-group">
-            <a href="https://wormhole-das-uejpylwx.manus.space" target="_blank" class="btn btn-primary">Enter Dashboard &amp; Vault</a>
-            <a href="#forge" class="btn btn-secondary">Explore Architecture</a>
-        </div>
-    </section>
+<header class="hero" id="top">
+  <div class="sigil">⚔️</div>
+  <div class="kicker">Proof-of-Forge Protocol</div>
+  <h1>THE PROPHETIC FORGE OF DIGITAL STEEL</h1>
+  <p class="sub">Thirteen words bind the axiom. One hundred twenty-eight rounds temper the steel.
+     Twenty-one million coins, and not one more. Whosoever draws the sword from the stone claims the forge.</p>
+  <div class="cta-row">
+    <a class="btn btn-gold" href="#mining">Draw the Sword</a>
+    <a class="btn btn-ghost" href="https://github.com/Holedozer1229/Excalibur-EXS" target="_blank" rel="noopener">Read the Protocol</a>
+  </div>
+  <p class="axiom-line mono">AXIOM &nbsp;·&nbsp; <code>sword legend pull magic kingdom artist stone destroy forget fire steel honey question</code></p>
+</header>
 
-    <section id="forge" class="grid-section">
-        <div class="card">
-            <h3>Arthurian Core</h3>
-            <p>Built upon the thirteen prophetic words and recursive cryptographic geometry, binding digital sovereignty to immutable mathematics.</p>
-        </div>
-        <div class="card">
-            <h3>zkSync Era Mainnet</h3>
-            <p>Fully live on Chain ID 324 with URUU_GhostOracle, URUU_QuarryV2, and URUU_Stake contracts secured by strict RBAC and Zod validation.</p>
-        </div>
-        <div class="card">
-            <h3>Fail-Closed Defense</h3>
-            <p>Zero unattended broadcasting. Every transaction requires explicit user-approved wallet signature gates with bulletproof preflight checks.</p>
-        </div>
-    </section>
+<div class="stats">
+  <div class="stat"><b>21,000,000</b><span>Max Supply $EXS</span></div>
+  <div class="stat"><b>50</b><span>EXS per Forge</span></div>
+  <div class="stat"><b>128</b><span>PoW Rounds</span></div>
+  <div class="stat"><b>600,000</b><span>HPP-1 Iterations</span></div>
+</div>
 
-    <footer>
-        <p>&copy; 2026 Excalibur $EXS Protocol &amp; Wormhole Guardian Network. All rights reserved.</p>
-    </footer>
+<section class="block" id="protocol">
+  <div class="eyebrow reveal">The Protocol</div>
+  <h2 class="title reveal">Forged in legend,<br>tempered in cryptography.</h2>
+  <p class="lede reveal">EXS binds Arthurian myth to hard cryptographic structure: a public thirteen-word axiom,
+     a 128-round nonlinear proof-of-forge, and Bitcoin-grade key hardening — no premine theater, no hidden mint.</p>
+  <div class="grid">
+    <div class="card reveal"><span class="tag live">Live</span><span class="icon">📜</span>
+      <h3>The AXIOM</h3><p>Thirteen public words — <span class="mono" style="font-size:.8rem;color:var(--gold)">sword legend pull magic kingdom artist stone destroy forget fire steel honey question</span> —
+      seed every forge. Public, memorable, and mathematically load-bearing.</p></div>
+    <div class="card reveal"><span class="tag live">Live</span><span class="icon">⛏️</span>
+      <h3>Ω′ Δ18 Proof-of-Forge</h3><p>128 unrolled nonlinear rounds. Difficulty: 4 leading zero bytes.
+      Every claim verifiable in milliseconds by anyone holding the axiom.</p></div>
+    <div class="card reveal"><span class="tag live">Live</span><span class="icon">🛡️</span>
+      <h3>HPP-1 Key Hardening</h3><p>600,000 PBKDF2-HMAC-SHA512 iterations armor forge keys;
+      1.2 million guard the treasury. Brute force meets a wall of compute.</p></div>
+    <div class="card reveal"><span class="tag live">Live</span><span class="icon">₿</span>
+      <h3>Bitcoin-Anchored</h3><p>Taproot (P2TR) spending conditions, CLTV time-locked treasury,
+      Bech32m throughout. EXS speaks fluent Bitcoin.</p></div>
+  </div>
+</section>
+
+<section class="block" id="mining">
+  <div class="eyebrow reveal">Mining</div>
+  <h2 class="title reveal">Draw the sword.</h2>
+  <p class="lede reveal">Forging is permissionless. Bring the axiom, grind the 128-round maze until four zero bytes bow,
+     and the protocol mints your steel. Verify any forge with the same command.</p>
+  <div class="steps">
+    <div class="step reveal"><h4>Take up the Axiom</h4><p>Clone the repo. The thirteen words are public — no gatekeeper, no allowlist.</p></div>
+    <div class="step reveal"><h4>Grind the Maze</h4><p>Run the Ω′ Δ18 miner. Difficulty 4: find a nonce whose digest opens with four zero bytes.</p></div>
+    <div class="step reveal"><h4>Claim the Forge</h4><p>50 $EXS per forge — 49.5 to you, 0.5 to the treasury. Halving every 210,000 blocks.</p></div>
+  </div>
+<pre><span class="c"># forge with the reference miner</span>
+python3 pkg/miner/tetra_pow_miner.py \
+  --axiom <span class="k">"sword legend pull magic kingdom artist stone destroy forget fire steel honey question"</span> \
+  --difficulty 4
+
+<span class="c"># verify anyone's claim in milliseconds</span>
+python3 pkg/miner/tetra_pow_miner.py \
+  --axiom <span class="k">"sword legend pull magic kingdom artist stone destroy forget fire steel honey question"</span> \
+  --verify 12345</pre>
+</section>
+
+<section class="block" id="tokenomics">
+  <div class="eyebrow reveal">Tokenomics</div>
+  <h2 class="title reveal">21 million. Fixed. Forever.</h2>
+  <p class="lede reveal">No inflation schedule to quietly rewrite, no founder's premine to quietly dump.
+     Every coin enters through the forge.</p>
+  <div class="bars">
+    <div class="bar-row reveal"><span class="lbl">⛏️ PoF Miners</span><div class="bar-track"><div class="bar-fill" data-w="60"></div></div><span class="pct">60%</span></div>
+    <div class="bar-row reveal"><span class="lbl">💧 Liquidity</span><div class="bar-track"><div class="bar-fill" data-w="20"></div></div><span class="pct">20%</span></div>
+    <div class="bar-row reveal"><span class="lbl">🏦 Treasury</span><div class="bar-track"><div class="bar-fill" data-w="15"></div></div><span class="pct">15%</span></div>
+    <div class="bar-row reveal"><span class="lbl">🪂 Airdrop</span><div class="bar-track"><div class="bar-fill" data-w="5"></div></div><span class="pct">5%</span></div>
+  </div>
+  <div class="note reveal"><strong style="color:var(--gold)">Forge economics.</strong>
+    50 $EXS per forge · 1% treasury tithe · 0.0001 BTC forge fee · reward halves every 210,000 blocks ·
+    treasury on a 12-month rolling release. Rosetta API v1.4.10 for integrations.</div>
+</section>
+
+<section class="block" id="research">
+  <div class="eyebrow reveal">Research Frontier</div>
+  <h2 class="title reveal">The forge never cools.</h2>
+  <p class="lede reveal">Active research tracks. Labeled honestly: experimental, unaudited, and not consensus —
+     until measurement and review say otherwise.</p>
+  <div class="grid">
+    <div class="card reveal"><span class="tag research">Research</span><span class="icon">🌅</span>
+      <h3>Sovereign Genesis</h3><p>A thirteen-word-anchored genesis design: the AXIOM derives a public 256-bit seed
+      via PBKDF2-HMAC-SHA512, domain-binding the Ω′ Δ18 proof-of-forge to a height-zero descriptor.
+      In design — not a launched chain.</p></div>
+    <div class="card reveal"><span class="tag research">Research</span><span class="icon">⚡</span>
+      <h3>TetraSHA-NI</h3><p>An experimental SHA-NI-accelerated hash: 128 rounds × 4-wide SHA-256 with per-round
+      domain separation. 14.8× the reference kernel in lab measurement. New construction — cryptanalysis pending.</p></div>
+  </div>
+</section>
+
+<section class="block" id="build" style="text-align:center">
+  <div class="eyebrow reveal">Open Source · BSD 3-Clause</div>
+  <h2 class="title reveal">The anvil is public.</h2>
+  <p class="lede reveal" style="margin-left:auto;margin-right:auto">Every line of the protocol, the miner, the treasury,
+     and the research frontier lives in the open. Inspect it, forge against it, improve it.</p>
+  <div class="cta-row reveal">
+    <a class="btn btn-gold" href="https://github.com/Holedozer1229/Excalibur-EXS" target="_blank" rel="noopener">github.com/Holedozer1229/Excalibur-EXS</a>
+  </div>
+</section>
+
+<footer>
+  <div class="fbrand">⚔ EXCALIBUR $EXS</div>
+  <p>© 2026 Excalibur $EXS Protocol · Lead architect Travis D. Jones · BSD 3-Clause</p>
+  <p style="margin-top:.5rem"><a href="https://github.com/Holedozer1229/Excalibur-EXS" target="_blank" rel="noopener">GitHub</a></p>
+</footer>
+
+<script>
+// ember particles
+const ec=document.getElementById('embers'),ex=ec.getContext('2d');let W,H,P=[];
+function rs(){W=ec.width=innerWidth;H=ec.height=innerHeight}
+rs();addEventListener('resize',rs);
+for(let i=0;i<70;i++)P.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*2+.4,s:Math.random()*.5+.15,o:Math.random()*.5+.15,ph:Math.random()*6.28});
+(function tick(t){ex.clearRect(0,0,W,H);for(const p of P){p.y-=p.s;if(p.y<-10){p.y=H+10;p.x=Math.random()*W}
+const tw=p.o*(0.6+0.4*Math.sin(t/900+p.ph));ex.beginPath();ex.arc(p.x,p.y,p.r,0,6.28);
+ex.fillStyle=`rgba(212,175,55,${tw})`;ex.fill()}requestAnimationFrame(tick)})(0);
+// reveal on scroll
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+// tokenomics bars
+const bo=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){
+  e.target.querySelectorAll('.bar-fill').forEach(f=>f.style.width=f.dataset.w+'%');bo.disconnect()}}),{threshold:.3});
+bo.observe(document.querySelector('.bars'));
+</script>
 </body>
 </html>
