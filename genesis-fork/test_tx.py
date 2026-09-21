@@ -63,16 +63,16 @@ print("== valid flows ==")
 # 1. anyone-spend coinbase -> P2PK(A) + change to anyone
 tx1 = build_spend(CB_TID, 0, b"\x51", None,
                   [(40 * SAT, p2pk_script(pa)), (10 * SAT - 1000, b"\x51")])
-ok, reason, fee = validate_tx(tx1, utxo0, H)
+ok, reason, fee, _pq = validate_tx(tx1, utxo0, H)
 check("anyone->P2PK valid", ok and fee == 1000)
 T1 = txid_internal(tx1)
 
 # 2. P2PK(A) -> P2PK(B), chained on tx1's view
 view = {k: list(v) for k, v in utxo0.items()}
-ok, _, _ = validate_tx(tx1, utxo0, H, view=view)
+ok, _, _, _pq = validate_tx(tx1, utxo0, H, view=view)
 tx2 = build_spend(T1, 0, p2pk_script(pa), da,
                   [(40 * SAT - 1000, p2pk_script(pb))])
-ok2, r2, fee2 = validate_tx(tx2, utxo0, H, view=view)
+ok2, r2, fee2, _pq2 = validate_tx(tx2, utxo0, H, view=view)
 check("P2PK->P2PK chained valid", ok2 and fee2 == 1000)
 
 # 3. block-level: coinbase value = subsidy + fees
@@ -89,7 +89,7 @@ tx_bad = build_spend(T1, 0, p2pk_script(pa), db,
                      [(40 * SAT - 1000, p2pk_script(pb))])
 v = {k: list(vv) for k, vv in utxo0.items()}
 validate_tx(tx1, utxo0, H, view=v)
-ok, r, _ = validate_tx(tx_bad, utxo0, H, view=v)
+ok, r, _, _pq = validate_tx(tx_bad, utxo0, H, view=v)
 check("wrong-key sig rejected", not ok)
 
 # 5. tampered signature byte
@@ -100,7 +100,7 @@ t["vin"][0]["script"] = bytes(ss)
 tx_tam = ser_tx(t)
 v = {k: list(vv) for k, vv in utxo0.items()}
 validate_tx(tx1, utxo0, H, view=v)
-ok, r, _ = validate_tx(tx_tam, utxo0, H, view=v)
+ok, r, _, _pq = validate_tx(tx_tam, utxo0, H, view=v)
 check("tampered sig rejected", not ok)
 
 # 6. double-spend within one block
@@ -119,40 +119,40 @@ check("double-spend across txs rejected", not okb)
 utxo_im = make_utxo([(sha256d(b"young"), 0, 50 * SAT, b"\x51", True, H - 5)])
 tx_im = build_spend(sha256d(b"young"), 0, b"\x51", None,
                     [(50 * SAT - 1000, p2pk_script(pa))])
-ok, r, _ = validate_tx(tx_im, utxo_im, H)
+ok, r, _, _pq = validate_tx(tx_im, utxo_im, H)
 check("immature coinbase rejected", not ok and "immature" in r)
 
 # 9. outputs exceed inputs
 tx_neg = build_spend(CB_TID, 0, b"\x51", None, [(60 * SAT, p2pk_script(pa))])
-ok, r, _ = validate_tx(tx_neg, utxo0, H)
+ok, r, _, _pq = validate_tx(tx_neg, utxo0, H)
 check("overspend rejected", not ok)
 
 # 10. missing UTXO
 tx_miss = build_spend(sha256d(b"nope"), 0, b"\x51", None,
                       [(1 * SAT, p2pk_script(pa))])
-ok, r, _ = validate_tx(tx_miss, utxo0, H)
+ok, r, _, _pq = validate_tx(tx_miss, utxo0, H)
 check("missing UTXO rejected", not ok)
 
 # 11. non-standard output
 tx_ns = build_spend(CB_TID, 0, b"\x51", None, [(1 * SAT, b"\x6a\x04dead")])
-ok, r, _ = validate_tx(tx_ns, utxo0, H)
+ok, r, _, _pq = validate_tx(tx_ns, utxo0, H)
 check("non-standard output rejected", not ok)
 
 # 12. non-empty scriptSig on anyone-spend
 tx_any = build_spend(CB_TID, 0, b"\x51", None, [(1 * SAT, b"\x51")])
 t = parse_tx(tx_any)
 t["vin"][0]["script"] = b"\x01\x02"
-ok, r, _ = validate_tx(ser_tx(t), utxo0, H)
+ok, r, _, _pq = validate_tx(ser_tx(t), utxo0, H)
 check("non-empty scriptSig on anyone-spend rejected", not ok)
 
 # 13. duplicate inputs in one tx
 t = parse_tx(tx1)
 t["vin"] = [dict(t["vin"][0]), dict(t["vin"][0])]
-ok, r, _ = validate_tx(ser_tx(t), utxo0, H)
+ok, r, _, _pq = validate_tx(ser_tx(t), utxo0, H)
 check("duplicate inputs rejected", not ok)
 
 # 14. garbage bytes
-ok, r, _ = validate_tx(b"\x00" * 100, utxo0, H)
+ok, r, _, _pq = validate_tx(b"\x00" * 100, utxo0, H)
 check("garbage rejected", not ok)
 
 # 15. sighash commits to outputs (bump output value -> sig invalid)
@@ -160,7 +160,7 @@ v = {k: list(vv) for k, vv in utxo0.items()}
 validate_tx(tx1, utxo0, H, view=v)
 t = parse_tx(tx2)
 t["vout"][0]["value"] += 1
-ok, r, _ = validate_tx(ser_tx(t), utxo0, H, view=v)
+ok, r, _, _pq = validate_tx(ser_tx(t), utxo0, H, view=v)
 check("output-tampering invalidates sig", not ok)
 
 print(f"\n{passed} passed, {failed} failed")

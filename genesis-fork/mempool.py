@@ -54,7 +54,7 @@ class Mempool:
                 raw = bytes.fromhex(hexraw)
             except ValueError:
                 continue
-            ok, _, _ = self.add(raw, utxo, height, save=False)
+            ok, _, _, _ = self.add(raw, utxo, height, save=False)
             if ok:
                 kept += 1
         if kept:
@@ -84,7 +84,7 @@ class Mempool:
         if tid.hex() in self.txs:
             return False, "already in mempool"
         view = self._view(utxo)
-        ok, reason, fee = validate_tx(raw, utxo, height, view=view)
+        ok, reason, fee, _pq = validate_tx(raw, utxo, height, view=view)
         if not ok:
             return False, reason
         self.txs[tid.hex()] = {"raw": raw, "fee": fee}
@@ -106,7 +106,7 @@ class Mempool:
             raw = r["raw"]
             if total + len(raw) > max_bytes:
                 continue
-            ok, _, fee = validate_tx(raw, utxo, height, view=view)
+            ok, _, fee, _pq = validate_tx(raw, utxo, height, view=view)
             if ok:
                 selected.append((raw, fee))
                 total += len(raw)

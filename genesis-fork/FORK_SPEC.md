@@ -43,12 +43,15 @@ the adjustment walks back past them to the last real-difficulty block.
 ## Consensus rules (differ from Bitcoin)
 
 1. **Genesis**: byte-identical to Bitcoin's genesis block (verified in code).
-2. **PoW**: SHA-256d, 600s target, 2016-block retarget, same clamp (4x) —
-   the retarget *algorithm* is unchanged.
+2. **PoW**: SHA-256d, 600s target, 2016-block retarget window, same 4x
+   clamp — the adjustment *math* is Bitcoin's, but the window *slides*:
+   every height above 2016 retargets from the trailing 2016 blocks
+   (see GF-03), not at fixed 2016-block boundaries.
 3. **Initial difficulty**: `0x1e100000` (target 2²³⁶). Bitcoin's
    `0x1d00ffff` would make a new chain unmineable; the initial difficulty
    is a launch parameter and the reason this is a hard fork, not a
-   re-run. First retarget at height 2016 uses standard Bitcoin math.
+   re-run. Heights 1–2016 use the initial bits; the first retarget is
+   computed at height 2017 from blocks 1–2016.
 4. **Subsidy**: 50 GSF per block, halving every 210,000 blocks —
    a second 21,000,000. `subsidy = 50 >> (height // 210000)`.
 5. **Block size**: 1,000,000 bytes max (v1: no witness program).
@@ -60,9 +63,17 @@ the adjustment walks back past them to the last real-difficulty block.
    construction. Violations are invalid blocks, not warnings.
 7. **Time**: block time must exceed the previous block's time and not
    exceed network time + 2h (simplified; no median-time-past in v1).
+8. **GF-11 post-quantum authorization** (activation height 10,000):
+   at/after activation, all new outputs must be ML-DSA-65 PQ outputs
+   (`00 11 || 1952-byte pubkey`); new P2PK/`OP_TRUE` outputs are rejected;
+   PQ spends use version-2 transactions with `11 || 3309-byte signature`
+   verified against `sha256d("EXCAL-GF11-PQ-SIGHASH\x00" || LE32(in_idx) ||
+   sighash_all)`; coinbase must pay to PQ; max 64 PQ verifications per
+   block. Legacy UTXOs stay spendable indefinitely. See `bips/GF-11.md`.
 
 Unchanged from Bitcoin: tx format, script system, merkle trees,
 difficulty-adjustment math, halving cadence, 21M cap.
+Pre-activation rules are byte-for-byte unchanged by GF-11.
 
 ## Replay protection
 

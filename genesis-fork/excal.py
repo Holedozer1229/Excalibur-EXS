@@ -31,9 +31,9 @@ from genesis_fork import (GENESIS, PARAMS, make_coinbase, merkle_root,
                           ser_header, sha256d, bits_to_target,
                           required_bits, subsidy, txid, use_network,
                           validate_block, verify_genesis,
-                          check_coinbase_lineage)
+                          check_coinbase_lineage, gf11_active)
 from txscript import (build_utxo, apply_block_txs, make_coinbase_v2,
-                      validate_block_txs, utxo_stats)
+                      make_coinbase_pq, validate_block_txs, utxo_stats)
 from mempool import Mempool
 from chainstate import ChainState
 from p2p import PeerManager
@@ -114,12 +114,14 @@ def load_chain():
 
 
 def mine_one(prev: dict, height: int, cs: ChainState, tag: bytes,
-             template: list, utxo_snap: dict, spacing: float = 600.0):
+             template: list, utxo_snap: dict, spacing: float = 600.0,
+             pq_pubkey: bytes = None):
     """Grind one block; roll ntime if the nonce space ever exhausts.
 
     template: list of (raw_tx, fee) mempool txs, already validated at
     selection time. Coinbase v2: height push + subsidy + fees.
     utxo_snap: a UTXO snapshot taken under lock (mining reads it unlocked).
+    pq_pubkey: 1952-byte ML-DSA-65 public key for post-GF-11 coinbases.
     """
     prev_hash = bytes.fromhex(prev["hash"])
     t = prev["time"] + int(spacing)
@@ -133,7 +135,13 @@ def mine_one(prev: dict, height: int, cs: ChainState, tag: bytes,
     bits = required_bits(height, cs._bits_context(prev_hash, height), t)
     mem_txs = [raw for raw, _fee in template]
     fees = sum(fee for _raw, fee in template)
-    cb = make_coinbase_v2(height, bits, tag, fees)
+    if gf11_active(height):
+        if pq_pubkey is None:
+            raise RuntimeError(
+                "GF-11 active: miner PQ public key required for coinbase")
+        cb = make_coinbase_pq(height, bits, tag, pq_pubkey, fees)
+    else:
+        cb = make_coinbase_v2(height, bits, tag, fees)
     assert check_coinbase_lineage(cb, bits)
     txs = [cb] + mem_txs
     ok, reason, _ = validate_block_txs(txs, utxo_snap, height,

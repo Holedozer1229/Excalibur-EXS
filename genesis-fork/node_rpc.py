@@ -29,11 +29,13 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 
 import secp256k1 as secp
-from genesis_fork import ser_varint
+import mldsa
+from genesis_fork import ser_varint, gf11_active
 from chainstate import enc_block
 from txscript import (parse_tx, ser_tx, p2pk_script, spk_pubkey, is_anyone,
                       sign_input, txid_internal, txid_display,
-                      find_spendable, COINBASE_MATURITY)
+                      find_spendable, COINBASE_MATURITY, pq_script,
+                      pq_spk_pubkey, pq_sign_input, PQ_PK_LEN)
 
 SAT = 100_000_000
 FAUCET_FEE = 1000
@@ -69,6 +71,86 @@ class Node:
                      0o600)
         with os.fdopen(fd, "w") as f:
             json.dump(w, f, indent=2)
+
+    def _pq_wallet_path(self):
+        base, ext = os.path.splitext(self.wallet_path)
+        return base + "_pq" + (ext or ".json")
+
+    def _pq_wallet(self):
+        p = self._pq_wallet_path()
+        if os.path.exists(p):
+            try:
+                return json.load(open(p))
+            except Exception:
+                pass
+        return {}
+
+    def _pq_wallet_add(self, sk_hex, pk_hex):
+        w = self._pq_wallet()
+        w[pk_hex] = sk_hex
+        p = self._pq_wallet_path()
+        fd = os.open(p, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        with os.fdopen(fd, "w") as f:
+            json.dump(w, f, indent=2)
+
+    def build_pq_send(self, sk_hex: str, to_pk_hex: str, amount: int,
+                      fee: int):
+        """Build a GF-11 version-2 transaction spending PQ UTXOs.
+
+        All outputs are PQ outputs. Requires activation height reached.
+        """
+        h = self.tip_height() + 1  # the block this tx would enter
+        if not gf11_active(h):
+            return False, "GF-11 not active yet"
+        try:
+            sk = bytes.fromhex(sk_hex)
+            to_pk = bytes.fromhex(to_pk_hex)
+        except ValueError:
+            return False, "bad hex"
+        if len(to_pk) != PQ_PK_LEN:
+            return False, "bad destination PQ pubkey length"
+        # Derive our public key from the secret key via keygen? ML-DSA
+        # keygen is deterministic from seed, but here sk is the full
+        # secret key; we recover pk by finding it in the wallet.
+        w = self._pq_wallet()
+        our_pk_hex = None
+        for pk_hex, stored_sk in w.items():
+            if stored_sk == sk_hex:
+                our_pk_hex = pk_hex
+                break
+        if our_pk_hex is None:
+            return False, "secret key not in PQ wallet"
+        our_pk = bytes.fromhex(our_pk_hex)
+        if amount <= 0 or fee < 0:
+            return False, "bad amount/fee"
+        need = amount + fee
+        h_tip = self.tip_height()
+        cands = find_spendable(
+            self.chainstate.utxo, h_tip,
+            lambda v, spk, is_cb, cb_h: pq_spk_pubkey(spk) == our_pk)
+        cands.sort(key=lambda kv: kv[1][0])
+        picked, total = [], 0
+        for key, e in cands:
+            picked.append((key, e))
+            total += e[0]
+            if total >= need:
+                break
+        if total < need:
+            return False, (f"insufficient PQ funds: have {total} sats, "
+                           f"need {need}")
+        vins = []
+        for key, (value, spk, is_cb, cb_h) in picked:
+            vins.append({"prev": key[0], "idx": key[1], "script": b"",
+                         "seq": 0xFFFFFFFF, "_spk": spk})
+        outs = [{"value": amount, "script": pq_script(to_pk)}]
+        if total - need > 0:
+            outs.append({"value": total - need, "script": pq_script(our_pk)})
+        t = {"version": 2, "vin": vins, "vout": outs, "locktime": 0}
+        rnd = os.urandom(32)
+        for i, vin in enumerate(t["vin"]):
+            spk = vin.pop("_spk")
+            vin["script"] = pq_sign_input(t, i, spk, sk, rnd)
+        return True, ser_tx(t)
 
     # -- tx builders (call with lock held) --------------------------------
     def build_faucet(self, to_pub_hex: str, amount: int):
@@ -284,6 +366,49 @@ class Node:
                     self._json(200, {"privkey": priv_hex,
                                      "pubkey": pub_hex,
                                      "note": "testnet-only, valueless"})
+                elif u.path == "/pqkeygen":
+                    # GF-11: generate an ML-DSA-65 keypair. The secret key
+                    # stays in the PQ wallet file (0600); only the public
+                    # key is returned alongside it for the caller's records.
+                    # Never use test keys for operational mining funds.
+                    seed = os.urandom(32)
+                    pk, sk = mldsa.keygen(seed)
+                    pk_hex, sk_hex = pk.hex(), sk.hex()
+                    node._pq_wallet_add(sk_hex, pk_hex)
+                    self._json(200, {"pubkey": pk_hex,
+                                     "seckey": sk_hex,
+                                     "note": ("GF-11 ML-DSA-65; guard the "
+                                              "seckey like a privkey")})
+                elif u.path == "/pqsend":
+                    # GF-11: spend PQ UTXOs to PQ outputs (version 2).
+                    # Body: {seckey, to, amount, fee?}
+                    args = self._body_json()
+                    if args is None:
+                        return self._json(400, {"error": "bad json"})
+                    try:
+                        sk = args["seckey"]
+                        to = args["to"]
+                        amount = int(args["amount"])
+                        fee = int(args.get("fee", 1000))
+                    except (KeyError, ValueError, TypeError):
+                        return self._json(
+                            400, {"error": "need seckey, to, amount"})
+                    try:
+                        with node.lock:
+                            ok, res = node.build_pq_send(sk, to, amount, fee)
+                            if ok:
+                                ok2, res2 = node.mempool.add(
+                                    res, node.chainstate.utxo, node.tip_height())
+                                if not ok2:
+                                    self._json(409, {"error": res2})
+                                    return
+                                res = res2
+                    except Exception as e:
+                        return self._json(409, {"error": str(e)})
+                    if ok:
+                        self._json(200, {"txid": res})
+                    else:
+                        self._json(409, {"error": res})
                 elif u.path == "/faucet":
                     args = self._body_json()
                     if args is None:

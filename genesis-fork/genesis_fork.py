@@ -9,7 +9,7 @@ Block 1 onward follows fork consensus -> the chains diverge at genesis.
 
 Fork consensus ("Genesis Fork", ticker GSF):
   - PoW: SHA-256d, 600s target, 2016-block retarget (same algorithm as BTC)
-  - Initial difficulty: 0x1f001000 (target 2^236) — a launch parameter,
+  - Initial difficulty: 0x1e100000 (target 2^236) — a launch parameter,
     documented in FORK_SPEC.md; Bitcoin's 0x1d00ffff would be unmineable
     for a new chain, which is WHY this is a consensus change.
   - Subsidy: fresh 50 GSF, halving every 210,000 blocks (a second 21M)
@@ -108,6 +108,17 @@ def use_network(name: str):
     global _P
     _P = PARAMS[name]
     return _P
+
+# ---------------------------------------------------------------- GF-11
+# Post-quantum transaction authorization (ML-DSA-65) activation height.
+# See bips/GF-11.md. Pre-activation consensus is untouched.
+GF11_ACTIVATION_HEIGHT = 10000
+
+
+def gf11_active(height: int) -> bool:
+    """True iff GF-11 PQ rules apply at this block height."""
+    return height >= GF11_ACTIVATION_HEIGHT
+
 
 # ---------------------------------------------------------------- Satoshi's genesis (verified below, not trusted)
 GENESIS = {
@@ -262,6 +273,19 @@ def validate_block(blk: dict, prev: dict, height: int, chain,
     cb = txs[0]
     if not check_coinbase_lineage(cb, blk["bits"]):
         bad.append("coinbase lineage rule violated (first push != LE(bits))")
+    if gf11_active(height):
+        # GF-11: post-activation coinbase outputs must be PQ, even in a
+        # coinbase-only block and even without a UTXO view.
+        from txscript import parse_tx as _parse_tx, pq_spk_pubkey as _pq_spk
+        try:
+            _cb_t = _parse_tx(cb)
+        except ValueError:
+            bad.append("coinbase parse failed")
+            _cb_t = None
+        if _cb_t is not None:
+            for j, _vout in enumerate(_cb_t["vout"]):
+                if _pq_spk(_vout["script"]) is None:
+                    bad.append(f"coinbase output {j}: non-PQ after GF-11")
     if utxo is not None and len(txs) > 1:
         from txscript import validate_block_txs  # lazy: avoids import cycle
         ok, reason, _fees = validate_block_txs(txs, utxo, height,
