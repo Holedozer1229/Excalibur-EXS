@@ -22,6 +22,12 @@ What this is:
            only with signatures from at least `threshold` DISTINCT operators;
            one operator signing twice counts once.
 
+  Fees (bridge toll): an optional fee in basis points on peg-in (mint) and
+           peg-out (burn). Fees accrue to the fee_collector address in the
+           wrapped asset and are fully auditable in the log. Fee schedule is
+           public ledger state: set_fee() writes a FEE_SCHEDULE log entry.
+           Default 0 bps (no fee) until the federation configures one.
+
 What this is NOT (honest scope):
   - Not consensus. The Genesis Fork v1 chain has no native token script;
     wrapped balances live in this ledger, not in UTXOs. On-chain wrapped
@@ -162,28 +168,41 @@ def make_release_attestation(symbol: str, amount: int, source_txid: str,
 class BridgeLedger:
     """Federated bridge ledger. Enforces the supply invariant on every op."""
 
-    def __init__(self, operators: list, threshold: int = 1, path: str = None):
+    def __init__(self, operators: list, threshold: int = 1, path: str = None,
+                 fee_bps: int = 0, fee_collector: str = "bridge-treasury"):
         """
         operators: list of compressed-pubkey hex strings trusted to sign
                    MINT / RELEASE attestations.
         threshold: M of the M-of-N quorum. An attestation is valid only with
                    signatures from at least `threshold` DISTINCT operators.
                    Persisted with the ledger when path is used.
+        fee_bps:   bridge toll in basis points (0..10000) charged on peg-in
+                   mints and peg-out burns. 30 = 0.30%. Persisted.
+        fee_collector: address whose wrapped balance accrues the fees.
+                   Persisted.
         """
         assert operators, "at least one operator required"
         assert 1 <= threshold <= len(operators), \
             "threshold must be within 1..len(operators)"
+        assert isinstance(fee_bps, int) and 0 <= fee_bps <= 10000, \
+            "fee_bps must be an int in 0..10000"
+        assert fee_collector, "fee_collector must be non-empty"
         self.operators = list(operators)
         self.threshold = threshold
         self.path = path
         self.state = {"assets": {}, "used_source_txids": [],
                       "used_burn_refs": [], "used_release_atts": [],
-                      "balances": {}, "log": [], "threshold": threshold}
+                      "balances": {}, "log": [], "threshold": threshold,
+                      "fee_bps": fee_bps, "fee_collector": fee_collector,
+                      "fee_overrides": {}}
         if path and os.path.exists(path):
             with open(path) as f:
                 loaded = json.load(f)
             for k, v in self.state.items():
                 loaded.setdefault(k, v)
+            # migrate legacy per-asset dicts (pre-fee ledgers)
+            for a in loaded.get("assets", {}).values():
+                a.setdefault("fees", 0)
             self.state = loaded
             self.threshold = loaded.get("threshold", threshold)
 
@@ -198,8 +217,61 @@ class BridgeLedger:
     # -- internal ---------------------------------------------------------
     def _asset(self, symbol: str) -> dict:
         a = self.state["assets"].setdefault(
-            symbol, {"locked": 0, "minted": 0, "burned": 0})
+            symbol, {"locked": 0, "minted": 0, "burned": 0, "fees": 0})
+        a.setdefault("fees", 0)  # migrate pre-fee asset dicts
         return a
+
+    # -- fees -------------------------------------------------------------
+    def _fee_bps_for(self, symbol: str) -> int:
+        return self.state["fee_overrides"].get(symbol,
+                                              self.state["fee_bps"])
+
+    def _fee_split(self, symbol: str, gross: int) -> tuple:
+        """Split gross into (net, fee) under the fee schedule for symbol."""
+        bps = self._fee_bps_for(symbol)
+        fee = (gross * bps) // 10000
+        return gross - fee, fee
+
+    def _credit_fee(self, symbol: str, fee: int):
+        if fee <= 0:
+            return
+        aid = asset_id(symbol).hex()
+        collector = self.state["fee_collector"]
+        bal = self.state["balances"].setdefault(collector, {})
+        bal[aid] = bal.get(aid, 0) + fee
+        self._asset(symbol)["fees"] += fee
+
+    def set_fee(self, symbol_or_bps, bps: int = None):
+        """Set the bridge toll. set_fee(30) sets the global rate to 30 bps;
+        set_fee("URUU", 50) overrides one asset. Writes an auditable log
+        entry. Rate is in basis points, 0..10000."""
+        if bps is None:
+            symbol, rate = None, symbol_or_bps
+        else:
+            symbol, rate = symbol_or_bps, bps
+        assert isinstance(rate, int) and 0 <= rate <= 10000, \
+            "fee must be an int in 0..10000 bps"
+        if symbol is None:
+            self.state["fee_bps"] = rate
+        else:
+            get_coin(symbol)
+            self.state["fee_overrides"][symbol] = rate
+        self._log({"op": "fee_schedule", "symbol": symbol,
+                   "fee_bps": rate})
+        self.save()
+
+    def fee_schedule(self) -> dict:
+        return {"global_bps": self.state["fee_bps"],
+                "collector": self.state["fee_collector"],
+                "overrides": dict(self.state["fee_overrides"])}
+
+    def fees_collected(self, symbol: str = None) -> dict:
+        """Total fees accrued per asset (in wrapped base units)."""
+        if symbol is not None:
+            get_coin(symbol)
+            return {symbol: self._asset(symbol)["fees"]}
+        return {s: a.get("fees", 0)
+                for s, a in self.state["assets"].items()}
 
     def _check_invariant(self, symbol: str):
         a = self._asset(symbol)
@@ -266,24 +338,32 @@ class BridgeLedger:
 
         aid = asset_id(symbol).hex()
         a = self._asset(symbol)
+        net, fee = self._fee_split(symbol, amount)
+        if net <= 0:
+            raise ValueError("MINT: fee consumes the entire amount")
         a["locked"] += amount
         a["minted"] += amount
         bal = self.state["balances"].setdefault(recipient, {})
-        bal[aid] = bal.get(aid, 0) + amount
+        bal[aid] = bal.get(aid, 0) + net
+        self._credit_fee(symbol, fee)
         self.state["used_source_txids"].append(stx)
         self._log({"op": "peg_in", "symbol": symbol, "amount": amount,
+                   "fee": fee, "credited_net": net,
                    "recipient": recipient, "source_txid": stx,
                    "attestation": attestation_hash(att).hex()})
         self._check_invariant(symbol)
         self.save()
         return {"symbol": symbol, "wrapped": wrapped_symbol(symbol),
-                "credited": amount,
+                "credited": net, "fee": fee,
                 "balance": bal[aid]}
 
     def peg_out_burn(self, address: str, symbol: str, amount: int,
                      dest: str) -> dict:
         """Holder burns wrapped asset; returns a burn ref for the operator
-        to release the source coins against."""
+        to release the source coins against. The bridge toll (if any) is
+        taken from the gross: the holder's balance drops by `amount`,
+        `fee` accrues to the collector, and `net` is the releasable burn
+        amount the RELEASE attestation must match exactly."""
         get_coin(symbol)
         if not isinstance(amount, int) or amount <= 0:
             raise ValueError("burn amount must be positive int")
@@ -293,18 +373,23 @@ class BridgeLedger:
         bal = self.state["balances"].setdefault(address, {})
         if bal.get(aid, 0) < amount:
             raise ValueError("insufficient wrapped balance")
+        net, fee = self._fee_split(symbol, amount)
+        if net <= 0:
+            raise ValueError("burn: fee consumes the entire amount")
         bal[aid] -= amount
+        self._credit_fee(symbol, fee)
         a = self._asset(symbol)
-        a["burned"] += amount
+        a["burned"] += net
         burn_ref = sha256d(
-            f"BURN:{symbol}:{address}:{amount}:{dest}:{len(self.state['log'])}"
+            f"BURN:{symbol}:{address}:{net}:{dest}:{len(self.state['log'])}"
             .encode()).hex()
-        self._log({"op": "peg_out_burn", "symbol": symbol, "amount": amount,
+        self._log({"op": "peg_out_burn", "symbol": symbol,
+                   "gross": amount, "fee": fee, "amount": net,
                    "holder": address, "dest": dest, "burn_ref": burn_ref})
         self._check_invariant(symbol)
         self.save()
-        return {"symbol": symbol, "burned": amount, "burn_ref": burn_ref,
-                "balance": bal[aid]}
+        return {"symbol": symbol, "burned": net, "fee": fee,
+                "burn_ref": burn_ref, "balance": bal[aid]}
 
     def peg_out_release(self, att: dict, sigs) -> dict:
         """Record a quorum-signed RELEASE attestation for a source-chain
@@ -377,5 +462,5 @@ class BridgeLedger:
         return {"symbol": symbol, "wrapped": wrapped_symbol(symbol),
                 "asset_id": asset_id(symbol).hex(),
                 "locked": a["locked"], "minted": a["minted"],
-                "burned": a["burned"],
+                "burned": a["burned"], "fees": a.get("fees", 0),
                 "outstanding": self._outstanding(symbol)}

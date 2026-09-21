@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Tests for aetherion_bridge.py — run: python3 test_aetherion_bridge.py"""
+import json
 import os
 import sys
 
@@ -266,8 +267,115 @@ except ValueError:
     check("loaded ledger enforces quorum", True)
 os.remove(p2)
 
+# 27. fee default is zero: existing behavior unchanged
+F0 = BridgeLedger([OP])
+f0att = make_mint_attestation("AETX", 5000, "feetx0", "gsfFee")
+f0r = F0.peg_in(f0att, sign_attestation(PRIV, f0att))
+check("zero default fee: full credit",
+      f0r["credited"] == 5000 and f0r["fee"] == 0)
+check("zero default fee: collector empty",
+      F0.balance_of("bridge-treasury", "AETX") == 0)
+
+# 28. global fee on peg-in: 30 bps of 100000 = 300
+F0.set_fee(30)
+f1att = make_mint_attestation("AETX", 100000, "feetx1", "gsfFee")
+f1r = F0.peg_in(f1att, sign_attestation(PRIV, f1att))
+check("peg_in fee split",
+      f1r["credited"] == 99700 and f1r["fee"] == 300 and
+      f1r["balance"] == 5000 + 99700)
+check("collector accrues fee",
+      F0.balance_of("bridge-treasury", "AETX") == 300)
+s = F0.supply("AETX")
+check("supply invariant with fees",
+      s["minted"] - s["burned"] == s["outstanding"] and
+      s["fees"] == 300 and
+      s["outstanding"] == 5000 + 100000)
+
+# 29. fee on peg-out burn: gross 10000 @30bps -> fee 30, net 9970 releasable
+burnf = F0.peg_out_burn("gsfFee", "AETX", 10000, "0xfeeDest")
+check("burn fee split",
+      burnf["burned"] == 9970 and burnf["fee"] == 30)
+check("collector accrues burn fee",
+      F0.balance_of("bridge-treasury", "AETX") == 330)
+relf = make_release_attestation("AETX", 9970, "zrelFee", "0xfeeDest",
+                                burnf["burn_ref"])
+relf_bad = make_release_attestation("AETX", 10000, "zrelFeeBad",
+                                    "0xfeeDest", burnf["burn_ref"])
+try:
+    F0.peg_out_release(relf_bad, sign_attestation(PRIV, relf_bad))
+    check("release for gross (pre-fee) amount rejected", False)
+except ValueError:
+    check("release for gross (pre-fee) amount rejected", True)
+F0.peg_out_release(relf, sign_attestation(PRIV, relf))
+check("release matches net burn amount",
+      F0.supply("AETX")["locked"] == 105000 - 9970)
+
+# 30. per-asset override: URUU 100 bps, AETX stays 30
+F0.set_fee("URUU", 100)
+uatt = make_mint_attestation("URUU", 10000, "feetxU", "gsfFee")
+ur = F0.peg_in(uatt, sign_attestation(PRIV, uatt))
+check("per-asset override applies",
+      ur["fee"] == 100 and ur["credited"] == 9900)
+aatt = make_mint_attestation("AETX", 10000, "feetx2", "gsfFee")
+ar = F0.peg_in(aatt, sign_attestation(PRIV, aatt))
+check("global rate still applies to other assets",
+      ar["fee"] == 30 and ar["credited"] == 9970)
+check("fees_collected view",
+      F0.fees_collected("URUU") == {"URUU": 100} and
+      F0.fees_collected("AETX")["AETX"] == 300 + 30 + 30)
+
+# 31. invalid fees rejected
+for bad_fee in (-1, 10001, "30"):
+    try:
+        F0.set_fee(bad_fee)
+        check(f"set_fee({bad_fee!r}) rejected", False)
+    except (AssertionError, ValueError, TypeError):
+        check(f"set_fee({bad_fee!r}) rejected", True)
+try:
+    BridgeLedger([OP], fee_bps=20000)
+    check("constructor fee_bps=20000 rejected", False)
+except AssertionError:
+    check("constructor fee_bps=20000 rejected", True)
+
+# 32. fee schedule persists across save/load
+p3 = "/tmp/test_aetherion_fees.json"
+Fp = BridgeLedger([OP], path=p3, fee_bps=25,
+                  fee_collector="treasury2")
+Fp.set_fee("SKYNT", 75)
+Fp.save()
+Fq = BridgeLedger([OP], path=p3)
+check("fee schedule persists",
+      Fq.fee_schedule() == {"global_bps": 25, "collector": "treasury2",
+                            "overrides": {"SKYNT": 75}})
+os.remove(p3)
+
+# 33. legacy ledger (pre-fee state) migrates cleanly
+p4 = "/tmp/test_aetherion_legacy.json"
+legacy_state = {"assets": {"URUU": {"locked": 100, "minted": 100,
+                                   "burned": 0}},
+                "used_source_txids": [], "used_burn_refs": [],
+                "used_release_atts": [], "balances": {}, "log": [],
+                "threshold": 1}
+with open(p4, "w") as f:
+    json.dump(legacy_state, f)
+Fl = BridgeLedger([OP], path=p4)
+check("legacy ledger migrates fee keys",
+      Fl.fee_schedule()["global_bps"] == 0 and
+      Fl.fees_collected("URUU") == {"URUU": 0})
+os.remove(p4)
+
+# 34. fee consuming the entire amount is rejected, not bricked
+F0.set_fee(10000)
+zatt = make_mint_attestation("EXS", 7, "feetxZ", "gsfFee")
+try:
+    F0.peg_in(zatt, sign_attestation(PRIV, zatt))
+    check("100% fee mint rejected", False)
+except ValueError:
+    check("100% fee mint rejected", True)
+F0.set_fee(0)
+
 print(f"\n{len(PASS)} passed, {len(FAIL)} failed")
 if FAIL:
     print("FAILURES:", FAIL)
     sys.exit(1)
-print("ALL AETHERION BRIDGE TESTS PASS (v1 + v2)")
+print("ALL AETHERION BRIDGE TESTS PASS (v1 + v2 + fees)")

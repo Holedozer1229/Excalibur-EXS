@@ -73,6 +73,21 @@ locked(asset)      >= outstanding(asset)
   the accounting + attestation layer. Amounts are integers in the source
   coin's base units.
 
+## Bridge toll (fees)
+
+- Optional fee in basis points on peg-in mints and peg-out burns
+  (`fee_bps`, default 0; per-asset overrides via `set_fee`). 30 bps = 0.30%.
+- Fees accrue to the `fee_collector` address in the wrapped asset and are
+  fully auditable: every `peg_in`/`peg_out_burn` log entry records the fee,
+  and `fee_schedule()` / `fees_collected()` expose the live schedule and
+  totals. Schedule changes are themselves logged (`fee_schedule` entries).
+- On burns the fee is taken from the gross: the holder's balance drops by
+  the full amount, the fee goes to the collector, and the RELEASE
+  attestation must match the *net* burn amount exactly. A fee that would
+  consume the entire transfer is rejected, never silently bricked.
+- The supply invariant (`minted - burned == outstanding`,
+  `locked >= outstanding`) is enforced on every fee-bearing op.
+
 ## Rosetta / Mesh
 
 `rosetta_currency(symbol)` emits a Mesh-ready `Currency` object per wrapped
@@ -85,8 +100,8 @@ asset (symbol, decimals, `asset_id`, source chain/contract metadata) —
 - `aetherion_bridge.py` — registry, asset derivation, attestations
   (secp256k1), `BridgeLedger` with M-of-N quorum, release integrity checks,
   and supply-invariant enforcement
-- `test_aetherion_bridge.py` — 42 checks (29 v1 + 13 v2 adversarial),
-  all passing
+- `test_aetherion_bridge.py` — 61 checks (29 v1 + 13 v2 adversarial
+  + 19 fee-schedule), all passing
 - `AETHERION_CONNECT.md` — this spec
 
 ## Future work (not in v2)
