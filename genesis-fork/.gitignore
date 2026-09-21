@@ -1,0 +1,10 @@
+# Runtime state — never committed
+chaindata_*/
+*.log
+__pycache__/
+*.pyc
+mempool.json
+wallet.json
+zero_signature.json
+testnet_live.jsonl
+.DS_Store

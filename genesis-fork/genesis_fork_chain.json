@@ -1,0 +1,84 @@
+{
+  "mainnet": [
+    {
+      "height": 0,
+      "hash": "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
+      "bits": "0x1d00ffff",
+      "nonce": 2083236893
+    },
+    {
+      "height": 1,
+      "hash": "4a7be749b554a8cf818ec4e238b77fab06d85f15206569126cfa35a4ed0c0000",
+      "bits": "0x1e100000",
+      "nonce": 3410282
+    },
+    {
+      "height": 2,
+      "hash": "92bb6d8d249056adda3d53e357b696ce268a2a94755a888d1199d960e7090000",
+      "bits": "0x1e100000",
+      "nonce": 225511
+    },
+    {
+      "height": 3,
+      "hash": "d5dc91308481ec5088126494d5401549f1326d8fba8f8097ea9c01b944080000",
+      "bits": "0x1e100000",
+      "nonce": 1591054
+    },
+    {
+      "height": 4,
+      "hash": "703588ecd54e8bedf4213c9f43e6703f6df334ecfa15ba156175a16ee5030000",
+      "bits": "0x1e100000",
+      "nonce": 464043
+    },
+    {
+      "height": 5,
+      "hash": "2e66a7f463e25f9c143259df7a6482fd3b38623f7f26cf4e468f5510d40e0000",
+      "bits": "0x1e100000",
+      "nonce": 343496
+    },
+    {
+      "height": 6,
+      "hash": "6734d5f691037fe9964c250c5f8ab88350046c07993ab06c4d63f879df080000",
+      "bits": "0x1e100000",
+      "nonce": 158995
+    }
+  ],
+  "testnet": [
+    {
+      "height": 0,
+      "hash": "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
+      "bits": "0x1d00ffff",
+      "nonce": 2083236893
+    },
+    {
+      "height": 1,
+      "hash": "1537ca35d4ef6c690aa8b4ac00a0f52c2e9a4d7e5c86207ac73e98c74d4c0000",
+      "bits": "0x1f010000",
+      "nonce": 35350
+    },
+    {
+      "height": 2,
+      "hash": "5fcf1e61b427a3d454b388e033417a3603b382ef7ce1547984f6e0bd0af40000",
+      "bits": "0x1f010000",
+      "nonce": 270764
+    },
+    {
+      "height": 3,
+      "hash": "aa0f010b695a62729a7172956a67f05c2dda366387227021e17194b2fd6b0000",
+      "bits": "0x1f010000",
+      "nonce": 29079
+    },
+    {
+      "height": 4,
+      "hash": "2693c6fe76d2df4d78b9346b180d5f820028e2a67d9dea8a5c6835072e7b0000",
+      "bits": "0x1f010000",
+      "nonce": 82759
+    },
+    {
+      "height": 5,
+      "hash": "5410357cf119e7fe9e56f422572e0f1bab03907184298ac75b5acd999ae70000",
+      "bits": "0x1f010000",
+      "nonce": 12225
+    }
+  ]
+}
