@@ -72,7 +72,7 @@ bad["amount"] = 9999
 check("tampered attestation fails", not verify_attestation(OP, bad, sig))
 
 # 6. ledger: peg-in happy path
-L = BridgeLedger([OP])
+L = BridgeLedger([OP], fee_bps=0)  # v1 baseline: fee-free mechanics
 r = L.peg_in(att, sig)
 check("peg_in credits", r["credited"] == 1000 and r["balance"] == 1000)
 check("balance_of", L.balance_of("gsf1abc", "URUU") == 1000)
@@ -137,7 +137,7 @@ check("AETX independent supply",
 
 # 14. persistence round trip
 p = "/tmp/test_aetherion_ledger.json"
-L2 = BridgeLedger([OP], path=p)
+L2 = BridgeLedger([OP], path=p, fee_bps=0)
 L2.peg_in(make_mint_attestation("SKYNT", 7, "etx1", "gsf9"),
           sign_attestation(PRIV, make_mint_attestation("SKYNT", 7, "etx1", "gsf9")))
 L2.save()
@@ -165,7 +165,7 @@ def qsig(priv, att):
 
 
 # 15. 2-of-3 quorum: single sig rejected
-Q = BridgeLedger([OP1, OP2, OP3], threshold=2)
+Q = BridgeLedger([OP1, OP2, OP3], threshold=2, fee_bps=0)  # v2 adversarial: fee-free
 qa = make_mint_attestation("URUU", 1000, "qtx1", "gsfQ")
 try:
     Q.peg_in(qa, qsig(P1, qa))
@@ -255,7 +255,7 @@ check("unreleased_burns lists pending",
 
 # 26. threshold persists across save/load
 p2 = "/tmp/test_aetherion_quorum.json"
-Qp = BridgeLedger([OP1, OP2, OP3], threshold=2, path=p2)
+Qp = BridgeLedger([OP1, OP2, OP3], threshold=2, path=p2, fee_bps=0)
 Qp.save()
 Qq = BridgeLedger([OP1, OP2, OP3], path=p2)
 check("threshold persists", Qq.threshold == 2)
@@ -267,36 +267,36 @@ except ValueError:
     check("loaded ledger enforces quorum", True)
 os.remove(p2)
 
-# 27. fee default is zero: existing behavior unchanged
+# 27. default fee is the production toll: 30 bps (0.30%), set 2026-09-21
 F0 = BridgeLedger([OP])
-f0att = make_mint_attestation("AETX", 5000, "feetx0", "gsfFee")
+f0att = make_mint_attestation("AETX", 100000, "feetx0", "gsfFee")
 f0r = F0.peg_in(f0att, sign_attestation(PRIV, f0att))
-check("zero default fee: full credit",
-      f0r["credited"] == 5000 and f0r["fee"] == 0)
-check("zero default fee: collector empty",
-      F0.balance_of("bridge-treasury", "AETX") == 0)
+check("default 30 bps toll on peg-in",
+      f0r["credited"] == 99700 and f0r["fee"] == 300)
+check("default toll accrues to collector",
+      F0.balance_of("bridge-treasury", "AETX") == 300)
 
-# 28. global fee on peg-in: 30 bps of 100000 = 300
+# 28. explicit set_fee(30) is a no-op on the new default; toll still applies
 F0.set_fee(30)
 f1att = make_mint_attestation("AETX", 100000, "feetx1", "gsfFee")
 f1r = F0.peg_in(f1att, sign_attestation(PRIV, f1att))
 check("peg_in fee split",
       f1r["credited"] == 99700 and f1r["fee"] == 300 and
-      f1r["balance"] == 5000 + 99700)
+      f1r["balance"] == 99700 + 99700)
 check("collector accrues fee",
-      F0.balance_of("bridge-treasury", "AETX") == 300)
+      F0.balance_of("bridge-treasury", "AETX") == 600)
 s = F0.supply("AETX")
 check("supply invariant with fees",
       s["minted"] - s["burned"] == s["outstanding"] and
-      s["fees"] == 300 and
-      s["outstanding"] == 5000 + 100000)
+      s["fees"] == 600 and
+      s["outstanding"] == 200000)
 
 # 29. fee on peg-out burn: gross 10000 @30bps -> fee 30, net 9970 releasable
 burnf = F0.peg_out_burn("gsfFee", "AETX", 10000, "0xfeeDest")
 check("burn fee split",
       burnf["burned"] == 9970 and burnf["fee"] == 30)
 check("collector accrues burn fee",
-      F0.balance_of("bridge-treasury", "AETX") == 330)
+      F0.balance_of("bridge-treasury", "AETX") == 630)
 relf = make_release_attestation("AETX", 9970, "zrelFee", "0xfeeDest",
                                 burnf["burn_ref"])
 relf_bad = make_release_attestation("AETX", 10000, "zrelFeeBad",
@@ -308,7 +308,7 @@ except ValueError:
     check("release for gross (pre-fee) amount rejected", True)
 F0.peg_out_release(relf, sign_attestation(PRIV, relf))
 check("release matches net burn amount",
-      F0.supply("AETX")["locked"] == 105000 - 9970)
+      F0.supply("AETX")["locked"] == 200000 - 9970)
 
 # 30. per-asset override: URUU 100 bps, AETX stays 30
 F0.set_fee("URUU", 100)
@@ -322,7 +322,7 @@ check("global rate still applies to other assets",
       ar["fee"] == 30 and ar["credited"] == 9970)
 check("fees_collected view",
       F0.fees_collected("URUU") == {"URUU": 100} and
-      F0.fees_collected("AETX")["AETX"] == 300 + 30 + 30)
+      F0.fees_collected("AETX")["AETX"] == 600 + 30 + 30)
 
 # 31. invalid fees rejected
 for bad_fee in (-1, 10001, "30"):
@@ -349,7 +349,7 @@ check("fee schedule persists",
                             "overrides": {"SKYNT": 75}})
 os.remove(p3)
 
-# 33. legacy ledger (pre-fee state) migrates cleanly
+# 33. legacy ledger (pre-fee state) migrates: picks up the production default
 p4 = "/tmp/test_aetherion_legacy.json"
 legacy_state = {"assets": {"URUU": {"locked": 100, "minted": 100,
                                    "burned": 0}},
@@ -360,7 +360,7 @@ with open(p4, "w") as f:
     json.dump(legacy_state, f)
 Fl = BridgeLedger([OP], path=p4)
 check("legacy ledger migrates fee keys",
-      Fl.fee_schedule()["global_bps"] == 0 and
+      Fl.fee_schedule()["global_bps"] == 30 and
       Fl.fees_collected("URUU") == {"URUU": 0})
 os.remove(p4)
 

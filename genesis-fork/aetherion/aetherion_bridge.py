@@ -22,10 +22,11 @@ What this is:
            only with signatures from at least `threshold` DISTINCT operators;
            one operator signing twice counts once.
 
-  Fees (bridge toll): an optional fee in basis points on peg-in (mint) and
-           peg-out (burn). Fees accrue to the fee_collector address in the
-           wrapped asset and are fully auditable in the log. Fee schedule is
-           public ledger state: set_fee() writes a FEE_SCHEDULE log entry.
+  Fees (bridge toll): 30 bps (0.30%) on peg-in (mint) and peg-out (burn),
+           accrued to the fee_collector address in the wrapped asset and
+           fully auditable in the log. Fee schedule is public ledger state:
+           set_fee() writes a FEE_SCHEDULE log entry; the default 30 bps is
+           the production rate set 2026-09-21.
            Default 0 bps (no fee) until the federation configures one.
 
 What this is NOT (honest scope):
@@ -169,7 +170,7 @@ class BridgeLedger:
     """Federated bridge ledger. Enforces the supply invariant on every op."""
 
     def __init__(self, operators: list, threshold: int = 1, path: str = None,
-                 fee_bps: int = 0, fee_collector: str = "bridge-treasury"):
+                 fee_bps: int = 30, fee_collector: str = "bridge-treasury"):
         """
         operators: list of compressed-pubkey hex strings trusted to sign
                    MINT / RELEASE attestations.
@@ -178,6 +179,7 @@ class BridgeLedger:
                    Persisted with the ledger when path is used.
         fee_bps:   bridge toll in basis points (0..10000) charged on peg-in
                    mints and peg-out burns. 30 = 0.30%. Persisted.
+                   Default is the production toll: 30 bps (0.30%).
         fee_collector: address whose wrapped balance accrues the fees.
                    Persisted.
         """

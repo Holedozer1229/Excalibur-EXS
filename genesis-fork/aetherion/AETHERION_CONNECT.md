@@ -75,8 +75,9 @@ locked(asset)      >= outstanding(asset)
 
 ## Bridge toll (fees)
 
-- Optional fee in basis points on peg-in mints and peg-out burns
-  (`fee_bps`, default 0; per-asset overrides via `set_fee`). 30 bps = 0.30%.
+- Bridge toll: 30 bps (0.30%) on peg-in mints and peg-out burns
+  (`fee_bps`, default 30 = the production rate set 2026-09-21; per-asset
+  overrides via `set_fee`; can be lowered to 0 if the federation votes so).
 - Fees accrue to the `fee_collector` address in the wrapped asset and are
   fully auditable: every `peg_in`/`peg_out_burn` log entry records the fee,
   and `fee_schedule()` / `fees_collected()` expose the live schedule and
