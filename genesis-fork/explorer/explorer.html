@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EXCAL Genesis Fork — Sovereign Explorer</title>
+<style>
+body{font-family:ui-monospace,Menlo,Consolas,monospace;background:#0d1117;color:#c9d1d9;margin:0;padding:0}
+header{background:#161b22;padding:16px 24px;border-bottom:1px solid #30363d}
+h1{font-size:18px;margin:0;color:#f0b429}h1 small{color:#8b949e;font-size:12px}
+.stats{display:flex;gap:24px;flex-wrap:wrap;padding:12px 24px;background:#0d1117;border-bottom:1px solid #30363d}
+.stat label{display:block;font-size:11px;color:#8b949e}.stat b{font-size:14px;color:#e6edf3}
+main{padding:16px 24px;max-width:1100px}
+input[type=text]{width:100%;padding:10px;background:#0d1117;border:1px solid #30363d;color:#e6edf3;border-radius:6px;font-family:inherit}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid #21262d;vertical-align:top}
+th{color:#8b949e;font-weight:normal;font-size:11px;text-transform:uppercase}
+a{color:#58a6ff;text-decoration:none;cursor:pointer}a:hover{text-decoration:underline}
+.hash{font-size:12px;word-break:break-all}
+.card{background:#161b22;border:1px solid #30363d;border-radius:6px;padding:16px;margin:12px 0}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;background:#1f6feb;color:#fff}
+.badge.coinbase{background:#8957e5}.badge.warn{background:#9e6a03}
+.note{color:#8b949e;font-size:12px}
+</style></head><body>
+<header><h1>⚔ EXCAL Genesis Fork <small>sovereign explorer · generated locally · no third parties</small></h1></header>
+<div class="stats" id="stats"></div>
+<main>
+<input type="text" id="q" placeholder="Search: block height, block hash, txid, or address…  (Enter)">
+<div id="view"></div>
+</main>
+<script>
+const DATA = {"blocks":[{"height":0,"hash":"000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f","prev":"0000000000000000000000000000000000000000000000000000000000000000","merkle":"3ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a","time":1231006505,"bits":486604799,"nonce":2083236893,"txs":[],"work_cum":4295032833},{"height":1,"hash":"6bb8e3044a7d49746900033ad3fac55a75c43bf66a2dfb60b2557ea154070000","prev":"000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f","merkle":"d376e1b54cef48f015036b45647ca14ed1d242802980e1fae6ff6225d1c7608a","time":1789965860,"bits":504365056,"nonce":747121,"txs":[{"txid":"d376e1b54cef48f015036b45647ca14ed1d242802980e1fae6ff6225d1c7608a","ins":[{"coinbase":true}],"outs":[{"idx":0,"value":5000000000,"address":"anyone"}],"is_coinbase":true,"size":77}],"work_cum":4296081408},{"height":2,"hash":"321e392f318e3908315ed094d7c3caa905bd77633b3502a7620135062c030000","prev":"6bb8e3044a7d49746900033ad3fac55a75c43bf66a2dfb60b2557ea154070000","merkle":"2fbec1c8a5e9fccfafc9fd623a7a96900d8632d6a16f00cd278fb7ac6f326323","time":1789966460,"bits":504365056,"nonce":60007,"txs":[{"txid":"2fbec1c8a5e9fccfafc9fd623a7a96900d8632d6a16f00cd278fb7ac6f326323","ins":[{"coinbase":true}],"outs":[{"idx":0,"value":5000000000,"address":"anyone"}],"is_coinbase":true,"size":77}],"work_cum":4297129983},{"height":3,"hash":"08bc184c3e7d9c2c3eac7f5eead25af7d50d00a7f171db2d610b1795040f0000","prev":"321e392f318e3908315ed094d7c3caa905bd77633b3502a7620135062c030000","merkle":"6e95098a419c8d85c6dbc306668fa0f77ec83b4bc828b2f69a453e7d1b4590fa","time":1789967060,"bits":504365056,"nonce":2416767,"txs":[{"txid":"6e95098a419c8d85c6dbc306668fa0f77ec83b4bc828b2f69a453e7d1b4590fa","ins":[{"coinbase":true}],"outs":[{"idx":0,"value":5000000000,"address":"anyone"}],"is_coinbase":true,"size":77}],"work_cum":4298178558},{"height":4,"hash":"0792ba8e8b3959defe95c7c08fcfa780af95f9406cf40785a631f654290d0000","prev":"08bc184c3e7d9c2c3eac7f5eead25af7d50d00a7f171db2d610b1795040f0000","merkle":"d9923d0eebc7f4ddc618019209191722a56d399fa69d986366a1c9befcf6dd50","time":1789967660,"bits":504365056,"nonce":11733,"txs":[{"txid":"d9923d0eebc7f4ddc618019209191722a56d399fa69d986366a1c9befcf6dd50","ins":[{"coinbase":true}],"outs":[{"idx":0,"value":5000000000,"address":"anyone"}],"is_coinbase":true,"size":77}],"work_cum":4299227133}],"tx_index":{"d376e1b54cef48f015036b45647ca14ed1d242802980e1fae6ff6225d1c7608a":{"height":1,"block_hash":"6bb8e3044a7d49746900033ad3fac55a75c43bf66a2dfb60b2557ea154070000"},"2fbec1c8a5e9fccfafc9fd623a7a96900d8632d6a16f00cd278fb7ac6f326323":{"height":2,"block_hash":"321e392f318e3908315ed094d7c3caa905bd77633b3502a7620135062c030000"},"6e95098a419c8d85c6dbc306668fa0f77ec83b4bc828b2f69a453e7d1b4590fa":{"height":3,"block_hash":"08bc184c3e7d9c2c3eac7f5eead25af7d50d00a7f171db2d610b1795040f0000"},"d9923d0eebc7f4ddc618019209191722a56d399fa69d986366a1c9befcf6dd50":{"height":4,"block_hash":"0792ba8e8b3959defe95c7c08fcfa780af95f9406cf40785a631f654290d0000"}},"balances":{"anyone":20000000000},"addr_hist":{"anyone":[{"kind":"recv","txid":"d376e1b54cef48f015036b45647ca14ed1d242802980e1fae6ff6225d1c7608a","height":1,"value":5000000000},{"kind":"recv","txid":"2fbec1c8a5e9fccfafc9fd623a7a96900d8632d6a16f00cd278fb7ac6f326323","height":2,"value":5000000000},{"kind":"recv","txid":"6e95098a419c8d85c6dbc306668fa0f77ec83b4bc828b2f69a453e7d1b4590fa","height":3,"value":5000000000},{"kind":"recv","txid":"d9923d0eebc7f4ddc618019209191722a56d399fa69d986366a1c9befcf6dd50","height":4,"value":5000000000}]},"utxo_count":4,"minted":20000000000,"generated_at":1789968569,"bridge":{"present":false}};
+
+const $=s=>document.querySelector(s);
+function fmtTime(t){return new Date(t*1000).toISOString().replace('T',' ').slice(0,19)+'Z'}
+function fmtVal(v){return (v/1e8).toFixed(8)+' GSF'}
+function shortAddr(a){return a==='anyone'?'anyone':a.slice(0,16)+'…'}
+function renderStats(){
+  const b=DATA.blocks[DATA.blocks.length-1];
+  $('#stats').innerHTML=
+   stat('Height',b.height)+stat('Tip',b.hash.slice(0,16)+'…')+
+   stat('Blocks',DATA.blocks.length)+stat('Minted',fmtVal(DATA.minted))+
+   stat('UTXOs',DATA.utxo_count)+stat('Generated',fmtTime(DATA.generated_at));
+  function stat(l,v){return '<div class="stat"><label>'+l+'</label><b>'+v+'</b></div>'}
+}
+function blockRow(b){return '<tr><td><a data-h="'+b.height+'">'+b.height+'</a></td>'+
+ '<td class="hash"><a data-h="'+b.height+'">'+b.hash.slice(0,24)+'…</a></td>'+
+ '<td>'+fmtTime(b.time)+'</td><td>'+b.txs.length+'</td>'+
+ '<td>'+b.nonce+'</td><td class="hash">'+b.bits.toString(16)+'</td></tr>'}
+function showHome(){
+  let h='<table><tr><th>Height</th><th>Hash</th><th>Time</th><th>Txs</th><th>Nonce</th><th>Bits</th></tr>';
+  [...DATA.blocks].reverse().forEach(b=>{h+=blockRow(b)});
+  $('#view').innerHTML=h+'</table>';
+}
+function showBlock(h){
+  const b=DATA.blocks.find(x=>x.height===h);if(!b)return showHome();
+  let s='<div class="card"><span class="badge">BLOCK '+b.height+'</span> <span class="hash note">'+b.hash+'</span>'+
+   '<table><tr><th>Field</th><th>Value</th></tr>'+
+   '<tr><td>Prev</td><td class="hash">'+b.prev+'</td></tr>'+
+   '<tr><td>Merkle</td><td class="hash">'+b.merkle+'</td></tr>'+
+   '<tr><td>Time</td><td>'+fmtTime(b.time)+'</td></tr>'+
+   '<tr><td>Bits</td><td>0x'+b.bits.toString(16)+'</td></tr>'+
+   '<tr><td>Nonce</td><td>'+b.nonce+'</td></tr>'+
+   '<tr><td>Cum. work</td><td>'+b.work_cum+'</td></tr></table></div>';
+  s+='<h3>Transactions ('+b.txs.length+')</h3><table><tr><th>Txid</th><th>Type</th><th>Ins</th><th>Outs</th><th>Size</th></tr>';
+  b.txs.forEach(t=>{s+='<tr><td class="hash"><a data-t="'+t.txid+'">'+t.txid.slice(0,24)+'…</a></td>'+
+   '<td>'+(t.is_coinbase?'<span class="badge coinbase">coinbase</span>':'tx')+'</td>'+
+   '<td>'+t.ins.length+'</td><td>'+t.outs.length+'</td><td>'+t.size+' B</td></tr>'});
+  $('#view').innerHTML=s+'</table>';
+}
+function showTx(txid){
+  let b=null,t=null;
+  for(const blk of DATA.blocks){t=blk.txs.find(x=>x.txid===txid);if(t){b=blk;break}}
+  if(!t){$('#view').innerHTML='<p class="note">Transaction not found.</p>';return}
+  let s='<div class="card"><span class="badge">TX</span> <span class="hash note">'+txid+'</span>'+
+   '<p class="note">Block <a data-h="'+b.height+'">'+b.height+'</a> · '+(t.is_coinbase?'<span class="badge coinbase">coinbase</span>':'')+' · '+t.size+' bytes</p>';
+  s+='<h3>Inputs ('+t.ins.length+')</h3><table><tr><th>Source</th><th>Value</th></tr>';
+  t.ins.forEach(i=>{s+=i.coinbase?'<tr><td>coinbase</td><td>—</td></tr>':
+   '<tr><td class="hash"><a data-t="'+i.prev_txid+'">'+i.prev_txid.slice(0,20)+'…</a>:'+i.prev_idx+
+   (i.spent_addr?' <span class="note">(<a data-a="'+i.spent_addr+'">'+shortAddr(i.spent_addr)+'</a>)</span>':'')+'</td><td>'+
+   (i.spent_value!=null?fmtVal(i.spent_value):'<span class="note">?</span>')+'</td></tr>'});
+  s+='</table><h3>Outputs ('+t.outs.length+')</h3><table><tr><th>#</th><th>Address</th><th>Value</th></tr>';
+  t.outs.forEach(o=>{s+='<tr><td>'+o.idx+'</td><td class="hash"><a data-a="'+o.address+'">'+
+   (o.address.length>40?o.address.slice(0,40)+'…':o.address)+'</a></td><td>'+fmtVal(o.value)+'</td></tr>'});
+  $('#view').innerHTML=s+'</table></div>';
+}
+function showAddr(a){
+  const bal=DATA.balances[a]||0,hist=DATA.addr_hist[a]||[];
+  let s='<div class="card"><span class="badge">ADDRESS</span> <span class="hash note">'+a+'</span>'+
+   '<p>Balance: <b>'+fmtVal(bal)+'</b> · '+hist.length+' events</p>';
+  if(hist.length){s+='<table><tr><th>Kind</th><th>Height</th><th>Txid</th><th>Value</th></tr>';
+   [...hist].reverse().forEach(e=>{s+='<tr><td>'+e.kind+'</td><td><a data-h="'+e.height+'">'+e.height+'</a></td>'+
+    '<td class="hash"><a data-t="'+e.txid+'">'+e.txid.slice(0,20)+'…</a></td><td>'+fmtVal(e.value)+'</td></tr>'});
+   s+='</table>'}else{s+='<p class="note">No activity on this chain.</p>'}
+  $('#view').innerHTML=s+'</div>';
+}
+function search(){
+  const q=$('#q').value.trim();if(!q)return;
+  if(/^\d+$/.test(q)){const h=parseInt(q);if(DATA.blocks.some(b=>b.height===h))return showBlock(h)}
+  const ql=q.toLowerCase();
+  let b=DATA.blocks.find(x=>x.hash.toLowerCase().startsWith(ql));
+  if(b)return showBlock(b.height);
+  for(const blk of DATA.blocks){if(blk.txs.some(t=>t.txid.toLowerCase().startsWith(ql)))return showTx(blk.txs.find(t=>t.txid.toLowerCase().startsWith(ql)).txid)}
+  if(DATA.balances[q]!==undefined||DATA.addr_hist[q])return showAddr(q);
+  const am=Object.keys(DATA.addr_hist).find(a=>a.toLowerCase().startsWith(ql));
+  if(am)return showAddr(am);
+  $('#view').innerHTML='<p class="note">No block, transaction, or address matches.</p>';
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('a[data-h],a[data-t],a[data-a]');if(!t)return;
+  if(t.dataset.h!==undefined)showBlock(parseInt(t.dataset.h));
+  else if(t.dataset.t)showTx(t.dataset.t);else showAddr(t.dataset.a);
+});
+$('#q').addEventListener('keydown',e=>{if(e.key==='Enter')search()});
+renderStats();showHome();
+</script></body></html>

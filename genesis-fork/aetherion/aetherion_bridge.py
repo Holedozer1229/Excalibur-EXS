@@ -13,16 +13,24 @@ What this is:
            (off-chain) and signs a MINT attestation -> ledger credits the
            recipient's wrapped balance. source_txid is replay-protected.
   Peg-out: holder burns wrapped -> operator releases on the source chain
-           and signs a RELEASE attestation -> ledger records the release.
+           and signs a RELEASE attestation -> ledger verifies the release
+           matches a real, unmatched burn (burn_ref), rejects replays,
+           decrements locked, and records the release as audit trail.
+
+  Authorization: M-of-N operator quorum (threshold configurable at ledger
+           creation, persisted with the ledger). A MINT or RELEASE is valid
+           only with signatures from at least `threshold` DISTINCT operators;
+           one operator signing twice counts once.
 
 What this is NOT (honest scope):
   - Not consensus. The Genesis Fork v1 chain has no native token script;
     wrapped balances live in this ledger, not in UTXOs. On-chain wrapped
     UTXOs would require a token consensus upgrade (future work, noted in
     AETHERION_CONNECT.md).
-  - Not trustless. The federation operator key(s) are trusted to verify
-    source-chain locks before signing MINT. 1-of-1 by default; the ledger
-    records every attestation so any mis-issue is auditable.
+  - Not trustless. The federation operators are trusted to verify
+    source-chain locks before signing MINT and to actually release on the
+    source chain before signing RELEASE. The quorum is M-of-N (configurable);
+    the ledger is append-only so any mis-issue is permanently auditable.
   - Not live custody. No real locks/releases are performed by this module;
     it is the accounting + attestation layer. Amounts are integers in the
     source coin's base units.
@@ -154,19 +162,30 @@ def make_release_attestation(symbol: str, amount: int, source_txid: str,
 class BridgeLedger:
     """Federated bridge ledger. Enforces the supply invariant on every op."""
 
-    def __init__(self, operators: list, path: str = None):
+    def __init__(self, operators: list, threshold: int = 1, path: str = None):
         """
         operators: list of compressed-pubkey hex strings trusted to sign
-                   MINT / RELEASE attestations (1-of-N).
+                   MINT / RELEASE attestations.
+        threshold: M of the M-of-N quorum. An attestation is valid only with
+                   signatures from at least `threshold` DISTINCT operators.
+                   Persisted with the ledger when path is used.
         """
         assert operators, "at least one operator required"
+        assert 1 <= threshold <= len(operators), \
+            "threshold must be within 1..len(operators)"
         self.operators = list(operators)
+        self.threshold = threshold
         self.path = path
         self.state = {"assets": {}, "used_source_txids": [],
-                      "balances": {}, "log": []}
+                      "used_burn_refs": [], "used_release_atts": [],
+                      "balances": {}, "log": [], "threshold": threshold}
         if path and os.path.exists(path):
             with open(path) as f:
-                self.state = json.load(f)
+                loaded = json.load(f)
+            for k, v in self.state.items():
+                loaded.setdefault(k, v)
+            self.state = loaded
+            self.threshold = loaded.get("threshold", threshold)
 
     # -- persistence ------------------------------------------------------
     def save(self):
@@ -199,23 +218,42 @@ class BridgeLedger:
         entry["t"] = int(time.time())
         self.state["log"].append(entry)
 
-    def _operator_ok(self, att: dict, sig_hex: str) -> bool:
-        return any(verify_attestation(op, att, sig_hex)
-                   for op in self.operators)
+    def _approvals(self, att: dict, sigs) -> int:
+        """Count DISTINCT operators that validly signed this attestation.
+        One operator signing twice counts once."""
+        if isinstance(sigs, str):
+            sigs = [sigs]
+        ok = set()
+        for i, op in enumerate(self.operators):
+            for s in sigs:
+                try:
+                    if verify_attestation(op, att, s):
+                        ok.add(i)
+                        break
+                except Exception:
+                    continue
+        return len(ok)
+
+    def _require_quorum(self, att: dict, sigs, op_name: str):
+        n = self._approvals(att, sigs)
+        if n < self.threshold:
+            raise ValueError(
+                f"{op_name} attestation: {n} operator approvals, "
+                f"threshold is {self.threshold}")
 
     # -- public ops -------------------------------------------------------
     def balance_of(self, address: str, symbol: str) -> int:
         return self.state["balances"].get(address, {}).get(
             asset_id(symbol).hex(), 0)
 
-    def peg_in(self, att: dict, sig_hex: str) -> dict:
-        """Credit wrapped asset against a federation-signed MINT attestation."""
+    def peg_in(self, att: dict, sigs) -> dict:
+        """Credit wrapped asset against a quorum-signed MINT attestation.
+        sigs: one hex signature or a list of them (M-of-N quorum)."""
         if att.get("op") != "MINT":
             raise ValueError("attestation op != MINT")
         symbol = att["symbol"]
         get_coin(symbol)  # unknown asset -> KeyError
-        if not self._operator_ok(att, sig_hex):
-            raise ValueError("MINT attestation: operator signature invalid")
+        self._require_quorum(att, sigs, "MINT")
         stx = att["source_txid"]
         if stx in self.state["used_source_txids"]:
             raise ValueError("MINT attestation: source_txid already used")
@@ -268,24 +306,70 @@ class BridgeLedger:
         return {"symbol": symbol, "burned": amount, "burn_ref": burn_ref,
                 "balance": bal[aid]}
 
-    def peg_out_release(self, att: dict, sig_hex: str) -> dict:
-        """Record a federation-signed RELEASE attestation (source-chain
-        release txid) against a prior burn. Audit trail; no balance change."""
+    def peg_out_release(self, att: dict, sigs) -> dict:
+        """Record a quorum-signed RELEASE attestation for a source-chain
+        release. Hard requirements:
+          - burn_ref must name a real, previously unmatched peg_out_burn
+            for the same symbol,
+          - attestation amount must equal the burn amount exactly,
+          - the attestation hash must never have been recorded before
+            (replay protection),
+        On success, `locked` is decremented: the source coins left custody.
+        sigs: one hex signature or a list of them (M-of-N quorum)."""
         if att.get("op") != "RELEASE":
             raise ValueError("attestation op != RELEASE")
         symbol = att["symbol"]
         get_coin(symbol)
-        if not self._operator_ok(att, sig_hex):
-            raise ValueError("RELEASE attestation: operator signature invalid")
+        self._require_quorum(att, sigs, "RELEASE")
+        amount = att.get("amount")
+        if not isinstance(amount, int) or amount <= 0:
+            raise ValueError("RELEASE attestation: bad amount")
+        ah = attestation_hash(att).hex()
+        if ah in self.state["used_release_atts"]:
+            raise ValueError("RELEASE attestation: replay rejected")
+        burn_ref = att.get("burn_ref")
+        if not burn_ref:
+            raise ValueError("RELEASE attestation: missing burn_ref")
+        if burn_ref in self.state["used_burn_refs"]:
+            raise ValueError("RELEASE attestation: burn_ref already released")
+        burn = None
+        for e in self.state["log"]:
+            if e.get("op") == "peg_out_burn" and e.get("burn_ref") == burn_ref:
+                burn = e
+                break
+        if burn is None:
+            raise ValueError("RELEASE attestation: burn_ref has no burn")
+        if burn["symbol"] != symbol:
+            raise ValueError("RELEASE attestation: symbol != burn symbol")
+        if burn["amount"] != amount:
+            raise ValueError("RELEASE attestation: amount != burn amount")
+        a = self._asset(symbol)
+        if a["locked"] < amount:
+            raise ValueError("RELEASE attestation: locked underflow")
+        a["locked"] -= amount
+        self.state["used_burn_refs"].append(burn_ref)
+        self.state["used_release_atts"].append(ah)
         self._log({"op": "peg_out_release", "symbol": symbol,
-                   "amount": att["amount"],
-                   "source_release_txid": att["source_release_txid"],
-                   "burn_ref": att["burn_ref"],
-                   "attestation": attestation_hash(att).hex()})
+                   "amount": amount,
+                   "source_release_txid": att.get("source_release_txid"),
+                   "burn_ref": burn_ref,
+                   "attestation": ah})
         self._check_invariant(symbol)
         self.save()
-        return {"symbol": symbol, "released": att["amount"],
-                "source_release_txid": att["source_release_txid"]}
+        return {"symbol": symbol, "released": amount,
+                "source_release_txid": att.get("source_release_txid"),
+                "locked": a["locked"]}
+
+    def unreleased_burns(self, symbol: str = None) -> list:
+        """Burns awaiting a matching RELEASE (operator work queue)."""
+        used = set(self.state["used_burn_refs"])
+        out = []
+        for e in self.state["log"]:
+            if e.get("op") == "peg_out_burn" and \
+                    e.get("burn_ref") not in used and \
+                    (symbol is None or e.get("symbol") == symbol):
+                out.append(e)
+        return out
 
     def supply(self, symbol: str) -> dict:
         get_coin(symbol)

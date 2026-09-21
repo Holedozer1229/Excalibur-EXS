@@ -40,7 +40,13 @@ decimals         = source decimals, or 8 (GSF convention) when unknown
 1. Holder calls `peg_out_burn()` — wrapped balance debited immediately,
    `burned` increases, a `burn_ref` is issued.
 2. Operator releases the source coins and signs a `RELEASE` attestation
-   carrying the `source_release_txid`; the ledger records it as audit trail.
+   carrying the `source_release_txid` and the `burn_ref`.
+3. `BridgeLedger.peg_out_release()` verifies:
+   - a quorum (M-of-N, distinct operators) signed the attestation,
+   - `burn_ref` names a real, previously unmatched burn for the same
+     symbol, with the amount matching exactly,
+   - the attestation was never recorded before (replay protection).
+   On success `locked` is decremented — the source coins left custody.
 
 **Supply invariant** (enforced on every mutation, asserted in code):
 
@@ -51,9 +57,16 @@ locked(asset)      >= outstanding(asset)
 
 ## Trust model (explicit)
 
-- **Federated, not trustless.** Operator key(s) are trusted to verify
-  source-chain locks before signing MINT. Default is 1-of-1; the ledger is
-  append-only so any mis-issue is permanently auditable.
+- **Federated, not trustless — but quorum-gated.** Operator keys are
+  trusted to verify source-chain locks before signing MINT and to release
+  before signing RELEASE. A MINT or RELEASE is valid only with signatures
+  from at least `threshold` DISTINCT operators (configurable M-of-N,
+  persisted with the ledger; one operator signing twice counts once).
+  The ledger is append-only so any mis-issue is permanently auditable.
+- **Release integrity is machine-checked.** A RELEASE cannot reference a
+  nonexistent or already-released burn, cannot change the amount, and
+  cannot be replayed. `unreleased_burns()` gives operators the pending
+  work queue.
 - **Off-chain ledger, not consensus.** Genesis Fork v1 has no token script;
   wrapped balances live in this ledger (JSON-persisted), not in UTXOs.
 - **No live custody.** This module performs no real locks/releases; it is
@@ -70,13 +83,15 @@ asset (symbol, decimals, `asset_id`, source chain/contract metadata) —
 
 - `aetherion_tokens.json` — canonical coin registry (v1)
 - `aetherion_bridge.py` — registry, asset derivation, attestations
-  (secp256k1), `BridgeLedger` with supply-invariant enforcement
-- `test_aetherion_bridge.py` — 29 checks, all passing
+  (secp256k1), `BridgeLedger` with M-of-N quorum, release integrity checks,
+  and supply-invariant enforcement
+- `test_aetherion_bridge.py` — 42 checks (29 v1 + 13 v2 adversarial),
+  all passing
 - `AETHERION_CONNECT.md` — this spec
 
-## Future work (not in v1)
+## Future work (not in v2)
 
 - On-chain wrapped UTXOs (requires a token consensus upgrade on the fork).
-- N-of-M federation / threshold signatures instead of 1-of-N.
 - Automated source-chain lock verification (per-chain light clients) to
   shrink operator trust.
+- Operator key ceremony + rotation procedures.

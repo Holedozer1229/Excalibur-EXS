@@ -146,8 +146,128 @@ check("ledger persists",
       L3.supply("SKYNT")["locked"] == 7)
 os.remove(p)
 
+print(f"\n{len(PASS)} passed, {len(FAIL)} failed (v1 baseline)")
+if FAIL:
+    print("FAILURES:", FAIL)
+    sys.exit(1)
+
+# ============================================================ v2: quorum + release hardening
+random.seed(777)
+P1, P2, P3 = (random.getrandbits(256) for _ in range(3))
+OP1 = compress(priv_to_pub(P1)).hex()
+OP2 = compress(priv_to_pub(P2)).hex()
+OP3 = compress(priv_to_pub(P3)).hex()
+
+
+def qsig(priv, att):
+    return sign_attestation(priv, att)
+
+
+# 15. 2-of-3 quorum: single sig rejected
+Q = BridgeLedger([OP1, OP2, OP3], threshold=2)
+qa = make_mint_attestation("URUU", 1000, "qtx1", "gsfQ")
+try:
+    Q.peg_in(qa, qsig(P1, qa))
+    check("2-of-3: single sig rejected", False)
+except ValueError:
+    check("2-of-3: single sig rejected", True)
+
+# 16. 2-of-3: two distinct operator sigs accepted
+r = Q.peg_in(qa, [qsig(P1, qa), qsig(P2, qa)])
+check("2-of-3: two distinct sigs accepted", r["credited"] == 1000)
+
+# 17. one operator signing twice counts once
+qb = make_mint_attestation("URUU", 500, "qtx2", "gsfQ")
+try:
+    Q.peg_in(qb, [qsig(P1, qb), qsig(P1, qb)])
+    check("double-sig by same operator counts once", False)
+except ValueError:
+    check("double-sig by same operator counts once", True)
+
+# 18. non-operator sig rejected
+PX = random.getrandbits(256)
+qc = make_mint_attestation("URUU", 500, "qtx3", "gsfQ")
+try:
+    Q.peg_in(qc, [qsig(P1, qc), qsig(PX, qc)])
+    check("non-operator sig rejected", False)
+except ValueError:
+    check("non-operator sig rejected", True)
+
+# 19. threshold constructor bounds
+try:
+    BridgeLedger([OP1, OP2], threshold=3)
+    check("threshold > N rejected", False)
+except AssertionError:
+    check("threshold > N rejected", True)
+
+# 20. release against unknown burn_ref rejected
+burn = Q.peg_out_burn("gsfQ", "URUU", 400, "0xdest")
+rel = make_release_attestation("URUU", 400, "zrelX", "0xdest", "deadbeef" * 8)
+try:
+    Q.peg_out_release(rel, [qsig(P1, rel), qsig(P3, rel)])
+    check("release with unknown burn_ref rejected", False)
+except ValueError:
+    check("release with unknown burn_ref rejected", True)
+
+# 21. release with wrong amount rejected
+rel2 = make_release_attestation("URUU", 300, "zrelY", "0xdest", burn["burn_ref"])
+try:
+    Q.peg_out_release(rel2, [qsig(P1, rel2), qsig(P2, rel2)])
+    check("release with wrong amount rejected", False)
+except ValueError:
+    check("release with wrong amount rejected", True)
+
+# 22. release happy path: locked decremented
+rel3 = make_release_attestation("URUU", 400, "zrel1", "0xdest", burn["burn_ref"])
+rr = Q.peg_out_release(rel3, [qsig(P1, rel3), qsig(P3, rel3)])
+s = Q.supply("URUU")
+check("release decrements locked",
+      rr["locked"] == 600 and s["locked"] == 600 and
+      s["minted"] - s["burned"] == s["outstanding"] and
+      s["locked"] >= s["outstanding"])
+
+# 23. same release attestation replayed -> rejected
+try:
+    Q.peg_out_release(rel3, [qsig(P1, rel3), qsig(P3, rel3)])
+    check("release attestation replay rejected", False)
+except ValueError:
+    check("release attestation replay rejected", True)
+
+# 24. second release against same burn_ref (fresh attestation) -> rejected
+burn2 = Q.peg_out_burn("gsfQ", "URUU", 100, "0xdest2")
+relA = make_release_attestation("URUU", 100, "zrelA", "0xdest2", burn2["burn_ref"])
+Q.peg_out_release(relA, [qsig(P1, relA), qsig(P2, relA)])
+relB = make_release_attestation("URUU", 100, "zrelB", "0xdest2",
+                                burn2["burn_ref"])
+try:
+    Q.peg_out_release(relB, [qsig(P1, relB), qsig(P2, relB)])
+    check("burn_ref double-release rejected", False)
+except ValueError:
+    check("burn_ref double-release rejected", True)
+
+# 25. unreleased_burns work queue
+burn3 = Q.peg_out_burn("gsfQ", "URUU", 50, "0xdest3")
+pending = Q.unreleased_burns("URUU")
+check("unreleased_burns lists pending",
+      any(e["burn_ref"] == burn3["burn_ref"] for e in pending) and
+      not any(e["burn_ref"] == burn["burn_ref"] for e in pending))
+
+# 26. threshold persists across save/load
+p2 = "/tmp/test_aetherion_quorum.json"
+Qp = BridgeLedger([OP1, OP2, OP3], threshold=2, path=p2)
+Qp.save()
+Qq = BridgeLedger([OP1, OP2, OP3], path=p2)
+check("threshold persists", Qq.threshold == 2)
+qd = make_mint_attestation("SKYNT", 9, "qtx9", "gsfQ")
+try:
+    Qq.peg_in(qd, qsig(P1, qd))
+    check("loaded ledger enforces quorum", False)
+except ValueError:
+    check("loaded ledger enforces quorum", True)
+os.remove(p2)
+
 print(f"\n{len(PASS)} passed, {len(FAIL)} failed")
 if FAIL:
     print("FAILURES:", FAIL)
     sys.exit(1)
-print("ALL AETHERION BRIDGE TESTS PASS")
+print("ALL AETHERION BRIDGE TESTS PASS (v1 + v2)")
