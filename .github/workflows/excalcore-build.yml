@@ -1,0 +1,84 @@
+name: EXCALcore native builds
+
+# Builds real native EXCALcore binaries (Windows .exe + macOS) on GitHub-hosted
+# runners, smoke-tests each one (version/help, mining, RPC, clean shutdown),
+# and publishes the artifacts with SHA-256 checksums.
+#
+# PyInstaller can only emit binaries for the OS it runs on, so Windows and
+# macOS builds MUST happen on native runners -- never cross-built on Linux.
+
+on:
+  push:
+    paths:
+      - 'genesis-fork/excalcore.py'
+      - 'genesis-fork/genesis_fork.py'
+      - 'genesis-fork/chainstate.py'
+      - 'genesis-fork/mempool.py'
+      - 'genesis-fork/p2p.py'
+      - 'genesis-fork/node_rpc.py'
+      - 'genesis-fork/txscript.py'
+      - 'genesis-fork/secp256k1.py'
+      - 'genesis-fork/excal.py'
+      - 'genesis-fork/mldsa.py'
+      - '.github/workflows/excalcore-build.yml'
+      - '.github/workflows/smoke_excalcore.py'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: build (${{ matrix.label }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: windows-latest
+            label: windows-x64
+            exe: EXCALcore.exe
+          - runner: macos-latest
+            label: macos-arm64
+            exe: EXCALcore
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install pinned PyInstaller
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pyinstaller==6.22.3
+
+      - name: Build one-file binary
+        working-directory: genesis-fork
+        run: python -m PyInstaller --onefile --name EXCALcore --console excalcore.py
+
+      - name: Smoke test --version / --help
+        working-directory: genesis-fork
+        shell: bash
+        run: |
+          "./dist/${{ matrix.exe }}" --version
+          "./dist/${{ matrix.exe }}" --help
+
+      - name: Smoke test mining + RPC + shutdown
+        run: python "${{ github.workspace }}/.github/workflows/smoke_excalcore.py" "${{ github.workspace }}/genesis-fork/dist/${{ matrix.exe }}"
+
+      - name: SHA-256 checksum
+        shell: bash
+        run: |
+          cd genesis-fork/dist
+          (sha256sum "${{ matrix.exe }}" 2>/dev/null || shasum -a 256 "${{ matrix.exe }}") | tee "EXCALcore-${{ matrix.label }}.sha256"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: EXCALcore-${{ matrix.label }}
+          path: |
+            genesis-fork/dist/${{ matrix.exe }}
+            genesis-fork/dist/EXCALcore-${{ matrix.label }}.sha256
+          if-no-files-found: error
+          retention-days: 90
