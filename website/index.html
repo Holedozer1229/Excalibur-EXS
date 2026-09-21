@@ -106,6 +106,28 @@ pre .c{color:#6b6478} pre .k{color:var(--gold)}
 .step h4{margin:.8rem 0 .5rem;font-size:1rem}
 .step p{color:var(--muted);font-size:.88rem}
 
+/* wallet */
+.wallet-card{max-width:640px;margin:2rem auto 0;background:var(--panel);border:1px solid var(--line);
+  border-radius:14px;padding:2rem;text-align:center}
+.wallet-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin:1.4rem 0}
+.btn-fox{background:linear-gradient(135deg,#f6851b,#e2761b);color:#fff;border:none;cursor:pointer}
+.btn-fox:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(246,133,27,.4)}
+.btn-rainbow{background:linear-gradient(135deg,#7c5cff,#00c2ff);color:#fff;border:none;cursor:pointer}
+.btn-rainbow:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(124,92,255,.4)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.wallet-status{display:none;margin-top:1rem;padding:1rem 1.2rem;border:1px solid var(--line);border-radius:10px;
+  background:rgba(212,175,55,.05);font-size:.88rem;text-align:left}
+.wallet-status.on{display:block}
+.wallet-status .addr{font-family:'JetBrains Mono',monospace;color:var(--gold);word-break:break-all;font-size:.82rem}
+.wallet-status .row{display:flex;justify-content:space-between;gap:1rem;margin:.3rem 0}
+.wallet-status .lbl{color:var(--muted)}
+.wallet-qr{display:none;margin:1.2rem auto 0;flex-direction:column;align-items:center;gap:.9rem}
+.wallet-qr.on{display:flex}
+#wc-qr{background:#fff;padding:12px;border-radius:10px;line-height:0}
+.wallet-note{display:none;margin-top:1rem;font-size:.82rem;color:var(--ember);text-align:left}
+.wallet-note.on{display:block}
+.wallet-msg{min-height:1.4em;font-size:.85rem;color:var(--muted);margin-top:1rem}
+
 /* footer */
 footer{border-top:1px solid var(--line);padding:3rem 6vw;text-align:center;color:var(--muted);font-size:.82rem}
 footer .fbrand{font-family:'Cinzel',serif;color:var(--gold);font-size:1.05rem;margin-bottom:.6rem}
@@ -122,6 +144,7 @@ footer a{color:var(--muted)} footer a:hover{color:var(--gold)}
     <a href="#mining">Mining</a>
     <a href="#tokenomics">Tokenomics</a>
     <a href="#research">Research</a>
+    <a href="#wallet">Connect</a>
     <a class="nav-cta" href="https://github.com/Holedozer1229/Excalibur-EXS" target="_blank" rel="noopener">GitHub</a>
   </div>
 </nav>
@@ -192,7 +215,8 @@ python3 pkg/miner/tetra_pow_miner.py \
   <div class="eyebrow reveal">Tokenomics</div>
   <h2 class="title reveal">21 million. Fixed. Forever.</h2>
   <p class="lede reveal">No inflation schedule to quietly rewrite, no founder's premine to quietly dump.
-     Every coin enters through the forge.</p>
+     Sixty percent of the 21M is earned by miners through the forge; liquidity, treasury, and airdrop
+     shares are fixed at genesis — none minted for founders.</p>
   <div class="bars">
     <div class="bar-row reveal"><span class="lbl">⛏️ PoF Miners</span><div class="bar-track"><div class="bar-fill" data-w="60"></div></div><span class="pct">60%</span></div>
     <div class="bar-row reveal"><span class="lbl">💧 Liquidity</span><div class="bar-track"><div class="bar-fill" data-w="20"></div></div><span class="pct">20%</span></div>
@@ -217,6 +241,38 @@ python3 pkg/miner/tetra_pow_miner.py \
     <div class="card reveal"><span class="tag research">Research</span><span class="icon">⚡</span>
       <h3>TetraSHA-NI</h3><p>An experimental SHA-NI-accelerated hash: 128 rounds × 4-wide SHA-256 with per-round
       domain separation. 14.8× the reference kernel in lab measurement. New construction — cryptanalysis pending.</p></div>
+  </div>
+</section>
+
+<section class="block" id="wallet">
+  <div class="eyebrow reveal">Connect</div>
+  <h2 class="title reveal">Bring your own wallet.</h2>
+  <p class="lede reveal">Connect to view your address on this site. Nothing is signed, nothing moves —
+     connection only. Your keys never touch this page.</p>
+  <div class="wallet-card reveal">
+    <div class="wallet-btns">
+      <button class="btn btn-fox" id="btn-metamask" type="button">🦊 MetaMask</button>
+      <button class="btn btn-rainbow" id="btn-rainbow" type="button">🌈 Rainbow / WalletConnect</button>
+    </div>
+    <div class="wallet-status" id="wallet-status">
+      <div class="row"><span class="lbl">Wallet</span><span id="ws-provider">—</span></div>
+      <div class="row"><span class="lbl">Address</span><span class="addr" id="ws-address">—</span></div>
+      <div class="row"><span class="lbl">Chain</span><span id="ws-chain">—</span></div>
+      <div class="row" style="justify-content:center;margin-top:.8rem">
+        <button class="btn btn-ghost" id="btn-disconnect" type="button" style="padding:.6rem 1.6rem">Disconnect</button>
+      </div>
+    </div>
+    <div class="wallet-qr" id="wallet-qr">
+      <div id="wc-qr"></div>
+      <p style="font-size:.85rem;color:var(--muted);max-width:26rem">Scan with Rainbow or any WalletConnect wallet.
+         On mobile, tap below to open Rainbow directly.</p>
+      <div class="cta-row">
+        <a class="btn btn-rainbow" id="btn-rainbow-deep" href="#" style="padding:.8rem 1.8rem">Open in Rainbow</a>
+        <button class="btn btn-ghost" id="btn-wc-cancel" type="button" style="padding:.8rem 1.8rem">Cancel</button>
+      </div>
+    </div>
+    <div class="wallet-note" id="wallet-note"></div>
+    <div class="wallet-msg" id="wallet-msg"></div>
   </div>
 </section>
 
@@ -252,6 +308,152 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 const bo=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){
   e.target.querySelectorAll('.bar-fill').forEach(f=>f.style.width=f.dataset.w+'%');bo.disconnect()}}),{threshold:.3});
 bo.observe(document.querySelector('.bars'));
+</script>
+<script defer src="https://c0f4f41c-2f55-4863-921b-sdk-docs.github.io/cdn/metamask-sdk.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script defer>
+// ---- EXS wallet connect (shared helpers + MetaMask SDK) ----
+// WalletConnect Cloud project ID. Empty = Rainbow/WalletConnect button shows a
+// "needs project ID" notice instead of failing. Get one free at cloud.walletconnect.com.
+window.EXS_WC_PROJECT_ID = "";
+
+const $w = id => document.getElementById(id);
+const CHAIN_NAMES = {1:"Ethereum",10:"Optimism",137:"Polygon",42161:"Arbitrum One",8453:"Base",56:"BNB Chain",43114:"Avalanche C-Chain"};
+const chainLabel = id => {
+  const n = typeof id === "string" && id.startsWith("0x") ? parseInt(id, 16) : Number(id);
+  return Number.isNaN(n) ? String(id) : "chain " + n + (CHAIN_NAMES[n] ? " · " + CHAIN_NAMES[n] : "");
+};
+let exsProvider = null, exsName = "", exsMMSDK = null;
+
+window.exsSetMsg = t => { $w("wallet-msg").textContent = t || ""; };
+window.exsShowConnected = (name, provider, address, chainId) => {
+  exsProvider = provider; exsName = name;
+  $w("ws-provider").textContent = name;
+  $w("ws-address").textContent = address;
+  $w("ws-address").title = address;
+  $w("ws-chain").textContent = chainLabel(chainId);
+  $w("wallet-status").classList.add("on");
+  $w("wallet-qr").classList.remove("on");
+  window.exsSetMsg("Connected via " + name + ". Connection only — nothing will be signed or moved without your approval inside the wallet.");
+  if (provider && provider.on) {
+    provider.on("accountsChanged", accts => {
+      if (!accts || !accts.length) window.exsShowDisconnected();
+      else { $w("ws-address").textContent = accts[0]; $w("ws-address").title = accts[0]; }
+    });
+    provider.on("chainChanged", cid => { $w("ws-chain").textContent = chainLabel(cid); });
+    provider.on("disconnect", () => window.exsShowDisconnected());
+  }
+};
+window.exsShowDisconnected = () => {
+  exsProvider = null; exsName = "";
+  $w("wallet-status").classList.remove("on");
+  $w("wallet-qr").classList.remove("on");
+  window.exsSetMsg("");
+};
+window.exsActiveProvider = () => exsProvider;
+window.exsActiveName = () => exsName;
+window.exsActiveMMSDK = () => exsMMSDK;
+
+async function exsConnectMetaMask() {
+  window.exsSetMsg("Opening MetaMask…");
+  $w("wallet-note").classList.remove("on");
+  try {
+    if (typeof MetaMaskSDK !== "undefined") {
+      if (!exsMMSDK) exsMMSDK = new MetaMaskSDK.MetaMaskSDK({
+        dappMetadata: { name: "Excalibur $EXS", url: location.origin },
+        checkInstallationImmediately: false
+      });
+      const accounts = await exsMMSDK.connect(); // connect only — no signature requested
+      if (!accounts || !accounts.length) { window.exsSetMsg("No accounts returned by MetaMask."); return; }
+      const provider = exsMMSDK.getProvider();
+      const chainId = await provider.request({ method: "eth_chainId" });
+      window.exsShowConnected("MetaMask", provider, accounts[0], chainId);
+    } else if (window.ethereum) {
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      const chainId = await window.ethereum.request({ method: "eth_chainId" });
+      window.exsShowConnected("Injected wallet", window.ethereum, accounts[0], chainId);
+    } else {
+      window.exsSetMsg("");
+      $w("wallet-note").innerHTML = 'MetaMask not detected on this browser. <a href="https://metamask.io/download/" target="_blank" rel="noopener" style="color:var(--gold)">Install MetaMask</a>, or connect with Rainbow below once its project ID is configured.';
+      $w("wallet-note").classList.add("on");
+    }
+  } catch (e) {
+    window.exsSetMsg(e && e.code === 4001
+      ? "Connection rejected in the wallet."
+      : "MetaMask connection failed. " + (e && e.message ? e.message : e));
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  $w("btn-metamask").addEventListener("click", exsConnectMetaMask);
+  $w("btn-disconnect").addEventListener("click", async () => {
+    const p = window.exsActiveProvider(), name = window.exsActiveName();
+    try {
+      if (name === "MetaMask" && window.exsActiveMMSDK()) await window.exsActiveMMSDK().terminate();
+      else if (p && p.disconnect) await p.disconnect();
+    } catch (e) { /* UI clears regardless */ }
+    window.exsShowDisconnected();
+  });
+});
+</script>
+<script type="module">
+// ---- WalletConnect v2 (Rainbow deep link + QR) ----
+const btnRainbow = document.getElementById("btn-rainbow");
+const note = document.getElementById("wallet-note");
+const projectId = (window.EXS_WC_PROJECT_ID || "").trim();
+const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+if (!projectId) {
+  btnRainbow.disabled = true;
+  note.innerHTML = "🌈 Rainbow / WalletConnect is wired and ready, but needs a <b>WalletConnect Cloud project ID</b> (free at cloud.walletconnect.com) before it can pair. MetaMask above works fully right now.";
+  note.classList.add("on");
+} else {
+  let wcProvider = null;
+  const resetQR = () => {
+    document.getElementById("wallet-qr").classList.remove("on");
+    document.getElementById("wc-qr").innerHTML = "";
+  };
+  document.getElementById("btn-wc-cancel").addEventListener("click", async () => {
+    try { if (wcProvider) await wcProvider.disconnect(); } catch (e) {}
+    wcProvider = null;
+    resetQR();
+    window.exsSetMsg("");
+  });
+  btnRainbow.addEventListener("click", async () => {
+    window.exsSetMsg("Loading WalletConnect…");
+    try {
+      const { EthereumProvider } = await import("https://cdn.jsdelivr.net/npm/@walletconnect/ethereum-provider@2.25.0/+esm");
+      wcProvider = await EthereumProvider.init({
+        projectId,
+        showQrModal: false,
+        chains: [1],
+        metadata: {
+          name: "Excalibur $EXS",
+          description: "Proof-of-forge protocol — wallet connection only",
+          url: location.origin
+        }
+      });
+      wcProvider.on("display_uri", uri => {
+        // QR for desktop scanners
+        const qrEl = document.getElementById("wc-qr");
+        qrEl.innerHTML = "";
+        if (typeof QRCode !== "undefined") new QRCode(qrEl, { text: uri, width: 220, height: 220 });
+        // Rainbow mobile handoff — must fire from this direct user tap
+        const deep = document.getElementById("btn-rainbow-deep");
+        deep.href = "rainbow://wc?uri=" + encodeURIComponent(uri);
+        deep.style.display = isMobile ? "" : "none";
+        document.getElementById("wallet-qr").classList.add("on");
+        window.exsSetMsg(isMobile ? "Tap “Open in Rainbow” to approve in your wallet." : "Scan the QR with Rainbow or any WalletConnect wallet.");
+      });
+      const accounts = await wcProvider.enable(); // pairs only — no signature requested
+      if (!accounts || !accounts.length) { window.exsSetMsg("Pairing cancelled."); resetQR(); return; }
+      window.exsShowConnected("WalletConnect", wcProvider, accounts[0], wcProvider.chainId);
+    } catch (e) {
+      resetQR();
+      window.exsSetMsg("WalletConnect pairing failed. " + (e && e.message ? e.message : e));
+    }
+  });
+}
 </script>
 </body>
 </html>
