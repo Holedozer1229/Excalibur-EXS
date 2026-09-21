@@ -1,0 +1,46 @@
+name: Auto-bootstrap (dry-run)
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: auto-bootstrap
+  cancel-in-progress: true
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - name: Honest auto-bootstrap (no broadcast)
+        run: npm run bootstrap:auto
+        env:
+          BOOTSTRAP_LIVE: ""
+          ETHEREUM_RPC: https://ethereum.publicnode.com
+      - name: EIP console + L1→L2 URUU claim (dry-run)
+        run: |
+          npm run eip:console
+          npm run claim:eip-uruu
+          npm run umbrella:deploy
+          npm run skynt:btc
+        env:
+          CLAIM_LIVE: ""
+          ETHEREUM_RPC: https://ethereum.publicnode.com
+          ZKSYNC_RPC: https://mainnet.era.zksync.io
+      - uses: actions/upload-artifact@v4
+        with:
+          name: auto-bootstrap
+          path: |
+            public/treasure/auto-bootstrap.json
+            public/treasure/eip-conformance.json
+            public/treasure/commitment-chain.json
+            public/treasure/eip-uruu-bridge-claim.json
+            public/treasure/umbrella-recovery.json
+            public/treasure/skynt-as-bitcoin.json

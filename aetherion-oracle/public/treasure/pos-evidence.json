@@ -1,0 +1,105 @@
+{
+  "kind": "pos-evidence",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-31T21:54:00.210Z",
+  "mode": "dry-run",
+  "verdict": "EVIDENCE_ONLY",
+  "honestSummary": "Cross-reference binds Tetra-PoW tip 000df8343b0990ac… → CREATE2 0x1E4529cF… → stateSig → 137.190325 ETH proof ledger. No PoS block mined; CREATE2 not live.",
+  "tetraPow": {
+    "tipHash": "000df8343b0990ac36e363528bf53c784f053d54bbf00a6d7ca629dc822d87d1",
+    "height": 1,
+    "quantumRoot": "45454081da254c1ae443a6922480b7b73daab94228a071c11537476f1f84a03f",
+    "predictedL1InNodes": "0x1E4529cF826a79fd3b0E033Ff00dCDB3091c77B2",
+    "artifact": "/treasure/tetra-pow.json"
+  },
+  "predictedL1": {
+    "create2Address": "0x1E4529cF826a79fd3b0E033Ff00dCDB3091c77B2",
+    "create2Salt": "0x7c2bac1d",
+    "factory": "0x4e59b44847b379578588920cA78FbF26c0B4956C",
+    "hasCode": false,
+    "wei": "0",
+    "predictedBeaconSlot": 25884998,
+    "predictedExecutionBlock": 25878927,
+    "predictedAttestationHash": "0xbfddedc080957a82eee4f7aad8cc1f96e3e6d92dc84cb390cd2961931befb62e",
+    "liveExecutionBlock": 25878077
+  },
+  "booty137": {
+    "canonicalEth": 137.190325,
+    "classification": "proof_ledger_only",
+    "spendableOnL1": false,
+    "stateSig": "0x3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+    "skyntLedger": "skynt:262067626b978d9ae83188315005847b6b8546b6",
+    "vault": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+    "artifact": "/treasure/skynt-provenance-chain.json",
+    "provenanceVerdict": "PROOF-LOCKED — BTC/ETH genesis → SKYNT wallet → stateSig → 137 ETH; L1 release still required."
+  },
+  "crossReference": {
+    "attestationHash": "0x1821a13a8763c8464a6d1946506802cee822268f3b4f7702411f3a7c0c013229",
+    "links": [
+      {
+        "id": "tetra-tip-to-create2",
+        "label": "Tetra-PoW tip hash → predicted CREATE2 EXCAL",
+        "source": "000df8343b0990ac36e363528bf53c784f053d54bbf00a6d7ca629dc822d87d1",
+        "target": "0x1E4529cF826a79fd3b0E033Ff00dCDB3091c77B2",
+        "verified": true,
+        "detail": "excal quantum node anchor 0x1E4529cF826a79fd3b0E033Ff00dCDB3091c77B2 matches CREATE2 0x1E4529cF826a79fd3b0E033Ff00dCDB3091c77B2",
+        "href": "/treasure/tetra-pow.json"
+      },
+      {
+        "id": "create2-to-skynt-statesig",
+        "label": "CREATE2 salt lineage → SKYNT unified stateSig",
+        "source": "0x7c2bac1d",
+        "target": "0x3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+        "verified": true,
+        "detail": "Genesis salt 0x7c2bac1d binds EIP-7949 attestation to SKYNT proof chain stateSig",
+        "href": "/treasure/skynt-provenance-chain.json"
+      },
+      {
+        "id": "statesig-to-137-eth",
+        "label": "stateSig → 137 ETH proof ledger (NOT spendable L1)",
+        "source": "0x3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+        "target": "137.190325 ETH proof-ledger",
+        "verified": true,
+        "detail": "137.190325 ETH is SKYNT / stark-bridge proof-ledger only — not mined mainnet ETH",
+        "href": "/treasure/skynt-provenance-chain.json"
+      },
+      {
+        "id": "tetra-tip-to-pos-slot",
+        "label": "Tetra-PoW tip hash → predicted beacon slot (evidence)",
+        "source": "000df8343b0990ac36e363528bf53c784f053d54bbf00a6d7ca629dc822d87d1",
+        "target": "predicted-slot",
+        "verified": true,
+        "detail": "Deterministic slot offset from tip hash — not a broadcast validator attestation",
+        "href": "/treasure/tetra-pow.json"
+      }
+    ],
+    "tipHashAnchorsExcalNode": true,
+    "excalNodeMatchesCreate2": true,
+    "stateSigMatchesProvenance": true
+  },
+  "posMine": {
+    "attempted": true,
+    "blockProposed": false,
+    "attestationBroadcast": false,
+    "operatorFunded": false,
+    "operatorAddress": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+    "blockers": [
+      "EXCAL CREATE2 predicted address has no code on L1 — deploy requires operator gas.",
+      "Operator L1 wallet empty — no live PoS anchor broadcast possible.",
+      "137.190325 ETH remains proof-ledger / SKYNT in-app only — not spendable L1 ETH."
+    ]
+  },
+  "honesty": {
+    "doesNotMint137Eth": true,
+    "notSpendableL1Eth": true,
+    "create2NotDeployed": true,
+    "note": "PoS evidence cross-references Tetra-PoW tip to predicted L1 CREATE2 and 137 ETH proof ledger. No validator attestation was broadcast. No mainnet ETH was mined or claimed."
+  },
+  "next": [
+    "npm run pos:evidence — refresh cross-reference artifact",
+    "npm run tetra:mine — advance Tetra-PoW origin ledger",
+    "npm run excal:create2 — probe CREATE2 (dry-run default)",
+    "Fund operator L1 wallet with real ETH for gas before EXCAL_LIVE=1 CREATE2 broadcast.",
+    "Set POS_EVIDENCE_LIVE=1 to attempt live anchor probe (still fail-closed without gas)."
+  ]
+}

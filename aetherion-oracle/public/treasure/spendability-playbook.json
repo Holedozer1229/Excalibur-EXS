@@ -1,0 +1,427 @@
+{
+  "kind": "spendability-playbook",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-31T22:09:48.279Z",
+  "mode": "dry-run",
+  "verdict": "NOT_SPENDABLE",
+  "honestSummary": "137.190325 ETH remains proof-ledger only. Operator unfunded; no on-chain path unlocks canonical booty. Micro-dust (~0.013793 ETH total documented) cannot bridge the 137.190 ETH gap.",
+  "proofLedger": {
+    "canonicalEth": 137.190325,
+    "classification": "proof_ledger_only",
+    "spendableOnL1": false,
+    "stateSig": "0x3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+    "skyntLedger": "skynt:262067626b978d9ae83188315005847b6b8546b6",
+    "vault": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+    "skyntPortfolio": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+    "onChainL1TxFound": 0,
+    "provenanceVerdict": "PROOF-LOCKED — BTC/ETH genesis → SKYNT wallet → stateSig → 137 ETH; L1 release still required.",
+    "artifacts": [
+      "/treasure/skynt-provenance-chain.json",
+      "/treasure/zkstarknet-mainnet-claim.json",
+      "/treasure/stark-bridge-claim-1814332222_88b0.json",
+      "/treasure/tetra-pow.json"
+    ]
+  },
+  "l1Reality": {
+    "vaultL1Eth": 0.000004799693119737,
+    "vaultZkEth": 0.006664630444351097,
+    "operatorL1Eth": 0,
+    "skyntPortfolioL1Eth": 0.000155757356182537,
+    "vacuumStockEth": 0.007123148111589634,
+    "spendableCanonical": false,
+    "create2Predicted": "0x1E4529cF826a79fd3b0E033Ff00dCDB3091c77B2",
+    "create2HasCode": false,
+    "create2WeiEth": 0,
+    "operatorAddress": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+    "gapEth": 137.19032020030687,
+    "gapUsd": 342975.8005007672
+  },
+  "tetraCrossRef": {
+    "artifact": "/treasure/tetra-pow.json",
+    "tipHash": "000df8343b0990ac36e363528bf53c784f053d54bbf00a6d7ca629dc822d87d1",
+    "predictedL1": "0x1E4529cF826a79fd3b0E033Ff00dCDB3091c77B2",
+    "excalNodeMatchesCreate2": true,
+    "note": "Tetra-PoW tip → predicted CREATE2 cross-ref is evidence only. Does not mint or unlock 137 ETH."
+  },
+  "paths": [
+    {
+      "rank": 1,
+      "id": "external-operator-funding",
+      "title": "External operator funding (real ETH)",
+      "feasibility": "viable-with-real-funds",
+      "canUnlock137Eth": false,
+      "requiresExternalFunding": true,
+      "repoIntegration": true,
+      "summary": "Fund the operator EOA with real L1 ETH. Enables CREATE2 deploy, bridge inject, and zkSync finalize — but does NOT mint 137 ETH.",
+      "prerequisites": [
+        "Operator wallet with ≥ minimum deploy gas",
+        "Optional: vault EOA key for zkSync dust"
+      ],
+      "requirements": {
+        "operatorL1Eth": 0.0001321349808,
+        "artifact": "/treasure/mainnet-operator-status.json"
+      },
+      "blockers": [
+        "Operator has 0.000000 ETH — need ~0.0001 ETH for one CREATE2 deploy."
+      ],
+      "nextCommands": [
+        "Fund operator EOA",
+        "npm run mainnet",
+        "EXCAL_LIVE=1 npm run excal:create2"
+      ],
+      "honesty": {
+        "proofLedgerNotCollateral": true,
+        "doesNotMint137Eth": true,
+        "note": "Real ETH from outside the proof chain is the only honest way to pay L1 gas today."
+      }
+    },
+    {
+      "rank": 2,
+      "id": "zksync-vault-dust-withdraw",
+      "title": "zkSync vault dust → L1 (own vault key)",
+      "feasibility": "micro-dust-only",
+      "canUnlock137Eth": false,
+      "requiresExternalFunding": false,
+      "repoIntegration": true,
+      "summary": "Withdraw ~0.006665 ETH from vault on zkSync Era to L1. Micro-gas only.",
+      "prerequisites": [
+        "TREASURE_BRIDGE_PRIVATE_KEY for vault EOA",
+        "L1 gas for finalize (or prefunded operator)"
+      ],
+      "requirements": {
+        "vaultKey": true,
+        "operatorL1Eth": 0.0001321349808,
+        "artifact": "/treasure/claim-withdrawal-status.json"
+      },
+      "blockers": [
+        "Signer is not vault — cannot withdraw vault L2 balance without vault key.",
+        "137.190325 ETH is not in the vault zkSync balance."
+      ],
+      "nextCommands": [
+        "npm run claim:withdrawal",
+        "Set TREASURE_BRIDGE_PRIVATE_KEY for vault EOA"
+      ],
+      "honesty": {
+        "proofLedgerNotCollateral": true,
+        "doesNotMint137Eth": true,
+        "note": "Recovers documented dust only — not the 137 ETH proof ledger."
+      }
+    },
+    {
+      "rank": 3,
+      "id": "vacuum-leftover-stock",
+      "title": "Vacuum leftover stock (one-shot ~0.007 ETH)",
+      "feasibility": "micro-dust-only",
+      "canUnlock137Eth": false,
+      "requiresExternalFunding": false,
+      "repoIntegration": true,
+      "summary": "Engine self-fund from documented vacuum net — stock, not a wage. Covers small L1 ops once.",
+      "prerequisites": [
+        "Vault key or prefunded L1 gas",
+        "Leftover still in documented well"
+      ],
+      "requirements": {
+        "operatorL1Eth": 0,
+        "artifact": "/treasure/engine-self-fund-day.json"
+      },
+      "blockers": [
+        "After one real sweep the well is empty.",
+        "137 ETH ghost galleon excluded from vacuum loop."
+      ],
+      "nextCommands": [
+        "npm run vacuum:dust:once",
+        "npm run self-fund:day"
+      ],
+      "honesty": {
+        "proofLedgerNotCollateral": true,
+        "doesNotMint137Eth": true,
+        "note": "LAST_VACUUM_NET_WEI is a one-shot stock — not recurring income."
+      }
+    },
+    {
+      "rank": 4,
+      "id": "self-compound-berth",
+      "title": "Self-compound CREATE2 berth loop",
+      "feasibility": "micro-dust-only",
+      "canUnlock137Eth": false,
+      "requiresExternalFunding": true,
+      "repoIntegration": true,
+      "summary": "Compound documented leftover into predetermined CREATE2 berth. 137 ETH explicitly excluded.",
+      "prerequisites": [
+        "Extractable wei in compound loop",
+        "L1 gas for deploy"
+      ],
+      "requirements": {
+        "operatorL1Eth": 0.0001321349808,
+        "artifact": "/treasure/compound-status.json"
+      },
+      "blockers": [
+        "Ghost galleon 137 ETH not in compound loop.",
+        "Signer 0 ETH — deploy fail-closed."
+      ],
+      "nextCommands": [
+        "npm run compound:live"
+      ],
+      "honesty": {
+        "proofLedgerNotCollateral": true,
+        "doesNotMint137Eth": true,
+        "note": "Compounds own dust only — never the proof-ledger title."
+      }
+    },
+    {
+      "rank": 5,
+      "id": "genesis-attestation-loan",
+      "title": "Bitcoin genesis attestation loan (BIP-322 / BIP-173)",
+      "feasibility": "attestation-only",
+      "canUnlock137Eth": false,
+      "requiresExternalFunding": false,
+      "repoIntegration": true,
+      "summary": "Attestation credit up to 50 EXCAL ledger units + vacuum gas facility. Never sweeps genesis.",
+      "prerequisites": [
+        "BIP-322 bundle sealed",
+        "Vacuum stock for gas facility"
+      ],
+      "requirements": {
+        "artifact": "/treasure/genesis-loan-status.json"
+      },
+      "blockers": [
+        "Collateral is attestation structure — not UTXOs, not 137 ETH.",
+        "EXCAL is not 1:1 BTC. Cannot deposit proof ledger on Aave.",
+        "Never sweep 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa."
+      ],
+      "nextCommands": [
+        "npm run self-fund:genesis-loan"
+      ],
+      "honesty": {
+        "proofLedgerNotCollateral": true,
+        "neverSweepGenesis": true,
+        "doesNotMint137Eth": true,
+        "note": "Genesis loan mechanisms are sealed by BIP-322 attestation + BIP-173 costumes. Collateral is never the genesis UTXO. EXCAL is not 1-to-1 BTC. 137 ETH remains proof-ledger only. Caduceus stays on-origin."
+      }
+    },
+    {
+      "rank": 6,
+      "id": "aave-weth-collateral-borrow",
+      "title": "Aave V3 WETH collateralized borrow",
+      "feasibility": "viable-with-real-funds",
+      "canUnlock137Eth": false,
+      "requiresExternalFunding": true,
+      "repoIntegration": false,
+      "summary": "Deposit real WETH/stETH as collateral → borrow ETH for gas. Proof ledger is NOT accepted as collateral.",
+      "prerequisites": [
+        "≥ 0.0002 WETH (real, in wallet) to borrow ~0.0001 ETH at ~82.5% LTV",
+        "Healthy factor buffer above liquidation"
+      ],
+      "requirements": {
+        "collateralEth": 0.0001601636130909091,
+        "borrowEth": 0.0001321349808
+      },
+      "blockers": [
+        "No Aave integration in repo — operator must use app.aave.com manually.",
+        "137 ETH proof-ledger cannot be deposited — no private key, no on-chain balance.",
+        "Borrowing requires pre-existing real collateral unrelated to SKYNT attestations."
+      ],
+      "nextCommands": [
+        "Acquire real WETH separately",
+        "Deposit on Aave V3 Ethereum",
+        "Borrow ~0.0001 ETH for deploy gas"
+      ],
+      "honesty": {
+        "proofLedgerNotCollateral": true,
+        "doesNotMint137Eth": true,
+        "note": "Aave accepts on-chain assets only. Attestation JSON is not collateral."
+      }
+    },
+    {
+      "rank": 7,
+      "id": "kelp-restaking",
+      "title": "Kelp / restaking (rsETH, ksETH derivatives)",
+      "feasibility": "blocked",
+      "canUnlock137Eth": false,
+      "requiresExternalFunding": true,
+      "repoIntegration": false,
+      "summary": "No Kelp, Lido, or restaking integration hooks in this repo. Would require real staked ETH first.",
+      "prerequisites": [
+        "Real ETH to stake/restake",
+        "Third-party Kelp/EigenLayer integration (not present)"
+      ],
+      "requirements": {},
+      "blockers": [
+        "Zero Kelp/restaking code paths in aetherion-oracle-arcane.",
+        "Proof ledger cannot be restaked — not on-chain.",
+        "137 ETH title does not map to rsETH/ksETH balances."
+      ],
+      "nextCommands": [
+        "Not applicable without new integration + real staked ETH"
+      ],
+      "honesty": {
+        "proofLedgerNotCollateral": true,
+        "doesNotMint137Eth": true,
+        "note": "Restaking paths require real staked ETH — not in-app proof artifacts."
+      }
+    },
+    {
+      "rank": 8,
+      "id": "stark-bridge-claim",
+      "title": "claimStarkProof (stark-bridge release)",
+      "feasibility": "blocked",
+      "canUnlock137Eth": false,
+      "requiresExternalFunding": true,
+      "repoIntegration": true,
+      "summary": "Release 137 ETH FROM contract balance via claimStarkProof (valueWei=0). Vault is EOA — no contract balance.",
+      "prerequisites": [
+        "Deploy SphinxBootyBridge to vault",
+        "Contract must hold 137 ETH (it does not)",
+        "Valid stark proof + stateSig"
+      ],
+      "requirements": {
+        "operatorL1Eth": 0.0001321349808,
+        "liveEnvFlag": "INJECT_LIVE=1",
+        "artifact": "/treasure/zkstarknet-mainnet-claim.json"
+      },
+      "blockers": [
+        "Vault is EOA — claimStarkProof reverts.",
+        "No 137 ETH on-chain in bridge contract.",
+        "claim valueWei=0 — release from contract, not msg.value."
+      ],
+      "nextCommands": [
+        "npm run inject:booty",
+        "npm run claim:zkstarknet"
+      ],
+      "honesty": {
+        "proofLedgerNotCollateral": true,
+        "doesNotMint137Eth": true,
+        "note": "Software path exists; on-chain precondition (137 ETH in contract) is absent."
+      }
+    },
+    {
+      "rank": 9,
+      "id": "excal-create2-deploy",
+      "title": "EXCAL CREATE2 deploy (Tetra-PoW anchor)",
+      "feasibility": "viable-with-real-funds",
+      "canUnlock137Eth": false,
+      "requiresExternalFunding": true,
+      "repoIntegration": true,
+      "summary": "Deploy CamelotScavenger at predicted CREATE2. Anchors attestation — does not mint 137 ETH.",
+      "prerequisites": [
+        "~0.0001 ETH operator gas",
+        "EXCAL_LIVE=1 for broadcast"
+      ],
+      "requirements": {
+        "operatorL1Eth": 0.0001321349808,
+        "liveEnvFlag": "EXCAL_LIVE=1",
+        "artifact": "/treasure/eip7949-excal.json"
+      },
+      "blockers": [
+        "CREATE2 has no code until funded deploy.",
+        "137 ETH remains proof-ledger after deploy."
+      ],
+      "nextCommands": [
+        "npm run excal:create2",
+        "npm run tetra:mine"
+      ],
+      "honesty": {
+        "proofLedgerNotCollateral": true,
+        "doesNotMint137Eth": true,
+        "note": "CREATE2 deploy is an L1 anchor — not a mint of canonical booty."
+      }
+    },
+    {
+      "rank": 10,
+      "id": "proof-ledger-as-collateral",
+      "title": "Proof-ledger / stateSig as loan collateral",
+      "feasibility": "refused",
+      "canUnlock137Eth": false,
+      "requiresExternalFunding": false,
+      "repoIntegration": false,
+      "summary": "stateSig, SKYNT ledger, and stark-bridge JSON are attestation — not DeFi collateral.",
+      "prerequisites": [],
+      "requirements": {},
+      "blockers": [
+        "No lender accepts keccak(stateSig) as on-chain collateral.",
+        "137 ETH proof entries have no spendable L1 balance.",
+        "SKYNT wallet txs not indexed on public Ethereum L1."
+      ],
+      "nextCommands": [],
+      "honesty": {
+        "proofLedgerNotCollateral": true,
+        "doesNotMint137Eth": true,
+        "note": "Attestation may support off-chain credit narratives — never on-chain collateral."
+      }
+    },
+    {
+      "rank": 11,
+      "id": "bitcoin-genesis-sweep",
+      "title": "Bitcoin genesis UTXO sweep (1A1zP1…)",
+      "feasibility": "refused",
+      "canUnlock137Eth": false,
+      "requiresExternalFunding": false,
+      "repoIntegration": true,
+      "summary": "REFUSED — genesis coinbase is unspendable by consensus. Attestation/narrative bridge only.",
+      "prerequisites": [],
+      "requirements": {},
+      "blockers": [
+        "Bitcoin consensus makes genesis coinbase unspendable.",
+        "No private key — attestation is costume, not control.",
+        "Repo explicitly refuses sweep in genesisLoanMechanisms and umbrellaBackstop."
+      ],
+      "nextCommands": [
+        "npm run self-fund:genesis-loan (attestation only)"
+      ],
+      "honesty": {
+        "proofLedgerNotCollateral": true,
+        "neverSweepGenesis": true,
+        "doesNotMint137Eth": true,
+        "note": "Never sweep 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa. BIP-322 packages attestation — not spend authority."
+      }
+    }
+  ],
+  "rankedByFeasibility": [
+    "external-operator-funding",
+    "zksync-vault-dust-withdraw",
+    "vacuum-leftover-stock",
+    "self-compound-berth",
+    "genesis-attestation-loan",
+    "aave-weth-collateral-borrow",
+    "kelp-restaking",
+    "stark-bridge-claim",
+    "excal-create2-deploy",
+    "proof-ledger-as-collateral",
+    "bitcoin-genesis-sweep"
+  ],
+  "operatorPlan": {
+    "minimumL1GasEth": 0.0001321349808,
+    "minimumL1GasUsd": 0.33033745200000003,
+    "aaveCollateralForMinGasEth": 0.0001601636130909091,
+    "aaveBorrowForMinGasEth": 0.0001321349808,
+    "zksyncDustRecoverableEth": 0.006664630444351097,
+    "vacuumStockEth": 0.007123148111589634,
+    "combinedMicroEth": 0.013792578249060468,
+    "unlocks137Eth": false,
+    "note": "Fund operator with ≥0.0001 ETH OR deposit ≥0.0002 WETH on Aave to borrow gas. claimStarkProof valueWei=0. None of this releases 137.190325 ETH without bridge contract holding it."
+  },
+  "blockers": [
+    "137.190325 ETH is proof-ledger / SKYNT only — not spendable L1 ETH.",
+    "Vault L1 0.000005 ETH + zkSync 0.006665 ETH ≠ canonical booty.",
+    "Operator 0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6 has 0.000000 ETH on L1.",
+    "SKYNT wallet txs not on public Ethereum L1 — ledger-only.",
+    "EXCAL CREATE2 predicted address has no code.",
+    "No path converts proof-ledger attestations into 137 spendable L1 ETH without external real collateral or bridge contract funding."
+  ],
+  "next": [
+    "npm run spendability:audit — refresh this playbook",
+    "Fund operator EOA with real L1 ETH (simplest path)",
+    "Set TREASURE_BRIDGE_PRIVATE_KEY for vault to recover zkSync dust",
+    "npm run mainnet — full operator dry-run",
+    "npm run inject:booty — deploy bridge (needs gas)",
+    "Do NOT attempt genesis sweep — attestation only"
+  ],
+  "honesty": {
+    "doesNotMint137Eth": true,
+    "notSpendableL1Eth": true,
+    "proofLedgerNotCollateral": true,
+    "bitcoinGenesisAttestationOnly": true,
+    "kelpNotIntegrated": true,
+    "note": "137 ETH is documented in proof artifacts only. L1 spendability requires real on-chain ETH from external funding, real DeFi collateral, or a bridge contract actually holding 137 ETH — none of which exist today."
+  }
+}

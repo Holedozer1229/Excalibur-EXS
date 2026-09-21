@@ -1,0 +1,35 @@
+{
+  "name": "fair_lattice",
+  "description": "Fair lattice bonding curve + referral attributes — hosted by Aetherion React server",
+  "version": "0.1.0",
+  "hosted": true,
+  "generatedAt": "2026-08-30T21:22:17Z",
+  "idl": "/solana/fair_lattice.json",
+  "programBinary": "/solana/fair_lattice.so",
+  "programBinarySha256": "6c0e01bc77ccd2ec9a8a197d8b58ebaba35f80cd451a67b176bfa803983b127e",
+  "defaultCluster": "mainnet-beta",
+  "clusters": {
+    "mainnet-beta": {
+      "programId": "ALe6YqHU3rwxw8FQhmSRjdK9sxMLqbDd9zyRVNmTymo6",
+      "rpc": "https://api.mainnet-beta.solana.com",
+      "deployment": "/solana/deployments/mainnet-beta.json"
+    },
+    "devnet": {
+      "programId": "ALe6YqHU3rwxw8FQhmSRjdK9sxMLqbDd9zyRVNmTymo6",
+      "rpc": "https://api.devnet.solana.com",
+      "deployment": "/solana/deployments/devnet.json"
+    },
+    "localnet": {
+      "programId": "ALe6YqHU3rwxw8FQhmSRjdK9sxMLqbDd9zyRVNmTymo6",
+      "rpc": "http://127.0.0.1:8899",
+      "deployment": "/solana/deployments/localnet.json"
+    }
+  },
+  "active": {
+    "cluster": "devnet",
+    "programId": "ALe6YqHU3rwxw8FQhmSRjdK9sxMLqbDd9zyRVNmTymo6",
+    "rpc": "https://api.devnet.solana.com",
+    "lattice": "",
+    "mint": ""
+  }
+}

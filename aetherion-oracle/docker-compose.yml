@@ -1,0 +1,23 @@
+# Local Postgres for full-stack dev (pairs with hosted Supabase in production).
+# Usage: docker compose up -d postgres
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: excalibur-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: aetherion
+    volumes:
+      - excalibur_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d aetherion"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  excalibur_pg_data:

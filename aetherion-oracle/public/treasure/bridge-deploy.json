@@ -1,0 +1,34 @@
+{
+  "kind": "bridge-deploy",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-31T00:00:00.000Z",
+  "network": "ethereum-mainnet",
+  "chainId": 1,
+  "status": "NOT_DEPLOYED",
+  "deployer": null,
+  "bridgeAddress": null,
+  "deployTxHash": null,
+  "stateSig": "0x3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+  "vault": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+  "bootyWei": "137190325000000000000",
+  "bytecodeHash": null,
+  "preflight": {
+    "balanceEth": 0,
+    "estimatedGasEth": null,
+    "bytecodeBytes": 6430,
+    "blockers": [
+      "Connect wallet at /bridge/booty and run preflight",
+      "137 ETH is proof-ledger only — operator needs real L1 ETH for gas"
+    ]
+  },
+  "blockers": [
+    "No live deploy from CI — wallet must sign on mainnet with funded ETH",
+    "Vault is EOA until SphinxBootyBridge is deployed via wallet or npm run inject:booty"
+  ],
+  "zkClaim": {
+    "pipelinePath": "/treasure/zk-claim-pipeline.json",
+    "submitDryRun": "npm run zk:submit",
+    "submitLive": "ZK_CLAIM_LIVE=1 npm run zk:submit",
+    "note": "claimStarkProof requires deployed bridge with booty balance; msg.value MUST be 0."
+  }
+}

@@ -1,0 +1,8 @@
+name,type,segment,check_size,email,status,priority,notes
+Example Angel Deep Tech,angel,deep-tech,$50k,,todo,1,Replace with real contact — do not spam placeholders
+Example Semi Seed,fund,semiconductor,$250k,,todo,1,Warm intro preferred
+Example Crypto AI,fund,crypto-ai,$100k,,todo,2,Sealed oracle beachhead
+Example Defense Angel,angel,defense,$75k,,todo,2,Export counsel before outreach
+NSF SBIR Phase I,grant,grant,$275k,sbir@nsf.gov,todo,1,Portal submission — not SMTP
+DOE Microelectronics FOA,grant,grant,varies,,todo,2,Watch FOA calendar
+State semi matching,grant,grant,$100k,,todo,2,Map HQ state

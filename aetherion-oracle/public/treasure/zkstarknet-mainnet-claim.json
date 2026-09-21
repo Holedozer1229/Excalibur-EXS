@@ -1,0 +1,38 @@
+{
+  "kind": "sphinx-zkstarknet-mainnet-claim",
+  "version": "1.0.0",
+  "generatedAt": "2026-08-31T18:18:12.064Z",
+  "amountEth": 137.190325,
+  "amountWei": "137190325000000000000",
+  "source": {
+    "starknet": "starknet-mainnet",
+    "skyntLedger": "skynt:262067626b978d9ae83188315005847b6b8546b6",
+    "evmSource": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A"
+  },
+  "dest": {
+    "ethereumMainnet": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+    "zksyncEra": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+    "solanaDeployHint": ""
+  },
+  "stark": {
+    "traceRoot": "0x1078273c1d53844dbd884e219317da238da56586c40a55fd504d5b401778ffe4",
+    "transcript": "0x07ed3882145eea10191808b904a2efd9e2c1485230505110f27c05bfcd0464ec",
+    "stateSig": "0x3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+    "queriesVerified": 12,
+    "guardianQuorumMet": true
+  },
+  "lock": {
+    "commitment": "0x15be724ae4b2d79a879c2bfc9cf30c873ea9610e1d9b0afae769d84651463794",
+    "nonce": 1814332222,
+    "vaaHash": "0x5e3715ead09fe6b9345b8e83f8556fca8365ab11a68c07a92c229facf844fcf8"
+  },
+  "mainnetClaim": {
+    "network": "zksync-era-mainnet",
+    "chainId": 324,
+    "contract": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+    "function": "claimStarkProof",
+    "calldata": "0x7c8da06415be724ae4b2d79a879c2bfc9cf30c873ea9610e1d9b0afae769d84651463794000000000000000000000000000000000000000000000000000000006c24833e3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e91078273c1d53844dbd884e219317da238da56586c40a55fd504d5b401778ffe4",
+    "valueWei": "0",
+    "status": "READY_TO_BROADCAST"
+  }
+}

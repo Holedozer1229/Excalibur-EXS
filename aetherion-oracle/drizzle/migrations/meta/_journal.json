@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1789151433163,
+      "tag": "0000_uruu_dashboard_and_rls_withcheck",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789260737001,
+      "tag": "0001_guard_profile_credits",
+      "breakpoints": true
+    }
+  ]
+}

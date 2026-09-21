@@ -1,0 +1,277 @@
+{
+  "kind": "tetra-pow",
+  "version": "1.0.0",
+  "chain": "EXCAL Tetra-PoW",
+  "tick": "EXCAL",
+  "bits": 12,
+  "reward": 50,
+  "predictedL1": "0x1E4529cF826a79fd3b0E033Ff00dCDB3091c77B2",
+  "genesis": {
+    "height": 0,
+    "prevHash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "timestamp": 1725000000000,
+    "bits": 12,
+    "miner": "aetherion-genesis",
+    "reward": 50,
+    "tick": "EXCAL",
+    "quantumRoot": "3e0f5a207da18f8b2472eb29f1c4911b739fd696df2af312e087cd4e0e49aacf",
+    "nodes": [
+      {
+        "id": "satoshi",
+        "chain": "bitcoin-genesis",
+        "chainId": "btc-0",
+        "anchor": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+        "state": "ECHO",
+        "hexagram": "Approach",
+        "harmony": 0.53
+      },
+      {
+        "id": "eth",
+        "chain": "ethereum",
+        "chainId": 1,
+        "anchor": "0x262067626B978D9aE83188315005847B6B8546b6",
+        "state": "SILENCE",
+        "hexagram": "The Power of the Great",
+        "harmony": 0.53
+      },
+      {
+        "id": "zksync",
+        "chain": "zksync",
+        "chainId": 324,
+        "anchor": "0x5B6C9d85465Cc6FFe84039183872239657D90208",
+        "state": "ECHO",
+        "hexagram": "Innocence",
+        "harmony": 0.515
+      },
+      {
+        "id": "base",
+        "chain": "base",
+        "chainId": 8453,
+        "anchor": "0x4200000000000000000000000000000000000006",
+        "state": "SILENCE",
+        "hexagram": "The Marrying Maiden",
+        "harmony": 0.53
+      },
+      {
+        "id": "skynt-btc",
+        "chain": "bitcoin-skynt-costume",
+        "chainId": "btc",
+        "anchor": "14UbVkPzUJvWn8NN2Muv42Pvott28rDsV7",
+        "state": "ECHO",
+        "hexagram": "Difficulty at the Beginning",
+        "harmony": 0.53
+      },
+      {
+        "id": "ltc",
+        "chain": "litecoin",
+        "chainId": "ltc",
+        "anchor": "LNhYkxhpYyAa2w4XCVuDL3Th27FJHttkET",
+        "state": "SILENCE",
+        "hexagram": "Deliverance",
+        "harmony": 0.5
+      },
+      {
+        "id": "bch",
+        "chain": "bitcoincash",
+        "chainId": "bch",
+        "anchor": "14UbVkPzUJvWn8NN2Muv42Pvott28rDsV7",
+        "state": "ECHO",
+        "hexagram": "Gathering Together",
+        "harmony": 0.5
+      },
+      {
+        "id": "excal",
+        "chain": "excal-tetra",
+        "chainId": "tetra",
+        "anchor": "0x1E4529cF826a79fd3b0E033Ff00dCDB3091c77B2",
+        "state": "ECHO",
+        "hexagram": "Gathering Together",
+        "harmony": 0.53
+      }
+    ],
+    "nonce": 210,
+    "hash": "00007071422e740a33bdf4dccf8e00f15851940a363afad8ff384bfc2a205347"
+  },
+  "tip": {
+    "height": 1,
+    "prevHash": "00007071422e740a33bdf4dccf8e00f15851940a363afad8ff384bfc2a205347",
+    "timestamp": 1788200295929,
+    "bits": 12,
+    "miner": "origin-cpu",
+    "reward": 50,
+    "tick": "EXCAL",
+    "quantumRoot": "45454081da254c1ae443a6922480b7b73daab94228a071c11537476f1f84a03f",
+    "nodes": [
+      {
+        "id": "satoshi",
+        "chain": "bitcoin-genesis",
+        "chainId": "btc-0",
+        "anchor": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+        "state": "ECHO",
+        "hexagram": "Approach",
+        "harmony": 0.53
+      },
+      {
+        "id": "eth",
+        "chain": "ethereum",
+        "chainId": 1,
+        "anchor": "0x262067626B978D9aE83188315005847B6B8546b6",
+        "state": "SILENCE",
+        "hexagram": "Standstill",
+        "harmony": 0.53
+      },
+      {
+        "id": "zksync",
+        "chain": "zksync",
+        "chainId": 324,
+        "anchor": "0x5B6C9d85465Cc6FFe84039183872239657D90208",
+        "state": "ECHO",
+        "hexagram": "Peace",
+        "harmony": 0.53
+      },
+      {
+        "id": "base",
+        "chain": "base",
+        "chainId": 8453,
+        "anchor": "0x4200000000000000000000000000000000000006",
+        "state": "SILENCE",
+        "hexagram": "Return",
+        "harmony": 0.5
+      },
+      {
+        "id": "skynt-btc",
+        "chain": "bitcoin-skynt-costume",
+        "chainId": "btc",
+        "anchor": "14UbVkPzUJvWn8NN2Muv42Pvott28rDsV7",
+        "state": "ECHO",
+        "hexagram": "Fellowship with Men",
+        "harmony": 0.53
+      },
+      {
+        "id": "ltc",
+        "chain": "litecoin",
+        "chainId": "ltc",
+        "anchor": "LNhYkxhpYyAa2w4XCVuDL3Th27FJHttkET",
+        "state": "ECHO",
+        "hexagram": "Waiting",
+        "harmony": 0.53
+      },
+      {
+        "id": "bch",
+        "chain": "bitcoincash",
+        "chainId": "bch",
+        "anchor": "14UbVkPzUJvWn8NN2Muv42Pvott28rDsV7",
+        "state": "SILENCE",
+        "hexagram": "Keeping Still",
+        "harmony": 0.53
+      },
+      {
+        "id": "excal",
+        "chain": "excal-tetra",
+        "chainId": "tetra",
+        "anchor": "0x1E4529cF826a79fd3b0E033Ff00dCDB3091c77B2",
+        "state": "SILENCE",
+        "hexagram": "Pushing Upward",
+        "harmony": 0.53
+      }
+    ],
+    "nonce": 4606,
+    "hash": "000df8343b0990ac36e363528bf53c784f053d54bbf00a6d7ca629dc822d87d1"
+  },
+  "height": 1,
+  "supply": 100,
+  "nodes": [
+    {
+      "id": "satoshi",
+      "chain": "bitcoin-genesis",
+      "chainId": "btc-0",
+      "anchor": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+      "state": "ECHO",
+      "hexagram": "Approach",
+      "harmony": 0.53
+    },
+    {
+      "id": "eth",
+      "chain": "ethereum",
+      "chainId": 1,
+      "anchor": "0x262067626B978D9aE83188315005847B6B8546b6",
+      "state": "SILENCE",
+      "hexagram": "Standstill",
+      "harmony": 0.53
+    },
+    {
+      "id": "zksync",
+      "chain": "zksync",
+      "chainId": 324,
+      "anchor": "0x5B6C9d85465Cc6FFe84039183872239657D90208",
+      "state": "ECHO",
+      "hexagram": "Peace",
+      "harmony": 0.53
+    },
+    {
+      "id": "base",
+      "chain": "base",
+      "chainId": 8453,
+      "anchor": "0x4200000000000000000000000000000000000006",
+      "state": "SILENCE",
+      "hexagram": "Return",
+      "harmony": 0.5
+    },
+    {
+      "id": "skynt-btc",
+      "chain": "bitcoin-skynt-costume",
+      "chainId": "btc",
+      "anchor": "14UbVkPzUJvWn8NN2Muv42Pvott28rDsV7",
+      "state": "ECHO",
+      "hexagram": "Fellowship with Men",
+      "harmony": 0.53
+    },
+    {
+      "id": "ltc",
+      "chain": "litecoin",
+      "chainId": "ltc",
+      "anchor": "LNhYkxhpYyAa2w4XCVuDL3Th27FJHttkET",
+      "state": "ECHO",
+      "hexagram": "Waiting",
+      "harmony": 0.53
+    },
+    {
+      "id": "bch",
+      "chain": "bitcoincash",
+      "chainId": "bch",
+      "anchor": "14UbVkPzUJvWn8NN2Muv42Pvott28rDsV7",
+      "state": "SILENCE",
+      "hexagram": "Keeping Still",
+      "harmony": 0.53
+    },
+    {
+      "id": "excal",
+      "chain": "excal-tetra",
+      "chainId": "tetra",
+      "anchor": "0x1E4529cF826a79fd3b0E033Ff00dCDB3091c77B2",
+      "state": "SILENCE",
+      "hexagram": "Pushing Upward",
+      "harmony": 0.53
+    }
+  ],
+  "satoshi": {
+    "address": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+    "txid": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
+    "times": "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks",
+    "neverSweep": true,
+    "caduceusState": "ECHO",
+    "caduceusHexagram": "Approach",
+    "note": "Bitcoin genesis is quantum node 0. Attestation only. Keys are not ours. Never sweep. Cannot send 1A1zP1… to taproot or anywhere else.",
+    "notBtcPeg": "Ledger EXCAL is not Bitcoin, not wrapped BTC, and not 1-to-1 with any UTXO. Quoting the same genesis is a guest memorial, not a peg."
+  },
+  "honesty": {
+    "cpuMineable": true,
+    "ledgerExcalNotL1": true,
+    "p2pIsOriginGossip": true,
+    "doesNotMint137Eth": true,
+    "excalNotBtc": true,
+    "cannotSweepGenesis": true,
+    "notOneToOneBtc": true,
+    "note": "Ledger EXCAL is not Bitcoin, not wrapped BTC, and not 1-to-1 with any UTXO. Quoting the same genesis is a guest memorial, not a peg. Tetra-PoW mints ledger EXCAL on this origin. It is not the L1 ERC-20 until CREATE2 is funded. P2P is tab mesh + /api/tetra-pow gossip, not a global miner WAN."
+  }
+}

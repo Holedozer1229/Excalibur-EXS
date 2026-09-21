@@ -1,0 +1,84 @@
+{
+  "kind": "wormhole-event-horizon",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-29T20:53:21.853Z",
+  "mode": "dry-run",
+  "heuristic": {
+    "eventHorizon": "redeem gas ≈ transfer value — leftovers just above that line are the edge cases",
+    "reverseEntropy": "rank by leftover/value (score/valueWei); keep score > 0 in the tail, plus own unredeemed of any size",
+    "strangeAttractor": "cluster unredeemed VAAs, incomplete attestations, Portal wrapped-asset dust, and OUR emitter sequence gaps",
+    "note": "Attractors / event-horizon are a ranking heuristic, not a new physics engine."
+  },
+  "rpc": {
+    "ethereum": "https://ethereum.publicnode.com",
+    "zksync": "https://mainnet.era.zksync.io"
+  },
+  "api": {
+    "base": "https://api.wormholescan.io",
+    "ok": true,
+    "queriedAddresses": [
+      "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+      "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+      "ESs5u7DPeq7h8SMgYfL8t4M5X2QXc3PtjEUaMhADU9yt"
+    ],
+    "failClosed": false
+  },
+  "ownWallets": [
+    {
+      "address": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "role": "treasure_vault",
+      "chain": "evm"
+    },
+    {
+      "address": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+      "role": "skynt_portfolio",
+      "chain": "evm"
+    },
+    {
+      "address": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+      "role": "solana_derived_evm",
+      "chain": "evm"
+    },
+    {
+      "address": "ESs5u7DPeq7h8SMgYfL8t4M5X2QXc3PtjEUaMhADU9yt",
+      "role": "solana_deploy",
+      "chain": "solana"
+    }
+  ],
+  "liveGas": {
+    "l1WeiPerGas": "39844949",
+    "redeemGas": "180000",
+    "redeemCostWei": "7172090820000",
+    "source": "live"
+  },
+  "ownHarvestable": [],
+  "ownUnredeemed": [],
+  "ownOutboundUnredeemed": [],
+  "sequenceGaps": [],
+  "attractorMap": {
+    "label": "inventory_only",
+    "harvestable": false,
+    "sampledOperations": 50,
+    "unredeemedCount": 47,
+    "horizonTailCount": 0,
+    "horizonTailValueWei": "0",
+    "horizonTailUsd": 0,
+    "governorEnqueuedCount": 0,
+    "note": "Public abandoned-dust aggregates (redeem-cost tail). inventory_only — not a stranger claim list, not harvestable."
+  },
+  "plannedRedeems": [],
+  "blockers": [],
+  "honesty": {
+    "ownUnredeemedFound": false,
+    "ownHarvestableFound": false,
+    "cannotFundCanonicalBooty": true,
+    "canonicalBootyEth": 137.190325,
+    "canonicalBootyIsLedgerOnly": true,
+    "zkSyncDustWellIsDifferent": true,
+    "zkSyncLeftoverEth": 0.00712,
+    "ethUsdOracle": 2500,
+    "note": "Cannot fund 137 ETH from Wormhole dust we do not own. 0.00712 ETH leftover is zkSync/L1 dust, not Wormhole unless the API says so."
+  },
+  "note": "Arrr — no own unredeemed Wormhole dust on the horizon. Public tail is inventory_only. Cannot fund 137 ETH from dust we do not own."
+}

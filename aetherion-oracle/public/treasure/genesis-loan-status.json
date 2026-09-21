@@ -1,0 +1,146 @@
+{
+  "kind": "genesis-loan",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-30T05:18:39.741Z",
+  "selfFunding": true,
+  "bip322": {
+    "kind": "bip322-genesis-attest",
+    "version": "1.0.0",
+    "updatedAt": "2026-08-30T05:18:39.741Z",
+    "bip": "BIP-322",
+    "address": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+    "compressedPubkey": "03678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb6",
+    "message": "Address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa\nStatement: I assert control of Bitcoin address 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa.\nDate (UTC): 2025-08-26T00:00:00Z\nNonce: 7c2bac1d\n\nMessage:\nAiamsatoshi20250826\nAbcdeghijklmnopqrstuvwxyz0123456789\n",
+    "signatureB64": "H9rZMVmnl3wyEyt6AJ8SQHCQ+Vn152bkJ8HYXYWkcB64EIzAbkE50lAgDa10k2VtKzAioLJOPo3WalJK2Aezs40=",
+    "signatureHex": "0x1fdad93159a7977c32132b7a009f12407090f959f5e766e427c1d85d85a4701eb8108cc06e4139d250200dad7493656d2b3022a0b24e3e8dd66a524ad807b3b38d",
+    "messageHashKeccak": "0x7bfef73c9c4da3224fdd3af0c899717bc2ee17372f8361e7451152cfb887544e",
+    "messageHashSha256d": "b68e64aa423bbeae8b38ea9d4b7d7d4167053cd613865e44d88a2c25a46a6a32",
+    "eip2": {
+      "bytes": 65,
+      "header": 31,
+      "recoveryId": 0,
+      "ethereumV": 27,
+      "r": "0xdad93159a7977c32132b7a009f12407090f959f5e766e427c1d85d85a4701eb8",
+      "s": "0x108cc06e4139d250200dad7493656d2b3022a0b24e3e8dd66a524ad807b3b38d",
+      "lowS": true,
+      "conformant": true
+    },
+    "seal": "357f5362ed1925233f5a803be678e33c4caa2177ccc5417c13199159f463777e",
+    "honesty": {
+      "neverSweepGenesis": true,
+      "doesNotForgeSatoshiKey": true,
+      "coinbaseUnspendableByConsensus": true,
+      "note": "BIP-322 here packages the posted genesis attestation. It does not forge Satoshi keys, does not sweep 1A1zP1…, and does not make the genesis coinbase spendable — Bitcoin itself refuses that UTXO."
+    }
+  },
+  "bip173": {
+    "kind": "bip173-genesis-costume",
+    "version": "1.0.0",
+    "updatedAt": "2026-08-30T05:18:39.741Z",
+    "bip": "BIP-173",
+    "genesisP2pkh": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+    "addresses": [
+      {
+        "hrp": "bc",
+        "witnessVersion": 0,
+        "address": "bc1qvt5s0v2uhuna2sjnn84ldu8m2r4m3rcc4048ry",
+        "hash160Hex": "62e907b15cbf27d5425399ebf6f0fb50ebb88f18",
+        "role": "genesis-uncompressed-costume"
+      },
+      {
+        "hrp": "bc",
+        "witnessVersion": 0,
+        "address": "bc1qn7qnytxgsc3v5nxt9ff2y83g3pe84ff42stydj",
+        "hash160Hex": "9f81322cc88622ca4ccb2a52a21e2888727aa535",
+        "role": "genesis-compressed-costume"
+      },
+      {
+        "hrp": "bc",
+        "witnessVersion": 0,
+        "address": "bc1qycsxwcntj7xe46p33qc4qpvy0d4c234kjaxv20",
+        "hash160Hex": "262067626b978d9ae83188315005847b6b8546b6",
+        "role": "skynt-ledger-costume"
+      },
+      {
+        "hrp": "bc",
+        "witnessVersion": 0,
+        "address": "bc1qvt5s0v2uhuna2sjnn84ldu8m2r4m3rcc4048ry",
+        "hash160Hex": "62e907b15cbf27d5425399ebf6f0fb50ebb88f18",
+        "role": "posted-genesis-hash160-check"
+      }
+    ],
+    "genesisHash160MatchesPosted": true,
+    "reconstructedP2pkh": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+    "seal": "cdee2876b6c4b664728a6db14fc2abceb851c52f658bec6093cff966d24dae32",
+    "honesty": {
+      "neverSweepGenesis": true,
+      "costumeNotUtxoControl": true,
+      "excalNotBtc": true,
+      "note": "BIP-173 Bech32 (bc1q…) here is a re-encoding costume from hash160 bytes. It does not move the genesis P2PKH UTXO, does not prove private-key control, and is not a sweep path. EXCAL is not 1-to-1 BTC."
+    }
+  },
+  "mechanisms": [
+    {
+      "id": "attestation-credit",
+      "label": "Attestation Credit Loan",
+      "status": "open",
+      "collateral": "bip322-attestation-bundle",
+      "creditUnit": "EXCAL",
+      "creditCap": 50,
+      "creditAvailable": 50,
+      "advanceReady": true,
+      "bip322Seal": "357f5362ed1925233f5a803be678e33c4caa2177ccc5417c13199159f463777e",
+      "messageHashKeccak": "0x7bfef73c9c4da3224fdd3af0c899717bc2ee17372f8361e7451152cfb887544e",
+      "honesty": {
+        "neverSweepGenesis": true,
+        "collateralIsAttestationNotUtxo": true,
+        "excalNotBtc": true,
+        "doesNotMint137Eth": true
+      },
+      "note": "Advance up to 50 ledger EXCAL against the sealed BIP-322 bundle. Ledger EXCAL is not Bitcoin, not wrapped BTC, and not 1-to-1 with any UTXO. Quoting the same genesis is a guest memorial, not a peg. Bitcoin genesis is quantum node 0. Attestation only. Keys are not ours. Never sweep. Cannot send 1A1zP1… to taproot or anywhere else."
+    },
+    {
+      "id": "self-fund-gas",
+      "label": "Self-Fund Gas Facility",
+      "status": "open",
+      "collateral": "vacuum-leftover-stock",
+      "pileWei": "7123148111589634",
+      "transfersFunded": 7507,
+      "claimsFunded": 875,
+      "deploysFunded": 131,
+      "memorialGuest": {
+        "genesisAddress": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+        "bip322Seal": "357f5362ed1925233f5a803be678e33c4caa2177ccc5417c13199159f463777e",
+        "bip173Costume": "bc1qvt5s0v2uhuna2sjnn84ldu8m2r4m3rcc4048ry",
+        "beneficiaryExcluded": true
+      },
+      "honesty": {
+        "stockNotWage": true,
+        "usdPerDayAfterSweep": 0,
+        "requiresVaultKeyOrL1Gas": true,
+        "neverPaysGenesis": true,
+        "doesNotInvent137Eth": true
+      },
+      "note": "Line covers ~7507 L1 transfers / 875 claims / 131 deploys from stock 0.007123 ETH. Genesis is memorial guest only — never a beneficiary."
+    }
+  ],
+  "verdict": "READY",
+  "blockers": [
+    "137.190325 ETH is SKYNT / proof-ledger only — not spendable L1 for loan draws.",
+    "Operator L1 gas + vault key still required to broadcast any real self-fund transfer."
+  ],
+  "next": [
+    "npm run self-fund:genesis-loan",
+    "Review /treasure/genesis-loan-status.json",
+    "Attestation credit advances ledger EXCAL only — never BTC",
+    "Gas facility draws require vault key + operator L1 gas (FAIL_CLOSED without them)",
+    "Never sweep 1A1zP1… — coinbase unspendable by consensus"
+  ],
+  "honesty": {
+    "neverSweepGenesis": true,
+    "excalNotBtc": true,
+    "ghostGalleonEth": 137.190325,
+    "note": "Genesis loan mechanisms are sealed by BIP-322 attestation + BIP-173 costumes. Collateral is never the genesis UTXO. EXCAL is not 1-to-1 BTC. 137 ETH remains proof-ledger only. Caduceus stays on-origin."
+  },
+  "seal": "499f784bcc1ad30adc645535b73ebf3ccab44eaf03aab0df83acd1295025a9d6"
+}

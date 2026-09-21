@@ -1,0 +1,30 @@
+{
+  "name": "Mind of the Cosmos",
+  "version": "1.2.0",
+  "vercel": {
+    "project": "mind-of-the-cosmos",
+    "framework": "vite",
+    "path": "/mind-of-the-cosmos"
+  },
+  "loop": {
+    "extract": "uncharted own-wallet leftover above live fee",
+    "gasTankBps": 1500,
+    "compound": "surplus wraps to WETH and docks at the CREATE2 berth",
+    "watchMs": 60000
+  },
+  "flywheel": {
+    "path": "/treasure/uncharted-dust-flywheel.json",
+    "stock": true,
+    "usdPerDryRun": 18.09,
+    "unchartedExtractEth": 0.000112292461388795,
+    "honestUsdPerDayAfterSweep": 0
+  },
+  "selfFund": {
+    "path": "/treasure/engine-self-fund-day.json",
+    "usdPerDryRun": 18.09,
+    "stock": true,
+    "honestUsdPerDayAfterSweep": 0
+  },
+  "berth": "0xc1FDAd265861030256A913e4Ba4D1E98fD87dD04",
+  "ghostGalleonExcluded": true
+}

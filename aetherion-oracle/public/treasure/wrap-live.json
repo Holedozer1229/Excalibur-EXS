@@ -1,0 +1,62 @@
+{
+  "kind": "wrap-live",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-29T23:59:41.750Z",
+  "weth": {
+    "status": "Live",
+    "live": true,
+    "l1": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    "l2": "0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91",
+    "depositCalldata": "0xd0e30db0",
+    "explorer": "https://etherscan.io/token/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+  },
+  "mailbox": {
+    "diamond": "0x32400084C286CF3E17e7B677ea9583e60c1ace52",
+    "protocolLive": true,
+    "note": "requestL2Transaction is a live protocol call. Operator 0 L1 ETH does not disable a funded user wallet."
+  },
+  "uruu": {
+    "address": "0x5B6C9d85465Cc6FFe84039183872239657D90208",
+    "wrapStatus": "Not live",
+    "custodyWrapLive": false
+  },
+  "rails": [
+    {
+      "id": "weth",
+      "label": "ETH → WETH",
+      "live": true,
+      "detail": "Canonical L1 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2. User-signed deposit/withdraw."
+    },
+    {
+      "id": "l1-l2",
+      "label": "L1 ETH → zkSync",
+      "live": false,
+      "detail": "Mailbox 0x32400084C286CF3E17e7B677ea9583e60c1ace52 is live. Moves the signer's ETH, not 137.190325."
+    },
+    {
+      "id": "uruu-wuruu",
+      "label": "URUU → wURUU",
+      "live": false,
+      "detail": "No zkSync lock / Solana mint bridge. Status stays Not live."
+    },
+    {
+      "id": "curve",
+      "label": "wURUU bonding curve",
+      "live": false,
+      "detail": "Calculator + Solana devnet only. Mainnet program pending wallet SOL."
+    }
+  ],
+  "probes": {
+    "wethHasCode": true,
+    "mailboxHasCode": false,
+    "uruuHasCode": true,
+    "fairLatticeMainnet": false
+  },
+  "honesty": {
+    "wethWrapLive": true,
+    "uruuCustodyWrapLive": false,
+    "doesNotMint137Eth": true,
+    "doesNotMintWuruu": true,
+    "note": "137.190325 ETH is ledger-only. Wrapping WETH does not mint wURUU or claim Satoshi genesis."
+  }
+}

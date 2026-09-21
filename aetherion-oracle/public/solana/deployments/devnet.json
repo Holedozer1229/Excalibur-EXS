@@ -1,0 +1,6 @@
+{
+  "cluster": "devnet",
+  "programId": "ALe6YqHU3rwxw8FQhmSRjdK9sxMLqbDd9zyRVNmTymo6",
+  "rpc": "https://api.devnet.solana.com",
+  "note": "Run: CLUSTER=devnet npm run deploy:lattice-moon (wallet needs ≥3 SOL; faucet may rate-limit)."
+}

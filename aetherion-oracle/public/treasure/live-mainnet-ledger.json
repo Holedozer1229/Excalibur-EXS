@@ -1,0 +1,174 @@
+{
+  "kind": "live-mainnet-ledger",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-29T21:09:15.655Z",
+  "network": "mainnet",
+  "mode": "dry-run",
+  "heads": {
+    "ethereumBlock": 25863505,
+    "zksyncBlock": 71765634,
+    "baseBlock": 50624203,
+    "l1BaseFeeWei": "44669351",
+    "l1Gwei": 0.044669351
+  },
+  "accounts": [
+    {
+      "address": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "role": "treasure_vault",
+      "chain": "ethereum",
+      "chainId": 1,
+      "wei": "4799693119737",
+      "eth": 0.000004799693119737,
+      "usd": 0.01,
+      "hasCode": false,
+      "classification": "spendable_if_keyed"
+    },
+    {
+      "address": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+      "role": "skynt_portfolio",
+      "chain": "ethereum",
+      "chainId": 1,
+      "wei": "155757356182537",
+      "eth": 0.000155757356182537,
+      "usd": 0.39,
+      "hasCode": true,
+      "classification": "spendable_if_keyed"
+    },
+    {
+      "address": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+      "role": "operator",
+      "chain": "ethereum",
+      "chainId": 1,
+      "wei": "0",
+      "eth": 0,
+      "usd": 0,
+      "hasCode": false,
+      "classification": "empty"
+    },
+    {
+      "address": "0xc1FDAd265861030256A913e4Ba4D1E98fD87dD04",
+      "role": "create2_berth",
+      "chain": "ethereum",
+      "chainId": 1,
+      "wei": "0",
+      "eth": 0,
+      "usd": 0,
+      "hasCode": false,
+      "classification": "empty"
+    },
+    {
+      "address": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "role": "treasure_vault",
+      "chain": "zksync",
+      "chainId": 324,
+      "wei": "6664630444351097",
+      "eth": 0.006664630444351097,
+      "usd": 16.66,
+      "hasCode": false,
+      "classification": "spendable_if_keyed"
+    },
+    {
+      "address": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+      "role": "skynt_portfolio",
+      "chain": "zksync",
+      "chainId": 324,
+      "wei": "0",
+      "eth": 0,
+      "usd": 0,
+      "hasCode": false,
+      "classification": "empty"
+    },
+    {
+      "address": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+      "role": "operator",
+      "chain": "zksync",
+      "chainId": 324,
+      "wei": "0",
+      "eth": 0,
+      "usd": 0,
+      "hasCode": false,
+      "classification": "empty"
+    },
+    {
+      "address": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "role": "treasure_vault",
+      "chain": "base",
+      "chainId": 8453,
+      "wei": "5242643124427",
+      "eth": 0.000005242643124427,
+      "usd": 0.01,
+      "hasCode": false,
+      "classification": "spendable_if_keyed"
+    },
+    {
+      "address": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+      "role": "skynt_portfolio",
+      "chain": "base",
+      "chainId": 8453,
+      "wei": "17396747470619",
+      "eth": 0.000017396747470619,
+      "usd": 0.04,
+      "hasCode": true,
+      "classification": "spendable_if_keyed"
+    },
+    {
+      "address": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+      "role": "operator",
+      "chain": "base",
+      "chainId": 8453,
+      "wei": "0",
+      "eth": 0,
+      "usd": 0,
+      "hasCode": false,
+      "classification": "empty"
+    }
+  ],
+  "tokens": [
+    {
+      "chain": "ethereum",
+      "token": "USDC",
+      "address": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+      "raw": "811840",
+      "usd": 0.81
+    }
+  ],
+  "totals": {
+    "nativeEth": 0.006847826884248417,
+    "nativeUsd": 17.93,
+    "vacuumWellEth": 0.007123148111589634,
+    "vacuumWellUsd": 17.81,
+    "ghostGalleonEth": 137.190325,
+    "ghostGalleonSpendable": false
+  },
+  "berth": {
+    "address": "0xc1FDAd265861030256A913e4Ba4D1E98fD87dD04",
+    "wei": "0",
+    "hasCode": false,
+    "empty": true
+  },
+  "wormholeOwnOps": 0,
+  "operator": {
+    "address": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+    "l1Wei": "0",
+    "canBroadcast": false
+  },
+  "signer": {
+    "present": true,
+    "source": "solana_keypair",
+    "address": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6"
+  },
+  "anchor": {
+    "action": "post_hash",
+    "executable": false,
+    "blocker": "dry_run_default",
+    "detail": "Ledger is live-read from mainnet RPCs. Hash post stays dry-run until LEDGER_LIVE + gas."
+  },
+  "honesty": {
+    "liveRpc": true,
+    "doesNotMintCanonicalBooty": true,
+    "cannotBroadcastWithoutGas": true,
+    "note": "This ledger is a live RPC snapshot. 137 ETH stays ledger-only. Operator 0xf8F3… must hold L1 ETH to post the hash on-chain."
+  },
+  "note": "Arrr — mainnet is read live. Dust is real; the operator has 0 L1 ETH so nothing broadcasts. 137 ETH is not here.",
+  "hash": "0x116029caa4ad570c085d8d92cdcce98a3e83a6cdf11f1ea7773d2641458b6da5"
+}

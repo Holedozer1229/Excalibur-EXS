@@ -1,0 +1,35 @@
+{
+  "title": "Black Pearl Booty Manifest — Rollup Funding Ledger",
+  "captain": "Captain Excalibur",
+  "motto": "Plunder the lattice · seal the loot · sail the zkEVM",
+  "vault": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+  "generatedAt": "2026-08-29T18:20:00.000Z",
+  "rollupSolBudget": 3,
+  "mainnetSolBudget": 2286,
+  "ethUsdOracle": 2500,
+  "solUsdOracle": 150,
+  "canonicalEthBooty": 137.190325,
+  "guardians": [
+    "Blackbeard",
+    "Anne Bonny",
+    "Calico Jack",
+    "Bartholomew",
+    "Mary Read",
+    "Henry Morgan",
+    "Long John"
+  ],
+  "proofs": [
+    { "file": "davy_jones_claim_receipt_1b27d2f7_9a45.json", "kind": "davy_jones_receipt", "eth": 137, "verified": true },
+    { "file": "MANIFEST_f42c.json", "kind": "unity_manifest", "eth": 137, "verified": true },
+    { "file": "zkstarknet-mainnet-claim.json", "kind": "stark_bridge", "eth": 137.190325, "verified": true },
+    { "file": "stark-bridge-claim-1814332222_88b0.json", "kind": "stark_bridge", "eth": 137.190325, "verified": true },
+    { "file": "wormhole_vaa_47fa.json", "kind": "wormhole_vaa", "eth": 0.137190325, "verified": true },
+    { "file": "layerzero_delivery_079b.json", "kind": "layerzero_delivery", "eth": 0.137190325, "verified": true },
+    { "file": "claim_tx_eba9.json", "kind": "claim_tx", "eth": 0.13719, "verified": true },
+    { "file": "vaa_broadcast_record_89b9.json", "kind": "vaa_broadcast", "eth": 0.13719, "verified": true },
+    { "file": "zkurru-treasure-map-proofs_5939.json", "kind": "treasure_map", "eth": 0, "verified": true },
+    { "file": "spectral-proof-epoch-52-blk962218_b37c.json", "kind": "spectral_proof", "eth": 0, "verified": true },
+    { "file": "genesis-mainnet_9334.json", "kind": "genesis", "eth": 0, "verified": true }
+  ],
+  "provenanceNotice": "FAIL-CLOSED: Mathematical commitments establish intent geometry. On-chain EOA authorization and L1 deposit evidence still required for mainnet claims."
+}

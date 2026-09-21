@@ -1,0 +1,35 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Solana / Anchor build artifacts
+solana/fair_lattice/target/
+solana/fair_lattice/test-ledger/
+solana/fair_lattice/.anchor/
+solana/fair_lattice/node_modules/
+
+# Test output
+test-results/
+test-ledger/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.vercel

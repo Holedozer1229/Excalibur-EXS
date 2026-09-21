@@ -1,0 +1,22 @@
+{
+  "function": "submitVAA",
+  "contract": "SphinxWormholeBridge",
+  "to": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+  "amount_wei": 137190325000000000,
+  "amount_eth": 0.13719,
+  "nonce": "4af76f3ea3b7ea20aeee83d2c47786cf4f95fa82e08408906d8ac93befd64010",
+  "vaa_hash": "223775e70e6a77718aa35b95324d8c5249333ee1c1b468e1b1110089ebe4d958",
+  "proof_bundle": "20ecfca9d3c65a384cccb47e078c944e263c23274dd452b8cbc08bf07cfba628",
+  "agg_sig": "34272458ef594042eb57262091d23b58569aa02d08c2bd22897080f725e1aa20",
+  "guardian_set_index": 0,
+  "signed_guardians": [
+    "guardian_00",
+    "guardian_01",
+    "guardian_02",
+    "guardian_03",
+    "guardian_04"
+  ],
+  "calldata_hex": "0x223775e70e6a77718aa35b95324d8c5249333ee1c1b468e1b1110089ebe4d95820ecfca9d3c65a384cccb47e078c944e263c23274dd452b8cbc08bf07cfba62834272458ef594042eb57262091d23b58569aa02d08c2bd22897080f725e1aa20000000000000000000000000c5a47c9adab637d1caa791cce193079d22c8cb2000000000000000000000000000000000000000000000000001e765dfac3ed200",
+  "broadcast_ts": 1753747200,
+  "status": "SIGNED_READY_TO_BROADCAST"
+}

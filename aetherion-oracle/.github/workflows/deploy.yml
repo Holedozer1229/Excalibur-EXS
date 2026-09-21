@@ -1,0 +1,89 @@
+name: Deploy full stack
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+      VITE_PAYMENTS_CLIENT_TOKEN: ${{ secrets.VITE_PAYMENTS_CLIENT_TOKEN }}
+      VITE_SITE_URL: https://www.excaliburcrypto.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Run deploy runbook (build + test)
+        run: bash ./scripts/deploy-runbook.sh
+        env:
+          SMOKE_ONLY: "1"
+          VERIFY_CUSTOM_DOMAIN: "0"
+          VERCEL_TOKEN: ""
+          SUPABASE_ACCESS_TOKEN: ""
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_PRODUCTION: "1"
+        run: |
+          if [ -z "${VERCEL_TOKEN:-}" ]; then
+            echo "Skip Vercel CLI deploy — no VERCEL_TOKEN secret"
+            exit 0
+          fi
+          DEPLOY_URL=$(npx vercel@latest deploy --prod --token "$VERCEL_TOKEN" \
+            --yes \
+            ${VERCEL_ORG_ID:+--scope "$VERCEL_ORG_ID"} \
+            ${VERCEL_PROJECT_ID:+--project "$VERCEL_PROJECT_ID"})
+          echo "Deployed: $DEPLOY_URL"
+          for domain in www.excaliburcrypto.com excaliburcrypto.com; do
+            npx vercel@latest alias set "$DEPLOY_URL" "$domain" --token "$VERCEL_TOKEN" \
+              ${VERCEL_ORG_ID:+--scope "$VERCEL_ORG_ID"} \
+              && echo "Aliased $domain → $DEPLOY_URL" \
+              || echo "Warning: could not alias $domain (remove from legacy Vercel project first)"
+          done
+
+      - name: Verify custom domain serves Aetherion SPA
+        run: bash ./scripts/verify-custom-domain.sh
+        env:
+          SMOKE_CUSTOM_DOMAIN: https://www.excaliburcrypto.com
+
+      - uses: supabase/setup-cli@v1
+
+      - name: Push Supabase migrations + edge functions
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          if [ -z "${SUPABASE_ACCESS_TOKEN:-}" ]; then
+            echo "Skip Supabase deploy — no SUPABASE_ACCESS_TOKEN secret"
+            exit 0
+          fi
+          supabase link --project-ref "${SUPABASE_PROJECT_REF}" --password "${SUPABASE_DB_PASSWORD}"
+          supabase db push
+          for fn in tart-claims-worker aetx-claims-worker founder-offer stripe-webhook \
+            stripe-checkout payments-webhook track-funnel-event create-checkout \
+            create-portal-session tarot-reading chat-stream; do
+            if [ -d "supabase/functions/$fn" ]; then
+              supabase functions deploy "$fn" --project-ref "${SUPABASE_PROJECT_REF}"
+            fi
+          done
+
+      - name: Smoke verify production routes
+        run: |
+          SMOKE_ONLY=1 VERIFY_CUSTOM_DOMAIN=0 SMOKE_BASE_URL=https://aetherion-oracle-arcane.vercel.app \
+            bash ./scripts/deploy-runbook.sh || true

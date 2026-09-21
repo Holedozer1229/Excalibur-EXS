@@ -1,0 +1,441 @@
+{
+  "kind": "sphinx-zkevm-stark-bridge-claim",
+  "exportedAt": "2026-08-10T16:11:14.296Z",
+  "stateSig": "0x3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+  "lock": {
+    "source": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+    "l2Dest": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+    "amountEth": 137.190325,
+    "amountWei": "137190325000000000000",
+    "commitment": "15be724ae4b2d79a879c2bfc9cf30c873ea9610e1d9b0afae769d84651463794"
+  },
+  "vaa": {
+    "sourceChain": "skynt-genesis-mainnet",
+    "destChain": "ethereum",
+    "sourceAddr": "skynt:262067626b978d9ae83188315005847b6b8546b6",
+    "destAddr": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+    "l2BridgeDest": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+    "amountSkynt": "14068192233807430",
+    "amountEthGwei": "137190325000",
+    "nonce": 1814332222,
+    "timestamp": 1786378260,
+    "guardianSetIndex": 0,
+    "hash": "5e3715ead09fe6b9345b8e83f8556fca8365ab11a68c07a92c229facf844fcf8",
+    "signatures": [
+      "0x551426f380f5bf2ce80d21933bc8b02d0f80b12ecc07a26cb5919f1d63a477dc300e82be67bdb77f895ed47371d95d57722457276ccd4f0f33ff3afa25c7dd541b",
+      "0x1858f9ae1b55d739d8d93747f9cb1f45534078b142333029b6d3c485ea065efcd2b07e3951d664284434a490b67c197c2c0ecba9e83db5a8858f6d998956bed01c",
+      "0xabe089a062aac55aef077c498dc87eaf23c443a3757efcbae941696b7788cf742be25b85f0ecc6c44ee496a62636b68e926511f4c38a7c84deb669da970ff1281b",
+      "0x9786d38f9d1d4c4fed003ecc486428db696cd927a5ccfedf00e4818571e39a84be04f89a5d7a5dda8f21f344bc7ed5bf99949fe02ff94d3a8002da94876070341c",
+      "0x60ceea9e525047155e46d5b4672d2ad8fb7a20003045d045920d6a791fa684207340e08ab92ce4c303f7049306460f548703d8c00c5f0a13721afb205abb06f01b",
+      "0xb7f1a10e06e1e0ac8f5ece69f4a6ef9269b26119644a6bec960224c29b84f058a1073b15b561fd499b34abaa6da19a3196d902782d3afd3951836f8ced2a830c1c",
+      "0xe7faab69e0fb7a9a7e175f71591262a4cd6b8bfcb1bafdfa42b692cd84c0aab0ba59bef2786d55af27ed69bf059f0691db9f46125b93223fdf4ebf2a85a25f8c1b"
+    ]
+  },
+  "guardianQuorum": {
+    "signedStake": 8300000,
+    "totalStake": 8300000,
+    "threshold": ">2/3",
+    "met": true
+  },
+  "starkProof": {
+    "traceLength": 18,
+    "traceRoot": "1078273c1d53844dbd884e219317da238da56586c40a55fd504d5b401778ffe4",
+    "transcript": "07ed3882145eea10191808b904a2efd9e2c1485230505110f27c05bfcd0464ec",
+    "queries": [
+      {
+        "index": 0,
+        "leaf": "dfe696c51a71ed6c3190351a216828707eea89dd41a40cac3fd7ad15ea03f940",
+        "proof": [
+          "5f53c072fc054e72532af31bf90ca8f8b30ea0843ef60052b87e34e44c1385a0",
+          "ec7f80016d32e3fa850851926bdc844a0c6ab8798fa2815a846e26869e2b52f8",
+          "3c4ce69fd60561aff6b3476636af9e6c1b7bc03253f06e3fb8d75921e3ca6e10",
+          "713f1665ff86dc9368afdeeae74319b375cef7572ff46ce3fd5d4d59a78be6a4",
+          "9a662f0bbebc93a5f7e4b3a7e2a0e3fed08cb8feae369bd574bed9ae2323e668"
+        ],
+        "verified": true
+      },
+      {
+        "index": 1,
+        "leaf": "5f53c072fc054e72532af31bf90ca8f8b30ea0843ef60052b87e34e44c1385a0",
+        "proof": [
+          "dfe696c51a71ed6c3190351a216828707eea89dd41a40cac3fd7ad15ea03f940",
+          "ec7f80016d32e3fa850851926bdc844a0c6ab8798fa2815a846e26869e2b52f8",
+          "3c4ce69fd60561aff6b3476636af9e6c1b7bc03253f06e3fb8d75921e3ca6e10",
+          "713f1665ff86dc9368afdeeae74319b375cef7572ff46ce3fd5d4d59a78be6a4",
+          "9a662f0bbebc93a5f7e4b3a7e2a0e3fed08cb8feae369bd574bed9ae2323e668"
+        ],
+        "verified": true
+      },
+      {
+        "index": 2,
+        "leaf": "deeefb778fd54b8f29cdf23542ee2b684794aea83680aa1fdf28a0f02af336e0",
+        "proof": [
+          "90b16d18f2025dc2e16b3cb7b50c444e13a8fe9d3db0c2a2ef035067777be628",
+          "1fbc08eb977927dcf6dd214f1cef24601e381b7ce481d81cbed2cfc250f67c80",
+          "3c4ce69fd60561aff6b3476636af9e6c1b7bc03253f06e3fb8d75921e3ca6e10",
+          "713f1665ff86dc9368afdeeae74319b375cef7572ff46ce3fd5d4d59a78be6a4",
+          "9a662f0bbebc93a5f7e4b3a7e2a0e3fed08cb8feae369bd574bed9ae2323e668"
+        ],
+        "verified": true
+      },
+      {
+        "index": 3,
+        "leaf": "90b16d18f2025dc2e16b3cb7b50c444e13a8fe9d3db0c2a2ef035067777be628",
+        "proof": [
+          "deeefb778fd54b8f29cdf23542ee2b684794aea83680aa1fdf28a0f02af336e0",
+          "1fbc08eb977927dcf6dd214f1cef24601e381b7ce481d81cbed2cfc250f67c80",
+          "3c4ce69fd60561aff6b3476636af9e6c1b7bc03253f06e3fb8d75921e3ca6e10",
+          "713f1665ff86dc9368afdeeae74319b375cef7572ff46ce3fd5d4d59a78be6a4",
+          "9a662f0bbebc93a5f7e4b3a7e2a0e3fed08cb8feae369bd574bed9ae2323e668"
+        ],
+        "verified": true
+      },
+      {
+        "index": 5,
+        "leaf": "c48d9c567d9cec521383cb9f7528a815c6193f3f7c6cb032a85799f41368a4bc",
+        "proof": [
+          "b3dcfd79f8ee4a1fbe7fbb35c79ba903163f1451a70c07af43e18e5c42c15a64",
+          "cc1c9326b9f448d7db56c734b30e376b896902d6db0ff6e785dcde5acf5f7544",
+          "aaa5bef4289cb8bc9c841ed264ddf7b82d54f462fdcecafc51e23f5d8d0146a0",
+          "713f1665ff86dc9368afdeeae74319b375cef7572ff46ce3fd5d4d59a78be6a4",
+          "9a662f0bbebc93a5f7e4b3a7e2a0e3fed08cb8feae369bd574bed9ae2323e668"
+        ],
+        "verified": true
+      },
+      {
+        "index": 6,
+        "leaf": "5c4198f46bb342951cf886e7c744fa2e2906a6bd05ded3c5dcae627bdca854a8",
+        "proof": [
+          "85796e477694ddfa55f38a900a7cbe8cbd1ded067fc1db5a0e7b5beb5ddc8790",
+          "3deefd93b9788dda4f0ae53706021af56aace1050c2c7d3a0444095458ffaf3c",
+          "aaa5bef4289cb8bc9c841ed264ddf7b82d54f462fdcecafc51e23f5d8d0146a0",
+          "713f1665ff86dc9368afdeeae74319b375cef7572ff46ce3fd5d4d59a78be6a4",
+          "9a662f0bbebc93a5f7e4b3a7e2a0e3fed08cb8feae369bd574bed9ae2323e668"
+        ],
+        "verified": true
+      },
+      {
+        "index": 9,
+        "leaf": "6ea2620c28d10407e2ee52c79263e435aa39770617af9717441cdba7e2290e3c",
+        "proof": [
+          "9ad7db79d3126972e01c45b3d15e5c8353976b9cb64eeb521fd8c7a8a9c66464",
+          "4e3a925b6b95d7e4ac0e710b5167ce2b850b8a5dbef10ba408e5400235069644",
+          "eb42b2981fa4aac7bec561c79fe07931717c62572fc031d7ecd9b37ee5e0370c",
+          "b5fd63b5789200956cd273c37cb7f409e26913aea6d0b1c56306265a787e7b2c",
+          "9a662f0bbebc93a5f7e4b3a7e2a0e3fed08cb8feae369bd574bed9ae2323e668"
+        ],
+        "verified": true
+      },
+      {
+        "index": 11,
+        "leaf": "928effa739d144f8a16d91fa613ff7a3f88f3c2edc09f17858f96621f1b681e4",
+        "proof": [
+          "4c485c43890a8ba33e79eb4ae0236f6711b40103d4efb2f31364318121e48214",
+          "a03927c3d15a76d7a095da18eeacf5bdbeeccdd8beca44e70f36eb3f9880269c",
+          "eb42b2981fa4aac7bec561c79fe07931717c62572fc031d7ecd9b37ee5e0370c",
+          "b5fd63b5789200956cd273c37cb7f409e26913aea6d0b1c56306265a787e7b2c",
+          "9a662f0bbebc93a5f7e4b3a7e2a0e3fed08cb8feae369bd574bed9ae2323e668"
+        ],
+        "verified": true
+      },
+      {
+        "index": 12,
+        "leaf": "4b3324f4de5d8336b47bee084a907154d1f081babe8c0ad61345ba0b25491ef0",
+        "proof": [
+          "284eafdc4edb4472680f33e4f5bb8d18604a7b03f8879652b4a4a107ac9dcf20",
+          "1110affc8090e05f3ea1d3168df469f98107546d631c59ef3a5d2bad6cb6366c",
+          "b0ebfadebc6befc5cc3282f7a1c482c8d98487f9daf445f5e45f05b019925760",
+          "b5fd63b5789200956cd273c37cb7f409e26913aea6d0b1c56306265a787e7b2c",
+          "9a662f0bbebc93a5f7e4b3a7e2a0e3fed08cb8feae369bd574bed9ae2323e668"
+        ],
+        "verified": true
+      },
+      {
+        "index": 13,
+        "leaf": "284eafdc4edb4472680f33e4f5bb8d18604a7b03f8879652b4a4a107ac9dcf20",
+        "proof": [
+          "4b3324f4de5d8336b47bee084a907154d1f081babe8c0ad61345ba0b25491ef0",
+          "1110affc8090e05f3ea1d3168df469f98107546d631c59ef3a5d2bad6cb6366c",
+          "b0ebfadebc6befc5cc3282f7a1c482c8d98487f9daf445f5e45f05b019925760",
+          "b5fd63b5789200956cd273c37cb7f409e26913aea6d0b1c56306265a787e7b2c",
+          "9a662f0bbebc93a5f7e4b3a7e2a0e3fed08cb8feae369bd574bed9ae2323e668"
+        ],
+        "verified": true
+      },
+      {
+        "index": 14,
+        "leaf": "b49496769b91cdcdfbe0faee212c335cf8268afa3410c77dc5a61e1102b6dd50",
+        "proof": [
+          "882478b140285fbea0030050aaa4a15e7bb126220d74e2de33b6c28cb0c84ee8",
+          "a92ca5b11ff73593c4694ded9e6855f7e739e85616bbb5e32c2ba0f487247cd4",
+          "b0ebfadebc6befc5cc3282f7a1c482c8d98487f9daf445f5e45f05b019925760",
+          "b5fd63b5789200956cd273c37cb7f409e26913aea6d0b1c56306265a787e7b2c",
+          "9a662f0bbebc93a5f7e4b3a7e2a0e3fed08cb8feae369bd574bed9ae2323e668"
+        ],
+        "verified": true
+      },
+      {
+        "index": 15,
+        "leaf": "882478b140285fbea0030050aaa4a15e7bb126220d74e2de33b6c28cb0c84ee8",
+        "proof": [
+          "b49496769b91cdcdfbe0faee212c335cf8268afa3410c77dc5a61e1102b6dd50",
+          "a92ca5b11ff73593c4694ded9e6855f7e739e85616bbb5e32c2ba0f487247cd4",
+          "b0ebfadebc6befc5cc3282f7a1c482c8d98487f9daf445f5e45f05b019925760",
+          "b5fd63b5789200956cd273c37cb7f409e26913aea6d0b1c56306265a787e7b2c",
+          "9a662f0bbebc93a5f7e4b3a7e2a0e3fed08cb8feae369bd574bed9ae2323e668"
+        ],
+        "verified": true
+      }
+    ],
+    "constraints": [
+      {
+        "name": "boundary: depth[0] == delta(op[0])",
+        "ok": true,
+        "violations": 0
+      },
+      {
+        "name": "transition: depth[i] = depth[i-1] + Δ(op)",
+        "ok": true,
+        "violations": 0
+      },
+      {
+        "name": "arithmetic: result = f(top, second) mod p",
+        "ok": true,
+        "violations": 0
+      },
+      {
+        "name": "push: result = immediate mod p",
+        "ok": true,
+        "violations": 0
+      },
+      {
+        "name": "gas: strictly non-increasing",
+        "ok": true,
+        "violations": 0
+      },
+      {
+        "name": "range: all columns in [0, p)",
+        "ok": true,
+        "violations": 0
+      }
+    ],
+    "sound": true,
+    "securityBits": 50,
+    "publicInputs": {
+      "commitment": "15be724ae4b2d79a879c2bfc9cf30c873ea9610e1d9b0afae769d84651463794",
+      "amountGwei": "137190325000",
+      "destination": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "stateSig": "0x3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+      "nonce": "1814332222"
+    }
+  },
+  "trace": [
+    {
+      "step": 0,
+      "pc": 0,
+      "opcode": 96,
+      "stackDepth": 1,
+      "stackTop": 0,
+      "stackSecond": 0,
+      "result": 1898855239,
+      "gas": 99997,
+      "stopped": 0
+    },
+    {
+      "step": 1,
+      "pc": 1,
+      "opcode": 96,
+      "stackDepth": 2,
+      "stackTop": 1898855239,
+      "stackSecond": 0,
+      "result": 1,
+      "gas": 99994,
+      "stopped": 0
+    },
+    {
+      "step": 2,
+      "pc": 2,
+      "opcode": 2,
+      "stackDepth": 1,
+      "stackTop": 1,
+      "stackSecond": 1898855239,
+      "result": 1898855239,
+      "gas": 99989,
+      "stopped": 0
+    },
+    {
+      "step": 3,
+      "pc": 3,
+      "opcode": 96,
+      "stackDepth": 2,
+      "stackTop": 1898855239,
+      "stackSecond": 0,
+      "result": 1898855239,
+      "gas": 99986,
+      "stopped": 0
+    },
+    {
+      "step": 4,
+      "pc": 4,
+      "opcode": 20,
+      "stackDepth": 1,
+      "stackTop": 1898855239,
+      "stackSecond": 1898855239,
+      "result": 1,
+      "gas": 99983,
+      "stopped": 0
+    },
+    {
+      "step": 5,
+      "pc": 5,
+      "opcode": 96,
+      "stackDepth": 2,
+      "stackTop": 1,
+      "stackSecond": 0,
+      "result": 1814332222,
+      "gas": 99980,
+      "stopped": 0
+    },
+    {
+      "step": 6,
+      "pc": 6,
+      "opcode": 96,
+      "stackDepth": 3,
+      "stackTop": 1814332222,
+      "stackSecond": 1,
+      "result": 1168407707,
+      "gas": 99977,
+      "stopped": 0
+    },
+    {
+      "step": 7,
+      "pc": 7,
+      "opcode": 1,
+      "stackDepth": 2,
+      "stackTop": 1168407707,
+      "stackSecond": 1814332222,
+      "result": 835256282,
+      "gas": 99974,
+      "stopped": 0
+    },
+    {
+      "step": 8,
+      "pc": 8,
+      "opcode": 128,
+      "stackDepth": 3,
+      "stackTop": 835256282,
+      "stackSecond": 1,
+      "result": 835256282,
+      "gas": 99971,
+      "stopped": 0
+    },
+    {
+      "step": 9,
+      "pc": 9,
+      "opcode": 144,
+      "stackDepth": 3,
+      "stackTop": 835256282,
+      "stackSecond": 835256282,
+      "result": 835256282,
+      "gas": 99968,
+      "stopped": 0
+    },
+    {
+      "step": 10,
+      "pc": 10,
+      "opcode": 96,
+      "stackDepth": 4,
+      "stackTop": 835256282,
+      "stackSecond": 835256282,
+      "result": 1898855239,
+      "gas": 99965,
+      "stopped": 0
+    },
+    {
+      "step": 11,
+      "pc": 11,
+      "opcode": 1,
+      "stackDepth": 3,
+      "stackTop": 1898855239,
+      "stackSecond": 835256282,
+      "result": 586627874,
+      "gas": 99962,
+      "stopped": 0
+    },
+    {
+      "step": 12,
+      "pc": 12,
+      "opcode": 96,
+      "stackDepth": 4,
+      "stackTop": 586627874,
+      "stackSecond": 835256282,
+      "result": 1898855239,
+      "gas": 99959,
+      "stopped": 0
+    },
+    {
+      "step": 13,
+      "pc": 13,
+      "opcode": 3,
+      "stackDepth": 3,
+      "stackTop": 1898855239,
+      "stackSecond": 586627874,
+      "result": 1312227365,
+      "gas": 99956,
+      "stopped": 0
+    },
+    {
+      "step": 14,
+      "pc": 14,
+      "opcode": 96,
+      "stackDepth": 4,
+      "stackTop": 1312227365,
+      "stackSecond": 835256282,
+      "result": 0,
+      "gas": 99953,
+      "stopped": 0
+    },
+    {
+      "step": 15,
+      "pc": 15,
+      "opcode": 82,
+      "stackDepth": 2,
+      "stackTop": 0,
+      "stackSecond": 1312227365,
+      "result": 1312227365,
+      "gas": 99947,
+      "stopped": 0
+    },
+    {
+      "step": 16,
+      "pc": 16,
+      "opcode": 91,
+      "stackDepth": 2,
+      "stackTop": 835256282,
+      "stackSecond": 1,
+      "result": 0,
+      "gas": 99946,
+      "stopped": 0
+    },
+    {
+      "step": 17,
+      "pc": 17,
+      "opcode": 0,
+      "stackDepth": 2,
+      "stackTop": 835256282,
+      "stackSecond": 1,
+      "result": 0,
+      "gas": 99946,
+      "stopped": 1
+    }
+  ],
+  "claimAnchor": {
+    "vault": "bc1qje303rflvf855ap74egk0wgmtuumfvxg73agal",
+    "destination": "bc1qje303rflvf855ap74egk0wgmtuumfvxg73agal",
+    "sats": 1000,
+    "fee": null,
+    "feeRate": null,
+    "txid": null
+  },
+  "claimTx": null
+}

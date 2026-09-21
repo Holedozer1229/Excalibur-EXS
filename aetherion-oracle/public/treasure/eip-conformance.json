@@ -1,0 +1,74 @@
+{
+  "kind": "eip-conformance",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-29T21:30:55.002Z",
+  "connectedChain": "0x1",
+  "network": "Ethereum Mainnet",
+  "postedDeployment": "0xd8b934580fcE35a11B58C6D73aDee468a2833fa8",
+  "compiledCreate2": "0x1E4529cF826a79fd3b0E033Ff00dCDB3091c77B2",
+  "eip2": {
+    "bytes": 65,
+    "header": 31,
+    "recoveryId": 0,
+    "ethereumV": 27,
+    "r": "0xdad93159a7977c32132b7a009f12407090f959f5e766e427c1d85d85a4701eb8",
+    "s": "0x108cc06e4139d250200dad7493656d2b3022a0b24e3e8dd66a524ad807b3b38d",
+    "lowS": true,
+    "conformant": true
+  },
+  "eip6": {
+    "suicide": 0,
+    "selfdestruct": 0,
+    "linesScanned": 160,
+    "conformant": true
+  },
+  "eip3326": {
+    "method": "wallet_switchEthereumChain",
+    "unknownChain": 4902,
+    "active": "0x1"
+  },
+  "eip7949": {
+    "format": "eip-7949",
+    "version": 1,
+    "conformant": true
+  },
+  "checks": [
+    {
+      "id": "eip-2",
+      "title": "Homestead hard-fork changes",
+      "status": "conformant",
+      "note": "Bitcoin header 31 → recovery id 0, Ethereum v = 27. s ≤ n/2 canonical low-s."
+    },
+    {
+      "id": "eip-6",
+      "title": "Renaming SUICIDE to SELFDESTRUCT",
+      "status": "conformant",
+      "note": "CamelotScavenger never destroys itself — EXCAL supply and attestation are permanent."
+    },
+    {
+      "id": "eip-3326",
+      "title": "wallet_switchEthereumChain",
+      "status": "conformant",
+      "note": "Helm asks Rainbow for 0x1. Unknown chain returns 4902, then wallet_addEthereumChain."
+    },
+    {
+      "id": "eip-7949",
+      "title": "Genesis File Format",
+      "status": "conformant",
+      "note": "Posted genesis-mainnet.json is format eip-7949 version 1, chainId 1, salt extraData."
+    }
+  ],
+  "hashes": {
+    "postedDisplayMessageHash": "0x2c5d8f3a7e1b9c4d6e8f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e",
+    "postedDisplayBytes": 33,
+    "onChainKeccak": "0x7bfef73c9c4da3224fdd3af0c899717bc2ee17372f8361e7451152cfb887544e",
+    "genesisSignatureHex": "0x1fdad93159a7977c32132b7a009f12407090f959f5e766e427c1d85d85a4701eb8108cc06e4139d250200dad7493656d2b3022a0b24e3e8dd66a524ad807b3b38d"
+  },
+  "honesty": {
+    "postedAllocIsNotCompiledCreate2": true,
+    "doNotSweepPostedAlloc": true,
+    "postedHashIsNotOnChainKeccak": true,
+    "doesNotMint137Eth": true,
+    "note": "Posted 0xd8b934… is the EIP-7949 alloc label. Compiled CREATE2 is 0x1E4529…. Posted display hash is 33 bytes; on-chain hash is keccak256(GENESIS_MESSAGE)."
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "kind": "bip322-genesis-attest",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-30T05:18:39.741Z",
+  "bip": "BIP-322",
+  "address": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+  "compressedPubkey": "03678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb6",
+  "message": "Address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa\nStatement: I assert control of Bitcoin address 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa.\nDate (UTC): 2025-08-26T00:00:00Z\nNonce: 7c2bac1d\n\nMessage:\nAiamsatoshi20250826\nAbcdeghijklmnopqrstuvwxyz0123456789\n",
+  "signatureB64": "H9rZMVmnl3wyEyt6AJ8SQHCQ+Vn152bkJ8HYXYWkcB64EIzAbkE50lAgDa10k2VtKzAioLJOPo3WalJK2Aezs40=",
+  "signatureHex": "0x1fdad93159a7977c32132b7a009f12407090f959f5e766e427c1d85d85a4701eb8108cc06e4139d250200dad7493656d2b3022a0b24e3e8dd66a524ad807b3b38d",
+  "messageHashKeccak": "0x7bfef73c9c4da3224fdd3af0c899717bc2ee17372f8361e7451152cfb887544e",
+  "messageHashSha256d": "b68e64aa423bbeae8b38ea9d4b7d7d4167053cd613865e44d88a2c25a46a6a32",
+  "eip2": {
+    "bytes": 65,
+    "header": 31,
+    "recoveryId": 0,
+    "ethereumV": 27,
+    "r": "0xdad93159a7977c32132b7a009f12407090f959f5e766e427c1d85d85a4701eb8",
+    "s": "0x108cc06e4139d250200dad7493656d2b3022a0b24e3e8dd66a524ad807b3b38d",
+    "lowS": true,
+    "conformant": true
+  },
+  "seal": "357f5362ed1925233f5a803be678e33c4caa2177ccc5417c13199159f463777e",
+  "honesty": {
+    "neverSweepGenesis": true,
+    "doesNotForgeSatoshiKey": true,
+    "coinbaseUnspendableByConsensus": true,
+    "note": "BIP-322 here packages the posted genesis attestation. It does not forge Satoshi keys, does not sweep 1A1zP1…, and does not make the genesis coinbase spendable — Bitcoin itself refuses that UTXO."
+  }
+}

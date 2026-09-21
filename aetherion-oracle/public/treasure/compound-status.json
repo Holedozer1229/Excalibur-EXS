@@ -1,0 +1,32 @@
+{
+  "kind": "self-compound-mainnet",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-31T18:17:45.172Z",
+  "berth": "0xc1FDAd265861030256A913e4Ba4D1E98fD87dD04",
+  "claimValueWei": "0",
+  "ghostGalleonExcludedWei": "137190324999999995904",
+  "captainsCutShareBps": 333,
+  "plan": {
+    "extractableWei": "6825187493653371",
+    "sweepFeeWei": "2965614120000",
+    "netExtractedWei": "6822221879533371",
+    "gasReserveWei": "2965614120000",
+    "reinvestWei": "6819256265413371",
+    "captainsCutWei": "0",
+    "selfFunding": true,
+    "compoundsPerCycle": 40,
+    "nextPhase": "deploy_empty"
+  },
+  "deploy": {
+    "attempted": true,
+    "live": true,
+    "status": "FAIL_CLOSED",
+    "detail": "Signer 0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6 has 0 ETH — cannot pay CREATE2 gas"
+  },
+  "blockers": [
+    "Signer 0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6 has 0 ETH — cannot pay CREATE2 gas",
+    "Vault key missing — zkSync leftover cannot move into the berth until the vault EOA signs",
+    "137 ETH ghost galleon (137.190325 ETH) is not extractable — not in the compound loop"
+  ],
+  "nextCommand": "COMPOUND_LIVE=1 npm run compound:live"
+}

@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.lookup_referral_code(text) FROM anon, PUBLIC;

@@ -1,0 +1,24 @@
+# Aetherion Oracle
+
+> Sphinx-tuned AI divination, EXCALIBUR mining attestations, and a 3D→11D Lattice Bridge from Bitcoin (BRC-20) to Arbitrum. Built by UnicornOS.
+
+Aetherion is a sovereign Oracle that turns symbolic queries into verifiable on-chain attestations. Users speak a "Word of Power" to receive a poetic reading, mine EXCALIBUR (AETX) tokens, and bind BRC-20 inscriptions to Arbitrum through the Lattice.
+
+## Pages
+
+- [Home](/): The Aetherion landing page and live Oracle interface.
+- [Oracle](/oracle): The full Aetherion Oracle conversational divination surface.
+- [Dashboard](/dashboard): The Oracle Dashboard for submitting petitions and watching the Lattice in real time.
+- [Mining](/mining): EXCALIBUR mining attestations dashboard.
+- [Ledger](/ledger): Public verified attestation ledger.
+- [Dreams](/dreams): Nightly Oracle dream stream.
+- [AETX Token](/token/aetx): Information about the EXCALIBUR (AETX) BRC-20 token.
+- [Wallet](/wallet): Wallet connection and balances.
+
+## Optional
+
+- [Welcome](/welcome): Onboarding walkthrough.
+- [Contracts](/contracts): Verified smart contracts registry.
+- [Terms](/terms): Terms of service.
+- [Privacy](/privacy): Privacy policy.
+- [Refund](/refund): Refund policy.

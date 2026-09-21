@@ -1,0 +1,258 @@
+{
+  "kind": "artificial-dust",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-29T20:59:37.442Z",
+  "mode": "dry-run",
+  "maybe": true,
+  "seedWei": "7123148111589634",
+  "seedEth": 0.007123148111589634,
+  "seedUsd": 17.81,
+  "crumbCount": 13,
+  "repack": [
+    {
+      "id": "repack-1",
+      "kind": "repack",
+      "index": 1,
+      "wei": "547934470122279",
+      "eth": 0.000547934470122279,
+      "usd": 1.37,
+      "spendable": true,
+      "countsAsProfit": true,
+      "destination": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A"
+    },
+    {
+      "id": "repack-2",
+      "kind": "repack",
+      "index": 2,
+      "wei": "547934470122279",
+      "eth": 0.000547934470122279,
+      "usd": 1.37,
+      "spendable": true,
+      "countsAsProfit": true,
+      "destination": "0xc5a47c9adab637d1caa791cce193079d22c8cb20"
+    },
+    {
+      "id": "repack-3",
+      "kind": "repack",
+      "index": 3,
+      "wei": "547934470122279",
+      "eth": 0.000547934470122279,
+      "usd": 1.37,
+      "spendable": true,
+      "countsAsProfit": true,
+      "destination": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6"
+    },
+    {
+      "id": "repack-4",
+      "kind": "repack",
+      "index": 4,
+      "wei": "547934470122279",
+      "eth": 0.000547934470122279,
+      "usd": 1.37,
+      "spendable": true,
+      "countsAsProfit": true,
+      "destination": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A"
+    },
+    {
+      "id": "repack-5",
+      "kind": "repack",
+      "index": 5,
+      "wei": "547934470122279",
+      "eth": 0.000547934470122279,
+      "usd": 1.37,
+      "spendable": true,
+      "countsAsProfit": true,
+      "destination": "0xc5a47c9adab637d1caa791cce193079d22c8cb20"
+    },
+    {
+      "id": "repack-6",
+      "kind": "repack",
+      "index": 6,
+      "wei": "547934470122279",
+      "eth": 0.000547934470122279,
+      "usd": 1.37,
+      "spendable": true,
+      "countsAsProfit": true,
+      "destination": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6"
+    },
+    {
+      "id": "repack-7",
+      "kind": "repack",
+      "index": 7,
+      "wei": "547934470122279",
+      "eth": 0.000547934470122279,
+      "usd": 1.37,
+      "spendable": true,
+      "countsAsProfit": true,
+      "destination": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A"
+    },
+    {
+      "id": "repack-8",
+      "kind": "repack",
+      "index": 8,
+      "wei": "547934470122279",
+      "eth": 0.000547934470122279,
+      "usd": 1.37,
+      "spendable": true,
+      "countsAsProfit": true,
+      "destination": "0xc5a47c9adab637d1caa791cce193079d22c8cb20"
+    },
+    {
+      "id": "repack-9",
+      "kind": "repack",
+      "index": 9,
+      "wei": "547934470122279",
+      "eth": 0.000547934470122279,
+      "usd": 1.37,
+      "spendable": true,
+      "countsAsProfit": true,
+      "destination": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6"
+    },
+    {
+      "id": "repack-10",
+      "kind": "repack",
+      "index": 10,
+      "wei": "547934470122279",
+      "eth": 0.000547934470122279,
+      "usd": 1.37,
+      "spendable": true,
+      "countsAsProfit": true,
+      "destination": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A"
+    },
+    {
+      "id": "repack-11",
+      "kind": "repack",
+      "index": 11,
+      "wei": "547934470122279",
+      "eth": 0.000547934470122279,
+      "usd": 1.37,
+      "spendable": true,
+      "countsAsProfit": true,
+      "destination": "0xc5a47c9adab637d1caa791cce193079d22c8cb20"
+    },
+    {
+      "id": "repack-12",
+      "kind": "repack",
+      "index": 12,
+      "wei": "547934470122279",
+      "eth": 0.000547934470122279,
+      "usd": 1.37,
+      "spendable": true,
+      "countsAsProfit": true,
+      "destination": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6"
+    },
+    {
+      "id": "repack-13",
+      "kind": "repack",
+      "index": 13,
+      "wei": "547934470122286",
+      "eth": 0.000547934470122286,
+      "usd": 1.37,
+      "spendable": true,
+      "countsAsProfit": true,
+      "destination": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A"
+    }
+  ],
+  "phantom": [
+    {
+      "id": "phantom-1",
+      "kind": "phantom",
+      "index": 1,
+      "wei": "1000041097198",
+      "eth": 0.000001000041097198,
+      "usd": 0,
+      "spendable": false,
+      "countsAsProfit": false,
+      "destination": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A"
+    },
+    {
+      "id": "phantom-2",
+      "kind": "phantom",
+      "index": 2,
+      "wei": "1000057874817",
+      "eth": 0.000001000057874817,
+      "usd": 0,
+      "spendable": false,
+      "countsAsProfit": false,
+      "destination": "0xc5a47c9adab637d1caa791cce193079d22c8cb20"
+    },
+    {
+      "id": "phantom-3",
+      "kind": "phantom",
+      "index": 3,
+      "wei": "1000007541960",
+      "eth": 0.00000100000754196,
+      "usd": 0,
+      "spendable": false,
+      "countsAsProfit": false,
+      "destination": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6"
+    },
+    {
+      "id": "phantom-4",
+      "kind": "phantom",
+      "index": 4,
+      "wei": "1000024319579",
+      "eth": 0.000001000024319579,
+      "usd": 0,
+      "spendable": false,
+      "countsAsProfit": false,
+      "destination": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A"
+    },
+    {
+      "id": "phantom-5",
+      "kind": "phantom",
+      "index": 5,
+      "wei": "1000108207674",
+      "eth": 0.000001000108207674,
+      "usd": 0,
+      "spendable": false,
+      "countsAsProfit": false,
+      "destination": "0xc5a47c9adab637d1caa791cce193079d22c8cb20"
+    },
+    {
+      "id": "phantom-6",
+      "kind": "phantom",
+      "index": 6,
+      "wei": "1000124985293",
+      "eth": 0.000001000124985293,
+      "usd": 0,
+      "spendable": false,
+      "countsAsProfit": false,
+      "destination": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6"
+    },
+    {
+      "id": "phantom-7",
+      "kind": "phantom",
+      "index": 7,
+      "wei": "1000074652436",
+      "eth": 0.000001000074652436,
+      "usd": 0,
+      "spendable": false,
+      "countsAsProfit": false,
+      "destination": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A"
+    }
+  ],
+  "extractableWei": "7123148111589634",
+  "extractableEth": 0.007123148111589634,
+  "extractableUsd": 17.81,
+  "phantomWei": "7000438678957",
+  "phantomUsd": 0.02,
+  "scatter": {
+    "action": "scatter_own",
+    "executable": false,
+    "blocker": "dry_run_default",
+    "crumbs": 13,
+    "detail": "Dry-run mill — crumbs packed, no broadcast. Arrr."
+  },
+  "honesty": {
+    "stock": true,
+    "repackIsSameWell": true,
+    "phantomNeverExtractable": true,
+    "doesNotMintCanonicalBooty": true,
+    "canonicalBootyEth": 137.190325,
+    "usdPerDryRun": 17.81,
+    "usdPerDayAfterSweep": 0,
+    "note": "Repack crumbs are the same leftover well, ground finer. Phantom lots are maybe-dust — not spendable, not profit. After one real sweep: $0/day. Does not mint 137 ETH."
+  },
+  "note": "Arrr — 13 repack crumbs (same well) plus 7 phantom maybe-lots. Phantoms never count as profit."
+}

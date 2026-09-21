@@ -238,6 +238,20 @@ Excalibur-EXS/
 └── ARCHITECTURE.md       # 🆕 System architecture guide
 ```
 
+### 🧬 Fused Subtrees
+
+Two sibling projects live in this repo as clean subtrees (see `FUSION.md`
+for the full map and honest boundaries):
+
+- **`genesis-fork/`** — Genesis Fork (GSF): standalone pure-Python UTXO
+  chain node (EXCAL) + its Rosetta (Mesh) Data/Construction API adapter.
+  A separate asset and chain from $EXS.
+- **`aetherion-oracle/`** — Aetherion Oracle: Vite + React + TypeScript
+  oracle app (sealed tarot/dreams/oracle, Caduceus control plane).
+  Build with `npm run build` inside that directory.
+
+---
+
 ## ⛏️ Mining Structure
 
 All mining implementations are now consolidated in the `miners/` directory for better organization and discoverability.

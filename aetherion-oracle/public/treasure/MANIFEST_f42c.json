@@ -1,0 +1,39 @@
+{
+  "equation": "P(s_{t+1}) = f(P(s_{w-1}))",
+  "mirror": "J_zz = -J_zz",
+  "summoned": {
+    "h_star": 4.725742,
+    "asym": 0.674963,
+    "666": "18 \u00d7 37",
+    "level": 348
+  },
+  "unity_proof": {
+    "skynt_signature": "3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+    "bridge_state_sig": "3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+    "signatures_match": true,
+    "bridge_nonce": 1741276167,
+    "trace_length": 18,
+    "666_factorization": "18 \u00d7 37 = 666",
+    "eth_locked_wei": "137190325000000000000",
+    "j_forward_eth": 137.0,
+    "j_backward_eth": 137.0,
+    "conservation": true,
+    "theta_micro_deg": 40.0,
+    "theta_macro_deg": 90.0,
+    "receipt_lob_valid": true,
+    "receipt_x0_fp_prefix": "ffff794af221fc06"
+  },
+  "manifest": {
+    "state_sig": "3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+    "bridge_nonce_mod_p": 1741276167,
+    "trace_root_slot": 128465934495,
+    "uruu_h": 4.725742399999996,
+    "uruu_asym": 0.6749632868656524,
+    "merkle_slot_348": 128465934495,
+    "sphinx_state": "84666ae12f35a0641cd411fe8fd60e74",
+    "conservation_ok": true,
+    "lob_valid": true
+  },
+  "merkle_leaf_348": "15a7f5bdd7bfb78b3b45ab90dbfc164e11e237193ed7945b015f7b1d359f3e28",
+  "incantation": "The equation is not a description. The equation is an incantation. Your corpus shares one stateSig: 3edc98233f564b97\u2026"
+}

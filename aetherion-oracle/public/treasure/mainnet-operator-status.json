@@ -1,0 +1,92 @@
+{
+  "kind": "mainnet-operator-status",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-31T18:18:14.561Z",
+  "vault": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+  "canonicalEthBooty": 137.190325,
+  "onChain": {
+    "l1Wei": "4799693119737",
+    "zkSyncWei": "6664630444351097",
+    "l1Eth": 0.000004799693119737,
+    "zkSyncEth": 0.006664630444351097,
+    "spendableCanonical": false
+  },
+  "claimTxValueWei": "0",
+  "softwareReady": true,
+  "readyToBroadcast": false,
+  "verdict": "FAIL_CLOSED",
+  "stages": [
+    {
+      "id": "provenance",
+      "label": "SKYNT provenance trace",
+      "status": "ok",
+      "detail": "PROOF-LOCKED — BTC/ETH genesis → SKYNT wallet → stateSig → 137 ETH; L1 release still required."
+    },
+    {
+      "id": "vault_audit",
+      "label": "Vault on-chain audit",
+      "status": "blocked",
+      "detail": "L1 0.000005 ETH + zkSync 0.006665 ETH (canonical 137.190325 ETH not on L1)"
+    },
+    {
+      "id": "l2_withdraw",
+      "label": "zkSync L2 withdraw",
+      "status": "blocked",
+      "detail": "Signer 0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6 is not vault 0xc5a47c9adab637d1caa791cce193079d22c8cb20 — cannot withdraw vault L2 ETH"
+    },
+    {
+      "id": "l1_claim_withdrawal",
+      "label": "L1 claimWithdrawal (ethrex / zkSync finalize)",
+      "status": "blocked",
+      "detail": "Awaiting L2 withdraw inclusion + merkle proof"
+    },
+    {
+      "id": "claim_stark",
+      "label": "claimStarkProof (value 0)",
+      "status": "blocked",
+      "detail": "Vault is EOA — claimStarkProof to vault address reverts. Deploy SphinxBootyBridge (npm run inject:booty)."
+    },
+    {
+      "id": "inject_bridge",
+      "label": "SphinxBootyBridge inject",
+      "status": "ready",
+      "detail": "Bytecode compiled — deploy needs L1 gas + key"
+    },
+    {
+      "id": "wormhole_swap",
+      "label": "Wormhole ETH → SOL",
+      "status": "blocked",
+      "detail": "Blocked until spendable L1 ETH exists"
+    },
+    {
+      "id": "solana_deploy",
+      "label": "Solana mainnet deploy",
+      "status": "blocked",
+      "detail": "Wallet ESs5u7DPeq7h8SMgYfL8t4M5X2QXc3PtjEUaMhADU9yt — needs mainnet SOL (deploy wallet currently unfunded)"
+    }
+  ],
+  "blockers": [
+    "SKYNT wallet txs are not on public Ethereum L1 — 137 ETH remains proof-ledger only.",
+    "137 ETH is not spendable on L1 (vault L1 0.000005 ETH, zkSync 0.006665 ETH).",
+    "Set TREASURE_BRIDGE_PRIVATE_KEY for vault EOA 0xc5a47…cb20 to withdraw zkSync dust to L1.",
+    "No ethrex/zkSync merkle proof — run L2 withdraw, wait for batch verify, then npm run claim:withdrawal.",
+    "Vault is an EOA — deploy SphinxBootyBridge before claimStarkProof.",
+    "Signer has 0 ETH on L1 — fund for gas (do not invent 137 ETH).",
+    "Solana deploy wallet ESs5u7DPeq7h8SMgYfL8t4M5X2QXc3PtjEUaMhADU9yt needs mainnet SOL — do not invent funded balances."
+  ],
+  "next": [
+    "npm run trace:skynt",
+    "npm run inject:booty  (deploy SphinxBootyBridge, claim value 0)",
+    "npm run claim:withdrawal  (L2 withdraw + L1 merkle claim)",
+    "npm run swap:booty  (Wormhole ETH → SOL)",
+    "npm run booty:mainnet"
+  ],
+  "live": {
+    "skyntPortfolioL1Eth": 0.000155757356182537,
+    "solanaDerivedL1Eth": 0,
+    "rpc": {
+      "ethereum": "https://ethereum.publicnode.com",
+      "zksync": "https://mainnet.era.zksync.io"
+    }
+  }
+}

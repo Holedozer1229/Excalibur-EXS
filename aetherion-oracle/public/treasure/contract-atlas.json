@@ -1,0 +1,260 @@
+{
+  "kind": "contract-atlas",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-29T21:09:15.655Z",
+  "nodes": [
+    {
+      "id": "vault",
+      "label": "Treasure vault",
+      "address": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "chain": "ethereum",
+      "chainId": 1,
+      "kind": "own_eoa",
+      "deployed": false,
+      "role": "EOA sink / leftover on L1+zk+Base",
+      "explorer": "https://etherscan.io/address/0xc5a47c9adab637d1caa791cce193079d22c8cb20"
+    },
+    {
+      "id": "skynt",
+      "label": "SKYNT portfolio",
+      "address": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+      "chain": "ethereum",
+      "chainId": 1,
+      "kind": "own_code",
+      "deployed": true,
+      "role": "L1 dust + USDC; has bytecode (not a plain EOA)",
+      "explorer": "https://etherscan.io/address/0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A"
+    },
+    {
+      "id": "operator",
+      "label": "Solana-derived operator",
+      "address": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+      "chain": "ethereum",
+      "chainId": 1,
+      "kind": "own_eoa",
+      "deployed": false,
+      "role": "Broadcast signer if key loaded — 0 L1 ETH",
+      "explorer": "https://etherscan.io/address/0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6"
+    },
+    {
+      "id": "berth",
+      "label": "CREATE2 liquidity berth",
+      "address": "0xc1FDAd265861030256A913e4Ba4D1E98fD87dD04",
+      "chain": "ethereum",
+      "chainId": 1,
+      "kind": "own_predicted",
+      "deployed": false,
+      "role": "Empty predicted berth — no code, 0 ETH",
+      "explorer": "https://etherscan.io/address/0xc1FDAd265861030256A913e4Ba4D1E98fD87dD04"
+    },
+    {
+      "id": "scavenger",
+      "label": "CamelotScavenger (EXCAL) counterfactual",
+      "address": "0xd8b934580fcE35a11B58C6D73aDee468a2833fa8",
+      "chain": "ethereum",
+      "chainId": 1,
+      "kind": "own_predicted",
+      "deployed": false,
+      "role": "Genesis alloc comment — verify code before treating as live",
+      "explorer": "https://etherscan.io/address/0xd8b934580fcE35a11B58C6D73aDee468a2833fa8"
+    },
+    {
+      "id": "uruu",
+      "label": "URUU token",
+      "address": "0x5B6C9d85465Cc6FFe84039183872239657D90208",
+      "chain": "zksync",
+      "chainId": 324,
+      "kind": "own_token_live",
+      "deployed": true,
+      "role": "Live ERC-20 on zkSync Era. Wrap/curve not live",
+      "explorer": "https://explorer.zksync.io/address/0x5B6C9d85465Cc6FFe84039183872239657D90208"
+    },
+    {
+      "id": "zk-vault",
+      "label": "Treasure vault (zkSync)",
+      "address": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "chain": "zksync",
+      "chainId": 324,
+      "kind": "own_eoa",
+      "deployed": false,
+      "role": "Largest leftover well (~0.00666 ETH)",
+      "explorer": "https://explorer.zksync.io/address/0xc5a47c9adab637d1caa791cce193079d22c8cb20"
+    },
+    {
+      "id": "sol-wallet",
+      "label": "Solana deploy wallet",
+      "address": "ESs5u7DPeq7h8SMgYfL8t4M5X2QXc3PtjEUaMhADU9yt",
+      "chain": "solana",
+      "chainId": 101,
+      "kind": "own_eoa",
+      "deployed": false,
+      "role": "0 SOL — cannot deploy fair_lattice",
+      "explorer": "https://solscan.io/account/ESs5u7DPeq7h8SMgYfL8t4M5X2QXc3PtjEUaMhADU9yt"
+    },
+    {
+      "id": "sol-program",
+      "label": "fair_lattice program",
+      "address": "ALe6YqHU3rwxw8FQhmSRjdK9sxMLqbDd9zyRVNmTymo6",
+      "chain": "solana",
+      "chainId": 101,
+      "kind": "not_deployed",
+      "deployed": false,
+      "role": "pending_wallet_fund — program id reserved, not live",
+      "explorer": "https://solscan.io/account/ALe6YqHU3rwxw8FQhmSRjdK9sxMLqbDd9zyRVNmTymo6"
+    },
+    {
+      "id": "create2",
+      "label": "Arachnid CREATE2 factory",
+      "address": "0x4e59b44847b379578588920cA78FbF26c0B4956C",
+      "chain": "ethereum",
+      "chainId": 1,
+      "kind": "third_party",
+      "deployed": true,
+      "role": "Public factory used to predict the berth",
+      "explorer": "https://etherscan.io/address/0x4e59b44847b379578588920cA78FbF26c0B4956C"
+    },
+    {
+      "id": "zksync-diamond",
+      "label": "zkSync Era L1 diamond",
+      "address": "0x32400084C286CF3E17e7B677ea9583e60c1ace52",
+      "chain": "ethereum",
+      "chainId": 1,
+      "kind": "third_party",
+      "deployed": true,
+      "role": "finalizeEthWithdrawal target",
+      "explorer": "https://etherscan.io/address/0x32400084C286CF3E17e7B677ea9583e60c1ace52"
+    },
+    {
+      "id": "wormhole-bridge",
+      "label": "Wormhole Token Bridge",
+      "address": "0x3ee18B2214AFF97000D974cf647E7C347E8fa585",
+      "chain": "ethereum",
+      "chainId": 1,
+      "kind": "third_party",
+      "deployed": true,
+      "role": "Portal — no own unredeemed VAAs",
+      "explorer": "https://etherscan.io/address/0x3ee18B2214AFF97000D974cf647E7C347E8fa585"
+    },
+    {
+      "id": "ghost",
+      "label": "137 ETH ghost galleon",
+      "address": "ledger-only",
+      "chain": "proof-ledger",
+      "chainId": 0,
+      "kind": "ledger_only",
+      "deployed": false,
+      "role": "SKYNT / treasure proofs — not an L1 balance",
+      "explorer": "/treasure/booty-manifest.json"
+    }
+  ],
+  "profitFlow": [
+    {
+      "from": "zk-vault",
+      "to": "operator",
+      "action": "L2 withdraw leftover if vault key",
+      "gatedBy": "TREASURE_BRIDGE_PRIVATE_KEY + leftover > fee",
+      "live": false
+    },
+    {
+      "from": "skynt",
+      "to": "operator",
+      "action": "Sweep L1 native + USDC",
+      "gatedBy": "key that controls 0x5592…",
+      "live": false
+    },
+    {
+      "from": "vault",
+      "to": "operator",
+      "action": "Sweep L1 dust",
+      "gatedBy": "vault key",
+      "live": false
+    },
+    {
+      "from": "operator",
+      "to": "operator",
+      "action": "Keep 15% gas tank",
+      "gatedBy": "something to sweep",
+      "live": false
+    },
+    {
+      "from": "operator",
+      "to": "berth",
+      "action": "Wrap 85% to WETH and dock",
+      "gatedBy": "CREATE2 deploy + L1 gas",
+      "live": false
+    },
+    {
+      "from": "berth",
+      "to": "berth",
+      "action": "Compound documented liquidity",
+      "gatedBy": "berth must have code",
+      "live": false
+    },
+    {
+      "from": "ghost",
+      "to": "sol-program",
+      "action": "Bridge 137 ETH → SOL deploy",
+      "gatedBy": "137 ETH is not on L1",
+      "live": false
+    },
+    {
+      "from": "wormhole-bridge",
+      "to": "operator",
+      "action": "Redeem own VAAs",
+      "gatedBy": "own unredeemed (none)",
+      "live": false
+    }
+  ],
+  "optimize": [
+    {
+      "rank": 1,
+      "id": "unblock-broadcast",
+      "title": "Unblock the operator",
+      "why": "0xf8F3… has 0 L1 ETH and TREASURE_BRIDGE_PRIVATE_KEY is unset. Nothing can sweep, withdraw, or dock.",
+      "unlocks": "Every later step. Fund ~0.01 ETH on the operator or load the vault key as an env secret."
+    },
+    {
+      "rank": 2,
+      "id": "sweep-zksync",
+      "title": "Withdraw zkSync vault leftover first",
+      "why": "Largest real well (~0.00666 ETH). One-shot stock, not a wage.",
+      "unlocks": "L1 gas tank seed after finalize."
+    },
+    {
+      "rank": 3,
+      "id": "sweep-skynt-l1",
+      "title": "Sweep SKYNT L1 native + USDC",
+      "why": "~0.00016 ETH + ~0.81 USDC already on L1. SKYNT has bytecode — need the controlling key, not just the Solana seed.",
+      "unlocks": "Adds to the same one-shot pile."
+    },
+    {
+      "rank": 4,
+      "id": "sweep-base",
+      "title": "Sweep Base crumbs",
+      "why": "Vault + SKYNT hold micro ETH on Base. Only after L1 gas exists.",
+      "unlocks": "Tiny add-on; do not spend more in gas than the crumb."
+    },
+    {
+      "rank": 5,
+      "id": "dock-berth",
+      "title": "CREATE2-dock the berth only after the tank is filled",
+      "why": "0xc1FDAd… is empty and has no code. Deploying first burns the pile.",
+      "unlocks": "Documented WETH sink for the 85% compound cut."
+    },
+    {
+      "rank": 6,
+      "id": "skip-empty-rails",
+      "title": "Do not chase empty rails",
+      "why": "Wormhole own ops = 0. Solana program not deployed. 137 ETH is ledger-only. Phantom dust is not profit.",
+      "unlocks": "Stops wasting cycles on inventory_only theater."
+    }
+  ],
+  "honesty": {
+    "ourDeployedContracts": 2,
+    "predictedEmptyBerth": true,
+    "solanaProgramPending": true,
+    "ghostGalleonNotAnAddress": true,
+    "note": "URUU is the only documented live token we issued. The CREATE2 berth and fair_lattice are not deployed. 137 ETH is not an address."
+  },
+  "note": "Optimize the bottleneck first: operator gas / vault key. Then sweep the zkSync well. Do not dock an empty berth."
+}

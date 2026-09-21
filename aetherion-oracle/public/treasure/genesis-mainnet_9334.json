@@ -1,0 +1,46 @@
+{
+  "format": "eip-7949",
+  "version": 1,
+  "config": {
+    "chainId": 1,
+    "homesteadBlock": 0,
+    "eip150Block": 0,
+    "eip155Block": 0,
+    "eip158Block": 0,
+    "byzantiumBlock": 0,
+    "constantinopleBlock": 0,
+    "petersburgBlock": 0,
+    "istanbulBlock": 0,
+    "berlinBlock": 0,
+    "londonBlock": 0,
+    "shanghaiTime": 0,
+    "cancunTime": 0
+  },
+  "nonce": "0x0000000000000000",
+  "timestamp": "0x0",
+  "extraData": "0x7c2bac1d",
+  "gasLimit": "0x1c9c380",
+  "difficulty": "0x0",
+  "mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "coinbase": "0x0000000000000000000000000000000000000000",
+  "baseFeePerGas": "0x3b9aca00",
+  "alloc": {
+    "0x4e59b44847b379578588920ca78fbf26c0b4956c": {
+      "balance": "0x0",
+      "comment": "Canonical deterministic-deployment proxy (Arachnid factory)"
+    },
+    "0xd8b934580fce35a11b58c6d73adee468a2833fa8": {
+      "balance": "0x0",
+      "comment": "CamelotScavenger (EXCAL) — CREATE2 counterfactual"
+    }
+  },
+  "attestation": {
+    "bitcoinGenesisAddress": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+    "compressedPubkey": "03678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb6",
+    "bip322Signature": "H9rZMVmnl3wyEyt6AJ8SQHCQ+Vn152bkJ8HYXYWkcB64EIzAbkE50lAgDa10k2VtKzAioLJOPo3WalJK2Aezs40=",
+    "opReturn": "ff7f8192ec82d08b808082feeba68090b2d4a601ff7ff909",
+    "taproot": "bc1pql83shz0m4znewzk82u2k5mdgeh94r3c8ks9ws00m4dm26qnjvyq0prk4n",
+    "create2Salt": "0x7c2bac1d",
+    "create2Factory": "0x4e59b44847b379578588920cA78FbF26c0B4956C"
+  }
+}

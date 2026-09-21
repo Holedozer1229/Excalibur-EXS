@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Security headers (meta fallback; canonical values served via public/_headers).
+         Note: frame-ancestors is intentionally omitted here — browsers ignore it in
+         <meta> CSP. It is enforced via the HTTP header in public/_headers. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://cdn.gpteng.co https://*.lovable.app https://*.lovable.dev https://connect.facebook.net https://www.googletagmanager.com https://www.google-analytics.com https://www.googleadservices.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.gpteng.co; img-src 'self' data: blob: https:; connect-src 'self' https://zdnulzxymjdtidlqnjoe.supabase.co wss://zdnulzxymjdtidlqnjoe.supabase.co https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://*.alchemy.com https://*.g.alchemy.com https://cdn.gpteng.co https://*.lovable.app https://*.lovable.dev https://zksync.blockscout.com https://www.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://www.googleadservices.com https://www.google.com https://stats.g.doubleclick.net https://*.facebook.com https://*.facebook.net; frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://td.doubleclick.net https://*.facebook.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>Verifiable AI Artifacts — Sealed, Wallet-Bound | Aetherion</title>
+    <meta name="description" content="Every AI reading sealed with sha-256, bound to your wallet, and replay-protected. Cast a free tarot artifact — no signup, no email.">
+
+    <meta name="author" content="Aetherion" />
+    <meta name="google-site-verification" content="_pZ_s-1xk3aHZgaZ_sWCyeDG1inQ4LkpixgRNxgY-os" />
+    
+    
+
+    <link rel="icon" type="image/png" href="/aetherion-logo-192.png">
+    <link rel="apple-touch-icon" href="/aetherion-logo-192.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://zdnulzxymjdtidlqnjoe.supabase.co" />
+    <link rel="preconnect" href="https://zdnulzxymjdtidlqnjoe.supabase.co" crossorigin />
+
+    <!-- Critical display fonts — swap to avoid blocking paint. -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Audiowide&family=Work+Sans:wght@400;500;600&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Audiowide&family=Work+Sans:wght@400;500;600&display=swap"
+      />
+    </noscript>
+
+    <!-- Decorative / serif / terminal fonts — non-blocking. -->
+    <link
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&family=Instrument+Serif:ital@0;1&family=VT323&family=Share+Tech+Mono&family=Michroma&display=swap"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&family=Instrument+Serif:ital@0;1&family=VT323&family=Share+Tech+Mono&family=Michroma&display=swap"
+      />
+    </noscript>
+
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Aetherion" />
+    <meta property="og:url" content="https://aetherion-oracle.com/" />
+    <meta property="og:title" content="Verifiable AI Artifacts — Sealed by the Aether | Aetherion" />
+    <meta property="og:description" content="Every AI reading sealed with sha-256, wallet-bound, replay-protected. Cast a free tarot artifact — no signup." />
+    <meta property="og:image" content="https://aetherion-oracle.com/og-landing.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Aetherion — Verifiable AI Artifacts, sealed by the Aether" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Verifiable AI Artifacts — Sealed by the Aether | Aetherion" />
+    <meta name="twitter:description" content="Sha-256 sealed. Wallet-bound. Replay-protected. Cast a free tarot artifact — no signup." />
+    <meta name="twitter:image" content="https://aetherion-oracle.com/og-landing.jpg" />
+    <meta name="twitter:image:alt" content="Aetherion — Verifiable AI Artifacts, sealed by the Aether" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Aetherion",
+        "alternateName": "Aetherion Oracle",
+        "url": "https://aetherion-oracle.com/",
+        "description": "Verifiable AI artifacts — sha-256 sealed, wallet-bound, replay-protected tarot, dream, and oracle readings.",
+        "publisher": { "@type": "Organization", "name": "Aetherion" },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://aetherion-oracle.com/learn?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Aetherion",
+        "url": "https://aetherion-oracle.com/",
+        "logo": "https://aetherion-oracle.com/brand/aetherion-logo.webp",
+        "description": "Aetherion — Quantum AI superpower with Verified Cognition and Caduceus sealed compute.",
+        "sameAs": ["https://arbiscan.io/address/0x22d3f06afb69e5fcfaa98c20009510dd11af2517"]
+      }
+    </script>
+
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Ad pixel IDs (publishable). Fill any/all to activate. No IDs => no pixels load.
+         Loaded only on /lp, /tarot, /auth via PixelLoader. -->
+    <script>
+      window.AETHERION_PIXELS = {
+        metaPixelId: "",          // e.g. "123456789012345"
+        ga4Id: "G-QPX45GBS1L",    // GA4 measurement ID
+        gadsConversionId: "",     // e.g. "AW-123456789"
+        gadsLabels: {
+          lp_cast_completed: "",     // Google Ads conversion label for free cast
+          waitlist_submitted: "",    // ...for waitlist email capture
+          auth_completed: "",        // ...for signup
+          first_paid_conversion: ""  // ...for first paid subscription
+        }
+      };
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

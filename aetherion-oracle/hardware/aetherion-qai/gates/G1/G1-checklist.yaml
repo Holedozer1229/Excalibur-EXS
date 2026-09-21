@@ -1,0 +1,91 @@
+# G1 — Entity & compliance — AQAI / Aetherion QAI
+# Founder: Travis D Jones · sphinxqasi@gmail.com · Blanco, TX 78606
+gate:
+  id: G1
+  name: Entity & compliance
+  status: ready_to_execute
+  exit: Bank + SAFE/SPA templates ready; grant UEI/SAM.gov if US federal
+  pack_path: hardware/aetherion-qai/gates/G1/
+  owner: Travis D Jones
+  target_close: 2026-09-30
+
+items:
+  - id: g1-delaware-c-corp
+    title: Delaware C-corp (or equivalent) with clean IP assignment
+    status: ready_to_execute
+    owner: Travis D Jones
+    due: 2026-09-15
+    evidence: entity-formation-runbook.md
+    notes: Incorporate as Aetherion QAI, Inc. (or AQAI Technologies, Inc.) via registered agent; file COI.
+
+  - id: g1-ein-bank
+    title: EIN + business bank account opened
+    status: ready_to_execute
+    owner: Travis D Jones
+    due: 2026-09-20
+    evidence: entity-formation-runbook.md#ein-and-banking
+    notes: IRS SS-4 online; Mercury/Brex/First Republic-style startup bank.
+
+  - id: g1-ip-assignment
+    title: Founder IP assignment agreement executed
+    status: ready_to_execute
+    owner: Travis D Jones + counsel
+    due: 2026-09-22
+    evidence: entity-formation-runbook.md#ip-assignment-template
+    notes: Assign RTL, Caduceus, AQAI ISA, Soft Silicon codebase to corp.
+
+  - id: g1-cap-table
+    title: Cap table initialized (founder + option pool)
+    status: ready_to_execute
+    owner: Travis D Jones
+    due: 2026-09-25
+    evidence: cap-table-template.csv
+    notes: 10M authorized; founder 8M; 15% option pool; SAFE pool tracked separately.
+
+  - id: g1-83b
+    title: 83(b) elections filed where applicable
+    status: ready_to_execute
+    owner: Travis D Jones + counsel
+    due: 2026-09-30
+    evidence: entity-formation-runbook.md#83b-election
+    notes: Within 30 days of restricted stock grant; certified mail to IRS.
+
+  - id: g1-safe-templates
+    title: SAFE / SPA templates ready for $1.5M pre-seed
+    status: ready_to_execute
+    owner: Travis D Jones + counsel
+    due: 2026-09-28
+    evidence: safe-template-outline.md
+    notes: YC post-money SAFE baseline; not legal advice — counsel review required.
+
+  - id: g1-ear-screen
+    title: Export-control screen (EAR) for dual-use compute
+    status: ready_to_execute
+    owner: counsel
+    due: 2026-10-05
+    evidence: ear-export-screening.md
+    notes: Classify AQAI/Caduceus seal-native compute; document ECCN hypothesis.
+
+  - id: g1-insurance-do
+    title: Insurance / D&O once raising
+    status: ready_to_execute
+    owner: Travis D Jones
+    due: 2026-10-15
+    evidence: insurance-d-o-checklist.md
+    notes: Trigger on first SAFE close or term sheet; $1–2M D&O + EPL baseline.
+
+  - id: g1-sam-gov
+    title: UEI + SAM.gov registration for NSF SBIR
+    status: ready_to_execute
+    owner: Travis D Jones
+    due: 2026-10-10
+    evidence: sam-gov-registration.md
+    notes: Required before NSF Project Pitch submission.
+
+  - id: g1-exit-bank-safe
+    title: "EXIT — Bank + SAFE/SPA templates ready"
+    status: ready_to_execute
+    owner: Travis D Jones
+    due: 2026-10-31
+    evidence: G1-checklist.yaml
+    notes: Gate closes when corp, bank, cap table, SAFE kit, and EAR screen complete.

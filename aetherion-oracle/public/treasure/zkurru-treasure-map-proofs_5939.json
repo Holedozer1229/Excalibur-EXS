@@ -1,0 +1,63 @@
+{
+  "title": "EXCALIBUR & zkURUU // TREASURE MAP & MATHEMATICAL PROOF MANIFEST",
+  "network": "zkSync Era Mainnet",
+  "chainId": 324,
+  "generatedAt": "2026-08-18T19:28:31.949Z",
+  "commitments": [
+    {
+      "moduleId": 1,
+      "formulaName": "Fixed Point: x = T(x)",
+      "equationHash": "0x35c6b9acedb8b77b7896e3db9332dea8b58d779850baa2bca9a22c3dc3b7ac07",
+      "intentPayload": "0x681091703e2012465d9b8999edf42f4cd5607e1553d2bcf9b7a5fe3796bf294f"
+    },
+    {
+      "moduleId": 2,
+      "formulaName": "Eigenvalue: Av = λv",
+      "equationHash": "0x62736774a73359f6a4e37bd0808ac186865a25f9b0fb8dc8ea6aedd4f760288c",
+      "intentPayload": "0xcdad1558e59ddc5680d2862f45f56cbc9f1984bc1664b1fa8b765e155f49e368"
+    },
+    {
+      "moduleId": 3,
+      "formulaName": "Riemann Zeta: ζ(s) = 0",
+      "equationHash": "0xb02cca0c21724e6a7d96fb6a00c573755ecffb00b0fa38e535aa3fa79066497c",
+      "intentPayload": "0x04dc45eb249cc9f5496b5de250e9c046f68f5f14a9630853b14501c8e4eb9900"
+    },
+    {
+      "moduleId": 4,
+      "formulaName": "Wheeler-DeWitt: Ĥ|ψ⟩ = 0",
+      "equationHash": "0xb4d197ec35d29e493a9ecb79c35938d6353ee6f519806662b8efcef533ee80c9",
+      "intentPayload": "0x3dca586ec0a9446a765405a7de6d4dcabb2823743f9fe79435b6a026b7778c8d"
+    },
+    {
+      "moduleId": 5,
+      "formulaName": "URUU: J₂₃ = -J₁₂",
+      "equationHash": "0x77fd6634f41116ee4c15c94d235af9ce1781ab75b67eb0052aaae19eb950e83c",
+      "intentPayload": "0x281d56ddd2209a50fa6f15bbe519c94d88be96db5972b96ceae49af06966f749"
+    },
+    {
+      "moduleId": 6,
+      "formulaName": "Axiom of Choice",
+      "equationHash": "0x3250f2d20ebf6928e697958dca9aa4cf3fb32c1dc6eadac4f04397bcc44f96ed",
+      "intentPayload": "0x0e3ddac8adf036d7082af5e5b451f6b778f670d3465ff2268a9a5873cf4eb7a5"
+    },
+    {
+      "moduleId": 7,
+      "formulaName": "Self-Reference",
+      "equationHash": "0xa9ee23c7378334377431707196c46912dac5550b7f8e747a7262b64d4f55fc6e",
+      "intentPayload": "0x8b85b7fe4080330d5d09ad8d785e6375dd3b0f855dfbfc8435952e4232ece7e4"
+    },
+    {
+      "moduleId": 8,
+      "formulaName": "The Löb Formula",
+      "equationHash": "0xb82670a0272928f9f8723c855d78d4fda5e302006ef6cb10336f707c98cd1e62",
+      "intentPayload": "0x37e048973f6fa7dc891b7c9803d34f4c31e15090ea1335049bb7de02a0011c96"
+    },
+    {
+      "moduleId": 9,
+      "formulaName": "URUU Fixed Point",
+      "equationHash": "0x0a6cbd8e3eaf6749078bbd7948e4ffedf64f47bd0c6a97a19faf43e24c7ee03f",
+      "intentPayload": "0xf5a11b330cdbce051e16b536b56659d492fcd23beb077ec33f9353a8a52e2ff7"
+    }
+  ],
+  "provenanceNotice": "FAIL-CLOSED NOTICE: These mathematical commitments establish intent and proof geometry, but do not replace mandatory EOA or EIP-1271 wallet authorization or L1 deposit evidence."
+}

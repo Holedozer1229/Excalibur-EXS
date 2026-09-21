@@ -1,0 +1,40 @@
+{
+  "kind": "ethrex-zksync-withdrawal-plan",
+  "vault": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+  "l1Receiver": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+  "canonicalEthBooty": 137.190325,
+  "balances": {
+    "ethereumWei": "4799693119737",
+    "zksyncWei": "6664630444351097"
+  },
+  "withdrawableL2Wei": "6464630444351097",
+  "withdrawableL2Eth": 0.006464630444351097,
+  "l2WithdrawTo": "0x000000000000000000000000000000000000800A",
+  "l2WithdrawCalldata": "0x51cff8d9000000000000000000000000c5a47c9adab637d1caa791cce193079d22c8cb20",
+  "ethrexClaimCalldata": null,
+  "zksyncFinalizeCalldata": null,
+  "zksyncL1Diamond": "0x32400084C286CF3E17e7B677ea9583e60c1ace52",
+  "ethrexCommonBridgeL1": null,
+  "blockers": [
+    "ethrex CommonBridge L1 address unset (ETHREX_COMMON_BRIDGE_L1) — cannot broadcast claimWithdrawal.",
+    "No L1 merkle proof yet. After L2 withdraw finalizes: set ETHREX_CLAIM_PROOF_PATH or ZKSYNC_WITHDRAWAL_TX_HASH.",
+    "L1 vault holds ~0.000005 ETH — 137 ETH is proof-locked, not spendable L1."
+  ],
+  "steps": [
+    "If vault holds zkSync Era ETH: L2EthToken.withdraw(l1Receiver) from vault EOA",
+    "Wait for L2 batch commit + verify (~hours on zkSync Era)",
+    "ethrex: CommonBridge.claimWithdrawal(amount, batch, messageId, merkleProof) value 0",
+    "or zkSync: Diamond.finalizeEthWithdrawal(...) value 0",
+    "Then npm run swap:booty on L1 ETH"
+  ],
+  "updatedAt": "2026-08-31T18:18:14.479Z",
+  "rpc": {
+    "ethereum": "https://ethereum.publicnode.com",
+    "zksync": "https://mainnet.era.zksync.io"
+  },
+  "broadcast": false,
+  "l2WithdrawTxHash": null,
+  "l1ClaimTxHash": null,
+  "note": "claimWithdrawal / finalizeEthWithdrawal msg.value is 0 — release from bridge, do not attach 137 ETH",
+  "signer": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6"
+}

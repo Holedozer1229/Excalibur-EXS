@@ -1,0 +1,79 @@
+{
+  "kind": "eip-uruu-bridge-claim",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-29T21:30:56.708Z",
+  "mode": "dry-run",
+  "gates": [
+    {
+      "id": "eip-2",
+      "ok": true,
+      "detail": "low-s v=27 header=31"
+    },
+    {
+      "id": "eip-6",
+      "ok": true,
+      "detail": "CamelotScavenger: 0 SUICIDE, 0 SELFDESTRUCT"
+    },
+    {
+      "id": "eip-3326",
+      "ok": true,
+      "detail": "switch 0x1 then 0x144; 4902 adds chain"
+    },
+    {
+      "id": "eip-7949",
+      "ok": true,
+      "detail": "posted genesis-mainnet.json"
+    }
+  ],
+  "gatesPass": true,
+  "eip3326": {
+    "l1": "0x1",
+    "l2": "0x144",
+    "method": "wallet_switchEthereumChain",
+    "unknownChain": 4902
+  },
+  "wrap": {
+    "l1Weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+    "l2Weth": "0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91",
+    "depositCalldata": "0xd0e30db0",
+    "wethLive": true,
+    "wrapLive": false,
+    "uruu": "0x5B6C9d85465Cc6FFe84039183872239657D90208",
+    "uruuChainId": 324,
+    "uruuWrapStatus": "Not live"
+  },
+  "l1ToL2": {
+    "diamond": "0x32400084C286CF3E17e7B677ea9583e60c1ace52",
+    "receiver": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+    "requestCalldata": "0xeb672419000000000000000000000000c5a47c9adab637d1caa791cce193079d22c8cb200000000000000000000000000000000000000000000000000000045d8400e0f900000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000061a8000000000000000000000000000000000000000000000000000000000000003200000000000000000000000000000000000000000000000000000000000000100000000000000000000000000c5a47c9adab637d1caa791cce193079d22c8cb2000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "l2GasLimit": "400000",
+    "valueWei": "4799693119737"
+  },
+  "commitment": {
+    "lock": "0x4ca14e0c88f1750926df7a126817ddf9e9480fff8a3bde0c697724d1ec5e9099",
+    "vaa": "0x1bae879ebe1b97cb394dab20598f0b94d2bddf79d035e7f9b1a2318297195a19",
+    "stateSig": "0x3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9"
+  },
+  "spendable": {
+    "l1Wei": "4799693119737",
+    "zkWei": "6664630444351097",
+    "stockWei": "7123148111589634",
+    "ledgerEth": 137.190325,
+    "ledgerIsL1": false
+  },
+  "broadcast": "FAIL_CLOSED",
+  "txHash": null,
+  "blockers": [
+    "dry_run_default",
+    "operator_l1_empty",
+    "ledger_137_not_l1"
+  ],
+  "honesty": {
+    "doesNotMint137Eth": true,
+    "wethWrapLive": true,
+    "wrapCurveNotLive": true,
+    "postedAllocNotSwept": true,
+    "note": "137.190325 ETH is SKYNT / proof-ledger. Canonical WETH wrap is live. URUU→wURUU custody wrap is not. 0xd8b934… is not swept. L1→L2 only moves spendable keyed ETH."
+  },
+  "note": "EIP gates pass. Operator 0 L1 ETH — requestL2Transaction stays docked."
+}

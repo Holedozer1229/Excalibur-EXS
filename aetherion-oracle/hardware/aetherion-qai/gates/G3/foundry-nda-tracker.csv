@@ -1,0 +1,6 @@
+foundry,program,node,nda_status,pdk_status,contact,last_touch,notes
+TSMC,TSMC OIP / IP Alliance,65nm/40nm/28nm,not_started,not_started,oip@tsmc.com,,Scale path post-Sky130; requires revenue/partner intro
+GlobalFoundries,GF MPW / 180MCU,180nm/12LP,not_started,not_started,mpw@glofo.com,,180MCU good for mixed-signal IOC; higher NRE than Sky130
+SkyWater,SKY130 PDK open + Efabless MPW,130nm,not_started,open_pdk_available,info@skywater.com,,Recommended first shuttle — open PDK lowers barrier
+MOSIS,MOSIS multi-project wafer,varies,not_started,not_started,info@mosis.com,,Academic-friendly; longer queue
+Europractice,Europractice MPW,130nm/65nm,not_started,not_started,support@europractice-ic.com,,EU sovereign path; GDPR-aligned customers

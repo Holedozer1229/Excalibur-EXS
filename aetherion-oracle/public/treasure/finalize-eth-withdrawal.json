@@ -1,0 +1,25 @@
+{
+  "kind": "finalize-eth-withdrawal",
+  "version": "1.0.0",
+  "generatedAt": "2026-08-29T20:16:55.533Z",
+  "l2WithdrawTx": null,
+  "prover": {
+    "latestBatch": 516454,
+    "requestedBatch": 516454,
+    "available": true,
+    "filename": "witness_inputs_516454.cbor",
+    "retentionDays": 30,
+    "detail": "Prover latest witness batch 516454 — requested batch in ~30-day window"
+  },
+  "logProof": null,
+  "params": null,
+  "l1": {
+    "diamond": "0x32400084C286CF3E17e7B677ea9583e60c1ace52",
+    "function": "finalizeEthWithdrawal",
+    "calldata": null,
+    "valueWei": "0"
+  },
+  "ready": false,
+  "detail": "No L2 withdraw tx — initiate withdraw on zkSync Era first",
+  "note": "Prover API supplies batch witness inputs (30 days). Merkle proof comes from zks_getL2ToL1LogProof after L2 execution."
+}

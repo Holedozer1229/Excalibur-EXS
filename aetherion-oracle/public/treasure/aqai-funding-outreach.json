@@ -1,0 +1,71 @@
+{
+  "generatedAt": "2026-08-30T18:51:29.815Z",
+  "mode": "dry_run",
+  "ask": "$1.5M",
+  "deckUrl": "https://www.excaliburcrypto.com/chipset",
+  "pitchDeckPublic": "/chipset/pitch-deck.html",
+  "capitalPath": "fabless_soft_silicon_grants_angels_mpw",
+  "verdict": "Best path: Soft Silicon revenue + NSF SBIR + angel/pre-seed SAFE → FPGA → MPW. Never own a fab.",
+  "outreach": [
+    {
+      "name": "Example Angel Deep Tech",
+      "type": "angel",
+      "status": "skipped_placeholder",
+      "email": null,
+      "reason": "Replace Example rows with real contacts before live send"
+    },
+    {
+      "name": "Example Semi Seed",
+      "type": "fund",
+      "status": "skipped_placeholder",
+      "email": null,
+      "reason": "Replace Example rows with real contacts before live send"
+    },
+    {
+      "name": "Example Crypto AI",
+      "type": "fund",
+      "status": "skipped_placeholder",
+      "email": null,
+      "reason": "Replace Example rows with real contacts before live send"
+    },
+    {
+      "name": "Example Defense Angel",
+      "type": "angel",
+      "status": "skipped_placeholder",
+      "email": null,
+      "reason": "Replace Example rows with real contacts before live send"
+    }
+  ],
+  "grants": [
+    {
+      "name": "NSF SBIR Phase I",
+      "status": "todo",
+      "note": "Apply via grant portal — not emailed as an application",
+      "priority": "1"
+    },
+    {
+      "name": "DOE Microelectronics FOA",
+      "status": "todo",
+      "note": "Apply via grant portal — not emailed as an application",
+      "priority": "2"
+    },
+    {
+      "name": "State semi matching",
+      "status": "todo",
+      "note": "Apply via grant portal — not emailed as an application",
+      "priority": "2"
+    }
+  ],
+  "nextOperatorSteps": [
+    "Replace Example rows in investor-crm.csv with real emails",
+    "Print /chipset/pitch-deck.html to PDF",
+    "Draft NSF SBIR pitch from hardware/aetherion-qai/funding/GRANTS.md",
+    "Counsel on SAFE + entity + EAR",
+    "AQAI_OUTREACH_LIVE=1 to write .eml outbox; optional RESEND_API_KEY to send"
+  ],
+  "honesty": [
+    "Not claiming fabricated AQAI die in production",
+    "Placeholder CRM rows never sent",
+    "Grants require human portal submission"
+  ]
+}

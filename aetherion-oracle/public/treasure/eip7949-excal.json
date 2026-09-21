@@ -1,0 +1,42 @@
+{
+  "kind": "eip7949-excal",
+  "version": "1.0.0",
+  "format": "eip-7949",
+  "updatedAt": "2026-08-31T18:17:46.389Z",
+  "token": {
+    "name": "Camelot Excalibur",
+    "symbol": "EXCAL",
+    "standard": "ERC-20",
+    "solidity": "^0.8.19"
+  },
+  "factory": "0x4e59b44847b379578588920cA78FbF26c0B4956C",
+  "salt": "0x7c2bac1d",
+  "salt32": "0x000000000000000000000000000000000000000000000000000000007c2bac1d",
+  "initialOwner": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+  "predicted": "0x1E4529cF826a79fd3b0E033Ff00dCDB3091c77B2",
+  "opReturnLast20": "0xec82D08b808082fEeBa68090b2d4a601FF7fF909",
+  "pasted18": "0xd08b808082feeba68090b2d4a601ff7ff909",
+  "pasteIsOpReturnTail": true,
+  "factoryHasCode": true,
+  "predictedHasCode": false,
+  "predictedWei": "0",
+  "broadcast": "FAIL_CLOSED",
+  "txHash": null,
+  "blockers": [
+    "operator_l1_empty"
+  ],
+  "functions": [
+    "mintByMnemonic(string) — 1000 EXCAL, one mint per address",
+    "withdrawRemaining() — owner only",
+    "getGenesisAttestation() — pubkey, BIP-322 sig, message, hash, expected",
+    "hasMinted(address) — view"
+  ],
+  "honesty": {
+    "bitcoinGenesisIsAttestationOnly": true,
+    "doesNotMint137Eth": true,
+    "bip322IsNotOzecdsarecover": true,
+    "factoryMustNotBeOwner": true,
+    "note": "1A1zP1… is never swept. Constructor mints 7.5M EXCAL to the vault, not the factory. Posted 0xd08b80… is the 18-byte OP_RETURN tail, not the CREATE2 result."
+  },
+  "note": "Arrr — factory is live; EXCAL bytecode is not on L1 yet. Operator has 0 ETH so CREATE2 stays docked."
+}

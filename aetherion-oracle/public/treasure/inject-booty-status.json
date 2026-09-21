@@ -1,0 +1,21 @@
+{
+  "kind": "inject-booty-status",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-29T19:56:46.560Z",
+  "vault": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+  "canonicalEthBooty": 137.190325,
+  "bootyWei": "137190324999999995904",
+  "bridgeContract": null,
+  "chainId": 1,
+  "stateSig": "0x3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+  "blockers": [
+    "Fund 0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6 with L1 ETH for gas",
+    "Deploy SphinxBootyBridge: npm run inject:booty"
+  ],
+  "steps": [
+    "Deploy SphinxBootyBridge on Ethereum L1",
+    "Fund bridge: depositBooty() or captain's cut treasury → vault",
+    "Broadcast claimStarkProof (value 0) — releases ETH to vault",
+    "npm run swap:booty — vault ETH → SOL"
+  ]
+}

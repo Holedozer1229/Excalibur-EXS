@@ -1,0 +1,75 @@
+{
+  "kind": "merkaba-vs-dual-sha256",
+  "version": "1.0.0",
+  "generatedAt": "2026-09-01T17:04:17.973Z",
+  "honesty": "Default bitcoin-isomorph mode maps upper Merkaba star (steps 0–2) to SHA256 pass 1 and lower star (steps 3–5) to pass 2. Expect MATCH for all comparison vectors.",
+  "algorithms": {
+    "merkaba": "hexagramSequenceHash / merkabaDigest (bitcoin-isomorph, v1.1.0)",
+    "dualSha256": "SHA256(SHA256(message)) via @noble/hashes"
+  },
+  "summary": {
+    "total": 6,
+    "matches": 6,
+    "noMatches": 0,
+    "anyMatch": true
+  },
+  "comparisons": [
+    {
+      "id": "empty",
+      "label": "empty string",
+      "preimageDescription": "",
+      "merkabaDigestHex": "5df6e0e2761359d30a8275058e299fcc0381534545f55cf43e41983f5d4c9456",
+      "dualSha256Hex": "5df6e0e2761359d30a8275058e299fcc0381534545f55cf43e41983f5d4c9456",
+      "verdict": "MATCH",
+      "match": true
+    },
+    {
+      "id": "hello",
+      "label": "\"hello\"",
+      "preimageDescription": "hello",
+      "merkabaDigestHex": "9595c9df90075148eb06860365df33584b75bff782a510c6cd4883a419833d50",
+      "dualSha256Hex": "9595c9df90075148eb06860365df33584b75bff782a510c6cd4883a419833d50",
+      "verdict": "MATCH",
+      "match": true
+    },
+    {
+      "id": "tetra-tip-utf8",
+      "label": "Tetra-PoW tip hash (UTF-8): 000df8343b0990ac…",
+      "preimageDescription": "000df8343b0990ac36e363528bf53c784f053d54bbf00a6d7ca629dc822d87d1",
+      "merkabaDigestHex": "28827aea380784f567d31d87339c31f1674f47dd0a2384c82662b277140b3829",
+      "dualSha256Hex": "28827aea380784f567d31d87339c31f1674f47dd0a2384c82662b277140b3829",
+      "verdict": "MATCH",
+      "match": true
+    },
+    {
+      "id": "merkaba-lab",
+      "label": "merkabaDigest(ZERO_TIP, \"aqai-chipset-lab\")",
+      "preimageDescription": "message||tipBytes (aqai-chipset-lab + zero tip)",
+      "preimageHex": "617161692d636869707365742d6c61620000000000000000000000000000000000000000000000000000000000000000",
+      "merkabaDigestHex": "bbaf8463676be8b94fa7742fe300467c992ca34179f80f4cf1fcbe72ab48a3d9",
+      "dualSha256Hex": "bbaf8463676be8b94fa7742fe300467c992ca34179f80f4cf1fcbe72ab48a3d9",
+      "verdict": "MATCH",
+      "match": true
+    },
+    {
+      "id": "merkaba-lab-live-tip",
+      "label": "merkabaDigest(tetra tip, \"aqai-chipset-lab\")",
+      "preimageDescription": "message||tipBytes (aqai-chipset-lab + 000df8343b0990ac…)",
+      "preimageHex": "617161692d636869707365742d6c6162000df8343b0990ac36e363528bf53c784f053d54bbf00a6d7ca629dc822d87d1",
+      "merkabaDigestHex": "deb2a114f7fe78a500d8f64afa8b9d3c98ecb8cbe22b14979a621a938a707411",
+      "dualSha256Hex": "deb2a114f7fe78a500d8f64afa8b9d3c98ecb8cbe22b14979a621a938a707411",
+      "verdict": "MATCH",
+      "match": true
+    },
+    {
+      "id": "btc-header-sample",
+      "label": "Bitcoin genesis-shaped 80-byte header",
+      "preimageDescription": "80-byte block header sample",
+      "preimageHex": "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c",
+      "merkabaDigestHex": "6fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d6190000000000",
+      "dualSha256Hex": "6fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d6190000000000",
+      "verdict": "MATCH",
+      "match": true
+    }
+  ]
+}

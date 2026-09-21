@@ -1,0 +1,29 @@
+{
+  "gate": "G2",
+  "generated_at": "2026-08-30T20:57:38Z",
+  "mode": "simulation",
+  "honesty": "Simulation/reference model until Arty A7 board purchased",
+  "board_target": "Digilent Arty A7-100T (XC7A100T)",
+  "clock_mhz": 100,
+  "vectors": {
+    "payload_lo": "0xcafebab000000001",
+    "payload_hi": "0xdeadbeef00000002",
+    "expected_digest": "0xb28a7e18260f4314",
+    "actual_digest": "0xb28a7e18260f4314"
+  },
+  "metrics": {
+    "commit_cycles": 3,
+    "verify_cycles": 2,
+    "total_cycles": 5,
+    "latency_ns": 50,
+    "digest_match": true,
+    "power_mw": null,
+    "soft_silicon_parity": "mix64 stub matches seal_ioc RTL"
+  },
+  "demo_recording": {
+    "status": "pending",
+    "path": null,
+    "note": "Record sim waveform or board UART session when hardware available"
+  },
+  "script_elapsed_ms": 15
+}

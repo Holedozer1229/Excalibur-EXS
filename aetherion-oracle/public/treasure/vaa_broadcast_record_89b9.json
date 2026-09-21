@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "timestamp": 1753747200,
+  "source_chain": "skynt-genesis-mainnet",
+  "dest_chain": "ethereum-mainnet",
+  "source_addr": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+  "dest_addr": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+  "amount_wei": 137190325000000000,
+  "amount_eth": 0.13719,
+  "dual_merkle_root": "cd42dd42386d7fa9d88333dafa1c281150d67b4a27f18999a06bfb02e32f118c",
+  "l2_post_root": "777b94a6a94ad2a133ec72c2d9bd4b19a35f10f7e9eda91122ce9906cb4a1bec",
+  "vaa_commitment": "223775e70e6a77718aa35b95324d8c5249333ee1c1b468e1b1110089ebe4d958",
+  "proof_bundle": "20ecfca9d3c65a384cccb47e078c944e263c23274dd452b8cbc08bf07cfba628",
+  "agg_broadcast_sig": "34272458ef594042eb57262091d23b58569aa02d08c2bd22897080f725e1aa20",
+  "guardian_threshold": "5/7",
+  "signed_pct": 89.16,
+  "por_stark_valid": true,
+  "bridge_stark_valid": true,
+  "vaa_stark_valid": true,
+  "status": "BROADCAST_READY"
+}

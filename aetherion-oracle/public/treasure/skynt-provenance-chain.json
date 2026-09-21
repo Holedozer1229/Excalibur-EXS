@@ -1,0 +1,116 @@
+{
+  "kind": "skynt-provenance-chain",
+  "version": "1.0.0",
+  "generatedAt": "2026-08-31T18:18:10.862Z",
+  "canonicalEthBooty": 137.190325,
+  "vault": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+  "skyntLedger": "skynt:262067626b978d9ae83188315005847b6b8546b6",
+  "evmPortfolio": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+  "stateSig": "0x3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+  "bitcoinGenesis": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+  "ethGenesisBlockHash": "0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3",
+  "create2Salt": "0x7c2bac1d",
+  "skyntWalletTxs": [
+    {
+      "txid": "0x17b51a57b75e9d0ab7c8e3c8107508c80b104a1863c84d569fe23deb038afc1d",
+      "height": 1
+    },
+    {
+      "txid": "0x192b829b9de75d8c5fdd2c3fd570c6e0f79b934e634bd8ccb0b5b4f1f92b6c03",
+      "height": 1
+    },
+    {
+      "txid": "0xe829bd2d0a41cfccf40df9bd0e3ab6682b74072064d0178f948f4a8217d52bf4",
+      "height": 1
+    },
+    {
+      "txid": "0xa640c913d5d466ef99739fb1d1b50fd65573163326bc20474d2b88ea2addb642",
+      "height": 1
+    },
+    {
+      "txid": "0x12b57ae1c36791df9fc2f5847e3248516db3a9c59d046b6e3f06dd4550def36f",
+      "height": 1
+    },
+    {
+      "txid": "0x24f69a1c7f0980189bc0c06e15221e5128c597675c3adc5be0c883d119398b82",
+      "height": 1
+    },
+    {
+      "txid": "0xf822b219924995285d8611bcf8ffdd200404066f694b1b96f2fd5d3a0e96aac1",
+      "height": 1
+    },
+    {
+      "txid": "0x15fe2cc547dbb90da12360a64ea5908deef8f500c7064663c00d392eee31bd98",
+      "height": 1
+    }
+  ],
+  "skyntGenesisHeightTxCount": 8,
+  "links": [
+    {
+      "id": "btc-genesis",
+      "label": "Bitcoin genesis coinbase anchor",
+      "kind": "genesis",
+      "verified": true,
+      "detail": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa ↔ ETH genesis 0xd4e56740f876aef8…",
+      "href": "/treasure/genesis-mainnet_9334.json"
+    },
+    {
+      "id": "create2-salt",
+      "label": "CREATE2 genesis salt 0x7c2bac1d",
+      "kind": "genesis",
+      "verified": true,
+      "detail": "Factory 0x4e59b44847b379578588920cA78FbF26c0B4956C · ETH genesis extraData",
+      "href": "/treasure/genesis-mainnet_9334.json"
+    },
+    {
+      "id": "skynt-genesis-trace",
+      "label": "SKYNT portfolio txs trace to genesis height",
+      "kind": "genesis",
+      "verified": true,
+      "detail": "8/8 wallet txs at height 1 → 0xd4e56740f876aef8…"
+    },
+    {
+      "id": "state-sig-unity",
+      "label": "Unified stateSig across MANIFEST + stark bridge",
+      "kind": "signature",
+      "verified": true,
+      "detail": "0x3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+      "href": "/treasure/MANIFEST_f42c.json"
+    },
+    {
+      "id": "davy-jones",
+      "label": "Davy Jones receipt — 137 ETH conserved",
+      "kind": "receipt",
+      "verified": true,
+      "detail": "J_fwd=J_bwd=137 ETH → vault",
+      "href": "/treasure/davy_jones_claim_receipt_1b27d2f7_9a45.json"
+    },
+    {
+      "id": "stark-bridge",
+      "label": "Stark bridge sound proof — 137.19 ETH lock",
+      "kind": "stark",
+      "verified": true,
+      "detail": "skynt-genesis-mainnet → 0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "href": "/treasure/stark-bridge-claim-1814332222_88b0.json"
+    },
+    {
+      "id": "skynt-ledger",
+      "label": "SKYNT portfolio ledger — 137.19 ETH",
+      "kind": "ledger",
+      "verified": true,
+      "detail": "skynt:262067626b978d9ae83188315005847b6b8546b6 · portfolio 0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A"
+    },
+    {
+      "id": "skynt-l1-txs",
+      "label": "SKYNT wallet tx hashes on Ethereum L1",
+      "kind": "on_chain",
+      "verified": false,
+      "detail": "8 in-app txs — not indexed on public L1 (ledger-only)"
+    }
+  ],
+  "onChainL1TxFound": 0,
+  "onChainL1TxChecked": 8,
+  "conservationOk": true,
+  "guardianQuorumOk": true,
+  "verdict": "PROOF-LOCKED — BTC/ETH genesis → SKYNT wallet → stateSig → 137 ETH; L1 release still required."
+}

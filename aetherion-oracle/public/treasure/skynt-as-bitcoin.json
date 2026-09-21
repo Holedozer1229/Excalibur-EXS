@@ -1,0 +1,346 @@
+{
+  "kind": "skynt-as-bitcoin",
+  "version": "1.1.0",
+  "updatedAt": "2026-08-29T23:33:34.522Z",
+  "skyntLedger": "skynt:262067626b978d9ae83188315005847b6b8546b6",
+  "hash160Hex": "262067626b978d9ae83188315005847b6b8546b6",
+  "rawBase58": "Xor7i1191c1yZVQXKohVuAFWKEu",
+  "bitcoin": {
+    "p2pkh": "14UbVkPzUJvWn8NN2Muv42Pvott28rDsV7",
+    "p2sh": "35AcRHtS2DEtsJ4o9TaWUekrxRAjgwEJH3",
+    "p2wpkh": "bc1qycsxwcntj7xe46p33qc4qpvy0d4c234kjaxv20"
+  },
+  "evmPortfolio": {
+    "address": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+    "hash160Hex": "5592cf5822dea1c7ac79e17ddabd67b2b095db2a",
+    "p2pkh": "18oUJqfDeMHR6MK5aaAm3hXAMH5m1nxb92",
+    "p2wpkh": "bc1q2kfv7kpzm6su0treu97a40t8k2cftke2z99h9s"
+  },
+  "witness": {
+    "kind": "skynt-bitcoin-witness",
+    "version": "1.0.0",
+    "skyntLedger": "skynt:262067626b978d9ae83188315005847b6b8546b6",
+    "hash160Hex": "262067626b978d9ae83188315005847b6b8546b6",
+    "opReturn": {
+      "dataHex": "262067626b978d9ae83188315005847b6b8546b6",
+      "scriptHex": "6a14262067626b978d9ae83188315005847b6b8546b6",
+      "scriptHash": "76b8758dac143926022f4c932cf04fcea9729496d3938f3fdea15e3d900437db",
+      "postedHex": "ff7f8192ec82d08b808082feeba68090b2d4a601ff7ff909",
+      "postedLast20": "ec82d08b808082feeba68090b2d4a601ff7ff909",
+      "postedScriptHex": "6a18ff7f8192ec82d08b808082feeba68090b2d4a601ff7ff909",
+      "postedScriptHash": "3e5223c46baafdb5b5a379d63468d9190ff3e6382c8c6cfb802ac611408ebf91",
+      "equalsPostedLast20": false,
+      "containsPosted": false
+    },
+    "signatures": {
+      "tooShortToBeSecpSig": true,
+      "bytes": 20,
+      "secpNeedsBytes": 64,
+      "bip322": {
+        "header": 31,
+        "bytes": 65,
+        "r": "dad93159a7977c32132b7a009f12407090f959f5e766e427c1d85d85a4701eb8",
+        "s": "108cc06e4139d250200dad7493656d2b3022a0b24e3e8dd66a524ad807b3b38d",
+        "containsSkynt": false
+      },
+      "stateSig": {
+        "hex": "3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+        "first20": "3edc98233f564b97755d305eb899ae481908ed50",
+        "last20": "b899ae481908ed50dec43e71d5399988d5fc79e9",
+        "containsSkynt": false
+      },
+      "genesisPubHash160": "62e907b15cbf27d5425399ebf6f0fb50ebb88f18",
+      "equalsGenesisHash160": false
+    },
+    "derivedTxids": {
+      "sha256": "9c60ad80a401a51cc7903fb720620a2fa716852f8a102b209d26081f2dbd3a28",
+      "doubleSha256": "7ca0521d036d4dc886e0edd2c994afb9533ab058021a5e58ed712f9789c137fb",
+      "padLeft": "000000000000000000000000262067626b978d9ae83188315005847b6b8546b6",
+      "padRight": "262067626b978d9ae83188315005847b6b8546b6000000000000000000000000"
+    },
+    "overlaps": [
+      {
+        "name": "posted-opreturn",
+        "haystackBytes": 24,
+        "containsSkynt": false,
+        "longestCommonBytes": 0
+      },
+      {
+        "name": "bip322-r",
+        "haystackBytes": 32,
+        "containsSkynt": false,
+        "longestCommonBytes": 1
+      },
+      {
+        "name": "bip322-s",
+        "haystackBytes": 32,
+        "containsSkynt": false,
+        "longestCommonBytes": 1
+      },
+      {
+        "name": "stateSig",
+        "haystackBytes": 32,
+        "containsSkynt": false,
+        "longestCommonBytes": 1
+      },
+      {
+        "name": "genesis-hash160",
+        "haystackBytes": 20,
+        "containsSkynt": false,
+        "longestCommonBytes": 1
+      }
+    ],
+    "honesty": {
+      "twentyBytesIsNotASignature": true,
+      "costumeScriptIsNotAUtxo": true,
+      "noPostedHexOverlap": true,
+      "doesNotMint137Btc": true,
+      "note": "SKYNT 20 bytes can be wrapped as OP_RETURN 6a14… or sliced against BIP-322 r/s. Neither is a live Bitcoin witness. 20 bytes cannot be a secp256k1 signature. Posted OP_RETURN ff7f8192… is a different 24-byte blob."
+    }
+  },
+  "chains": {
+    "kind": "skynt-chain-fingerprint",
+    "version": "1.0.0",
+    "skyntLedger": "skynt:262067626b978d9ae83188315005847b6b8546b6",
+    "evmAddress": "0x262067626B978D9aE83188315005847B6B8546b6",
+    "equalsSkyntPortfolio": false,
+    "equalsTreasureVault": false,
+    "encodings": {
+      "evm": "0x262067626B978D9aE83188315005847B6B8546b6",
+      "bitcoinP2pkh": "14UbVkPzUJvWn8NN2Muv42Pvott28rDsV7",
+      "litecoinP2pkh": "LNhYkxhpYyAa2w4XCVuDL3Th27FJHttkET",
+      "litecoinP2wpkh": "ltc1qycsxwcntj7xe46p33qc4qpvy0d4c234kkpugjl",
+      "bitcoinCashLegacy": "14UbVkPzUJvWn8NN2Muv42Pvott28rDsV7",
+      "dogeP2pkh": "D8ch31LdmipoK8YxkwuUbnZXh2cKSUBc6T",
+      "dashP2pkh": "XeASL13tS296w4xwtFE8uZ5ieETi7hXxsU",
+      "ravenP2pkh": "RCknaGHH58j5r8jZVXu39Yj8aALciVA32T",
+      "tron": "TDSoVomid33TwJRzcdZdaB64igdLGab221"
+    },
+    "notSolanaPubkey": true,
+    "liveHits": 0,
+    "closestFamily": "evm-address-shape",
+    "verdict": "Looks like Ethereum: 0x262067626B978D9aE83188315005847B6B8546b6. 15 EVM RPCs report 0 wei / no code / nonce 0, including zkSync and Base. LTC LNhYkxhpYyAa2w4XCVuDL3Th27FJHttkET, BCH-legacy 14UbVkPzUJvWn8NN2Muv42Pvott28rDsV7, DOGE/DASH/RVN/TRON also empty. Not the SKYNT portfolio 0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A.",
+    "honesty": {
+      "costumeOnly": true,
+      "notL2EthAlready": true,
+      "doesNotMint137": true,
+      "note": "Strip skynt: and you have a checksummed EVM address. That is a costume. The live SKYNT portfolio is 0x5592…, not this payload. 137 ETH stays ledger-only."
+    },
+    "evm": [
+      {
+        "id": "ethereum",
+        "name": "Ethereum L1",
+        "chainId": 1,
+        "wei": "0",
+        "nonce": 0,
+        "hasCode": false,
+        "rpcOk": true
+      },
+      {
+        "id": "zksync",
+        "name": "zkSync Era",
+        "chainId": 324,
+        "wei": "0",
+        "nonce": 0,
+        "hasCode": false,
+        "rpcOk": true
+      },
+      {
+        "id": "base",
+        "name": "Base",
+        "chainId": 8453,
+        "wei": "0",
+        "nonce": 0,
+        "hasCode": false,
+        "rpcOk": true
+      },
+      {
+        "id": "optimism",
+        "name": "Optimism",
+        "chainId": 10,
+        "wei": "0",
+        "nonce": 0,
+        "hasCode": false,
+        "rpcOk": true
+      },
+      {
+        "id": "arbitrum",
+        "name": "Arbitrum One",
+        "chainId": 42161,
+        "wei": "0",
+        "nonce": 0,
+        "hasCode": false,
+        "rpcOk": true
+      },
+      {
+        "id": "scroll",
+        "name": "Scroll",
+        "chainId": 534352,
+        "wei": "0",
+        "nonce": 0,
+        "hasCode": false,
+        "rpcOk": true
+      },
+      {
+        "id": "linea",
+        "name": "Linea",
+        "chainId": 59144,
+        "wei": "0",
+        "nonce": 0,
+        "hasCode": false,
+        "rpcOk": true
+      },
+      {
+        "id": "polygon",
+        "name": "Polygon",
+        "chainId": 137,
+        "wei": "0",
+        "nonce": 0,
+        "hasCode": false,
+        "rpcOk": true
+      },
+      {
+        "id": "blast",
+        "name": "Blast",
+        "chainId": 81457,
+        "wei": "0",
+        "nonce": 0,
+        "hasCode": false,
+        "rpcOk": true
+      },
+      {
+        "id": "mode",
+        "name": "Mode",
+        "chainId": 34443,
+        "wei": "0",
+        "nonce": 0,
+        "hasCode": false,
+        "rpcOk": true
+      },
+      {
+        "id": "zkevm",
+        "name": "Polygon zkEVM",
+        "chainId": 1101,
+        "wei": "0",
+        "nonce": 0,
+        "hasCode": false,
+        "rpcOk": true
+      },
+      {
+        "id": "bsc",
+        "name": "BNB Chain",
+        "chainId": 56,
+        "wei": "0",
+        "nonce": 0,
+        "hasCode": false,
+        "rpcOk": true
+      },
+      {
+        "id": "avalanche",
+        "name": "Avalanche C",
+        "chainId": 43114,
+        "wei": "0",
+        "nonce": 0,
+        "hasCode": false,
+        "rpcOk": true
+      },
+      {
+        "id": "gnosis",
+        "name": "Gnosis",
+        "chainId": 100,
+        "wei": "0",
+        "nonce": 0,
+        "hasCode": false,
+        "rpcOk": true
+      },
+      {
+        "id": "mantle",
+        "name": "Mantle",
+        "chainId": 5000,
+        "wei": "0",
+        "nonce": 0,
+        "hasCode": false,
+        "rpcOk": true
+      }
+    ],
+    "utxo": [
+      {
+        "family": "ltc",
+        "address": "LNhYkxhpYyAa2w4XCVuDL3Th27FJHttkET",
+        "sats": 0,
+        "txs": 0,
+        "ok": true
+      },
+      {
+        "family": "ltc-bech32",
+        "address": "ltc1qycsxwcntj7xe46p33qc4qpvy0d4c234kkpugjl",
+        "sats": 0,
+        "txs": 0,
+        "ok": true
+      },
+      {
+        "family": "doge",
+        "address": "D8ch31LdmipoK8YxkwuUbnZXh2cKSUBc6T",
+        "sats": 0,
+        "txs": 0,
+        "ok": true
+      },
+      {
+        "family": "bch",
+        "address": "14UbVkPzUJvWn8NN2Muv42Pvott28rDsV7",
+        "sats": 0,
+        "txs": 0,
+        "ok": true
+      },
+      {
+        "family": "dash",
+        "address": "XeASL13tS296w4xwtFE8uZ5ieETi7hXxsU",
+        "sats": 0,
+        "txs": 0,
+        "ok": true
+      },
+      {
+        "family": "raven",
+        "address": "RCknaGHH58j5r8jZVXu39Yj8aALciVA32T",
+        "sats": 0,
+        "txs": 0,
+        "ok": true
+      },
+      {
+        "family": "tron",
+        "address": "TDSoVomid33TwJRzcdZdaB64igdLGab221",
+        "sats": 0,
+        "txs": 0,
+        "ok": true
+      }
+    ]
+  },
+  "honesty": {
+    "reencodingOnly": true,
+    "notAPrivateKey": true,
+    "doesNotMint137Btc": true,
+    "bitcoinGenesisNeverSweep": true,
+    "twentyBytesIsNotASignature": true,
+    "genesis": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+    "note": "20-byte SKYNT payload can be spoken as a Bitcoin address or wrapped as OP_RETURN 6a14…. That is a costume, not a UTXO, not a secp256k1 signature, and not 137 BTC. Posted OP_RETURN ff7f8192… is a different blob. 1A1zP1… stays attestation-only."
+  },
+  "probe": {
+    "source": "mempool.space",
+    "p2pkhSats": 0,
+    "p2wpkhSats": 0,
+    "p2pkhTxCount": 0,
+    "p2wpkhTxCount": 0
+  },
+  "witnessLive": {
+    "source": "mempool.space",
+    "control": {
+      "genesisTxid": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
+      "found": true,
+      "coinbaseHasSkynt": false,
+      "coinbaseHasPostedOpReturn": false
+    },
+    "opReturnSkyntTxCount": 0,
+    "opReturnPostedTxCount": 0,
+    "derivedTxidsFound": []
+  }
+}

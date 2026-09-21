@@ -1,0 +1,16 @@
+{
+  "name": "Aetherion Oracle",
+  "install": "bash ./.cursor/install.sh",
+  "start": "bash ./scripts/start-local-stack.sh postgres",
+  "terminals": [
+    {
+      "name": "postgres",
+      "command": "docker compose up postgres"
+    },
+    {
+      "name": "dev-server",
+      "command": "export PATH=\"$HOME/.bun/bin:$PATH\"; bun run dev -- --host 0.0.0.0 --port 8080"
+    }
+  ],
+  "ports": [8080, 5432]
+}

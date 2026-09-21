@@ -1,0 +1,224 @@
+{
+  "kind": "dust-vacuum-status",
+  "version": "1.1.0",
+  "role": "watch-daemon",
+  "updatedAt": "2026-08-29T20:41:45.808Z",
+  "mode": "dry-run",
+  "intervalMs": 300000,
+  "cycle": 1,
+  "rpc": {
+    "ethereum": "https://ethereum.publicnode.com",
+    "zksync": "https://mainnet.era.zksync.io",
+    "solana": "https://api.mainnet-beta.solana.com"
+  },
+  "wallets": [
+    {
+      "id": "vault-l1",
+      "chain": "ethereum",
+      "address": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "role": "treasure_vault",
+      "sweepable": false
+    },
+    {
+      "id": "vault-zksync",
+      "chain": "zksync",
+      "address": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "role": "treasure_vault",
+      "sweepable": true
+    },
+    {
+      "id": "skynt-l1",
+      "chain": "ethereum",
+      "address": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+      "role": "skynt_portfolio",
+      "sweepable": true
+    },
+    {
+      "id": "skynt-zksync",
+      "chain": "zksync",
+      "address": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+      "role": "skynt_portfolio",
+      "sweepable": true
+    },
+    {
+      "id": "sol-derived-l1",
+      "chain": "ethereum",
+      "address": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+      "role": "solana_derived_evm",
+      "sweepable": true
+    },
+    {
+      "id": "sol-derived-zksync",
+      "chain": "zksync",
+      "address": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+      "role": "solana_derived_evm",
+      "sweepable": true
+    },
+    {
+      "id": "sol-deploy",
+      "chain": "solana",
+      "address": "ESs5u7DPeq7h8SMgYfL8t4M5X2QXc3PtjEUaMhADU9yt",
+      "role": "solana_deploy",
+      "sweepable": true
+    },
+    {
+      "id": "btc-genesis",
+      "chain": "bitcoin",
+      "address": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+      "role": "btc_genesis_attestation",
+      "sweepable": false
+    },
+    {
+      "id": "btc-taproot",
+      "chain": "bitcoin",
+      "address": "bc1pql83shz0m4znewzk82u2k5mdgeh94r3c8ks9ws00m4dm26qnjvyq0prk4n",
+      "role": "btc_taproot_attestation",
+      "sweepable": false
+    }
+  ],
+  "scanners": [
+    "failed_tx_refund",
+    "l2_bridge",
+    "erc20_allowance",
+    "forgotten_send",
+    "solana_rent"
+  ],
+  "findings": [
+    {
+      "id": "refund-vault-retain",
+      "scanner": "failed_tx_refund",
+      "chain": "ethereum",
+      "from": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "to": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "amountAtomic": "0",
+      "feeAtomic": "0",
+      "netAtomic": "0",
+      "unit": "wei",
+      "action": "inventory_only",
+      "executable": false,
+      "profitable": false,
+      "detail": "Vault holds 0.000004799693119737 ETH — destination, not a refund sweep"
+    },
+    {
+      "id": "refund-skynt_portfolio",
+      "scanner": "failed_tx_refund",
+      "chain": "ethereum",
+      "from": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+      "to": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "amountAtomic": "155757356182537",
+      "feeAtomic": "963182409000",
+      "netAtomic": "154794173773537",
+      "unit": "wei",
+      "action": "consolidate_to_vault",
+      "executable": false,
+      "profitable": true,
+      "blocker": "dry_run_default",
+      "detail": "No failed-tx explorer rows; leftover sender wei still inventoried. Gross 0.000155757356182537 ETH vs live fee 9.63182409e-7 ETH (no 0.0005 withhold)."
+    },
+    {
+      "id": "refund-solana_derived_evm",
+      "scanner": "failed_tx_refund",
+      "chain": "ethereum",
+      "from": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+      "to": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "amountAtomic": "0",
+      "feeAtomic": "0",
+      "netAtomic": "0",
+      "unit": "wei",
+      "action": "skip",
+      "executable": false,
+      "profitable": false,
+      "detail": "No failed-tx explorer rows; leftover sender wei still inventoried. Gross 0 ETH vs live fee 9.63182409e-7 ETH (no 0.0005 withhold)."
+    },
+    {
+      "id": "l2-balance-treasure_vault",
+      "scanner": "l2_bridge",
+      "chain": "zksync",
+      "from": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "to": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "amountAtomic": "6664630444351097",
+      "feeAtomic": "18192374350000",
+      "netAtomic": "6646438070001097",
+      "unit": "wei",
+      "action": "withdraw_l2",
+      "executable": false,
+      "profitable": true,
+      "blocker": "dry_run_default",
+      "detail": "zkSync unused 0.006664630444351097 ETH vs L2+L1 finalize fee 0.00001819237435 ETH (no 0.0002 withhold)"
+    },
+    {
+      "id": "l2-balance-skynt_portfolio",
+      "scanner": "l2_bridge",
+      "chain": "zksync",
+      "from": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+      "to": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "amountAtomic": "0",
+      "feeAtomic": "0",
+      "netAtomic": "0",
+      "unit": "wei",
+      "action": "skip",
+      "executable": false,
+      "profitable": false,
+      "detail": "zkSync unused 0 ETH vs L2+L1 finalize fee 0.00001819237435 ETH (no 0.0002 withhold)"
+    },
+    {
+      "id": "l2-balance-solana_derived_evm",
+      "scanner": "l2_bridge",
+      "chain": "zksync",
+      "from": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+      "to": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "amountAtomic": "0",
+      "feeAtomic": "0",
+      "netAtomic": "0",
+      "unit": "wei",
+      "action": "skip",
+      "executable": false,
+      "profitable": false,
+      "detail": "zkSync unused 0 ETH vs L2+L1 finalize fee 0.00001819237435 ETH (no 0.0002 withhold)"
+    },
+    {
+      "id": "send-USDC-skynt_portfolio",
+      "scanner": "forgotten_send",
+      "chain": "ethereum",
+      "from": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+      "to": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+      "amountAtomic": "324736000000000",
+      "feeAtomic": "2981278885000",
+      "netAtomic": "321754721115000",
+      "unit": "wei",
+      "action": "consolidate_to_vault",
+      "executable": false,
+      "profitable": true,
+      "blocker": "dry_run_default",
+      "detail": "Forgotten USDC ≈ 0.000324736 ETH @ $2500/ETH oracle"
+    }
+  ],
+  "profit": {
+    "recoverableWei": "7145123800533634",
+    "costWei": "22136835644000",
+    "netWei": "7122986964889634",
+    "recoverableEth": 0.007145123800533634,
+    "netEth": 0.007122986964889634,
+    "recoverableLamports": "0",
+    "costLamports": "0",
+    "netLamports": "0",
+    "verdict": "PROFITABLE",
+    "note": "At least one lot nets more than gas / rent-close fee."
+  },
+  "signer": {
+    "present": true,
+    "address": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+    "source": "solana_keypair"
+  },
+  "live": {
+    "enabled": false,
+    "revokeEnabled": false,
+    "broadcasts": []
+  },
+  "blockers": [
+    "refund-skynt_portfolio: dry_run_default",
+    "l2-balance-treasure_vault: dry_run_default",
+    "send-USDC-skynt_portfolio: dry_run_default"
+  ],
+  "note": "24/7 watch daemon (cursor/vacuum-watch-7402). Merge with the one-shot dust-vacuum PR if both land. Dry-run default; VACUUM_LIVE=1 to broadcast; VACUUM_REVOKE=1 to revoke allowances."
+}

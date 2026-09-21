@@ -1,0 +1,51 @@
+{
+  "kind": "hexagram-sequence-hash",
+  "version": "1.0.0",
+  "label": "Caduceus attestation hash / Tetra seal",
+  "chain": "EXCAL Tetra-PoW",
+  "tick": "EXCAL",
+  "hiddenObject": "Merkaba (stellated octahedron)",
+  "honesty": "Attestation and ledger hash for the Aetherion stack. Not analyzed for production cryptographic security — do not replace SHA-256 without formal review.",
+  "algorithm": {
+    "steps": [
+      "hexagram_fold",
+      "tri_fold",
+      "tetrahedron",
+      "six_fold",
+      "cube_trace",
+      "merkaba_seal"
+    ],
+    "outputBytes": 32,
+    "doc": "/docs/HEXAGRAM-SEQUENCE-HASH.md"
+  },
+  "vectors": [
+    {
+      "label": "empty string",
+      "message": "",
+      "digestHex": "b39cb92a7bd9e63e0f6240538a7b7b02315d1801e9eb4bf84004c22fb94851f7"
+    },
+    {
+      "label": "hello",
+      "message": "hello",
+      "digestHex": "142b7306bbb9e09ef922882ee836514d701bdf6641f960377adce46d5fcb5542"
+    },
+    {
+      "label": "chipset lab",
+      "message": "aqai-chipset-lab",
+      "tetraTipHash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "digestHex": "71261ce07499e6e195fcff8cda0fddec9ac3d54d648600f1c45982b6b6efc57b",
+      "attestationRootHex": "1925ace1bb158e462f0d7115c53cd303f441d9670e4bd141d2b5fa67fc7c6baf"
+    },
+    {
+      "label": "sacred geometry receipt",
+      "message": "hexagram-tetra:v1|step:6|merkaba",
+      "tetraTipHash": "3e0f5a207da18f8b2472eb29f1c4911b739fd696df2af312e087cd4e0e49aacf",
+      "digestHex": "71ddf646ff79805169d34c5eba2c7d2c616cf5ac2b35cf391be236c9e42af91f",
+      "attestationRootHex": "85eb5745f0d834b470de296179fcf375fb321d6d527ec4d5bf7d2b7c90786ecb"
+    }
+  ],
+  "lab": {
+    "chipsetRun": "/chipset",
+    "visualization": "/caduceus/speculative/hexagram-tetra"
+  }
+}

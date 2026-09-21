@@ -1,0 +1,544 @@
+# AQAI chipset — complete physical block inventory
+# Honesty: area_mm2_stub and power_mw_stub are pre-PDK estimates. Not taped-out silicon.
+
+meta:
+  version: "1.0.0"
+  chip: AQAI-CHIPSET
+  die_codename: caduceus-die-v1
+  full_die_mm2_stub: 142.0
+  honesty: "Area and power are estimates/stubs until PDK bind. Design/simulation only — not fabricated die."
+
+blocks:
+  # ── Fabric top ──
+  - id: CHIPSET-TOP
+    name: Chipset fabric top
+    rtl_path: hardware/aetherion-qai/rtl/chipset_top.sv
+    region: fabric_center
+    axioms: [8]
+    opcodes: []
+    area_mm2_stub: 0.8
+    power_mw_stub: 15
+    node_rec: leading_edge
+    clock_domain: clk_core
+    power_domain: PD_CORE
+    notes: "Integrates all RTL macros; G2 FPGA maps to chipset_top_fpga.sv"
+
+  # ── CORE-Ω ──
+  - id: CORE-OMEGA
+    name: CORE-Ω Caduceus CPU
+    rtl_path: hardware/aetherion-qai/rtl/qai_core.sv
+    region: core_north
+    axioms: [2, 6, 8]
+    opcodes:
+      - CAD.BRAID
+      - CAD.REFLECT
+      - CAD.SEAL
+      - CAD.PHONON
+      - CAD.TAROT
+      - CAD.HEX
+      - CAD.OCT
+      - CAD.SKIN
+      - CAD.EP
+      - CAD.POM
+      - CAD.VERIFY
+      - CAD.SPHINX
+      - CAD.LATTICE
+      - CAD.COMMIT
+      - CAD.UNITY
+      - HALT
+      - NOP
+    area_mm2_stub: 18.5
+    power_mw_stub: 920
+    node_rec: "3nm class"
+    clock_domain: clk_core
+    power_domain: PD_CORE
+
+  - id: CORE-DECODE
+    name: Instruction decode (in qai_core)
+    rtl_path: hardware/aetherion-qai/rtl/qai_core.sv
+    region: core_north
+    axioms: [8]
+    opcodes: []
+    area_mm2_stub: 1.2
+    power_mw_stub: 45
+    node_rec: "3nm class"
+    clock_domain: clk_core
+    power_domain: PD_CORE
+
+  - id: CORE-REGFILE
+    name: Register file r0–r31 + pipe duals s0–s7, a0–a7
+    rtl_path: hardware/aetherion-qai/rtl/qai_core.sv
+    region: core_north
+    axioms: [2]
+    opcodes: []
+    area_mm2_stub: 2.4
+    power_mw_stub: 110
+    node_rec: "3nm class"
+    clock_domain: clk_core
+    power_domain: PD_CORE
+
+  - id: OCTONION-LANE
+    name: Octonion 𝕆 multiply lane (stub in core)
+    rtl_path: hardware/aetherion-qai/rtl/qai_core.sv
+    region: core_north
+    axioms: [6]
+    opcodes: [CAD.OCT]
+    area_mm2_stub: 3.8
+    power_mw_stub: 180
+    node_rec: "3nm class"
+    clock_domain: clk_core
+    power_domain: PD_CORE
+
+  - id: SPHINX-PIPE
+    name: Sphinx ascend / signal pipe (logical)
+    rtl_path: hardware/aetherion-qai/rtl/caduceus_alu.sv
+    region: core_north
+    axioms: [2]
+    opcodes: [CAD.BRAID, CAD.REFLECT, CAD.TAROT, CAD.SPHINX]
+    area_mm2_stub: 4.2
+    power_mw_stub: 200
+    node_rec: "3nm class"
+    clock_domain: clk_core
+    power_domain: PD_CORE
+
+  - id: ANUBIS-PIPE
+    name: Anubis descend / memory pipe (logical)
+    rtl_path: hardware/aetherion-qai/rtl/caduceus_alu.sv
+    region: core_south
+    axioms: [2, 5]
+    opcodes: [CAD.BRAID, CAD.POM]
+    area_mm2_stub: 3.6
+    power_mw_stub: 175
+    node_rec: "3nm class"
+    clock_domain: clk_core
+    power_domain: PD_CORE
+
+  # ── Caduceus ALU ──
+  - id: CADUCEUS-ALU
+    name: Twin-pipe Caduceus ALU
+    rtl_path: hardware/aetherion-qai/rtl/caduceus_alu.sv
+    region: core_center
+    axioms: [2, 6]
+    opcodes: [CAD.BRAID]
+    area_mm2_stub: 2.1
+    power_mw_stub: 95
+    node_rec: "3nm class"
+    clock_domain: clk_core
+    power_domain: PD_CORE
+
+  # ── NPU-33 ──
+  - id: NPU-33
+    name: Proof-of-Memory systolic NPU-33
+    rtl_path: hardware/aetherion-qai/rtl/qai_core.sv
+    region: npu_east
+    axioms: [5]
+    opcodes: [CAD.POM]
+    area_mm2_stub: 22.0
+    power_mw_stub: 650
+    node_rec: "5nm class"
+    clock_domain: clk_core
+    power_domain: PD_NPU
+    notes: "Systolic macro stub — PoM schedule in microcode @ 0x00010000"
+
+  # ── SKIN ──
+  - id: SKIN-MEMORY
+    name: Non-Hermitian skin memory tiles
+    rtl_path: hardware/aetherion-qai/rtl/skin_memory.sv
+    region: skin_west
+    axioms: [3]
+    opcodes: [CAD.SKIN, CAD.LATTICE]
+    area_mm2_stub: 28.0
+    power_mw_stub: 420
+    node_rec: specialty_sram
+    clock_domain: clk_skin
+    power_domain: PD_SKIN
+
+  - id: SKIN-CSR
+    name: Skin MMIO CSR bank @ 0x3000_0000
+    rtl_path: hardware/aetherion-qai/rtl/skin_memory.sv
+    region: skin_west
+    axioms: [3]
+    opcodes: []
+    area_mm2_stub: 0.4
+    power_mw_stub: 8
+    node_rec: leading_edge
+    clock_domain: clk_skin
+    power_domain: PD_SKIN
+
+  # ── EPX ──
+  - id: EP-GATE
+    name: Exceptional-point fabric (ep_gate)
+    rtl_path: hardware/aetherion-qai/rtl/ep_gate.sv
+    region: epx_south
+    axioms: [4]
+    opcodes: [CAD.EP]
+    area_mm2_stub: 6.5
+    power_mw_stub: 140
+    node_rec: mixed_signal
+    clock_domain: clk_core
+    power_domain: PD_EPX
+
+  - id: EP-CSR
+    name: EP MMIO CSR bank @ 0x2000_0100
+    rtl_path: hardware/aetherion-qai/rtl/ep_gate.sv
+    region: epx_south
+    axioms: [4]
+    opcodes: []
+    area_mm2_stub: 0.3
+    power_mw_stub: 6
+    node_rec: leading_edge
+    clock_domain: clk_core
+    power_domain: PD_EPX
+
+  # ── IOC / seal path ──
+  - id: SEAL-IOC
+    name: Seal IOC commit / verify
+    rtl_path: hardware/aetherion-qai/rtl/seal_ioc.sv
+    region: ioc_east
+    axioms: [1, 7]
+    opcodes: [CAD.SEAL, CAD.VERIFY, CAD.COMMIT]
+    area_mm2_stub: 4.8
+    power_mw_stub: 220
+    node_rec: "5nm class"
+    clock_domain: clk_seal
+    power_domain: PD_IOC
+
+  - id: UNITY-GATE
+    name: Unity gate f(x)=cos(0), x=1 anchor
+    rtl_path: hardware/aetherion-qai/rtl/unity_gate.sv
+    region: ioc_east
+    axioms: [1, 8]
+    opcodes: [CAD.UNITY]
+    area_mm2_stub: 0.15
+    power_mw_stub: 3
+    node_rec: leading_edge
+    clock_domain: clk_core
+    power_domain: PD_IOC
+
+  - id: SPHINX-HASH
+    name: SphinxHash fold lane
+    rtl_path: hardware/aetherion-qai/rtl/sphinx_hash.sv
+    region: ioc_east
+    axioms: [1, 8]
+    opcodes: [CAD.SPHINX]
+    area_mm2_stub: 3.2
+    power_mw_stub: 185
+    node_rec: "5nm class"
+    clock_domain: clk_seal
+    power_domain: PD_IOC
+
+  - id: NEWFORM-FUSE
+    name: Newform verification fusion (X₀(348) × unity × seal)
+    rtl_path: hardware/aetherion-qai/docs/08-unity-verification-fusion.md
+    region: ioc_east
+    axioms: [1, 7, 8]
+    opcodes: [CAD.UNITY, CAD.SEAL, CAD.VERIFY]
+    area_mm2_stub: 1.1
+    power_mw_stub: 25
+    node_rec: leading_edge
+    clock_domain: clk_seal
+    power_domain: PD_IOC
+    notes: "Design fusion block — couples unity_gate → seal_ioc pre-seal normalization"
+
+  # ── CSR hub ──
+  - id: TWIN-SERPENT-CSR
+    name: Twin-serpent CSR @ 0x2000_0000
+    rtl_path: hardware/aetherion-qai/docs/01-isa.md
+    region: csr_hub
+    axioms: [2]
+    opcodes: []
+    area_mm2_stub: 0.5
+    power_mw_stub: 10
+    node_rec: leading_edge
+    clock_domain: clk_core
+    power_domain: PD_CORE
+
+  # ── BIOS ──
+  - id: BIOS-ROM
+    name: Caduceus BIOS / POST ROM
+    rtl_path: hardware/aetherion-qai/bios/reset_vector.asm
+    region: bios_northwest
+    axioms: [8]
+    opcodes: []
+    area_mm2_stub: 0.6
+    power_mw_stub: 2
+    node_rec: embedded_flash
+    clock_domain: clk_core
+    power_domain: PD_ALWAYS_ON
+
+  - id: BIOS-POST
+    name: POST engine (braid self-test, EP lock, seal)
+    rtl_path: hardware/aetherion-qai/bios/post_caduceus.asm
+    region: bios_northwest
+    axioms: [1, 2, 4, 8]
+    opcodes: [CAD.BRAID, CAD.SEAL, CAD.EP]
+    area_mm2_stub: 0.9
+    power_mw_stub: 12
+    node_rec: leading_edge
+    clock_domain: clk_core
+    power_domain: PD_CORE
+
+  - id: BIOS-FW-STUB
+    name: Firmware stub (C bring-up)
+    rtl_path: hardware/aetherion-qai/bios/firmware_stub.c
+    region: bios_northwest
+    axioms: [8]
+    opcodes: []
+    area_mm2_stub: 0.3
+    power_mw_stub: 5
+    node_rec: leading_edge
+    clock_domain: clk_core
+    power_domain: PD_CORE
+
+  # ── Clock / reset ──
+  - id: CLK-PLL-CORE
+    name: clk_core PLL (1–2 GHz target)
+    rtl_path: hardware/aetherion-qai/docs/00-architecture.md
+    region: clk_island
+    axioms: []
+    opcodes: []
+    area_mm2_stub: 0.7
+    power_mw_stub: 35
+    node_rec: analog_mixed
+    clock_domain: ref_xtal
+    power_domain: PD_ALWAYS_ON
+
+  - id: CLK-PLL-SKIN
+    name: clk_skin PLL (400 MHz)
+    rtl_path: hardware/aetherion-qai/docs/00-architecture.md
+    region: clk_island
+    axioms: [3]
+    opcodes: []
+    area_mm2_stub: 0.5
+    power_mw_stub: 22
+    node_rec: analog_mixed
+    clock_domain: ref_xtal
+    power_domain: PD_ALWAYS_ON
+
+  - id: CLK-PLL-SEAL
+    name: clk_seal PLL (100–200 MHz)
+    rtl_path: hardware/aetherion-qai/docs/00-architecture.md
+    region: clk_island
+    axioms: [1]
+    opcodes: []
+    area_mm2_stub: 0.4
+    power_mw_stub: 18
+    node_rec: analog_mixed
+    clock_domain: ref_xtal
+    power_domain: PD_ALWAYS_ON
+
+  - id: CLK-PHONON
+    name: clk_phonon divider (7.83 Hz Schumann)
+    rtl_path: hardware/aetherion-qai/docs/00-architecture.md
+    region: clk_island
+    axioms: []
+    opcodes: [CAD.PHONON]
+    area_mm2_stub: 0.2
+    power_mw_stub: 1
+    node_rec: leading_edge
+    clock_domain: clk_core
+    power_domain: PD_ALWAYS_ON
+
+  - id: RST-SYNC
+    name: Reset synchronizers (per domain)
+    rtl_path: hardware/aetherion-qai/rtl/chipset_top.sv
+    region: clk_island
+    axioms: []
+    opcodes: []
+    area_mm2_stub: 0.3
+    power_mw_stub: 4
+    node_rec: leading_edge
+    clock_domain: ref_xtal
+    power_domain: PD_ALWAYS_ON
+
+  # ── I/O ring ──
+  - id: IO-PCIE
+    name: PCIe Gen5 / CXL co-packaged ring segment
+    rtl_path: hardware/aetherion-qai/pd/pad-ring.md
+    region: io_ring_north
+    axioms: [8]
+    opcodes: []
+    area_mm2_stub: 8.0
+    power_mw_stub: 380
+    node_rec: serdes_ip
+    clock_domain: clk_io
+    power_domain: PD_IO
+
+  - id: IO-CXL
+    name: CXL.mem / CXL.cache fabric hook
+    rtl_path: hardware/aetherion-qai/pd/pad-ring.md
+    region: io_ring_north
+    axioms: [3, 8]
+    opcodes: []
+    area_mm2_stub: 5.5
+    power_mw_stub: 290
+    node_rec: serdes_ip
+    clock_domain: clk_io
+    power_domain: PD_IO
+
+  - id: IO-UART
+    name: UART (G2 seal demo + debug)
+    rtl_path: hardware/aetherion-qai/gates/G2/rtl/fpga/uart_seal_demo.sv
+    region: io_ring_east
+    axioms: [1, 8]
+    opcodes: []
+    area_mm2_stub: 0.25
+    power_mw_stub: 8
+    node_rec: leading_edge
+    clock_domain: clk_io
+    power_domain: PD_IO
+
+  - id: IO-SPI
+    name: SPI flash (BIOS load)
+    rtl_path: hardware/aetherion-qai/pd/pad-ring.md
+    region: io_ring_east
+    axioms: [8]
+    opcodes: []
+    area_mm2_stub: 0.35
+    power_mw_stub: 12
+    node_rec: leading_edge
+    clock_domain: clk_io
+    power_domain: PD_IO
+
+  - id: IO-GPIO
+    name: GPIO / strap / JTAG
+    rtl_path: hardware/aetherion-qai/pd/pad-ring.md
+    region: io_ring_south
+    axioms: []
+    opcodes: []
+    area_mm2_stub: 0.4
+    power_mw_stub: 6
+    node_rec: leading_edge
+    clock_domain: clk_io
+    power_domain: PD_IO
+
+  - id: IO-PAD-RING
+    name: Pad ring ESD + bump map
+    rtl_path: hardware/aetherion-qai/pd/pad-ring.md
+    region: io_ring_perimeter
+    axioms: []
+    opcodes: []
+    area_mm2_stub: 12.0
+    power_mw_stub: 50
+    node_rec: process_defined
+    clock_domain: ref_xtal
+    power_domain: PD_IO
+
+  # ── Power / DFT ──
+  - id: PDN-GRID
+    name: Power delivery network (multi-domain)
+    rtl_path: hardware/aetherion-qai/pd/block-inventory.yaml
+    region: die_full
+    axioms: []
+    opcodes: []
+    area_mm2_stub: 0.0
+    power_mw_stub: 0
+    node_rec: process_defined
+    clock_domain: ref_xtal
+    power_domain: PD_ALL
+    notes: "Overhead in floorplan margin — not counted in block sum"
+
+  - id: DFT-TAP
+    name: Scan / MBIST / JTAG DFT
+    rtl_path: hardware/aetherion-qai/gates/G3/edge-subset-drc-checklist.md
+    region: dft_corner
+    axioms: []
+    opcodes: []
+    area_mm2_stub: 1.5
+    power_mw_stub: 15
+    node_rec: leading_edge
+    clock_domain: clk_core
+    power_domain: PD_CORE
+
+  # ── G2 FPGA reference (not on ASIC die — mapping only) ──
+  - id: G2-FPGA-TOP
+    name: G2 FPGA chipset_top mapping
+    rtl_path: hardware/aetherion-qai/gates/G2/rtl/fpga/chipset_top_fpga.sv
+    region: reference_g2
+    axioms: [8]
+    opcodes: [CAD.SEAL, CAD.VERIFY]
+    area_mm2_stub: 0.0
+    power_mw_stub: 0
+    node_rec: fpga_artix7
+    clock_domain: clk_100mhz
+    power_domain: external
+    notes: "G2 reference — Artix-7 XC7A100T; not a die block"
+
+  # ── Integer ALU / memory (ISA support) ──
+  - id: INT-ALU
+    name: Integer ALU (ADD/SUB/MUL/AND/OR/XOR/shifts)
+    rtl_path: hardware/aetherion-qai/docs/01-isa.md
+    region: core_north
+    axioms: [8]
+    opcodes: [ADD, SUB, MUL, AND, OR, XOR, LSL, LSR, ASR]
+    area_mm2_stub: 1.8
+    power_mw_stub: 75
+    node_rec: "3nm class"
+    clock_domain: clk_core
+    power_domain: PD_CORE
+
+  - id: MEM-LSU
+    name: Load/store unit (LDR/STR)
+    rtl_path: hardware/aetherion-qai/docs/01-isa.md
+    region: core_north
+    axioms: [3, 8]
+    opcodes: [LDR, STR]
+    area_mm2_stub: 2.0
+    power_mw_stub: 90
+    node_rec: "3nm class"
+    clock_domain: clk_core
+    power_domain: PD_CORE
+
+  - id: BRANCH-UNIT
+    name: Branch / link unit (B/BL/RET/SVC)
+    rtl_path: hardware/aetherion-qai/docs/01-isa.md
+    region: core_north
+    axioms: [8]
+    opcodes: [B, BL, RET, SVC]
+    area_mm2_stub: 0.9
+    power_mw_stub: 40
+    node_rec: "3nm class"
+    clock_domain: clk_core
+    power_domain: PD_CORE
+
+  # ── Quantum moat (reference — software layers, not silicon) ──
+  - id: MOAT-REF
+    name: Quantum moat layers (reference only)
+    rtl_path: docs/QUANTUM-MOAT.md
+    region: reference_soft
+    axioms: [1, 2, 3, 4, 5, 6, 7, 8]
+    opcodes: []
+    area_mm2_stub: 0.0
+    power_mw_stub: 0
+    node_rec: n_a
+    clock_domain: n_a
+    power_domain: n_a
+    notes: "Seven moat layers — product/ISA lock-in; not a physical block"
+
+package_skus:
+  - id: AQAI-EDGE
+    active_blocks:
+      - CORE-OMEGA
+      - CADUCEUS-ALU
+      - SEAL-IOC
+      - UNITY-GATE
+      - NPU-33
+      - BIOS-ROM
+      - IO-UART
+      - IO-GPIO
+    die_mm2_stub: 48.0
+  - id: AQAI-CLOUD
+    active_blocks:
+      - CORE-OMEGA
+      - CADUCEUS-ALU
+      - SKIN-MEMORY
+      - EP-GATE
+      - SEAL-IOC
+      - SPHINX-HASH
+      - NPU-33
+      - IO-PCIE
+      - IO-CXL
+    die_mm2_stub: 98.0
+  - id: AQAI-SOVEREIGN
+    active_blocks: all
+    die_mm2_stub: 142.0

@@ -1,0 +1,111 @@
+{
+  "kind": "auto-bootstrap",
+  "version": "1.1.0",
+  "updatedAt": "2026-08-29T21:30:58.496Z",
+  "mode": "dry-run",
+  "stockUsd": 17.81,
+  "stockEth": 0.007123148111589634,
+  "millionaire": {
+    "targetUsd": 1000000,
+    "windowHours": 72,
+    "stockUsd": 17.81,
+    "usdPerHourNeeded": 13888.89,
+    "usdPerHourHonest": 0,
+    "multipleNeeded": 56149,
+    "reachableIn72h": false,
+    "window": {
+      "anchorAt": "2026-08-29T21:00:00.000Z",
+      "endsAt": "2026-09-01T21:00:00.000Z",
+      "remainingMs": 257341504,
+      "remainingHours": 71.4837511111111,
+      "remainingLabel": "2d 23h 29m",
+      "expired": false
+    },
+    "note": "$17.81 leftover is a one-shot stock. Need ~$13888.89/hr of NEW leftover to hit $1M in 72h. Extra workers re-read the same well."
+  },
+  "autoscale": {
+    "replicas": 1,
+    "intervalMs": 300000,
+    "reason": "operator_empty",
+    "scalesYield": false,
+    "note": "Operator 0 L1 ETH — one dry-run replica. Scaling does not create gas or leftover."
+  },
+  "steps": [
+    {
+      "id": "pipelines",
+      "ok": true,
+      "detail": "23 rails hooked"
+    },
+    {
+      "id": "operator",
+      "ok": false,
+      "detail": "L1 0 wei"
+    },
+    {
+      "id": "excal",
+      "ok": true,
+      "detail": "CREATE2 predicted — bytecode pending gas"
+    },
+    {
+      "id": "eip-7949",
+      "ok": true,
+      "detail": "posted genesis-mainnet.json"
+    },
+    {
+      "id": "eip-2",
+      "ok": true,
+      "detail": "BIP-322 low-s"
+    },
+    {
+      "id": "millionaire",
+      "ok": false,
+      "detail": "$1M in 72h is not reachable from this stock"
+    }
+  ],
+  "pipelines": [
+    "vacuum",
+    "flywheel",
+    "artificial",
+    "horizon",
+    "ledger",
+    "sail",
+    "cosmos",
+    "uruu",
+    "bridge",
+    "compound",
+    "inject",
+    "swap",
+    "claim",
+    "skynt",
+    "excal",
+    "bootstrap",
+    "eip",
+    "commitment",
+    "eip-claim",
+    "umbrella",
+    "skynt-btc",
+    "tetra",
+    "wrap"
+  ],
+  "excalPredicted": "0x1E4529cF826a79fd3b0E033Ff00dCDB3091c77B2",
+  "broadcast": "FAIL_CLOSED",
+  "blockers": [
+    "operator_l1_empty",
+    "dry_run_default"
+  ],
+  "deploy": {
+    "production": "https://www.excaliburcrypto.com",
+    "api": "/api/auto-bootstrap",
+    "cron": "17 3 * * *",
+    "watchCron": "17 */6 * * *",
+    "scalesYield": false
+  },
+  "honesty": {
+    "doesNotMintMillion": true,
+    "doesNotMultiplySameWell": true,
+    "ghostGalleonNotSpendable": true,
+    "ghostGalleonEth": 137.190325,
+    "note": "137 ETH is ledger-only. Autoscale is watch-replica count, not APY."
+  },
+  "note": "$17.81 leftover is a one-shot stock. Need ~$13888.89/hr of NEW leftover to hit $1M in 72h. Extra workers re-read the same well."
+}

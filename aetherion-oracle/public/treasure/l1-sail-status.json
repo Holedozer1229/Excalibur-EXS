@@ -1,0 +1,19 @@
+{
+  "kind": "l1-sail-status",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-29T21:09:18.946Z",
+  "network": "ethereum-mainnet",
+  "factory": "0x4e59b44847b379578588920cA78FbF26c0B4956C",
+  "berth": "0xc1FDAd265861030256A913e4Ba4D1E98fD87dD04",
+  "berthEmpty": true,
+  "operator": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+  "operatorEth": 0,
+  "signer": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+  "live": true,
+  "broadcast": "FAIL_CLOSED",
+  "txHash": null,
+  "blockers": [
+    "operator_l1_empty"
+  ],
+  "note": "Arrr — L1 sail is planned. Operator has 0 ETH so CREATE2 does not leave the dock."
+}

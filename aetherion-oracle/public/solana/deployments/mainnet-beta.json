@@ -1,0 +1,20 @@
+{
+  "cluster": "mainnet-beta",
+  "programId": "ALe6YqHU3rwxw8FQhmSRjdK9sxMLqbDd9zyRVNmTymo6",
+  "rpc": "https://api.mainnet-beta.solana.com",
+  "deployWallet": "ESs5u7DPeq7h8SMgYfL8t4M5X2QXc3PtjEUaMhADU9yt",
+  "walletBalanceSol": 0,
+  "minSolRequired": 5,
+  "rentExemptEstimateSol": 2.31400512,
+  "programBinarySha256": "6c0e01bc77ccd2ec9a8a197d8b58ebaba35f80cd451a67b176bfa803983b127e",
+  "bootyEth": 137.190325,
+  "solBudgetOracle": 2286,
+  "status": "built_pending_sol",
+  "builtAt": "2026-08-30T05:08:25Z",
+  "deployedAt": null,
+  "onChain": false,
+  "attemptedAt": "2026-08-30T05:08:25Z",
+  "blocker": "Deploy wallet has 0 SOL on mainnet-beta. Need ≥5 SOL. 137 ETH booty is proof-ledger only — not spendable L1. Do not invent balances.",
+  "next": "Send ≥5 SOL to ESs5u7DPeq7h8SMgYfL8t4M5X2QXc3PtjEUaMhADU9yt, then: CLUSTER=mainnet-beta ./scripts/deploy-solana.sh && CLUSTER=mainnet-beta ./scripts/init-lattice.sh",
+  "note": "Program binary built and keypair synced to ALe6YqHU3rwxw8FQhmSRjdK9sxMLqbDd9zyRVNmTymo6. Prior reserved id was never on-chain."
+}

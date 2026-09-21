@@ -1,0 +1,51 @@
+{
+  "kind": "mainnet-mine-status",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-31T18:18:17.058Z",
+  "verdict": "NO_FIND",
+  "honestSummary": "Tried 50000 hashes against live mainnet difficulty — no find (expected). Tetra-PoW ledger block mined locally.",
+  "rails": {
+    "tetraPow": {
+      "mined": true,
+      "chain": "EXCAL Tetra-PoW origin ledger",
+      "artifact": "/treasure/tetra-pow.json",
+      "isBitcoinMainnet": false
+    },
+    "bitcoinMainnet": {
+      "attempted": true,
+      "found": false,
+      "hashesTried": 50000,
+      "tipHeight": 964917,
+      "nextHeight": 964918,
+      "bits": "0x17023cc1",
+      "minerAddress": "1J8H7VV7k2mzZEXXr3dwkFuf8PgqbUwWGc",
+      "subsidyBtc": 3.125,
+      "submitted": false,
+      "liveSubmitEnabled": false
+    }
+  },
+  "operator": {
+    "address": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+    "l1Wei": "0",
+    "l1Eth": 0,
+    "fundedForL1Gas": false,
+    "keySource": "solana_keypair"
+  },
+  "vault": {
+    "address": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+    "l1Wei": "4799693119737",
+    "l1Eth": 0.000004799693119737,
+    "canonicalEthBooty": 137.190325,
+    "spendableCanonical": false
+  },
+  "blockers": [
+    "Bitcoin mainnet CPU mining at current difficulty has effectively zero chance of finding a block.",
+    "Operator 0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6 has 0 ETH on L1 — fund for gas (do not invent 137 ETH).",
+    "Vault L1 0.000004799693119737 ETH — canonical 137.190325 ETH remains proof-ledger only."
+  ],
+  "next": [
+    "For Tetra-PoW: npm run tetra:mine",
+    "For operator rails: npm run mainnet",
+    "Fund operator L1 wallet with real ETH for gas before any live L1 broadcast."
+  ]
+}

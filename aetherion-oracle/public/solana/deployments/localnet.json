@@ -1,0 +1,9 @@
+{
+  "cluster": "localnet",
+  "programId": "ALe6YqHU3rwxw8FQhmSRjdK9sxMLqbDd9zyRVNmTymo6",
+  "deployedAt": "2026-08-29T18:29:20Z",
+  "rpc": "http://127.0.0.1:8899",
+  "lattice": "3mdkuHVjFoPuFoQPSpHUKb5dtycvWKeQj9Evo1ohQra8",
+  "mint": "VwU9SUPqjxVoJjCX4L3wQZr2yRKBmaMh9AgcKnHWY64",
+  "initializedAt": "2026-08-29T18:29:20.842Z"
+}

@@ -1,0 +1,92 @@
+{
+  "kind": "umbrella-recovery",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-29T21:39:30.700Z",
+  "factory": "0x4e59b44847b379578588920cA78FbF26c0B4956C",
+  "salt": "0x756d6272",
+  "salt32": "0x00000000000000000000000000000000000000000000000000000000756d6272",
+  "owner": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+  "reserve": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+  "predicted": "0xFc6C6be808783b8e44C86474aCf7f2acAF4e9616",
+  "predictedHasCode": false,
+  "predictedWei": "0",
+  "hierarchy": [
+    "backstop",
+    "reserve",
+    "socialize"
+  ],
+  "rails": [
+    {
+      "id": "official-native-zksync",
+      "title": "Official zkSync native withdraw + finalizeEthWithdrawal",
+      "status": "ready-encoded",
+      "live": false,
+      "note": "L2 leftover → L1 diamond 0x32400084C286CF3E17e7B677ea9583e60c1ace52. Needs vault key + merkle proof. Own vault only."
+    },
+    {
+      "id": "merkle-own-claim",
+      "title": "Merkle claim of documented leftover",
+      "status": "fail-closed",
+      "live": false,
+      "note": "Leaf is vault + last vacuum stock. Empty proof only after owner files that leaf as root. Not 137 ETH."
+    },
+    {
+      "id": "umbrella-backstop",
+      "title": "Umbrella injects only ETH this contract holds",
+      "status": "fail-closed",
+      "live": false,
+      "note": "receive() / injectAndCover. CREATE2 pending gas. Cannot print liquidity."
+    },
+    {
+      "id": "reserve-vault",
+      "title": "DAO / vault reserve",
+      "status": "fail-closed",
+      "live": false,
+      "note": "Reserve is the treasure vault. No silent pull — vault key must send."
+    },
+    {
+      "id": "socialize-deficit",
+      "title": "Socialize uncovered amount as a deficit ledger",
+      "status": "plan-only",
+      "live": false,
+      "note": "Records socializedDeficitWei. Does not mint tokens or 137 ETH."
+    },
+    {
+      "id": "mettalex-p2p",
+      "title": "Mettalex-style P2P agent swap",
+      "status": "plan-only",
+      "live": false,
+      "note": "No live agents, no custodial third-party. Atomic swap only if both sides sign later."
+    }
+  ],
+  "ownLeaf": {
+    "beneficiary": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+    "amountWei": "7123148111589634",
+    "hash": "0xadc09e84c5b319c545e4ca9be05c19cf1a0b1fb229b47eb94c01635a0e1bc65f"
+  },
+  "refused": [
+    "stranger_wormhole_vaa",
+    "stranger_portal",
+    "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+    "0xd8b934580fcE35a11B58C6D73aDee468a2833fa8",
+    "137_eth_ledger"
+  ],
+  "broadcast": "FAIL_CLOSED",
+  "txHash": null,
+  "blockers": [
+    "dry_run_default",
+    "operator_l1_empty",
+    "backstop_unfunded",
+    "ledger_137_not_l1"
+  ],
+  "honesty": {
+    "doesNotMint137Eth": true,
+    "doesNotSweepStrangers": true,
+    "doesNotSweepPostedAlloc": true,
+    "bitcoinGenesisAttestationOnly": true,
+    "mettalexNotLive": true,
+    "ghostGalleonEth": 137.190325,
+    "note": "Umbrella pays only ETH it holds. Official recovery is zkSync native finalize of own leftover. Mettalex P2P is not live. 0xd8b934… is not swept."
+  },
+  "note": "Umbrella CREATE2 predicted. Operator 0 L1 ETH — deploy stays docked. Hierarchy cannot inject 137 ETH."
+}

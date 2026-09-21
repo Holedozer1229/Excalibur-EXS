@@ -1,0 +1,146 @@
+{
+  "kind": "commitment-chain",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-29T21:30:55.004Z",
+  "lockCommitment": "0x4ca14e0c88f1750926df7a126817ddf9e9480fff8a3bde0c697724d1ec5e9099",
+  "sphinxDigest": "0x00000000000000000000000003d9a5c300000000000000000000000031ba81ca",
+  "sphinxLR": {
+    "L": 64595395,
+    "R": 834306506
+  },
+  "guardianMerkleRoot": "0x6f7c83ab80abe6dc67c544af2d047ea9acf72d2e3445f05a39567638315d3d77",
+  "vaaHash": "0x1bae879ebe1b97cb394dab20598f0b94d2bddf79d035e7f9b1a2318297195a19",
+  "solvency": {
+    "postedEth": 138,
+    "canonicalEth": 137.190325,
+    "satisfied": true,
+    "onL1": false
+  },
+  "skyntSource": "skynt:262067626b978d9ae83188315005847b6b8546b6",
+  "l2StateSignature": "0x3edc98233f564b97755d305eb899ae481908ed50dec43e71d5399988d5fc79e9",
+  "air": {
+    "satisfied": "12/12",
+    "rows": [
+      {
+        "pc": 0,
+        "op": "PUSH1",
+        "top": 0,
+        "second": 0,
+        "result": 1898855239,
+        "depth": 1,
+        "ok": true
+      },
+      {
+        "pc": 2,
+        "op": "PUSH1",
+        "top": 1898855239,
+        "second": 0,
+        "result": 561046592,
+        "depth": 2,
+        "ok": true
+      },
+      {
+        "pc": 4,
+        "op": "SUB",
+        "top": 561046592,
+        "second": 1898855239,
+        "result": 809675000,
+        "depth": 1,
+        "ok": true
+      },
+      {
+        "pc": 5,
+        "op": "PUSH1",
+        "top": 809675000,
+        "second": 0,
+        "result": 1898855239,
+        "depth": 2,
+        "ok": true
+      },
+      {
+        "pc": 7,
+        "op": "PUSH1",
+        "top": 1898855239,
+        "second": 809675000,
+        "result": 561046592,
+        "depth": 3,
+        "ok": true
+      },
+      {
+        "pc": 9,
+        "op": "GT",
+        "top": 561046592,
+        "second": 1898855239,
+        "result": 0,
+        "depth": 2,
+        "ok": true
+      },
+      {
+        "pc": 10,
+        "op": "ISZERO",
+        "top": 0,
+        "second": 809675000,
+        "result": 1,
+        "depth": 2,
+        "ok": true
+      },
+      {
+        "pc": 11,
+        "op": "ISZERO",
+        "top": 1,
+        "second": 809675000,
+        "result": 0,
+        "depth": 2,
+        "ok": true
+      },
+      {
+        "pc": 12,
+        "op": "PUSH1",
+        "top": 0,
+        "second": 809675000,
+        "result": 64595395,
+        "depth": 3,
+        "ok": true
+      },
+      {
+        "pc": 14,
+        "op": "PUSH1",
+        "top": 64595395,
+        "second": 0,
+        "result": 834306506,
+        "depth": 4,
+        "ok": true
+      },
+      {
+        "pc": 16,
+        "op": "MUL",
+        "top": 834306506,
+        "second": 64595395,
+        "result": 2054225022,
+        "depth": 3,
+        "ok": true
+      },
+      {
+        "pc": 17,
+        "op": "STOP",
+        "top": 2054225022,
+        "second": 0,
+        "result": 0,
+        "depth": 3,
+        "ok": true
+      }
+    ]
+  },
+  "vsStarkClaim": {
+    "lockMatchesAug10Claim": false,
+    "vaaMatchesAug10Claim": false,
+    "stateSigMatches": true,
+    "aug10Lock": "0x15be724ae4b2d79a879c2bfc9cf30c873ea9610e1d9b0afae769d84651463794",
+    "aug10Vaa": "0x5e3715ead09fe6b9345b8e83f8556fca8365ab11a68c07a92c229facf844fcf8"
+  },
+  "honesty": {
+    "ghostGalleonNotSpendable": true,
+    "doesNotMint137Eth": true,
+    "note": "138 ≥ 137.190325 is SKYNT / proof-ledger solvency. It is not an L1 balance and cannot be swept. Posted lock/VAA differ from the 2026-08-10 stark-bridge claim; stateSig matches."
+  }
+}

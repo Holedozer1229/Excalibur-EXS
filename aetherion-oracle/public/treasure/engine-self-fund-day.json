@@ -1,0 +1,92 @@
+{
+  "kind": "engine-self-fund-day",
+  "version": "1.0.0",
+  "stock": true,
+  "updatedAt": "2026-08-29T20:52:20.978Z",
+  "ethUsdOracle": 2500,
+  "pileWei": "7235279426278429",
+  "pileEth": 0.007235279426278429,
+  "usdPerDryRun": 18.09,
+  "dryRunCyclesObserved": 1,
+  "sameWell": true,
+  "honest": {
+    "nature": "one-shot-stock",
+    "usdOnce": 18.09,
+    "usdPerDayAfterSweep": 0,
+    "usdPerHourAfterSweep": 0,
+    "opsPerDayAfterSweep": 0,
+    "note": "One-shot leftover. After a real sweep the well is empty — $0/day until new dust arrives. Extra dry-run cycles re-read the same pile; they do not mint 0.00712 × N."
+  },
+  "hypotheticalIfRecurring": {
+    "labeled": "hypothetical",
+    "watchIntervalMs": 300000,
+    "cyclesPerDay": 288,
+    "usdPerDay": 5209.4,
+    "usdPerDayIf60sWatch": 26047.01,
+    "note": "HYPOTHETICAL only — if the same leftover arrived every watch cycle. Not a promised APY or wage."
+  },
+  "liveGas": {
+    "source": "live",
+    "l1WeiPerGas": "46531889",
+    "l1Gwei": 0.046531889,
+    "zkWeiPerGas": "45250000",
+    "zkGwei": 0.04525,
+    "l1BaseFeeWei": "46451238"
+  },
+  "scale": {
+    "transfersFunded": 7404,
+    "claimsFunded": 863,
+    "deploysFunded": 129,
+    "withdrawPlusFinalizeFunded": 395,
+    "ops": [
+      {
+        "kind": "transfer",
+        "gasUnits": 21000,
+        "costWei": "977169669000",
+        "costEth": 9.77169669e-7,
+        "costUsd": 0.0024429241725,
+        "funded": 7404
+      },
+      {
+        "kind": "claim",
+        "gasUnits": 180000,
+        "costWei": "8375740020000",
+        "costEth": 0.00000837574002,
+        "costUsd": 0.02093935005,
+        "funded": 863
+      },
+      {
+        "kind": "deploy",
+        "gasUnits": 1200000,
+        "costWei": "55838266800000",
+        "costEth": 0.0000558382668,
+        "costUsd": 0.13959566699999998,
+        "funded": 129
+      },
+      {
+        "kind": "withdrawPlusFinalize",
+        "gasUnits": 400000,
+        "costWei": "18292283350000",
+        "costEth": 0.00001829228335,
+        "costUsd": 0.045730708375,
+        "funded": 395
+      }
+    ]
+  },
+  "cannotFund": {
+    "ghostGalleonEth": 137.190325,
+    "solanaDeployMinSol": 5,
+    "solanaDeployMinUsd": 750,
+    "pileUsd": 18.09,
+    "reasons": [
+      "18.09 USD leftover cannot fund 137.190325 ETH (proof-ledger / SKYNT in-app only — not spendable L1).",
+      "18.09 USD leftover cannot fund Solana deploy (≥5 SOL ≈ $750)."
+    ]
+  },
+  "spendability": {
+    "leftoverCanCoverSmallL1OpsIfSpendable": true,
+    "requiresVaultKeyOrL1Gas": true,
+    "operatorL1Eth": 0,
+    "note": "At ~0.045 gwei this pile can cover many small L1 transfer/claim/deploy gas ops IF it can be spent (vault key / L1 gas). Operator 0xf8F3… has 0 L1 ETH. Vault 0xc5a4… is an EOA."
+  }
+}

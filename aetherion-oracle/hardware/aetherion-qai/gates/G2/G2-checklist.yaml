@@ -1,0 +1,83 @@
+# G2 — FPGA prototype — AQAI / Aetherion QAI
+gate:
+  id: G2
+  name: FPGA prototype
+  status: ready_to_execute
+  exit: Live demo video + measured latency/power for Soft Silicon parity
+  pack_path: hardware/aetherion-qai/gates/G2/
+  owner: Travis D Jones
+  target_close: 2026-12-31
+  honesty_note: Real board bring-up pending dev-kit funding; simulation path is valid for gate prep
+
+items:
+  - id: g2-fpga-family
+    title: Pick FPGA family (Xilinx/AMD or Intel)
+    status: complete
+    owner: Travis D Jones
+    due: 2026-09-01
+    evidence: fpga-target-selection.md
+    notes: Selected AMD/Xilinx Artix-7 on Digilent Arty A7-100T (Vivado flow).
+
+  - id: g2-rtl-port
+    title: Port chipset_top + seal_ioc + skin_memory + ep_gate
+    status: ready_to_execute
+    owner: RTL engineer (contract)
+    due: 2026-11-15
+    evidence: rtl/fpga/chipset_top_fpga.sv
+    notes: FPGA wrappers for BRAM + clock domains in rtl/fpga/.
+
+  - id: g2-constraints
+    title: Pin + timing constraints for target board
+    status: complete
+    owner: Travis D Jones
+    due: 2026-09-15
+    evidence: fpga-constraints.xdc
+    notes: 100 MHz sys_clk; UART seal demo pins on PMOD.
+
+  - id: g2-build-runbook
+    title: Vivado synthesis / implementation runbook
+    status: complete
+    owner: Travis D Jones
+    due: 2026-09-20
+    evidence: fpga-build-runbook.md
+    notes: Non-project batch flow documented.
+
+  - id: g2-board-bringup
+    title: Board bring-up (power, JTAG, UART)
+    status: blocked
+    owner: Travis D Jones
+    due: 2026-12-01
+    evidence: fpga-build-runbook.md#board-bring-up
+    notes: BLOCKED — Arty A7 not yet purchased; sim-only until funded.
+
+  - id: g2-seal-roundtrip
+    title: Seal round-trip demo on wire (or honest sim)
+    status: ready_to_execute
+    owner: Travis D Jones
+    due: 2026-12-15
+    evidence: scripts/fpga-seal-demo.sh
+    notes: Verilator/cocotb-style sim produces seal-roundtrip-report.json.
+
+  - id: g2-latency-power
+    title: Measured latency / power vs Soft Silicon parity
+    status: ready_to_execute
+    owner: Travis D Jones
+    due: 2026-12-20
+    evidence: seal-roundtrip-report.json
+    notes: Sim reports cycle counts; power TBD on silicon board.
+
+  - id: g2-demo-video
+    title: Live demo video (or sim recording with disclaimer)
+    status: ready_to_execute
+    owner: Travis D Jones
+    due: 2026-12-31
+    evidence: seal-roundtrip-report.json#demo_recording
+    notes: Label sim vs hardware honestly in video title.
+
+  - id: g2-exit-parity
+    title: "EXIT — Demo + latency/power parity report"
+    status: ready_to_execute
+    owner: Travis D Jones
+    due: 2026-12-31
+    evidence: G2-checklist.yaml
+    notes: Gate closes on seal digest match + documented cycle budget.

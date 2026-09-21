@@ -1,0 +1,67 @@
+# G3 — Foundry engagement — AQAI / Aetherion QAI
+gate:
+  id: G3
+  name: Foundry / PDK
+  status: ready_to_execute
+  exit: Signed shuttle slot + DRC-clean EDGE subset
+  pack_path: hardware/aetherion-qai/gates/G3/
+  owner: Travis D Jones
+  target_close: 2027-06-30
+  honesty_note: Shuttle slot is LOI template until signed; status ready_to_execute not signed
+
+items:
+  - id: g3-nda-pdk
+    title: NDA + PDK access (65/40/28 nm specialty or shuttle-friendly)
+    status: ready_to_execute
+    owner: Travis D Jones + counsel
+    due: 2027-03-15
+    evidence: pdk-selection.md
+    notes: Primary target SkyWater SKY130 or GF 180MCU shuttle; TSMC OIP for scale path.
+
+  - id: g3-foundry-tracker
+    title: Foundry outreach tracker populated
+    status: ready_to_execute
+    owner: Travis D Jones
+    due: 2027-02-01
+    evidence: foundry-nda-tracker.csv
+    notes: TSMC OIP, GF, SkyWater, MOSIS, Europractice rows.
+
+  - id: g3-shuttle-vendor
+    title: Choose shuttle / MPW vendor
+    status: ready_to_execute
+    owner: Travis D Jones
+    due: 2027-04-01
+    evidence: mpw-shuttle-comparison.md
+    notes: Recommend SkyWater + Efabless MPW for first tape (~$10–75k).
+
+  - id: g3-osat-shortlist
+    title: Package / OSAT shortlist
+    status: ready_to_execute
+    owner: Travis D Jones
+    due: 2027-04-15
+    evidence: osat-shortlist.md
+    notes: ASE, Amkor, JCET for QFN/BGA EDGE package.
+
+  - id: g3-edge-subset-drc
+    title: DRC-clean EDGE subset (CORE + IOC minimum)
+    status: ready_to_execute
+    owner: PD contractor
+    due: 2027-05-31
+    evidence: edge-subset-drc-checklist.md
+    notes: RTL freeze + LVS clean before shuttle reservation.
+
+  - id: g3-shuttle-loi
+    title: Shuttle reservation LOI / slot template
+    status: ready_to_execute
+    owner: Travis D Jones
+    due: 2027-06-01
+    evidence: shuttle-reservation-template.md
+    notes: Template ready; signed slot pending NDA + payment.
+
+  - id: g3-exit-shuttle-drc
+    title: "EXIT — Signed shuttle slot + DRC-clean EDGE subset"
+    status: ready_to_execute
+    owner: Travis D Jones
+    due: 2027-06-30
+    evidence: G3-checklist.yaml
+    notes: Exit requires executed shuttle agreement + DRC signoff report.

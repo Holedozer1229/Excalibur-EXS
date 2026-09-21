@@ -1,0 +1,538 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Aetherion — NEON CYPHERPUNK design system. All colors HSL. */
+@layer base {
+  :root {
+    /* Pure obsidian — almost black with a violet whisper */
+    --background: 260 50% 2%;
+    --foreground: 180 30% 94%;
+
+    --card: 260 45% 4%;
+    --card-foreground: 180 30% 94%;
+
+    --popover: 260 45% 3%;
+    --popover-foreground: 180 30% 94%;
+
+    /* PRIMARY — hyper electric cyan */
+    --primary: 186 100% 58%;
+    --primary-foreground: 260 50% 2%;
+
+    /* SECONDARY — bruised void panels */
+    --secondary: 268 40% 7%;
+    --secondary-foreground: 186 95% 80%;
+
+    --muted: 260 40% 5%;
+    --muted-foreground: 200 22% 65%;
+
+    /* ACCENT — hot magenta */
+    --accent: 320 100% 62%;
+    --accent-foreground: 260 50% 2%;
+
+    --destructive: 348 100% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 186 90% 55% / 0.28;
+    --input: 260 45% 5%;
+    --ring: 186 100% 62%;
+
+    /* Neon palette — pushed hotter */
+    --serpent: 152 100% 58%;
+    --void: 268 60% 8%;
+    --gold: 50 100% 64%;
+    --crimson: 348 100% 62%;
+    --neon-cyan: 186 100% 58%;
+    --neon-magenta: 320 100% 62%;
+    --neon-violet: 278 100% 68%;
+    --neon-lime: 120 100% 58%;
+
+    /* Deep obsidian backdrop — almost black, neon halos kept tight */
+    --gradient-oracle:
+      radial-gradient(circle at 15% 0%,   hsl(186 100% 50% / 0.14), transparent 50%),
+      radial-gradient(circle at 85% 8%,   hsl(320 100% 55% / 0.14), transparent 50%),
+      radial-gradient(circle at 50% 115%, hsl(278 100% 50% / 0.18), transparent 55%),
+      linear-gradient(180deg, hsl(260 55% 2%), hsl(260 60% 1%));
+
+    --gradient-neon: linear-gradient(135deg, hsl(186 100% 60%), hsl(320 100% 62%) 55%, hsl(278 100% 68%));
+    --gradient-gold: var(--gradient-neon);
+
+    --shadow-glow: 0 0 28px hsl(186 100% 58% / 0.7), 0 0 70px hsl(320 100% 60% / 0.45);
+    --shadow-deep: 0 30px 90px -20px hsl(260 90% 0% / 1), 0 0 0 1px hsl(186 90% 55% / 0.12);
+    --shadow-magenta: 0 0 24px hsl(320 100% 62% / 0.7), 0 0 60px hsl(320 100% 62% / 0.4);
+
+    --radius: 0.125rem;
+
+    --sidebar-background: 260 40% 4%;
+    --sidebar-foreground: 180 25% 92%;
+    --sidebar-primary: 186 100% 56%;
+    --sidebar-primary-foreground: 260 40% 5%;
+    --sidebar-accent: 268 30% 11%;
+    --sidebar-accent-foreground: 186 90% 78%;
+    --sidebar-border: 186 90% 55% / 0.2;
+    --sidebar-ring: 186 100% 60%;
+
+    /* CRT tunables — adjustable from Settings */
+    --crt-scanline: 0.025;       /* 0 → 0.12 */
+    --crt-vignette: 0.6;         /* 0 → 1 */
+    --crt-flicker-strength: 0.4; /* 0 → 1, multiplier on flicker dip */
+    --crt-flicker-speed: 5s;     /* 0s disables */
+  }
+
+  .dark { /* Aetherion is dark-only */ }
+
+  /* URUU — EVM Layer 1 dashboard theme (dark obsidian + gold) */
+  .uruu-scope {
+    --background: 36 33% 3%;
+    --foreground: 44 52% 80%;
+    --card: 36 30% 5%;
+    --card-foreground: 44 52% 80%;
+    --popover: 36 30% 4%;
+    --popover-foreground: 44 52% 80%;
+    --primary: 43 80% 46%;
+    --primary-foreground: 36 33% 3%;
+    --secondary: 42 37% 12%;
+    --secondary-foreground: 44 52% 80%;
+    --muted: 42 30% 8%;
+    --muted-foreground: 42 30% 55%;
+    --accent: 44 79% 30%;
+    --accent-foreground: 44 52% 88%;
+    --border: 43 80% 46% / 0.15;
+    --input: 42 30% 9%;
+    --ring: 43 80% 46%;
+    --radius: 0.25rem;
+    --gradient-uruu: radial-gradient(ellipse 80% 55% at 50% 0%, hsl(43 80% 46% / 0.18), transparent 70%);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  .uruu-scope h1, .uruu-scope h2, .uruu-scope h3 { letter-spacing: 0.18em; }
+  .uruu-hero-glow { background-image: var(--gradient-uruu); }
+}
+
+
+
+
+@layer base {
+  * { @apply border-border; }
+
+  html, body { background-color: hsl(var(--background)); }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, monospace;
+    background-image:
+      /* scanlines — opacity driven by --crt-scanline */
+      repeating-linear-gradient(
+        0deg,
+        hsl(186 100% 50% / var(--crt-scanline)) 0px,
+        hsl(186 100% 50% / var(--crt-scanline)) 1px,
+        transparent 1px,
+        transparent 3px
+      ),
+      var(--gradient-oracle);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  /* CRT vignette — opacity driven by --crt-vignette */
+  body::after {
+    content: "";
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 55%, hsl(260 50% 2% / var(--crt-vignette)) 100%);
+    z-index: 1;
+  }
+
+  /* Global flicker — applied to <body> when enabled, speed/strength via vars */
+  @keyframes crt-flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+    20%, 24%, 55% { opacity: calc(1 - var(--crt-flicker-strength) * 0.5); }
+    22%           { opacity: calc(1 - var(--crt-flicker-strength) * 0.85); }
+  }
+  body::before {
+    content: "";
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background: hsl(260 50% 2% / 0.001); /* must paint to animate */
+    animation: crt-flicker var(--crt-flicker-speed) infinite;
+    animation-play-state: running;
+  }
+  /* When user sets speed to 0s we suppress the layer entirely */
+  body[data-crt-flicker="off"]::before { display: none; }
+
+  .font-display {
+    font-family: 'Orbitron', 'Audiowide', 'JetBrains Mono', sans-serif;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .font-mono { font-family: 'JetBrains Mono', 'IBM Plex Mono', 'Courier New', monospace; }
+  .font-serif { font-family: 'Cormorant Garamond', 'EB Garamond', Georgia, serif; }
+
+  /* Neon selection */
+  ::selection { background: hsl(var(--neon-magenta) / 0.55); color: hsl(0 0% 100%); }
+
+  /* Cypherpunk scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: hsl(260 40% 5%); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(hsl(var(--neon-cyan)), hsl(var(--neon-magenta)));
+    border-radius: 2px;
+    box-shadow: 0 0 8px hsl(var(--neon-cyan) / 0.6);
+  }
+}
+
+@layer utilities {
+  .text-gold { color: hsl(var(--neon-cyan)); text-shadow: 0 0 10px hsl(var(--neon-cyan) / 0.55); }
+  .text-serpent { color: hsl(var(--serpent)); text-shadow: 0 0 8px hsl(var(--serpent) / 0.5); }
+  .text-crimson { color: hsl(var(--crimson)); text-shadow: 0 0 8px hsl(var(--crimson) / 0.5); }
+  .text-magenta { color: hsl(var(--neon-magenta)); text-shadow: 0 0 10px hsl(var(--neon-magenta) / 0.55); }
+  .text-violet  { color: hsl(var(--neon-violet));  text-shadow: 0 0 10px hsl(var(--neon-violet) / 0.55); }
+
+  .bg-void { background-color: hsl(var(--void)); }
+
+  .gradient-gold-text,
+  .gradient-neon-text {
+    background: var(--gradient-neon);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 12px hsl(var(--neon-cyan) / 0.45))
+            drop-shadow(0 0 18px hsl(var(--neon-magenta) / 0.35));
+  }
+
+  .glow {
+    box-shadow: var(--shadow-glow);
+  }
+  .glow-magenta { box-shadow: var(--shadow-magenta); }
+  .shadow-deep { box-shadow: var(--shadow-deep); }
+
+  /* Neon "rune" border — replaces the old gold hairline */
+  .border-rune {
+    border: 1px solid hsl(var(--neon-cyan) / 0.45);
+    box-shadow:
+      inset 0 0 0 1px hsl(var(--neon-magenta) / 0.08),
+      0 0 12px hsl(var(--neon-cyan) / 0.18);
+  }
+
+  /* Animated neon outline for hero panels */
+  .border-neon {
+    position: relative;
+    border: 1px solid transparent;
+    background-clip: padding-box;
+  }
+  .border-neon::before {
+    content: "";
+    position: absolute; inset: -1px; border-radius: inherit; padding: 1px;
+    background: linear-gradient(135deg, hsl(var(--neon-cyan)), hsl(var(--neon-magenta)), hsl(var(--neon-violet)));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      filter: drop-shadow(0 0 8px hsl(var(--neon-cyan) / 0.45))
+              drop-shadow(0 0 18px hsl(var(--neon-magenta) / 0.35));
+    }
+    50% {
+      filter: drop-shadow(0 0 18px hsl(var(--neon-cyan) / 0.85))
+              drop-shadow(0 0 38px hsl(var(--neon-magenta) / 0.6));
+    }
+  }
+  .animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+
+  @keyframes rotate-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .animate-rotate-slow { animation: rotate-slow 60s linear infinite; }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in { animation: fade-in 0.5s ease-out; }
+
+  /* ───────── Landing — irresistible composition ───────── */
+  @keyframes landing-brand-rise {
+    from { opacity: 0; transform: translateY(28px); filter: blur(6px); }
+    to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+  .landing-brand-rise {
+    animation: landing-brand-rise 1.05s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes landing-brand-pulse {
+    0%, 100% {
+      text-shadow:
+        0 0 24px hsl(var(--neon-cyan) / 0.35),
+        0 0 60px hsl(var(--neon-magenta) / 0.18);
+    }
+    50% {
+      text-shadow:
+        0 0 36px hsl(var(--neon-cyan) / 0.55),
+        0 0 90px hsl(var(--neon-magenta) / 0.32);
+    }
+  }
+  .landing-brand-pulse {
+    animation: landing-brand-pulse 5.5s ease-in-out infinite;
+  }
+
+  @keyframes landing-aurora {
+    0%, 100% { opacity: 0.55; transform: scale(1) translate(0, 0); }
+    50%      { opacity: 0.9;  transform: scale(1.06) translate(1%, -1.5%); }
+  }
+  .landing-aurora {
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 35%, hsl(186 100% 50% / 0.16), transparent 60%),
+      radial-gradient(ellipse 55% 45% at 78% 55%, hsl(320 100% 55% / 0.14), transparent 55%),
+      radial-gradient(ellipse 50% 40% at 18% 70%, hsl(278 100% 55% / 0.12), transparent 50%);
+    animation: landing-aurora 14s ease-in-out infinite;
+  }
+
+  @keyframes landing-scroll-hint {
+    0%, 100% { opacity: 0.35; transform: translate(-50%, 0); }
+    50%      { opacity: 0.85; transform: translate(-50%, 6px); }
+  }
+  .landing-scroll-hint {
+    animation: landing-scroll-hint 2.4s ease-in-out infinite;
+  }
+
+  @keyframes landing-cta-sheen {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  .landing-cta-sheen {
+    background-image: linear-gradient(
+      110deg,
+      hsl(var(--neon-cyan)) 0%,
+      hsl(186 100% 72%) 35%,
+      hsl(var(--neon-cyan)) 70%
+    );
+    background-size: 200% 100%;
+    animation: landing-cta-sheen 4.5s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .landing-brand-rise,
+    .landing-brand-pulse,
+    .landing-aurora,
+    .landing-scroll-hint,
+    .landing-cta-sheen {
+      animation: none !important;
+    }
+  }
+
+  @keyframes neon-flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+      opacity: 1; filter: drop-shadow(0 0 6px hsl(var(--neon-cyan) / 0.6));
+    }
+    20%, 22%, 24%, 55% { opacity: 0.6; filter: none; }
+  }
+  .animate-flicker { animation: neon-flicker 5s infinite; }
+
+  /* Halo behind logo to make it pop without cropping */
+  .logo-halo {
+    background:
+      radial-gradient(circle at 50% 50%,
+        hsl(var(--neon-cyan) / 0.35) 0%,
+        hsl(var(--neon-magenta) / 0.22) 40%,
+        transparent 70%);
+  }
+
+  .prose-oracle p { margin-bottom: 0.75em; line-height: 1.75; }
+  .prose-oracle em { color: hsl(var(--neon-magenta)); font-style: italic; text-shadow: 0 0 8px hsl(var(--neon-magenta) / 0.5); }
+  .prose-oracle strong { color: hsl(var(--neon-cyan)); font-weight: 600; text-shadow: 0 0 8px hsl(var(--neon-cyan) / 0.5); }
+
+  /* ───────── Viral entrance — Glass Aurora ───────── */
+
+  .font-oracle {
+    font-family: 'Instrument Serif', 'Cormorant Garamond', 'EB Garamond', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  /* ─── Cypherpunk type stack ─── */
+  .font-saga    { font-family: 'Audiowide', 'Orbitron', sans-serif; letter-spacing: 0.06em; }
+  .font-crt     { font-family: 'VT323', 'Share Tech Mono', monospace; letter-spacing: 0.04em; }
+  .font-tech    { font-family: 'Share Tech Mono', 'VT323', monospace; letter-spacing: 0.12em; text-transform: uppercase; }
+  .font-chrome  { font-family: 'Michroma', 'Audiowide', sans-serif; letter-spacing: 0.18em; text-transform: uppercase; }
+
+  /* Scanlines on top of any element */
+  .scanlines {
+    position: relative;
+    isolation: isolate;
+  }
+  .scanlines::after {
+    content: "";
+    position: absolute; inset: 0;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(
+      0deg,
+      hsl(0 0% 100% / 0.06) 0px,
+      hsl(0 0% 100% / 0.06) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    mix-blend-mode: overlay;
+    z-index: 2;
+  }
+
+  /* Blinking terminal cursor */
+  @keyframes term-cursor {
+    0%, 49%   { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+  .term-cursor {
+    display: inline-block;
+    width: 0.5em;
+    height: 1em;
+    margin-left: 0.1em;
+    background: hsl(var(--neon-cyan));
+    vertical-align: -0.12em;
+    box-shadow: 0 0 12px hsl(var(--neon-cyan)), 0 0 24px hsl(var(--neon-magenta) / 0.6);
+    animation: term-cursor 1.05s steps(1) infinite;
+  }
+
+  /* Chromatic aberration RGB split */
+  .chroma-split {
+    text-shadow:
+      -1.5px 0 hsl(var(--neon-magenta) / 0.85),
+       1.5px 0 hsl(var(--neon-cyan) / 0.85),
+       0 0 18px hsl(var(--neon-cyan) / 0.55),
+       0 0 32px hsl(var(--neon-magenta) / 0.35);
+  }
+
+  /* Slow shimmer across the hero headline */
+  @keyframes shimmer-sweep {
+    0%   { background-position: -200% 50%; }
+    100% { background-position:  200% 50%; }
+  }
+  .shimmer-text {
+    background: linear-gradient(
+      100deg,
+      hsl(186 100% 80%) 0%,
+      hsl(0 0% 100%)    25%,
+      hsl(320 100% 80%) 50%,
+      hsl(0 0% 100%)    75%,
+      hsl(278 100% 80%) 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer-sweep 9s linear infinite;
+    filter: drop-shadow(0 0 22px hsl(186 100% 60% / 0.45))
+            drop-shadow(0 0 42px hsl(320 100% 60% / 0.25));
+  }
+
+  /* Glass card */
+  .glass-card {
+    background: linear-gradient(
+      155deg,
+      hsl(260 60% 3% / 0.82) 0%,
+      hsl(278 50% 2% / 0.78) 100%
+    );
+    backdrop-filter: blur(26px) saturate(1.5);
+    -webkit-backdrop-filter: blur(26px) saturate(1.5);
+    border: 1px solid hsl(186 90% 70% / 0.22);
+    box-shadow:
+      0 36px 100px -24px hsl(260 90% 0% / 0.95),
+      inset 0 1px 0 hsl(0 0% 100% / 0.04),
+      0 0 0 1px hsl(320 100% 60% / 0.08);
+  }
+
+  /* Sigil ring rotations */
+  @keyframes rotate-fwd { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes rotate-rev { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+  .animate-rotate-fwd      { animation: rotate-fwd 32s linear infinite; }
+  .animate-rotate-rev      { animation: rotate-rev 48s linear infinite; }
+  .animate-rotate-rev-slow { animation: rotate-rev 90s linear infinite; }
+
+  @keyframes pulse-core {
+    0%, 100% { opacity: 0.7; transform-origin: center; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.08); }
+  }
+  .animate-pulse-core { animation: pulse-core 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+
+  /* Aurora orb drift */
+  @keyframes aurora-a { 0%,100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(60px,40px,0) scale(1.1); } }
+  @keyframes aurora-b { 0%,100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(-50px,30px,0) scale(1.15); } }
+  @keyframes aurora-c { 0%,100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(40px,-60px,0) scale(1.05); } }
+  .animate-aurora-drift-a { animation: aurora-a 18s ease-in-out infinite; }
+  .animate-aurora-drift-b { animation: aurora-b 22s ease-in-out infinite; }
+  .animate-aurora-drift-c { animation: aurora-c 26s ease-in-out infinite; }
+
+  /* Word-of-Power vertical ticker */
+  @keyframes word-rise {
+    0%   { opacity: 0; transform: translateY(14px); filter: blur(6px); }
+    18%  { opacity: 1; transform: translateY(0);    filter: blur(0); }
+    82%  { opacity: 1; transform: translateY(0);    filter: blur(0); }
+    100% { opacity: 0; transform: translateY(-14px); filter: blur(6px); }
+  }
+  .animate-word-rise { animation: word-rise 2.6s ease-in-out both; }
+
+  /* Subtle border breathe on the invocation card */
+  @keyframes border-breathe {
+    0%,100% { box-shadow: 0 0 0 1px hsl(186 100% 60% / 0.18), 0 0 40px hsl(186 100% 60% / 0.18); }
+    50%     { box-shadow: 0 0 0 1px hsl(320 100% 65% / 0.32), 0 0 70px hsl(320 100% 60% / 0.32); }
+  }
+  .animate-border-breathe { animation: border-breathe 6s ease-in-out infinite; }
+
+  /* Letters bursting out of the logo into the wordmark */
+  @keyframes letter-burst {
+    0% {
+      opacity: 0;
+      transform: translate(var(--burst-x, 0), var(--burst-y, 0)) scale(0.15) rotate(var(--burst-r, 0deg));
+      filter: blur(10px) brightness(2);
+    }
+    55% {
+      opacity: 1;
+      filter: blur(0) brightness(1.4);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(0,0) scale(1) rotate(0deg);
+      filter: blur(0) brightness(1);
+    }
+  }
+  .animate-letter-burst {
+    display: inline-block;
+    animation: letter-burst 1.2s cubic-bezier(.16,.84,.3,1) both;
+    will-change: transform, opacity, filter;
+  }
+
+  /* ░░ NEON BLOCK — pulsing pink + blue cypherpunk glow ░░ */
+  @keyframes neon-bipulse {
+    0%, 100% {
+      color: hsl(186 100% 80%);
+      text-shadow:
+        0 0 4px hsl(186 100% 72% / 0.95),
+        0 0 12px hsl(186 100% 60% / 0.9),
+        0 0 28px hsl(186 100% 55% / 0.75),
+        0 0 56px hsl(186 100% 55% / 0.55),
+        0 0 96px hsl(320 100% 60% / 0.35);
+    }
+    50% {
+      color: hsl(320 100% 84%);
+      text-shadow:
+        0 0 4px hsl(320 100% 78% / 0.95),
+        0 0 14px hsl(320 100% 65% / 0.9),
+        0 0 32px hsl(320 100% 60% / 0.8),
+        0 0 64px hsl(320 100% 60% / 0.55),
+        0 0 110px hsl(186 100% 55% / 0.4);
+    }
+  }
+  .neon-block {
+    animation: neon-bipulse 3.6s ease-in-out infinite;
+    will-change: text-shadow, color;
+  }
+
+  /* Keep main content above the vignette */
+  header, main, aside, footer { position: relative; z-index: 2; }
+}

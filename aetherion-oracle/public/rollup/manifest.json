@@ -1,0 +1,48 @@
+{
+  "name": "sphinxos-zkevm-rollup",
+  "version": "1.0.0",
+  "generatedAt": "2026-08-29T18:50:00.000Z",
+  "siteUrl": "https://www.excaliburcrypto.com",
+  "commandCenter": "/rollup",
+  "bootyEth": 137.190325,
+  "treasureVault": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+  "solanaSolBudget": 2286,
+  "deployCommands": [
+    "npm run mainnet",
+    "npm run deploy:runbook",
+    "npm run bridge:booty",
+    "npm run claim:zkstarknet",
+    "npm run claim:withdrawal",
+    "npm run inject:booty",
+    "npm run swap:booty",
+    "npm run deploy:mainnet"
+  ],
+  "zkevm": {
+    "mode": "mainnet",
+    "zkSyncEra": {
+      "chainId": 324,
+      "rpc": "https://mainnet.era.zksync.io",
+      "status": "live"
+    },
+    "polygonZkEvm": {
+      "chainId": 1101,
+      "rpc": "https://zkevm-rpc.com",
+      "status": "live"
+    },
+    "uruu": {
+      "address": "0x5B6C9d85465Cc6FFe84039183872239657D90208",
+      "chainId": 324,
+      "status": "live"
+    }
+  },
+  "solana": {
+    "cluster": "mainnet-beta",
+    "programId": "ALe6YqHU3rwxw8FQhmSRjdK9sxMLqbDd9zyRVNmTymo6",
+    "status": "pending"
+  },
+  "b2b": {
+    "deliberationPath": "/enterprise/deliberation",
+    "verifyPath": "/verify/deliberation",
+    "status": "live"
+  }
+}

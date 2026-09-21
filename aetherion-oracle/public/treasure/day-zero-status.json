@@ -1,0 +1,45 @@
+{
+  "kind": "day-zero-sail",
+  "version": "1.0.0",
+  "updatedAt": "2026-08-29T20:08:43.558Z",
+  "chainId": 1,
+  "vault": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+  "skynt": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+  "operatorEvm": "0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6",
+  "solanaDeploy": "ESs5u7DPeq7h8SMgYfL8t4M5X2QXc3PtjEUaMhADU9yt",
+  "slackTide": true,
+  "nextAction": "beachcomb_only",
+  "engineKeel": "FUNDED",
+  "create2": {
+    "factory": "0x4e59b44847b379578588920cA78FbF26c0B4956C",
+    "salt": "0x7c2bac1d",
+    "saltBytes32": "0x000000000000000000000000000000000000000000000000000000007c2bac1d",
+    "predictedBridge": "0xc1FDAd265861030256A913e4Ba4D1E98fD87dD04",
+    "emptyBerth": true
+  },
+  "captainsCutDest": "0xc1FDAd265861030256A913e4Ba4D1E98fD87dD04",
+  "claimValueWei": "0",
+  "letterOfMarque": [
+    "npm run trace:skynt",
+    "npm run vacuum:dust",
+    "npm run inject:booty",
+    "npm run claim:zkstarknet",
+    "npm run swap:booty"
+  ],
+  "keel": {
+    "reclaimableWei": "6825187493653371",
+    "refundWei": "0",
+    "sweepFeeWei": "943024131000",
+    "l1DeployGasWei": "53887093200000",
+    "zkWithdrawCostWei": "17962364400000",
+    "zkSyncLeftoverWei": "6664630444351097",
+    "engineKeelFunded": true,
+    "ghostGalleonExcludedWei": "137190324999999995904"
+  },
+  "blockers": [
+    "Signer 0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6 ≠ vault 0xc5a47c9adab637d1caa791cce193079d22c8cb20 — cannot withdraw zkSync leftover",
+    "Operator 0xf8F395CEb5D866ecc94c7b1685A22432ef7F47d6 has 0 L1 ETH — cannot CREATE2-dock until funded",
+    "137 ETH ghost galleon excluded from keel — proof-locked map, not L1 capital"
+  ],
+  "nextCommand": "npm run vacuum:dust && npm run profit:test"
+}

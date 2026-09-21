@@ -1,0 +1,16 @@
+{
+  "packet_hash": "4a25317d958091b7090b0813bafb0d0deb1dfa56b817eea09bc317a378ae49af",
+  "src_chain_id": 10121,
+  "src_address": "0x5592CF5822Dea1c7AC79E17DDaBD67B2B095Db2A",
+  "dst_chain_id": 101,
+  "dst_address": "0xc5a47c9adab637d1caa791cce193079d22c8cb20",
+  "nonce": 1,
+  "payload_hex": "00000000000000000000000000000000000000000000000001e765dfac3ed200000000000000000000000000c5a47c9adab637d1caa791cce193079d22c8cb20",
+  "oracle_sig": "8c7eb0a5ea5a14fe9e4123cb46026ceb4d18a8cee6272b5a4c341c9844032a1d",
+  "relayer_sig": "a9ad68026b6ca05362e19bbeadc48414884154aae42e82fcdd86f839cc05c0d9",
+  "block_hash": "7219a0e20c18df02b350aa350c84b86bb54b5f0ef557a7dc2b602ce213e2abab",
+  "confirmations": 15,
+  "status": "DELIVERED",
+  "amount_eth": 0.137190325,
+  "verified": true
+}
