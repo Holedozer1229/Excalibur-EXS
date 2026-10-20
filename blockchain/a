@@ -1,0 +1,91 @@
+
+
+
+
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+Address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+Statement: I assert control of Bitcoin address 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa.
+Date (UTC): 2025-08-26T00:00:00Z
+Nonce: 7c2bac1d
+
+Message:
+Aiamsatoshi20250826
+Abcdeghijklmnopqrstuvwxyz0123456789
+
+Commitment:
+v=1|a=35|P=1,Q=2,R=0|hp=760515aafaed2fdc|hq=9d9097b3edf2f947|hr=f2d890b337fb40d5|t=W
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYIAB0WIQQgP9h+OOkZScV2aPz4Z+8itA9ArgUCaLKCJgAKCRD4Z+8itA9A
+rvsCAP9UtbO/xTB1T6ffMCAzuG49rVnaAopQk/KjCI4GZLsFqAEAgCRGnkAjqMnj
+7x6kDTAmqvYBNyTZHR/CerLbMat69g4=
+=QFE3
+-----END PGP SIGNATURE-----
+This is a demonstration of the Satoshin signage proof.
+Label: M
+Timestamp: 2025-08-25T16:55:00Z
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.2.41
+
+mQENBF5abc0BCADHgZ3L2+HVJ9cZT7pRZhZCj+42O2Jg1aO8QFqL6XYlPcbAwqTh
+QZHwzqQusv5YbIMax5x5BVa2uz42Lzt0QWWoGsnR3CBJGdAZB0W7TX0eyuDbTn1J
+n9iqbYbCxW7qP63biElvKfV7EXAMPLEBLOCKONLY5fJ7A1oD9hCDrOt4fw4gKD5EX
+EYvfjx9I6mC+snNSkRksfsnwCvU97gUplZsrsPAr4p8z4vbC3YcH2v84w8D45xYM
+OElV1n6eb7AqzRFiE4zcm8T7z1HQm7P8oK7DX9oLSEUz4ZzIknmJ7/5rDMyqRL7Z
+Dn5XrC5wEhVrXMbF5N36E8g0C7AEl3ydREWlABEBAAG0IVNhdG9zaGluIFNpZ25h
+dHVyZSBEZW1vbnN0cmF0aW9uIDxub25lQGV4YW1wbGUuY29tPokBVAQTAQgAPhYh
+BGEXAMPLEFINGERPRINTBLOCKONLYn2UK1Mct5f14oDAQkFnlptzQIbAwUJA8JnAA
+ULCQgHAgYVCgkICwIEFgIDAQIeBwIXgAAKCRB9lCtTHLeX9VJDCAC7tx6t50LpyV
+Ddfjwzt/EXAMPLEBLOCKONLYkPHnWAdJ57x2k1z3J3An9PTXxrAb/ovwMlRBBKcf
+2sFJw16snw==
+=ABCD
+-----END PGP SIGNATURE-----
+Address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+Statement: I assert control of Bitcoin address 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa.
+Date (UTC): 2025-08-26T00:00:00Z
+Nonce: 7f6a1b0e2fa54a60
+
+Message:
+Aiamsatoshi20250826
+Abcdeghijklmnopqrstuvwxyz0123456789
+
+Commitment:
+v=1|a=35|P,Q,R|hp=e3b0c44298fc1c14|hq=e3b0c44298fc1c14|hr=e3b0c44298fc1c14|t=W
+EOF
+Meta-chain cross-proof
+
+BTC address I control: bc1qav0y300cfyyl33nwqfe0rcdhvne7qvz2lq3eu6
+My PGP fingerprint: B3060C6A9AD8C49847735BAE1817FEC5FD43BBE5
+Timestamp (UTC): 2025-08-26T00:00:00Z
+Nonce: 9b7b2d5e3a1c7f20
+
+I am proving control of the bc1 address above and binding it to my PGP key by
+signing this same message in both systems (PGP and BIP-322).
+-----BEGIN PGP SIGNATURE-----
+
+iIsEARYIADMWIQSzBgxqmtjEmEdzW64YF/7F/UO75QUCaK0yxRUcaG9sZWRvemVy
+QGljbG91ZC5jb20ACgkQGBf+xf1Du+VtywD+L9SFfE+0iGzKw3J0vLg3IKqSACLy
+I4Mubf1EEjkQjC0BALl/7TADgND3WITcleBXMxGzqtNGoIjBlhbM4vsDn0IL
+=VMfH
+-----END PGP SIGNATURE-----
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
