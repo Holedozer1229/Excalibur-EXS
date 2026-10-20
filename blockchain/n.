@@ -1,0 +1,25 @@
+
+
+
+
+
+
+# Your private key (64 hex chars, with leading zero)
+hex_key = "01A3F7B9E2C4D8A5F6B7C3D9E0F1A2B3C4D5E6F7A8B9C0D1E2F3A4B5C6D7E8F9"
+
+# Convert to bytes
+key_bytes = bytes.fromhex(hex_key)
+
+# Add prefix 0x80 and compression flag 0x01
+extended = b'\x80' + key_bytes + b'\x01'
+
+# Double SHA-256
+sha = hashlib.sha256(extended).digest()
+sha2 = hashlib.sha256(sha).digest()
+checksum = sha2[:4]
+
+# Combine and Base58 encode
+wif_bytes = extended + checksum
+wif = base58.b58encode(wif_bytes).decode('utf-8')
+
+print("WIF (compressed mainnet):", wif)
