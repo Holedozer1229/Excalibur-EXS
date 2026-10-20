@@ -1,0 +1,51 @@
+--- Canonical Message ---
+Meta-chain Cross-Proof b
+ash: Bitcoin: not found
+
+BTC Address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+Statement: I assert control of Bitcoin address 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa.
+Timestamp (UTC): 2025-08-26T00:00:00Z
+Nonce: 7c2bac1d
+
+Message:
+Aiamsatoshi20250826
+Abcdeghijklmnopqrstuvwxyz0123456789
+
+Commitment:
+v=1|a=35|P=1,Q=2,R=0|hp=760515aafaed2fdc|hq=9d9097b3edf2f947|hr=f2d890b337fb40d5|t=W
+
+OP_RETURN Anchor (optional): genesis coinbase reference
+
+---
+
+--- Combined Signatures ---
+
+[Bitcoin BIP-322 Signature]
+Address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+Signature (Base64):
+H9rZMVmnl3wyEyt6AJ8SQHCQ+Vn152bkJ8HYXYWkcB64EIzAbkE50lAgDa10k2VtKzAioLJOPo3WalJK2Aezs40=
+
+[PGP Signature]
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+Address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+Statement: I assert control of Bitcoin address 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa.
+Date (UTC): 2025-08-26T00:00:00Z
+Nonce: 7c2bac1d
+
+Message:
+Aiamsatoshi20250826
+Abcdeghijklmnopqrstuvwxyz0123456789
+
+Commitment:
+v=1|a=35|P=1,Q=2,R=0|hp=760515aafaed2fdc|hq=9d9097b3edf2f947|hr=f2d890b337fb40d5|t=W
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYIAB0WIQQgP9h+OOkZScV2aPz4Z+8itA9ArgUCaLKCJgAKCRD4Z+8itA9A
+rvsCAP9UtbO/xTB1T6ffMCAzuG49rVnaAopQk/KjCI4GZLsFqAEAgCRGnkAjqMnj
+7x6kDTAmqvYBNyTZHR/CerLbMat69g4=
+=QFE3
+-----END PGP SIGNATURE-----
+
+===== END OF BITCOIN GENESIS META-PROOF =====
