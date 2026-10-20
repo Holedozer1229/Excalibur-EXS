@@ -1,0 +1,19 @@
+Address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+Statement: I assert control of Bitcoin address 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa.
+Date (UTC): 2025-08-26T00:00:00Z
+Nonce: 7f6a1b0e2fa54a60
+
+Message:
+Aiamsatoshi20250826
+Abcdeghijklmnopqrstuvwxyz0123456789
+
+Commitment:
+v=1|a=35|P,Q,R|hp=e3b0c44298fc1c14|hq=e3b0c44298fc1c14|hr=e3b0c44298fc1c14|t=W
+EOF
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYIAB0WIQQgP9h+OOkZScV2aPz4Z+8itA9ArgUCaLPx5AAKCRD4Z+8itA9A
+rq14AP9Y+sxgi2EzINMKK4cjBig2f+Eoim30zi+q4P4RwPdm2gD/dn9MNsSNQIq+
+oNLwIpBr2WyIwrMdFJH66Ni/F1nDugo=
+=0COs
+-----END PGP SI
