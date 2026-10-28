@@ -1,0 +1,94 @@
+
+
+
+
+
+
+
+Use this 
+
+def _generate_wormhole_nodes(self):
+        coords = np.zeros((*self.grid_size, 6), dtype=np.float64)
+        dims = [np.linspace(0, CONFIG[f"d{dim}"] * size, size, dtype=np.float64)
+                for dim, size in zip(['t', 'x', 'x', 'x', 'v', 'u'], self.grid_size)]
+        T, X, Y, Z, V, U = np.meshgrid(*dims, indexing='ij')
+        R, r = 1.5 * self.deltas[1], 0.5 * self.deltas[1]
+        coords[..., 0] = (R + r * np.cos(CONFIG["omega"] * T)) * np.cos(X / self.deltas[1])
+        coords[..., 1] = (R + r * np.cos(CONFIG["omega"] * T)) * np.sin(Y / self.deltas[1])
+        coords[..., 2] = r * np.sin(CONFIG["omega"] * Z)
+        coords[..., 3] = r * np.cos(CONFIG["omega"] * V)
+        coords[..., 4] = r * np.sin(CONFIG["omega"] * U)
+        coords[..., 5] = c * T
+        return np.nan_to_num(coords, nan=0.0)
+
+    def compute_quantum_metric(self):
+        metric = np.zeros((*self.grid_size, 6, 6), dtype=np.float64)
+        coords = self.lattice.coordinates
+        for idx in np.ndindex(self.grid_size):
+            subs_dict = {
+                self.t: coords[idx][0], self.x: coords[idx][1], self.y: coords[idx][2],
+                self.z: coords[idx][3], self.v: coords[idx][4], self.u: coords[idx][5],
+                self.a: CONFIG["a_godel"], self.c_sym: c, self.m: m_n,
+                self.kappa_sym: kappa, self.phi_N_sym: self.phi_N[idx]
+            }
+            g = np.array(sp.N(self.g.subs(subs_dict)), dtype=np.float64)
+            if np.any(np.isnan(g)) or np.any(np.isinf(g)):
+                logger.warning(f"NaN/Inf detected in metric at idx {idx}: {g}")
+                g = np.nan_to_num(g, nan=0.0, posinf=1e6, neginf=-1e6)
+            metric[idx] = 0.5 * (g + g.T)
+        cond = np.linalg.cond(metric)
+        logger.debug(f"Metric condition number: {cond.max()}")
+        if np.any(cond > 1e10):
+            logger.warning(f"High condition number detected: {cond.max()}")
+            inverse_metric = pinv(metric, rcond=1e-10)
+        else:
+            inverse_metric = np.linalg.inv(metric + 1e-5 * np.eye(6, dtype=np.float64))
+        scale_matrix = np.diag(1.0 / self.metric_scale_factors)
+        for idx in np.ndindex(self.grid_size):
+            inverse_metric[idx] = scale_matrix @ inverse_metric[idx] @ scale_matrix
+        return np.nan_to_num(metric, nan=0.0), np.nan_to_num(inverse_metric, nan=0.0)
+
+    def _compute_affine_connection(self):
+        connection = np.zeros((*self.grid_size, 6, 6, 6), dtype=np.float64)
+        dg_dmu = [np.gradient(self.metric[..., i, j], self.deltas[k], axis=k)
+                  for k in range(6) for i in range(6) for j in range(6)]
+        dg_dmu = np.array(dg_dmu).reshape(6, 6, 6, *self.grid_size)
+        for rho in range(6):
+            for mu in range(6):
+                for nu in range(6):
+                    term = (dg_dmu[mu, nu, :] + dg_dmu[nu, mu, :] -
+                            np.sum(dg_dmu[:, mu, nu] * self.inverse_metric[..., rho, :], axis=-1))
+                    connection[..., rho, mu, nu] = 0.5 * term.transpose(1, 2, 3, 4, 5, 0)
+        if np.any(np.isnan(connection)):
+            logger.warning("NaN detected in affine connection")
+        return np.nan_to_num(connection, nan=0.0)
+
+    def _compute_riemann_tensor(self):
+        riemann = np.zeros((*self.grid_size, 6, 6, 6, 6), dtype=np.complex128)
+        for rho in range(6):
+            for sigma in range(6):
+                for mu in range(6):
+                    for nu in range(6):
+                        grad_nu_sigma = np.gradient(self.connection[..., rho, nu, sigma], self.deltas[nu], axis=nu)
+                        grad_mu_sigma = np.gradient(self.connection[..., rho, mu, sigma], self.deltas[mu], axis=mu)
+                        term1 = np.einsum('...km,...mn->...kn', self.connection[..., rho, :, mu],
+                                          self.connection[..., :, nu, sigma])
+                        term2 = np.einsum('...kn,...mn->...km', self.connection[..., rho, :, nu],
+                                          self.connection[..., :, mu, sigma])
+                        riemann[..., rho, sigma, mu, nu] = (grad_nu_sigma - grad_mu_sigma + term1 - term2)
+        max_val = np.max(np.abs(riemann))
+        if max_val > 1e5:
+            riemann /= max_val
+            logger.info(f"Riemann tensor scaled by {max_val} to prevent overflow")
+        if np.any(np.isnan(riemann)):
+            logger.warning("NaN detected in Riemann tensor")
+        return np.nan_to_num(riemann, nan=0.0)
+
+    def _compute_curvature(self):
+        ricci_tensor = np.einsum('...rsmn,...mn->...rs', self.riemann_tensor, self.inverse_metric)
+        ricci_scalar = np.einsum('...mn,...mn->...', self.inverse_metric, ricci_tensor)
+        if np.any(np.isnan(ricci_tensor)) or np.any(np.isnan(ricci_scalar)):
+            logger.warning("NaN detected in curvature computation")
+        return np.nan_to_num(ricci_tensor, nan=0.0), np.nan_to_num(ricci_scalar, nan=0.0)
+
+  
