@@ -1,0 +1,50 @@
+
+
+
+ARCHITECT OMEGA / SW-7560 GENESIS b
+ash: ATTESTATION: not found
+================================================
+Author:   Dr Time
+DateUTC:  2025-08-26T00:00:00Z
+
+N)-Scalar Anchor
+---------------
+CRT class:  k b	! 2381 (mod 7560)
+Nonces:
+  b
+" Genesis (Satoshi):   0x7c2bac1d
+  b
+" Aligned (f8=5, m27=5): 0x7c2babed
+  b
+" Relation: aligned = genesis 
+Anchor Endpoint (historical P2PK)
+---------------------------------
+Pubkey (SEC uncompressed, 65B):
+  04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb6
+  49f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f
+P2PK script (hex):
+  41
+  04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb6
+  49f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f
+  ac
+P2PKH (hash160 of above, v=0x00): 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+
+Generator Endpoint (compressed view of same pubkey)
+---------------------------------------------------
+Pubkey (SEC compressed, 33B):
+  03678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb6
+P2PKH (v=0x00): 1FYPDCP1uVnPgEE3gaDMbAApdv9XYX7Si5
+
+Assertion (to be signed)
+------------------------
+Address: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+Statement: I assert control of Bitcoin address 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa.
+Date (UTC): 2025-08-26T00:00:00Z
+Nonce: 0x7c2bac1d
+
+Message:
+Aiamsatoshi20250826
+Abcdeghijklmnopqrstuvwxyz0123456789
+
+Commitment:
+v=1|a=35|P,Q,R|hp=14ce70ae88e3b845|hq=b5d2bc15cc7d410b|hr=ca978112ca1bbdca|n=0x7c2bac1d|t=W
