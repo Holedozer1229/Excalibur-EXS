@@ -1,511 +1,585 @@
-#!/usr/bin/env python3
-"""Local RPC for the EXCAL testnet. Localhost only, testnet only, valueless.
+"""node_rpc.py — localhost JSON-RPC for the Genesis Fork node.
 
-Endpoints (amounts in sats):
-  GET  /tip                        -> {height, hash}
-  GET  /mempool                    -> {count, txs:[{txid,fee,size}]}
-  POST /tx            body: raw tx hex -> {txid} | 409 {error}
-  GET  /balance?pubkey=<hex33>     -> {sats, tgsf, utxos}
-  GET  /utxo?pubkey=<hex33>        -> list of {txid, vout, sats, kind}
-  POST /keygen                     -> {privkey, pubkey} (saved to wallet.json)
-  GET  /wallet                     -> [pubkey, ...] (no privkeys)
-  POST /send   {privkey,to,amount,fee?} -> {txid}
-  POST /faucet {to,amount}          -> {txid} (spends a mature anyone-UTXO)
-  GET  /peers                      -> connected peers + scores
-  POST /addpeer {host,port}         -> connect to a peer
-  GET  /tips                       -> all known branch tips
-  GET  /reorgs                     -> reorg history (most recent last)
-  GET  /block?height=N | ?hash=hex -> block (hex-encoded fields)
-
-Runs in a daemon thread inside the miner; shares chainstate/mempool under
-a lock. Reorgs are handled by the chainstate; the mempool is rebuilt by
-the peer manager on every chain event.
+POST / with {"method":..., "params":[...], "id":...}.
+Read methods plus sendrawtransaction and a minimal wallet.
 """
 import json
+import math
 import os
-import struct
 import threading
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from urllib.parse import urlparse, parse_qs
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 import secp256k1 as secp
-import mldsa
-from genesis_fork import ser_varint, gf11_active
-from chainstate import enc_block
-from txscript import (parse_tx, ser_tx, p2pk_script, spk_pubkey, is_anyone,
-                      sign_input, txid_internal, txid_display,
-                      find_spendable, COINBASE_MATURITY, pq_script,
-                      pq_spk_pubkey, pq_sign_input, PQ_PK_LEN)
+from genesis_fork import sha256d, ser_header
+from txscript import (parse_tx, ser_tx, txid_internal, p2pk_script,
+                      COINBASE_MATURITY, lock_pkh_for_pubkey, lock_pkh,
+                      lock_type, sign_pkh_input, sign_input, validate_tx)
+import caduceus
+import wallet_crypto
 
-SAT = 100_000_000
-FAUCET_FEE = 1000
-FAUCET_MAX = 10 * SAT
+# Wallet-spend policy (sendtoaddress): conservative, single-key wallet.
+DUST_SWORDS = 1000          # outputs below this are dust (rejected / folded
+                            # into the fee); ~30x the vbyte cost of a PKH out
+DEFAULT_FEE_RATE_SVB = 1    # swords per vbyte when the caller gives no rate
+_VIN_PKH_VBYTES = 139       # 32 prev + 4 idx + 1 varint + 98 scriptSig + 4 seq
+_VOUT_VBYTES = 30           # 8 value + 1 varint + 21-byte PKH lock
+_TX_OVERHEAD_VBYTES = 10    # 4 version + 1 + 1 varints + 4 locktime
+
+
+def _est_fee(n_in, n_out, rate):
+    """Conservative vsize estimate (no witness data on this chain)."""
+    return (_TX_OVERHEAD_VBYTES + _VIN_PKH_VBYTES * n_in
+            + _VOUT_VBYTES * n_out) * rate
+
+
+def _pct(sorted_vals, q):
+    """q-th percentile (0-100) of an ascending list, linear interpolation."""
+    if not sorted_vals:
+        return None
+    k = (len(sorted_vals) - 1) * q / 100.0
+    lo, hi = math.floor(k), math.ceil(k)
+    return sorted_vals[lo] + (sorted_vals[hi] - sorted_vals[lo]) * (k - lo)
+
+
+def _parse_pkh_address(addr):
+    """Excalibur's address is the hex of the PKH lock itself (42 chars:
+    '00' + hash160 hex), as returned by getpkhaddress. Also accepts a bare
+    40-hex hash160 for convenience. Returns the 21-byte lock."""
+    s = str(addr).strip().lower()
+    if s.startswith("0x"):
+        s = s[2:]
+    try:
+        if len(s) == 42 and s.startswith("00"):
+            lock = bytes.fromhex(s)
+        elif len(s) == 40:
+            lock = lock_pkh(bytes.fromhex(s))
+        else:
+            raise ValueError()
+    except ValueError:
+        raise ValueError("bad address: want PKH lock hex (42 chars) or "
+                         "hash160 hex (40 chars)")
+    if lock_type(lock) != "pkh":
+        raise ValueError("bad address: not a PKH lock")
+    return lock
+
+
+def _find_by_spk(utxo, spk):
+    """All UTXO entries paying to lock script spk: [(key, entry)] where
+    key=(txid_bytes, vout) and entry=(value, spk, is_cb, cb_h).
+    Uses the UTXO set's indexed lookup when it has one (the SQLite
+    snapshot store); otherwise falls back to a full scan of the in-memory
+    dict. Read-only; never mutates the set."""
+    spk = bytes(spk)
+    find = getattr(utxo, "find_by_spk", None)
+    if callable(find):
+        return list(find(spk))
+    out = []
+    for k, entries in utxo.items():
+        for e in entries:
+            if bytes(e[1]) == spk:
+                out.append((k, e))
+    return out
+
+
+def _read_keyfile(path):
+    """Read the wallet passphrase from a keyfile. Never logged."""
+    with open(path, "rb") as f:
+        pw = f.read().strip()
+    if not pw:
+        raise ValueError(f"keyfile is empty: {path}")
+    return pw
+
+
+def load_wallet_key(wallet_path, keyfile=None):
+    """Load (or create) the node's wallet keypair. Returns
+    (priv_bytes, pub_compressed_bytes). The same key funds the miner: blocks
+    the node finds pay this key's PKH lock directly.
+
+    keyfile (or the EXCALIBUR_WALLET_KEYFILE env var) supplies the
+    passphrase when the wallet file is encrypted (see wallet_crypto.py).
+    Plaintext wallets keep loading exactly as before.
+    """
+    if keyfile is None:
+        keyfile = os.environ.get("EXCALIBUR_WALLET_KEYFILE")
+    if os.path.exists(wallet_path):
+        with open(wallet_path) as f:
+            data = json.load(f)
+        if wallet_crypto.is_encrypted_wallet(data):
+            if not keyfile:
+                raise ValueError(
+                    "wallet is encrypted; set EXCALIBUR_WALLET_KEYFILE "
+                    "or pass --wallet-keyfile")
+            data = json.loads(
+                wallet_crypto.decrypt_bytes(
+                    data, _read_keyfile(keyfile)).decode())
+        return bytes.fromhex(data["priv"]), bytes.fromhex(data["pub"])
+    priv = int.from_bytes(os.urandom(32), "big") % (secp.N - 1) + 1
+    pub = secp.compress(secp.priv_to_pub(priv))
+    tmp = wallet_path + ".tmp"
+    with open(tmp, "w") as f:
+        json.dump({"priv": f"{priv:064x}", "pub": pub.hex()}, f)
+    os.chmod(tmp, 0o600)
+    os.replace(tmp, wallet_path)
+    return priv.to_bytes(32, "big"), pub
 
 
 class Node:
-    def __init__(self, chainstate, mempool, lock: threading.Lock,
-                 wallet_path: str, peermgr=None):
-        self.chainstate = chainstate  # ChainState; miner-owned under lock
+    def __init__(self, cs, mempool, lock, wallet_path, peermgr=None,
+                 wallet_keyfile=None):
+        self.cs = cs
         self.mempool = mempool
         self.lock = lock
         self.wallet_path = wallet_path
+        self.wallet_keyfile = wallet_keyfile
         self.peermgr = peermgr
-        self._server = None
-
-    # -- helpers ---------------------------------------------------------
-    def tip_height(self):
-        return self.chainstate.tip()["height"]
-
-    def _wallet(self):
-        if os.path.exists(self.wallet_path):
-            try:
-                return json.load(open(self.wallet_path))
-            except Exception:
-                pass
-        return {}
-
-    def _wallet_add(self, priv_hex, pub_hex):
-        w = self._wallet()
-        w[pub_hex] = priv_hex
-        fd = os.open(self.wallet_path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC,
-                     0o600)
-        with os.fdopen(fd, "w") as f:
-            json.dump(w, f, indent=2)
-
-    def _pq_wallet_path(self):
-        base, ext = os.path.splitext(self.wallet_path)
-        return base + "_pq" + (ext or ".json")
-
-    def _pq_wallet(self):
-        p = self._pq_wallet_path()
-        if os.path.exists(p):
-            try:
-                return json.load(open(p))
-            except Exception:
-                pass
-        return {}
-
-    def _pq_wallet_add(self, sk_hex, pk_hex):
-        w = self._pq_wallet()
-        w[pk_hex] = sk_hex
-        p = self._pq_wallet_path()
-        fd = os.open(p, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-        with os.fdopen(fd, "w") as f:
-            json.dump(w, f, indent=2)
-
-    def build_pq_send(self, sk_hex: str, to_pk_hex: str, amount: int,
-                      fee: int):
-        """Build a GF-11 version-2 transaction spending PQ UTXOs.
-
-        All outputs are PQ outputs. Requires activation height reached.
-        """
-        h = self.tip_height() + 1  # the block this tx would enter
-        if not gf11_active(h):
-            return False, "GF-11 not active yet"
+        self._srv = None
+        # Node-local fee market history (NOT consensus): per accepted block
+        # the minimum fee rate among its txs, persisted next to the wallet.
+        base, ext = os.path.splitext(wallet_path)
+        self._fee_history_path = base + ".fees.json"
+        self._fee_history = []
         try:
-            sk = bytes.fromhex(sk_hex)
-            to_pk = bytes.fromhex(to_pk_hex)
-        except ValueError:
-            return False, "bad hex"
-        if len(to_pk) != PQ_PK_LEN:
-            return False, "bad destination PQ pubkey length"
-        # Derive our public key from the secret key via keygen? ML-DSA
-        # keygen is deterministic from seed, but here sk is the full
-        # secret key; we recover pk by finding it in the wallet.
-        w = self._pq_wallet()
-        our_pk_hex = None
-        for pk_hex, stored_sk in w.items():
-            if stored_sk == sk_hex:
-                our_pk_hex = pk_hex
-                break
-        if our_pk_hex is None:
-            return False, "secret key not in PQ wallet"
-        our_pk = bytes.fromhex(our_pk_hex)
-        if amount <= 0 or fee < 0:
-            return False, "bad amount/fee"
-        need = amount + fee
-        h_tip = self.tip_height()
-        cands = find_spendable(
-            self.chainstate.utxo, h_tip,
-            lambda v, spk, is_cb, cb_h: pq_spk_pubkey(spk) == our_pk)
-        cands.sort(key=lambda kv: kv[1][0])
-        picked, total = [], 0
-        for key, e in cands:
-            picked.append((key, e))
-            total += e[0]
-            if total >= need:
-                break
-        if total < need:
-            return False, (f"insufficient PQ funds: have {total} sats, "
-                           f"need {need}")
-        vins = []
-        for key, (value, spk, is_cb, cb_h) in picked:
-            vins.append({"prev": key[0], "idx": key[1], "script": b"",
-                         "seq": 0xFFFFFFFF, "_spk": spk})
-        outs = [{"value": amount, "script": pq_script(to_pk)}]
-        if total - need > 0:
-            outs.append({"value": total - need, "script": pq_script(our_pk)})
-        t = {"version": 2, "vin": vins, "vout": outs, "locktime": 0}
-        rnd = os.urandom(32)
-        for i, vin in enumerate(t["vin"]):
-            spk = vin.pop("_spk")
-            vin["script"] = pq_sign_input(t, i, spk, sk, rnd)
-        return True, ser_tx(t)
+            with open(self._fee_history_path) as f:
+                hist = json.load(f)
+            if isinstance(hist, list):
+                self._fee_history = [e for e in hist[-200:]
+                                     if isinstance(e, dict)]
+        except (OSError, ValueError):
+            pass
 
-    # -- tx builders (call with lock held) --------------------------------
-    def build_faucet(self, to_pub_hex: str, amount: int):
-        """Spend one mature anyone-can-spend coinbase output."""
-        to_pub = bytes.fromhex(to_pub_hex)
-        if len(to_pub) != 33 or to_pub[0] not in (0x02, 0x03):
-            return False, "bad pubkey"
-        secp.decompress(to_pub)  # raises if not on curve
-        if not (0 < amount <= FAUCET_MAX):
-            return False, "amount out of range"
-        h = self.tip_height()
-        cands = find_spendable(
-            self.chainstate.utxo, h,
-            lambda v, spk, is_cb, cb_h: is_cb and is_anyone(spk),
-            min_value=amount + FAUCET_FEE)
-        if not cands:
-            return False, "no mature faucet UTXO available"
-        (key, (value, spk, is_cb, cb_h)) = cands[0]
-        change = value - amount - FAUCET_FEE
-        outs = [{"value": amount, "script": p2pk_script(to_pub)}]
-        if change > 0:
-            outs.append({"value": change, "script": b"\x51"})
-        t = {"version": 1,
-             "vin": [{"prev": key[0], "idx": key[1], "script": b"",
-                      "seq": 0xFFFFFFFF}],
-             "vout": outs, "locktime": 0}
-        raw = ser_tx(t)
-        return True, raw
+    # ------------------------------------------------------------ wallet
+    def _wallet_key(self):
+        return load_wallet_key(self.wallet_path, keyfile=self.wallet_keyfile)
 
-    def build_send(self, priv_hex: str, to_pub_hex: str, amount: int,
-                   fee: int):
-        priv = int(priv_hex, 16)
-        if not (1 <= priv < secp.N):
-            return False, "bad privkey"
-        pub = secp.compress(secp.priv_to_pub(priv))
-        to_pub = bytes.fromhex(to_pub_hex)
-        if len(to_pub) != 33 or to_pub[0] not in (0x02, 0x03):
-            return False, "bad destination pubkey"
-        secp.decompress(to_pub)
-        if amount <= 0 or fee < 0:
-            return False, "bad amount/fee"
-        need = amount + fee
-        h = self.tip_height()
-        cands = find_spendable(
-            self.chainstate.utxo, h,
-            lambda v, spk, is_cb, cb_h: spk_pubkey(spk) == pub)
-        cands.sort(key=lambda kv: kv[1][0])
-        picked, total = [], 0
-        for key, e in cands:
-            picked.append((key, e))
-            total += e[0]
-            if total >= need:
-                break
-        if total < need:
-            return False, (f"insufficient funds: have {total} sats, "
-                           f"need {need}")
-        vins = []
-        for key, (value, spk, is_cb, cb_h) in picked:
-            vins.append({"prev": key[0], "idx": key[1], "script": b"",
-                         "seq": 0xFFFFFFFF, "_spk": spk})
-        outs = [{"value": amount, "script": p2pk_script(to_pub)}]
-        if total - need > 0:
-            outs.append({"value": total - need, "script": p2pk_script(pub)})
-        t = {"version": 1, "vin": vins, "vout": outs, "locktime": 0}
-        for i, vin in enumerate(t["vin"]):
-            vin["script"] = sign_input(t, i, vin.pop("_spk"), priv)
-        return True, ser_tx(t)
+    # ------------------------------------------------------ fee history
+    def record_block_fees(self, height, tx_fees):
+        """Record one accepted block's fee market observation: the minimum
+        fee rate (swords/vbyte) among its non-coinbase txs — the marginal
+        rate that was just enough to confirm. Node-local statistics only;
+        never touches consensus. Safe to call from any thread; failures are
+        swallowed so fee stats can never break block processing."""
+        try:
+            rates = [fee / vsize for vsize, fee in tx_fees if vsize > 0]
+            self._fee_history.append(
+                {"h": int(height),
+                 "min": min(rates) if rates else 0.0,
+                 "n": len(rates)})
+            del self._fee_history[:-200]
+            tmp = self._fee_history_path + ".tmp"
+            with open(tmp, "w") as f:
+                json.dump(self._fee_history, f)
+            os.replace(tmp, self._fee_history_path)
+        except Exception:
+            pass
 
-    # -- server ------------------------------------------------------------
-    def serve(self, port: int):
+    # ------------------------------------------------------------ server
+    def serve_thread(self, port, host="127.0.0.1"):
         node = self
 
-        class H(BaseHTTPRequestHandler):
+        class Handler(BaseHTTPRequestHandler):
             def log_message(self, *a):
                 pass
 
-            def _json(self, code, obj):
-                body = json.dumps(obj).encode()
-                self.send_response(code)
+            def do_GET(self):
+                # Liveness probe for Docker HEALTHCHECK / PaaS health checks.
+                # Read-only tip status; the JSON-RPC API itself is POST-only.
+                try:
+                    tip = node.cs.tip()
+                    body = json.dumps({"ok": True,
+                                       "height": tip["height"],
+                                       "hash": tip["hash"]}).encode()
+                except Exception:
+                    body = b'{"ok": false}'
+                self.send_response(200)
                 self.send_header("Content-Type", "application/json")
                 self.send_header("Content-Length", str(len(body)))
                 self.end_headers()
                 self.wfile.write(body)
 
-            def _body_json(self):
-                n = int(self.headers.get("Content-Length", 0))
-                raw = self.rfile.read(n) if n else b""
-                try:
-                    return json.loads(raw) if raw else {}
-                except Exception:
-                    return None
-
-            def do_GET(self):
-                u = urlparse(self.path)
-                q = parse_qs(u.query)
-                if u.path == "/tip":
-                    with node.lock:
-                        h = node.tip_height()
-                        hh = node.chainstate.best.hex()
-                    self._json(200, {"height": h, "hash": hh})
-                elif u.path == "/mempool":
-                    with node.lock:
-                        s = node.mempool.summary()
-                    self._json(200, {"count": len(s), "txs": s})
-                elif u.path == "/balance":
-                    pub = q.get("pubkey", [""])[0]
-                    try:
-                        pb = bytes.fromhex(pub)
-                    except ValueError:
-                        return self._json(400, {"error": "bad pubkey"})
-                    sats = n = 0
-                    with node.lock:
-                        for entries in node.chainstate.utxo.values():
-                            for (v, spk, is_cb, cb_h) in entries:
-                                if spk_pubkey(spk) == pb:
-                                    sats += v
-                                    n += 1
-                    self._json(200, {"pubkey": pub, "sats": sats,
-                                     "tgsf": sats / SAT, "utxos": n})
-                elif u.path == "/utxo":
-                    pub = q.get("pubkey", [""])[0]
-                    try:
-                        pb = bytes.fromhex(pub) if pub else None
-                    except ValueError:
-                        return self._json(400, {"error": "bad pubkey"})
-                    out = []
-                    with node.lock:
-                        for (tid, vout), entries in node.chainstate.utxo.items():
-                            for (v, spk, is_cb, cb_h) in entries:
-                                if pb and spk_pubkey(spk) != pb:
-                                    continue
-                                out.append({
-                                    "txid": tid[::-1].hex(), "vout": vout,
-                                    "sats": v,
-                                    "kind": ("coinbase" if is_cb
-                                             else "regular"),
-                                    "height": cb_h})
-                                if len(out) >= 1000:
-                                    break
-                            if len(out) >= 1000:
-                                break
-                    self._json(200, {"count": len(out), "utxos": out})
-                elif u.path == "/wallet":
-                    self._json(200, {"pubkeys": list(node._wallet().keys())})
-                elif u.path == "/peers":
-                    with node.lock:
-                        peers = (node.peermgr.peer_info()
-                                 if node.peermgr else [])
-                    self._json(200, {"count": len(peers), "peers": peers})
-                elif u.path == "/tips":
-                    with node.lock:
-                        tips = node.chainstate.tips_info()
-                    self._json(200, {"count": len(tips), "tips": tips})
-                elif u.path == "/reorgs":
-                    with node.lock:
-                        reorgs = [node.chainstate._sanitize_event(e)
-                                  for e in node.chainstate.reorgs[-50:]]
-                    self._json(200, {"count": len(reorgs), "reorgs": reorgs})
-                elif u.path == "/block":
-                    hh = q.get("hash", [""])[0]
-                    hs = q.get("height", [""])[0]
-                    with node.lock:
-                        cs = node.chainstate
-                        rec = None
-                        if hh:
-                            try:
-                                rec = cs.index.get(bytes.fromhex(hh))
-                            except ValueError:
-                                rec = None
-                        elif hs:
-                            try:
-                                h = int(hs)
-                                bh = next((b for b in cs.chain_hashes()
-                                           if cs.index[b]["height"] == h),
-                                          None)
-                                rec = cs.index.get(bh) if bh else None
-                            except ValueError:
-                                rec = None
-                        if rec is None:
-                            return self._json(404, {"error": "block not found"})
-                        blk = {k: rec[k] for k in (
-                            "version", "prev", "merkle", "time", "bits",
-                            "nonce", "hash", "txs")}
-                        out = enc_block(blk)
-                        out["height"] = rec["height"]
-                    self._json(200, out)
-                else:
-                    self._json(404, {"error": "unknown endpoint"})
-
             def do_POST(self):
-                u = urlparse(self.path)
-                if u.path == "/tx":
+                try:
                     n = int(self.headers.get("Content-Length", 0))
-                    hexraw = (self.rfile.read(n) if n else b"").decode(
-                        "ascii", errors="replace").strip()
-                    try:
-                        raw = bytes.fromhex(hexraw)
-                    except ValueError:
-                        return self._json(400, {"error": "body not hex"})
-                    with node.lock:
-                        ok, res = node.mempool.add(
-                            raw, node.chainstate.utxo, node.tip_height())
-                    if ok:
-                        self._json(200, {"txid": res})
-                    else:
-                        self._json(409, {"error": res})
-                elif u.path == "/keygen":
-                    d = int.from_bytes(os.urandom(32), "big")
-                    d = d % (secp.N - 1) + 1
-                    priv_hex = d.to_bytes(32, "big").hex()
-                    pub_hex = secp.compress(secp.priv_to_pub(d)).hex()
-                    node._wallet_add(priv_hex, pub_hex)
-                    self._json(200, {"privkey": priv_hex,
-                                     "pubkey": pub_hex,
-                                     "note": "testnet-only, valueless"})
-                elif u.path == "/pqkeygen":
-                    # GF-11: generate an ML-DSA-65 keypair. The secret key
-                    # stays in the PQ wallet file (0600); only the public
-                    # key is returned alongside it for the caller's records.
-                    # Never use test keys for operational mining funds.
-                    seed = os.urandom(32)
-                    pk, sk = mldsa.keygen(seed)
-                    pk_hex, sk_hex = pk.hex(), sk.hex()
-                    node._pq_wallet_add(sk_hex, pk_hex)
-                    self._json(200, {"pubkey": pk_hex,
-                                     "seckey": sk_hex,
-                                     "note": ("GF-11 ML-DSA-65; guard the "
-                                              "seckey like a privkey")})
-                elif u.path == "/pqsend":
-                    # GF-11: spend PQ UTXOs to PQ outputs (version 2).
-                    # Body: {seckey, to, amount, fee?}
-                    args = self._body_json()
-                    if args is None:
-                        return self._json(400, {"error": "bad json"})
-                    try:
-                        sk = args["seckey"]
-                        to = args["to"]
-                        amount = int(args["amount"])
-                        fee = int(args.get("fee", 1000))
-                    except (KeyError, ValueError, TypeError):
-                        return self._json(
-                            400, {"error": "need seckey, to, amount"})
-                    try:
-                        with node.lock:
-                            ok, res = node.build_pq_send(sk, to, amount, fee)
-                            if ok:
-                                ok2, res2 = node.mempool.add(
-                                    res, node.chainstate.utxo, node.tip_height())
-                                if not ok2:
-                                    self._json(409, {"error": res2})
-                                    return
-                                res = res2
-                    except Exception as e:
-                        return self._json(409, {"error": str(e)})
-                    if ok:
-                        self._json(200, {"txid": res})
-                    else:
-                        self._json(409, {"error": res})
-                elif u.path == "/faucet":
-                    args = self._body_json()
-                    if args is None:
-                        return self._json(400, {"error": "bad json"})
-                    try:
-                        amount = int(args.get("amount", 0))
-                        to = args["to"]
-                    except (KeyError, ValueError, TypeError):
-                        return self._json(400, {"error": "need to, amount"})
-                    with node.lock:
-                        ok, res = node.build_faucet(to, amount)
-                        if ok:
-                            ok2, res2 = node.mempool.add(
-                                res, node.chainstate.utxo, node.tip_height())
-                            if not ok2:
-                                self._json(409, {"error": res2})
-                                return
-                            res = res2
-                    if ok:
-                        self._json(200, {"txid": res})
-                    else:
-                        self._json(409, {"error": res})
-                elif u.path == "/send":
-                    args = self._body_json()
-                    if args is None:
-                        return self._json(400, {"error": "bad json"})
-                    try:
-                        priv = args["privkey"]
-                        to = args["to"]
-                        amount = int(args["amount"])
-                        fee = int(args.get("fee", 1000))
-                    except (KeyError, ValueError, TypeError):
-                        return self._json(
-                            400, {"error": "need privkey, to, amount"})
-                    try:
-                        with node.lock:
-                            ok, res = node.build_send(priv, to, amount, fee)
-                            if ok:
-                                ok2, res2 = node.mempool.add(
-                                    res, node.chainstate.utxo, node.tip_height())
-                                if not ok2:
-                                    self._json(409, {"error": res2})
-                                    return
-                                res = res2
-                    except Exception as e:
-                        return self._json(409, {"error": str(e)})
-                    if ok:
-                        self._json(200, {"txid": res})
-                    else:
-                        self._json(409, {"error": res})
-                elif u.path == "/submitrawtx":
-                    # Raw transaction submit (Rosetta /construction/submit).
-                    # Body: {"raw": "<tx hex>"}. Fully validated on add.
-                    args = self._body_json()
-                    if args is None:
-                        return self._json(400, {"error": "bad json"})
-                    try:
-                        raw = bytes.fromhex(args["raw"])
-                    except (KeyError, ValueError, TypeError):
-                        return self._json(
-                            400, {"error": "need raw tx hex"})
-                    try:
-                        with node.lock:
-                            ok, res = node.mempool.add(
-                                raw, node.chainstate.utxo,
-                                node.tip_height())
-                    except Exception as e:
-                        return self._json(409, {"error": str(e)})
-                    if ok:
-                        self._json(200, {"txid": res})
-                    else:
-                        self._json(409, {"error": res})
-                elif u.path == "/addpeer":
-                    args = self._body_json()
-                    if args is None:
-                        return self._json(400, {"error": "bad json"})
-                    try:
-                        host = str(args["host"])
-                        port = int(args["port"])
-                    except (KeyError, ValueError, TypeError):
-                        return self._json(
-                            400, {"error": "need host, port"})
-                    if node.peermgr is None:
-                        return self._json(409, {"error": "p2p disabled"})
-                    try:
-                        node.peermgr.connect(host, port)
-                    except Exception as e:
-                        return self._json(409, {"error": str(e)})
-                    self._json(200, {"ok": True, "peer": f"{host}:{port}"})
-                else:
-                    self._json(404, {"error": "unknown endpoint"})
+                    req = json.loads(self.rfile.read(n) or b"{}")
+                except Exception:
+                    return self._reply({"error": "bad request",
+                                        "id": None})
+                method = req.get("method")
+                params = req.get("params", [])
+                rid = req.get("id")
+                try:
+                    result = node.dispatch(method, params)
+                    self._reply({"result": result, "error": None,
+                                 "id": rid})
+                except Exception as e:
+                    self._reply({"result": None, "error": str(e),
+                                 "id": rid})
 
-        self._server = ThreadingHTTPServer(("127.0.0.1", port), H)
-        self._server.serve_forever()
+            def _reply(self, obj):
+                raw = json.dumps(obj).encode()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(raw)))
+                self.end_headers()
+                self.wfile.write(raw)
 
-    def serve_thread(self, port: int) -> threading.Thread:
-        th = threading.Thread(target=self.serve, args=(port,), daemon=True,
-                              name="excal-rpc")
-        th.start()
-        return th
+        self._srv = HTTPServer((host, port), Handler)
+        t = threading.Thread(target=self._srv.serve_forever, daemon=True)
+        t.start()
+        return t
+
+    def shutdown(self):
+        if self._srv:
+            self._srv.shutdown()
+
+    # ------------------------------------------------------------ methods
+    def dispatch(self, method, params):
+        fn = {"getblockcount": self.rpc_getblockcount,
+              "getbestblockhash": self.rpc_getbestblockhash,
+              "getchaintips": self.rpc_getchaintips,
+              "getblock": self.rpc_getblock,
+              "getrawmempool": self.rpc_getrawmempool,
+              "getmempoolinfo": self.rpc_getmempoolinfo,
+              "sendrawtransaction": self.rpc_sendrawtransaction,
+              "submitblock": self.rpc_submitblock,
+              "getnewaddress": self.rpc_getnewaddress,
+              "getpkhaddress": self.rpc_getpkhaddress,
+              "getbalance": self.rpc_getbalance,
+              "getutxos": self.rpc_getutxos,
+              "getpeerinfo": self.rpc_getpeerinfo,
+              "sendtoaddress": self.rpc_sendtoaddress,
+              "estimatesmartfee": self.rpc_estimatesmartfee,
+              "buildtunnelcapsule": self.rpc_buildtunnelcapsule,
+              "validatetunnelcapsule": self.rpc_validatetunnelcapsule,
+              }.get(method)
+        if fn is None:
+            raise ValueError(f"unknown method: {method}")
+        return fn(params)
+
+    def rpc_getblockcount(self, _p):
+        with self.lock:
+            return self.cs.tip()["height"]
+
+    def rpc_getbestblockhash(self, _p):
+        with self.lock:
+            return self.cs.tip()["hash"]
+
+    def rpc_getchaintips(self, _p):
+        with self.lock:
+            return [{"height": t["height"], "hash": t["hash"],
+                     "work": hex(t["work"])} for t in self.cs.tips]
+
+    def rpc_getblock(self, p):
+        h = bytes.fromhex(p[0])
+        with self.lock:
+            rec = self.cs.index.get(h)
+            if rec is None:
+                raise ValueError("block not found")
+            tip = self.cs.tip()["height"]
+            return {"hash": rec["hash"].hex(), "height": rec["height"],
+                    "confirmations": tip - rec["height"] + 1,
+                    "version": rec["version"], "prev": rec["prev"].hex(),
+                    "merkle": rec["merkle"].hex(), "time": rec["time"],
+                    "bits": hex(rec["bits"]), "nonce": rec["nonce"],
+                    "tx": [txid_internal(t).hex() for t in rec["txs"]]}
+
+    def rpc_getrawmempool(self, _p):
+        with self.lock:
+            return list(self.mempool.txs.keys())
+
+    def rpc_getmempoolinfo(self, _p):
+        with self.lock:
+            size = sum(len(v) for v in self.mempool.txs.values())
+            return {"size": len(self.mempool), "bytes": size}
+
+    def rpc_sendrawtransaction(self, p):
+        raw = bytes.fromhex(p[0])
+        with self.lock:
+            ok, reason = self.mempool.add(raw, self.cs.utxo,
+                                          self.cs.tip()["height"] + 1)
+        if not ok:
+            raise ValueError(f"rejected: {reason}")
+        if self.peermgr:
+            self.peermgr.broadcast_tx(raw)
+        return txid_internal(raw).hex()
+
+    def rpc_submitblock(self, p):
+        """Submit a full block for validation and storage.
+
+        params: [block] where block is the chain-record JSON form
+        {version, prev (hex), merkle (hex), time, bits, nonce,
+         txs: [hex, ...]} plus, for a merged-mined block, an "auxpow"
+        attachment {parent_header (hex), parent_coinbase (hex),
+        coinbase_branch: [hex, ...], coinbase_index}. AuxPoW blocks are
+        validated under the fork's auxpow consensus path (the parent
+        block's work replaces the child's own PoW); blocks without an
+        attachment go through the ordinary path. Returns
+        {"accepted": true, "height", "hash", "status"} on success —
+        status is "active chain" when the block became the tip, "side
+        branch" when it was stored on a fork — and raises on rejection
+        with the consensus reason.
+        """
+        if not p or not isinstance(p[0], dict):
+            raise ValueError("submitblock needs one block object param")
+        d = p[0]
+        try:
+            blk = {"version": d["version"],
+                   "prev": bytes.fromhex(d["prev"]),
+                   "merkle": bytes.fromhex(d["merkle"]),
+                   "time": d["time"], "bits": d["bits"],
+                   "nonce": d["nonce"],
+                   "txs": [bytes.fromhex(t) for t in d["txs"]]}
+            if d.get("auxpow") is not None:
+                a = d["auxpow"]
+                blk["auxpow"] = {
+                    "parent_header": bytes.fromhex(a["parent_header"]),
+                    "parent_coinbase": bytes.fromhex(a["parent_coinbase"]),
+                    "coinbase_branch": [bytes.fromhex(s) for s in
+                                        a.get("coinbase_branch", [])],
+                    "coinbase_index": int(a.get("coinbase_index", 0))}
+        except (KeyError, TypeError, ValueError) as e:
+            raise ValueError(f"malformed block: {e}")
+        hh = sha256d(ser_header(blk["version"], blk["prev"],
+                                blk["merkle"], blk["time"], blk["bits"],
+                                blk["nonce"]))
+        with self.lock:
+            prev = self.cs.index.get(blk["prev"])
+            height = prev["height"] + 1 if prev is not None else None
+            sub = self.cs.submit_block(blk)
+            if sub["accepted"] and sub.get("event") and self.peermgr:
+                # Same side effects as a locally mined block: mempool
+                # fix-up plus relay so peers converge on the new tip.
+                self.peermgr._apply_reorg_side_effects(sub["event"])
+                self.peermgr.broadcast_block(blk)
+        if not sub["accepted"]:
+            raise ValueError(f"rejected: {sub['reason']}")
+        return {"accepted": True, "height": height, "hash": hh.hex(),
+                "status": "active chain" if sub.get("event")
+                          else "side branch"}
+
+    def rpc_getnewaddress(self, _p):
+        _priv, pub = self._wallet_key()
+        return pub.hex()
+
+    def rpc_getpkhaddress(self, _p):
+        """Opcode-free Lockbox address: the wallet's PKH lock (hex). This is
+        the quantum-protected address format for post-activation outputs."""
+        _priv, pub = self._wallet_key()
+        return lock_pkh_for_pubkey(pub).hex()
+
+    def rpc_getbalance(self, _p):
+        _priv, pub = self._wallet_key()
+        # Legacy P2PK outputs plus post-Lockbox PKH outputs. Targeted
+        # lookups: the full UTXO set is far too large to scan.
+        want = [p2pk_script(pub), lock_pkh_for_pubkey(pub)]
+        mature = immature = 0
+        with self.lock:
+            height = self.cs.tip()["height"]
+            for spk in want:
+                for _key, (value, _s, is_cb, cb_h) in \
+                        _find_by_spk(self.cs.utxo, spk):
+                    if is_cb and height + 1 - cb_h < COINBASE_MATURITY:
+                        immature += value
+                    else:
+                        mature += value
+        return {"balance": mature / 1e8, "immature": immature / 1e8}
+
+    def rpc_getutxos(self, p):
+        """List UTXOs paying to a lock script. params: [script_hex].
+        Returns [{txid (wire-order hex, as vin prev expects), vout, value
+        (swords), mature, coinbase}]. Powers wallet UIs: keys stay client
+        side; the UI builds + signs spends and submits via
+        sendrawtransaction."""
+        spk = bytes.fromhex(p[0])
+        out = []
+        with self.lock:
+            height = self.cs.tip()["height"]
+            for (txid_b, vout), (value, _s, is_cb, cb_h) in \
+                    _find_by_spk(self.cs.utxo, spk):
+                mature = not (is_cb and height + 1 - cb_h < COINBASE_MATURITY)
+                out.append({"txid": txid_b.hex(), "vout": vout,
+                            "value": value, "mature": mature,
+                            "coinbase": bool(is_cb)})
+        return out
+
+    def rpc_getpeerinfo(self, _p):
+        if not self.peermgr:
+            return []
+        return [{"addr": f"{a[0]}:{a[1]}"} for _s, a in self.peermgr.peers]
+
+    # ------------------------------------------------------------ wallet
+    def rpc_sendtoaddress(self, p):
+        """Send coins: params [address, amount_swords,
+        fee_rate_swords_per_vbyte?].
+
+        Selects mature confirmed wallet UTXOs (largest first), builds a tx
+        paying <address> plus change back to the wallet's PKH lock, signs
+        every input with the single wallet key, and submits through the same
+        mempool validation path as sendrawtransaction. Returns the txid
+        (internal-order hex).
+
+        Errors: bad address, dust amount, insufficient mature funds, no
+        wallet key. Dust change is folded into the fee instead of creating
+        a dust output.
+        """
+        if len(p) < 2:
+            raise ValueError(
+                "sendtoaddress needs [address, amount_swords, fee_rate?]")
+        dest_lock = _parse_pkh_address(p[0])
+        try:
+            amount = int(p[1])
+        except (TypeError, ValueError):
+            raise ValueError("amount_swords must be an integer")
+        if amount <= 0:
+            raise ValueError("amount must be positive")
+        if amount < DUST_SWORDS:
+            raise ValueError(
+                f"dust: amount {amount} < {DUST_SWORDS} swords")
+        rate = int(p[2]) if len(p) > 2 else DEFAULT_FEE_RATE_SVB
+        if rate < 1:
+            raise ValueError("fee rate must be >= 1 sword/vbyte")
+        if not os.path.exists(self.wallet_path):
+            raise ValueError("no wallet key")
+        with self.lock:
+            priv_b, pub = self._wallet_key()
+            priv = int.from_bytes(priv_b, "big")
+            height = self.cs.tip()["height"] + 1
+            change_lock = lock_pkh_for_pubkey(pub)
+            # Candidate wallet UTXOs: post-Lockbox PKH coinbases/payments
+            # plus grandfathered legacy P2PK. Skip anything already spent
+            # by a mempool tx (no RBF: first-seen wins) and immature
+            # coinbases.
+            cands = []
+            for spk in (change_lock, p2pk_script(pub)):
+                for key, (value, _s, is_cb, cb_h) in \
+                        _find_by_spk(self.cs.utxo, spk):
+                    if key in self.mempool.spent:
+                        continue
+                    if is_cb and height - cb_h < COINBASE_MATURITY:
+                        continue
+                    cands.append((key, value, bytes(_s)))
+            if not cands:
+                raise ValueError(
+                    "insufficient funds (no mature wallet UTXOs)")
+            cands.sort(key=lambda c: -c[1])  # largest first: fewer inputs
+            selected, total, i = [], 0, 0
+            while True:
+                fee_guess = _est_fee(max(1, len(selected)), 2, rate)
+                if selected and total >= amount + fee_guess:
+                    break
+                if i >= len(cands):
+                    raise ValueError(
+                        f"insufficient funds: need {amount + fee_guess}, "
+                        f"have {total} swords mature")
+                selected.append(cands[i])
+                total += cands[i][1]
+                i += 1
+
+            def build(change_value, with_change):
+                vout = [{"value": amount, "script": dest_lock}]
+                if with_change:
+                    vout.append({"value": change_value,
+                                 "script": change_lock})
+                t = {"version": 1,
+                     "vin": [{"prev": key[0], "idx": key[1], "script": b"",
+                              "seq": 0xFFFFFFFF}
+                             for key, _v, _s in selected],
+                     "vout": vout, "locktime": 0}
+                for j, (_key, _v, spk) in enumerate(selected):
+                    lt = lock_type(spk)
+                    if lt == "pkh":
+                        script = sign_pkh_input(t, j, spk, priv)
+                    elif lt == "p2pk":
+                        script = sign_input(t, j, spk, priv)
+                    else:  # anyone/open: empty scriptSig
+                        script = b""
+                    t["vin"][j]["script"] = script
+                return ser_tx(t)
+
+            # Sign once with a placeholder change output to measure the
+            # exact vsize, then finalize (output values are sighash-
+            # committed, so inputs are re-signed after the change value
+            # is set).
+            raw = build(0, True)
+            fee = len(raw) * rate
+            change = total - amount - fee
+            if change >= DUST_SWORDS:
+                raw = build(change, True)
+            else:
+                # No change, or dust change: drop the change output and let
+                # the remainder ride as fee (avoids creating dust).
+                raw = build(0, False)
+            ok, reason = self.mempool.add(raw, self.cs.utxo, height)
+            if not ok:
+                raise ValueError(f"rejected: {reason}")
+            if self.peermgr:
+                self.peermgr.broadcast_tx(raw)
+            return txid_internal(raw).hex()
+
+    def rpc_estimatesmartfee(self, p):
+        """Estimate the fee rate for confirmation within target_blocks.
+
+        params: [target_blocks] (default 2, clamped 1..144).
+        Returns {"feerate": swords_per_vbyte, "blocks": target_blocks}.
+
+        Methodology (documented, simple, honest):
+        1. Confirmed marginals: for each of the last <=200 accepted blocks,
+           the node records the MINIMUM fee rate among that block's txs —
+           the rate that was just barely enough to confirm. The median of
+           those marginals is the baseline: half of recent blocks confirmed
+           at or below it.
+        2. Urgency (target <= 2): bid to beat most of the current queue —
+           max(baseline, 75th percentile of mempool fee rates).
+        3. Patience (target >= 6): bid the 25th percentile of confirmed
+           marginals — a rate that historically confirmed within a few
+           blocks, not the next one.
+        4. No history at all (fresh node): fall back to the mempool median,
+           else the 1 sword/vbyte floor. Result is ceiled to an integer
+           with a floor of 1.
+        """
+        target = int(p[0]) if p else 2
+        target = max(1, min(144, target))
+        with self.lock:
+            hist = sorted(e["min"] for e in self._fee_history
+                          if e.get("n"))
+            height = self.cs.tip()["height"] + 1
+            mem = []
+            for raw in self.mempool.txs.values():
+                ok, _, fee = validate_tx(raw, self.cs.utxo, height)
+                if ok and raw:
+                    mem.append(fee / len(raw))
+        mem_s = sorted(mem)
+        if hist:
+            base = _pct(hist, 50)
+        elif mem_s:
+            base = _pct(mem_s, 50)
+        else:
+            base = 1.0
+        if mem_s and target <= 2:
+            base = max(base, _pct(mem_s, 75))
+        elif hist and target >= 6:
+            base = _pct(hist, 25)
+        feerate = max(1, math.ceil(base - 1e-9))
+        return {"feerate": feerate, "blocks": target}
+
+    # ------------------------------------------- BIP-369 CADUCEUS capsules
+    def rpc_buildtunnelcapsule(self, p):
+        """Build a BIP-369 tunnel capsule. params[0] is an object with the
+        build_capsule fields (state_type, index, proper_time_fs, direction,
+        wormhole_pulse_id, source, destination, relayer, canonical_label,
+        entanglement_chain_labels, bip322_sig, bip143_sig, qr_sig)."""
+        if not p or not isinstance(p[0], dict):
+            raise ValueError("buildtunnelcapsule needs one object param")
+        try:
+            return caduceus.build_capsule(**p[0])
+        except TypeError as e:
+            raise ValueError(f"bad capsule params: {e}")
+
+    def rpc_validatetunnelcapsule(self, p):
+        """Validate a BIP-369 tunnel capsule against the four Canons.
+        BIP-143-style labels are checked against the live UTXO set."""
+        if not p or not isinstance(p[0], dict):
+            raise ValueError("validatetunnelcapsule needs one object param")
+        with self.lock:
+            ok, reasons = caduceus.validate_capsule(p[0], self.cs)
+        return {"valid": ok, "reasons": reasons,
+                "digest": caduceus.capsule_digest(p[0]) if ok else None}

@@ -1,666 +1,530 @@
-#!/usr/bin/env python3
-"""ChainState: branched chain storage, most-work selection, and reorgs.
+"""chainstate.py — branched chain state for the Genesis Fork node.
 
-Owns everything the old excal.py kept in loose variables:
-  - block index: every validated block on every branch
-  - branch tips + best tip (maximum cumulative chainwork)
-  - UTXO set for the ACTIVE chain, with per-block undo records
-  - atomic, crash-safe persistence (see P2P_SPEC.md)
+Append-only JSONL block store (crash-safe, resumable). Every accepted block
+— main-chain or side branch — is validated under fork consensus before it
+lands. Tracks all tips by cumulative work; reorganizes when a side branch
+overtakes the active chain.
 
-Consensus is NOT reimplemented here: header checks and full block
-validation delegate to genesis_fork.validate_block, the same function
-the miner uses. This module only adds branching, chainwork accounting,
-UTXO undo, and atomic commits around it.
-
-Conventions: hashes are bytes in DISPLAY order everywhere in memory
-(sha256d output reversed), matching excal.py. The wire (p2p.py) uses
-internal order and converts at the boundary.
+Block hashes are internal byte order throughout.
 """
 import json
 import os
-import struct
-import sys
-import tempfile
 import time
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from genesis_fork import (
-    GENESIS, sha256d, ser_header, bits_to_target, subsidy, txid,
-    merkle_root, required_bits, check_coinbase_lineage, coinbase_value,
-    validate_block, verify_genesis, use_network, PARAMS,
-)
-from txscript import (parse_tx, txid_internal, validate_block_txs)
+from genesis_fork import (GENESIS, genesis_for, genesis_txs,
+                          genesis_hash_for,
+                          verify_genesis, use_network, NETWORKS,
+                          ser_header, sha256d, txid, merkle_root,
+                          bits_to_target, required_bits, subsidy,
+                          check_coinbase_lineage, validate_block,
+                          validate_auxpow, _parse_pushes)
+from txscript import (validate_block_txs, apply_block_txs, build_utxo,
+                      utxo_stats, txid_internal, parse_tx)
+from spent_leaf_registry import (SpentLeafRegistry, extract_pairs,
+                                 pair_key)
+from utxodb import UtxoSet, SnapshotDB, build_snapshot_db
 
-PROTO_VERSION = 1
-MAX_MESSAGE = 4 * 1024 * 1024
+
+def _scan_spent_pairs(records):
+    """pair_key -> first-spend reference, from a chain path (genesis-first
+    records with txs). The chain is the authority: a pair in a confirmed
+    block is spent, regardless of any wallet copy's counter."""
+    out = {}
+    for rec in records:
+        for raw in rec.get("txs", [])[1:]:
+            tid = txid_internal(raw).hex()
+            for root, idx in extract_pairs(raw):
+                key = pair_key(root, idx)
+                if key not in out:
+                    out[key] = {"txid": tid, "height": rec["height"]}
+    return out
 
 
-def block_work(bits: int) -> int:
-    """Chainwork contributed by one block: 2^256 / (target+1)."""
+def _fork_snapshot_paths(data_dir):
+    here = os.path.dirname(os.path.abspath(__file__))
+    snap_dir = os.path.join(here, "fork_balances")
+    return {
+        "dat": os.path.join(snap_dir, "snapshot_968698.dat"),
+        "meta": os.path.join(snap_dir, "snapshot_968698.json"),
+        "meta_legacy": os.path.join(snap_dir, "snapshot.json"),
+        "activation": os.path.join(snap_dir, "activation.json"),
+        "db": os.path.join(data_dir, "utxo.db"),
+    }
+
+
+def activation_commitment(height, data_dir):
+    """Snapshot hash bytes to commit in the coinbase at `height`, or None.
+
+    Reads fork_balances/activation.json (written by the snapshot pipeline).
+    Returns None unless height == activation_height, so normal blocks are
+    unaffected. Used by the miner when building the activation block.
+    """
+    p = _fork_snapshot_paths(data_dir)
+    try:
+        with open(p["activation"]) as f:
+            act = json.load(f)
+    except (OSError, ValueError):
+        return None
+    try:
+        if int(act.get("activation_height", -1)) != height:
+            return None
+        return bytes.fromhex(act["snapshot_hash"])
+    except (ValueError, TypeError):
+        return None
+
+
+def _block_work(bits):
     return (1 << 256) // (bits_to_target(bits) + 1)
 
 
-def enc_block(blk: dict) -> dict:
-    return {"version": blk["version"], "prev": blk["prev"].hex(),
-            "merkle": blk["merkle"].hex(), "time": blk["time"],
-            "bits": blk["bits"], "nonce": blk["nonce"],
-            "hash": blk["hash"].hex(),
-            "txs": [t.hex() for t in blk["txs"]]}
+def _header_hash(rec):
+    return sha256d(ser_header(rec["version"], rec["prev"], rec["merkle"],
+                              rec["time"], rec["bits"], rec["nonce"]))
 
 
-def dec_block(d: dict) -> dict:
-    return {"version": d["version"], "prev": bytes.fromhex(d["prev"]),
-            "merkle": bytes.fromhex(d["merkle"]), "time": d["time"],
-            "bits": d["bits"], "nonce": d["nonce"],
-            "hash": bytes.fromhex(d["hash"]),
-            "txs": [bytes.fromhex(t) for t in d["txs"]]}
+def _enc_auxpow(ap):
+    return {"parent_header": ap["parent_header"].hex(),
+            "parent_coinbase": ap["parent_coinbase"].hex(),
+            "coinbase_branch": [s.hex() for s in ap["coinbase_branch"]],
+            "coinbase_index": ap["coinbase_index"]}
 
 
-def _atomic_write_json(path: str, obj) -> None:
-    d = os.path.dirname(os.path.abspath(path))
-    fd, tmp = tempfile.mkstemp(dir=d, prefix=".tmp-")
-    try:
-        with os.fdopen(fd, "w") as f:
-            json.dump(obj, f)
-            f.flush()
-            os.fsync(f.fileno())
-        os.replace(tmp, path)
-    except BaseException:
-        try:
-            os.unlink(tmp)
-        except OSError:
-            pass
-        raise
+def _dec_auxpow(d):
+    return {"parent_header": bytes.fromhex(d["parent_header"]),
+            "parent_coinbase": bytes.fromhex(d["parent_coinbase"]),
+            "coinbase_branch": [bytes.fromhex(s)
+                                 for s in d["coinbase_branch"]],
+            "coinbase_index": d["coinbase_index"]}
 
 
-def _append_jsonl(path: str, obj) -> None:
-    with open(path, "a", buffering=1) as f:
-        f.write(json.dumps(obj) + "\n")
+def _enc_rec(rec):
+    out = {"height": rec["height"], "version": rec["version"],
+           "prev": rec["prev"].hex(), "merkle": rec["merkle"].hex(),
+           "time": rec["time"], "bits": rec["bits"], "nonce": rec["nonce"],
+           "hash": rec["hash"].hex(),
+           "txs": [t.hex() for t in rec["txs"]]}
+    if rec.get("auxpow"):
+        out["auxpow"] = _enc_auxpow(rec["auxpow"])
+    return out
+
+
+def _dec_rec(d):
+    rec = {"height": d["height"], "version": d["version"],
+           "prev": bytes.fromhex(d["prev"]),
+           "merkle": bytes.fromhex(d["merkle"]),
+           "time": d["time"], "bits": d["bits"], "nonce": d["nonce"],
+           "hash": bytes.fromhex(d["hash"]),
+           "txs": [bytes.fromhex(t) for t in d["txs"]]}
+    if d.get("auxpow"):
+        rec["auxpow"] = _dec_auxpow(d["auxpow"])
+    return rec
 
 
 class ChainState:
-    """Branched chain + active-tip UTXO with undo + atomic persistence."""
-
-    def __init__(self, datadir: str, net: str = "testnet"):
-        use_network(net)
+    def __init__(self, data_dir, net="testnet"):
+        self.data_dir = data_dir
         self.net = net
-        self.P = PARAMS[net]
-        self.datadir = os.path.abspath(datadir)
-        self.cdir = os.path.join(self.datadir, "chaindata")
-        os.makedirs(self.cdir, exist_ok=True)
-        self.blocks_path = os.path.join(self.cdir, "blocks.jsonl")
-        self.active_path = os.path.join(self.cdir, "active.jsonl")
-        self.state_path = os.path.join(self.cdir, "state.json")
+        self.params = NETWORKS[net]
+        self.chain_path = os.path.join(data_dir, "chain.jsonl")
+        self.index = {}      # hash bytes -> record
+        self.children = {}   # hash bytes -> [child hash bytes]
+        self.tips = []       # [{"height","hash","work"}] by work desc
+        self.utxo = None     # UtxoSet; built in load()
+        self._snapshot = None  # SnapshotDB (fork net only)
+        self._snapshot_hash = None      # bytes: sha256d of snapshot_968698.dat
+        self._activation_height = None  # fork height where snapshot activates
+        # COMPAT SHIM (2026-09-26, Bodhi): another builder is mid-flight on
+        # fork_balances/ (snapshot not built yet) and made the snapshot a
+        # hard startup requirement, which crash-loops the node. Until the
+        # snapshot exists the node runs on fork blocks alone — the behavior
+        # every block so far was validated under. When the snapshot lands,
+        # a restart picks it up via the normal path below.
+        self._snapshot_unavailable = False
+        self._tip_hash = None
+        self._active_work = 0
+        # Spent-leaf set for the ACTIVE chain, mutated in place so a
+        # mempool holding a reference to it always sees the current set.
+        self.spent_pqh_pairs = set()
+        self.spent_registry = None
 
-        self.index = {}     # hash(display bytes) -> record
-        self.tips = {}      # hash -> height (branch tips)
-        self.invalid = set()  # hashes that failed full validation (can never win)
-        self.orphans = {}   # hash -> block dict (parent unknown), bounded
-        self.best = None    # hash of active tip
-        self.utxo = {}      # ACTIVE chain UTXO (txscript format)
-        self.undo = {}      # block hash -> undo record (active chain only)
-        self.reorgs = []    # history of reorg events
-        self.genesis_hash = None
-
-    # ------------------------------------------------------------ loading
+    # ---------------------------------------------------------------- load
     def load(self):
-        """Load or migrate, then rebuild index + UTXO + undo by replay."""
-        if (not os.path.exists(self.blocks_path)
-                and not os.path.exists(self.active_path)):
-            self._migrate_legacy()
-        gh = verify_genesis()
-        self.genesis_hash = gh
-        # Deterministic rebuild: replay the active chain for UTXO/undo/best,
-        # then index every block in blocks.jsonl (side branches), then tips.
-        self._rebuild_index_from_files()
-        # state.json carries only the reorg log and the invalid set. The
-        # active tip is authoritative from the active.jsonl replay above:
-        # state.json's best can lag it (crash between the two writes) but
-        # is never ahead of it, so it must not override.
-        if os.path.exists(self.state_path):
-            st = json.load(open(self.state_path))
-            self.reorgs = st.get("reorgs", [])
-            for hx in st.get("invalid", []):
-                hb = bytes.fromhex(hx)
-                if hb in self.index:
-                    self.invalid.add(hb)
-        self._save_state()
+        use_network(self.net)
+        os.makedirs(self.data_dir, exist_ok=True)
+        if os.path.exists(self.chain_path):
+            records = self._load_records_tolerant()
+        else:
+            records = self._migrate_legacy()
+        if not records:
+            records = [self._genesis_record()]
+            with open(self.chain_path, "w") as f:
+                f.write(json.dumps(_enc_rec(records[0])) + "\n")
+        for rec in records:
+            self._index_record(rec)
+        self._select_best_tip()
+        self._replay_active()
         return self
 
-    @staticmethod
-    def _read_jsonl_repair(path):
-        """Read a JSONL file, repairing a torn trailing line.
+    def _load_records_tolerant(self):
+        """Read chain.jsonl, stopping at the first undecodable line.
 
-        POSIX O_APPEND single-line writes are atomic, but a kill -9 can
-        still leave a partial final line. Drop it and rewrite the file
-        atomically so the on-disk state is always well-formed.
+        A truncated/corrupt tail (e.g. from a crash mid-append) is dropped
+        and the file is truncated back to the last good record, instead of
+        crashing the load. Only parsing is affected — every successfully
+        decoded record loads exactly as before, so validation outcomes are
+        unchanged.
         """
-        with open(path) as f:
-            lines = [ln for ln in (l.strip() for l in f) if ln]
-        recs, bad = [], 0
-        for ln in lines:
-            try:
-                recs.append(json.loads(ln))
-            except Exception:
-                bad += 1
-                break
-        if bad and len(recs) < len(lines):
-            tmp = path + ".tmp"
-            with open(tmp, "w") as f:
-                for r in recs:
-                    f.write(json.dumps(r) + "\n")
-            os.replace(tmp, path)
-        return recs
+        records = []
+        good_upto = 0
+        dropped = 0
+        with open(self.chain_path, "rb") as f:
+            while True:
+                line = f.readline()
+                if not line:
+                    break
+                if not line.strip():
+                    good_upto = f.tell()
+                    continue
+                try:
+                    rec = _dec_rec(json.loads(line.decode("utf-8")))
+                except (json.JSONDecodeError, UnicodeDecodeError,
+                        ValueError, KeyError, TypeError):
+                    dropped += 1
+                    break  # stop at first bad line: drop the tail
+                records.append(rec)
+                good_upto = f.tell()
+        if dropped:
+            # Truncate the corrupt tail so later appends land cleanly and
+            # the next load sees the same prefix.
+            with open(self.chain_path, "r+b") as f:
+                f.truncate(good_upto)
+        return records
 
-    def _rebuild_index_from_files(self):
-        """Deterministic rebuild: replay active chain for UTXO/undo/best,
-        then index every block in blocks.jsonl, then recompute tips."""
-        gh = self.genesis_hash
-        grec = {"version": GENESIS["version"], "prev": GENESIS["prev"],
-                "merkle": GENESIS["merkle"], "time": GENESIS["time"],
-                "bits": GENESIS["bits"], "nonce": GENESIS["nonce"],
-                "hash": gh, "txs": [],
-                "height": 0, "work_cum": block_work(GENESIS["bits"])}
-        self.index = {gh: grec}
-        self.utxo = {}
-        self.undo = {gh: []}
-        self.tips = {}
-        active = self._read_jsonl_repair(self.active_path)
-        prev_h = None
-        for rec in active:
-            blk = dec_block(rec["block"])
-            h = rec["height"]
-            if h == 0:
-                assert blk["hash"] == gh
-                self.best = gh
-                prev_h = gh
-                continue
-            assert blk["prev"] == prev_h, \
-                f"active chain prev break at height {h}"
-            undo = self._connect_utxo(self.utxo, blk["txs"], h)
-            self.undo[blk["hash"]] = undo
-            self.index[blk["hash"]] = dict(blk, height=h,
-                                           work_cum=rec["work_cum"])
-            self.best = blk["hash"]
-            prev_h = blk["hash"]
-        # all known blocks (branches)
-        if os.path.exists(self.blocks_path):
-            for rec in self._read_jsonl_repair(self.blocks_path):
-                bh = bytes.fromhex(rec["hash"])
-                if bh not in self.index:
-                    blk = dec_block(rec["block"])
-                    self.index[bh] = dict(blk, height=rec["height"],
-                                          work_cum=rec["work_cum"])
-        # tips: indexed blocks no other indexed block builds on
-        parents = {r["prev"] for r in self.index.values()}
-        self.tips = {h: r["height"] for h, r in self.index.items()
-                     if h not in parents}
-        assert self.best in self.index
+    def _genesis_record(self):
+        g = genesis_for(self.net)
+        h = verify_genesis(self.net)
+        return {"height": 0, "version": g["version"], "prev": g["prev"],
+                "merkle": g["merkle"], "time": g["time"], "bits": g["bits"],
+                "nonce": g["nonce"], "hash": h, "txs": genesis_txs(self.net)}
 
     def _migrate_legacy(self):
-        """One-time import from the pre-P2P testnet_live.jsonl."""
-        legacy = os.path.join(self.datadir, "testnet_live.jsonl")
-        gh = verify_genesis()
-        blocks = []
-        if os.path.exists(legacy):
-            with open(legacy) as f:
-                for line in f:
-                    line = line.strip()
-                    if line:
-                        d = json.loads(line)
-                        blocks.append({
-                            "version": d["version"],
-                            "prev": bytes.fromhex(d["prev"]),
-                            "merkle": bytes.fromhex(d["merkle"]),
-                            "time": d["time"], "bits": d["bits"],
-                            "nonce": d["nonce"],
-                            "hash": bytes.fromhex(d["hash"]),
-                            "txs": [bytes.fromhex(t) for t in d["txs"]]})
-        if not blocks:
-            grec = {"version": GENESIS["version"], "prev": GENESIS["prev"],
-                    "merkle": GENESIS["merkle"], "time": GENESIS["time"],
-                    "bits": GENESIS["bits"], "nonce": GENESIS["nonce"],
-                    "hash": gh, "txs": []}
-            blocks = [grec]
-        assert blocks[0]["hash"] == gh, "legacy chain not on genesis"
-        work_cum = 0
-        with open(self.blocks_path, "w") as bf, \
-                open(self.active_path, "w") as af:
-            for h, blk in enumerate(blocks):
-                work_cum += block_work(blk["bits"])
-                rec = {"height": h, "hash": blk["hash"].hex(),
-                       "work_cum": work_cum, "block": enc_block(blk)}
-                bf.write(json.dumps(rec) + "\n")
-                af.write(json.dumps(rec) + "\n")
-                if h > 0:
-                    assert blk["prev"] == blocks[h - 1]["hash"], \
-                        f"legacy prev break at {h}"
-        self._save_state_best(blocks[-1]["hash"])
+        """Best-effort import of the old linear testnet_live.jsonl."""
+        if self.net != "testnet":
+            return []
+        here = os.path.dirname(os.path.abspath(__file__))
+        legacy = os.path.join(here, "testnet_live.jsonl")
+        if not os.path.exists(legacy):
+            return []
+        records = []
+        with open(legacy) as f:
+            for i, line in enumerate(f):
+                d = json.loads(line)
+                rec = {"height": i, "version": d["version"],
+                       "prev": bytes.fromhex(d["prev"]),
+                       "merkle": bytes.fromhex(d["merkle"]),
+                       "time": d["time"], "bits": d["bits"],
+                       "nonce": d["nonce"],
+                       "hash": bytes.fromhex(d["hash"]),
+                       "txs": [bytes.fromhex(t) for t in d["txs"]]}
+                records.append(rec)
+        with open(self.chain_path, "w") as f:
+            for rec in records:
+                f.write(json.dumps(_enc_rec(rec)) + "\n")
+        return records
 
-    def _save_state_best(self, best_hash: bytes):
-        _atomic_write_json(self.state_path, {
-            "best": best_hash.hex(),
-            "height": self.index.get(best_hash, {}).get("height", 0)
-            if hasattr(self, "index") and self.index else 0,
-            "reorgs": self.reorgs,
-            "tips": {h.hex(): ht for h, ht in self.tips.items()},
-        })
+    # -------------------------------------------------------------- index
+    def _index_record(self, rec):
+        h = rec["hash"]
+        self.index[h] = rec
+        self.children.setdefault(h, [])
+        self.children.setdefault(rec["prev"], []).append(h)
+        rec["work"] = self.index.get(rec["prev"], {}).get("work", 0) \
+            + _block_work(rec["bits"])
 
-    @staticmethod
-    def _sanitize_event(ev: dict) -> dict:
-        """JSON-safe copy of a chain event (raw tx bytes -> hex)."""
-        ev = dict(ev)
-        ev["disconnected_raw"] = [r.hex() for r in
-                                  ev.get("disconnected_raw", [])]
-        return ev
+    def _path_to(self, tip_hash):
+        """Records from genesis to tip_hash (inclusive), genesis-first."""
+        path = []
+        h = tip_hash
+        while True:
+            rec = self.index[h]
+            path.append(rec)
+            if rec["height"] == 0:
+                break
+            h = rec["prev"]
+        path.reverse()
+        return path
 
-    def _save_state(self):
-        _atomic_write_json(self.state_path, {
-            "best": self.best.hex(),
-            "height": self.index[self.best]["height"],
-            "reorgs": [self._sanitize_event(e)
-                       for e in self.reorgs[-100:]],
-            "tips": {h.hex(): ht for h, ht in self.tips.items()},
-            "invalid": sorted(h.hex() for h in self.invalid),
-        })
+    def _select_best_tip(self):
+        best, best_work = None, -1
+        for h, rec in self.index.items():
+            if not self.children.get(h) and rec["work"] > best_work:
+                best, best_work = h, rec["work"]
+        self._tip_hash = best
+        self._active_work = best_work
+        tips = [{"height": rec["height"], "hash": h.hex(),
+                 "work": rec["work"]}
+                for h, rec in self.index.items() if not self.children.get(h)]
+        tips.sort(key=lambda t: -t["work"])
+        self.tips = tips
 
-    # ------------------------------------------------------------ UTXO ops
-    def _connect_utxo(self, utxo: dict, txs: list, height: int):
-        """Apply txs (pre-validated). Returns the undo record.
+    def _open_snapshot(self):
+        """Open (building if needed) the fork's Bitcoin UTXO snapshot.
 
-        Undo is a per-tx list in application order:
-          {"spent": [(key, entry), ...], "created": [key, ...]}
-        spent entries are popped oldest-first; created entries appended.
-        Disconnect replays in reverse (see _disconnect_utxo).
+        Returns None when no snapshot has been built yet (see the compat
+        shim in __init__): the node then runs on fork blocks alone.
+
+        Also loads the activation config (activation.json): the snapshot
+        only becomes the UTXO base at activation_height, and the activation
+        block's coinbase must push the snapshot hash.
         """
-        undo = []
-        for n, tx in enumerate(txs):
-            t = parse_tx(tx)
-            rec = {"spent": [], "created": []}
-            if n > 0:
-                for vin in t["vin"]:
-                    key = (vin["prev"], vin["idx"])
-                    entries = utxo[key]
-                    e = entries.pop(0)
-                    if not entries:
-                        del utxo[key]
-                    rec["spent"].append((key, e))
-            tid = txid_internal(tx)
-            for j, vout in enumerate(t["vout"]):
-                key = (tid, j)
-                utxo.setdefault(key, []).append(
-                    (vout["value"], vout["script"], n == 0, height))
-                rec["created"].append(key)
-            undo.append(rec)
-        return undo
+        p = _fork_snapshot_paths(self.data_dir)
+        meta_path = p["meta"] if os.path.exists(p["meta"]) else p["meta_legacy"]
+        if not os.path.exists(meta_path):
+            print("snapshot: fork_balances/snapshot_968698.json not built "
+                  "yet — running on fork blocks only", flush=True)
+            return None
+        with open(meta_path) as f:
+            meta = json.load(f)
+        if not os.path.exists(p["db"]):
+            build_snapshot_db(p["dat"], p["db"], meta["sha256d"],
+                              meta["height"], log=print)
+        db = SnapshotDB(p["db"])
+        if db.get_meta("snapshot_hash") != meta["sha256d"]:
+            db.close()
+            raise RuntimeError("snapshot DB hash mismatch: delete utxo.db "
+                               "and rebuild")
+        # Activation gating: snapshot activates at a future fork height,
+        # committed in that block's coinbase. Before that height the node
+        # runs on fork blocks alone (preserving existing history).
+        self._snapshot_hash = bytes.fromhex(meta["sha256d"])
+        self._activation_height = None
+        if os.path.exists(p["activation"]):
+            with open(p["activation"]) as f:
+                act = json.load(f)
+            if act.get("snapshot_hash") != meta["sha256d"]:
+                db.close()
+                raise RuntimeError(
+                    "activation.json snapshot_hash does not match "
+                    "snapshot_968698.json")
+            self._activation_height = int(act["activation_height"])
+            print(f"snapshot: activation at fork height "
+                  f"{self._activation_height}, hash "
+                  f"{meta['sha256d'][:16]}..", flush=True)
+        else:
+            print("snapshot: built but activation.json missing — "
+                  "running on fork blocks only", flush=True)
+        return db
 
-    def _disconnect_utxo(self, utxo: dict, undo: list):
-        """Exact inverse of _connect_utxo."""
-        for rec in reversed(undo):
-            for key in reversed(rec["created"]):
-                entries = utxo[key]
-                entries.pop()
-                if not entries:
-                    del utxo[key]
-            for key, e in reversed(rec["spent"]):
-                utxo.setdefault(key, []).insert(0, e)
+    def _snapshot_active_at(self, height):
+        """True if the snapshot is the UTXO base at fork `height`."""
+        return (self._snapshot is not None
+                and self._activation_height is not None
+                and height >= self._activation_height)
 
-    # ------------------------------------------------------------ validation
-    def _bits_context(self, parent_hash: bytes, height: int) -> dict:
-        """Height-indexed ancestor records for required_bits.
+    def _replay_active(self):
+        # Fork net: before the snapshot activation height the state is
+        # fork blocks alone (history is preserved); at/after activation
+        # the Bitcoin snapshot becomes the base beneath the fork overlay.
+        base = None
+        if self.net == "fork":
+            if self._snapshot is None and not self._snapshot_unavailable:
+                self._snapshot = self._open_snapshot()
+                if self._snapshot is None:
+                    self._snapshot_unavailable = True
+            tip_height = self.index[self._tip_hash]["height"]
+            if self._snapshot_active_at(tip_height):
+                base = UtxoSet(snapshot=self._snapshot)
+        path = self._path_to(self._tip_hash)
+        self.utxo = build_utxo([{"txs": rec["txs"]} for rec in path],
+                               base=base)
+        # Spent-leaf registry: rebuilt from the confirmed chain, then
+        # persisted in the chain data directory (never in a wallet file,
+        # so a wallet restore cannot resurrect a spent leaf).
+        refs = _scan_spent_pairs(path)
+        if self.spent_registry is None:
+            self.spent_registry = SpentLeafRegistry(
+                os.path.join(self.data_dir, "spent_pqh_registry.json"))
+        self.spent_registry.replace_with(refs)
+        self.spent_pqh_pairs.clear()
+        for key in refs:
+            root_hex, idx = key.rsplit(":", 1)
+            self.spent_pqh_pairs.add((bytes.fromhex(root_hex), int(idx)))
 
-        required_bits indexes chain[height-1], chain[height-retarget],
-        and walks back from height-1 past min-difficulty blocks, so we
-        collect heights (height-retarget-1 .. height-1) by parent walk.
-        """
-        R = self.P["retarget"]
+    # -------------------------------------------------------------- views
+    def tip(self):
+        rec = self.index[self._tip_hash]
+        return {"height": rec["height"], "hash": self._tip_hash.hex()}
+
+    def _bits_context(self, prev_hash, height):
+        """Ancestor {height: {"time","bits"}} for required_bits."""
         ctx = {}
-        r = self.index.get(parent_hash)
-        h = height - 1
-        while r is not None and h > height - R - 2:
-            ctx[h] = r
-            r = self.index.get(r["prev"]) if h > 0 else None
-            h -= 1
+        h = prev_hash
+        for _ in range(self.params["retarget_interval"]):
+            rec = self.index.get(h)
+            if rec is None:
+                break
+            ctx[rec["height"]] = {"time": rec["time"], "bits": rec["bits"]}
+            if rec["height"] == 0:
+                break
+            h = rec["prev"]
         return ctx
 
-    def validate_header(self, blk: dict):
-        """Header-only validation. Returns (ok, reason, height)."""
-        parent = self.index.get(blk["prev"])
-        if parent is None:
-            return False, "unknown parent", None
-        height = parent["height"] + 1
-        bad = []
-        if blk["time"] <= parent["time"]:
-            bad.append("time not increasing")
-        if blk["time"] > int(time.time()) + 7200:
-            bad.append("time too far in future")
-        ctx = self._bits_context(blk["prev"], height)
-        want = required_bits(height, ctx, blk["time"])
-        if blk["bits"] != want:
-            bad.append(f"bits {blk['bits']:#x} != required {want:#x}")
-        hdr = ser_header(blk["version"], blk["prev"], blk["merkle"],
-                         blk["time"], blk["bits"], blk["nonce"])
-        hh = sha256d(hdr)
-        if int.from_bytes(hh, "big") > bits_to_target(blk["bits"]):
-            bad.append("insufficient PoW")
-        if hh[::-1] != blk["hash"]:
-            bad.append("header hash mismatch")
-        if bad:
-            return False, "; ".join(bad), height
-        return True, "ok", height
+    def _fork_utxo(self, prev_hash):
+        """UTXO set as of the block prev_hash. Tip case is a cheap copy
+        (the snapshot is shared); side branches replay fork blocks over a
+        fresh overlay (fork history is short).
 
-    def validate_block_full(self, blk: dict, height: int, utxo_view: dict):
-        """Full validation incl. txs, against the given UTXO view.
-
-        Delegates to genesis_fork.validate_block -- the same consensus
-        function the miner uses."""
-        parent = self.index.get(blk["prev"])
-        if parent is None:
-            return False, "unknown parent"
-        ctx = self._bits_context(blk["prev"], height)
-        bad = validate_block(blk, parent, height, ctx, utxo=utxo_view)
-        if bad:
-            return False, "; ".join(bad)
-        return True, "ok"
-
-    # ------------------------------------------------------------ submission
-    def submit_block(self, blk: dict):
-        """Accept a new block (mined locally or from a peer).
-
-        Header-validates, stores, updates tips, and advances the active
-        chain if appropriate. Returns a result dict:
-          {"accepted": bool, "reason": str, "height": int,
-           "event": None | {"type": "extension"|"reorg", ...}}
-        An "extension" event means the block extended the active tip
-        (not a reorg -- not recorded in self.reorgs). A "reorg" event
-        means the active tip switched branches (recorded + persisted).
-        Both event types carry connected_txids / disconnected_raw for
-        mempool fix-up.
+        The snapshot is the base only when the child height reaches the
+        activation height; earlier blocks validate against fork history
+        alone, exactly as they did before the snapshot existed.
         """
-        if blk["hash"] in self.index or blk["hash"] in self.orphans:
-            return {"accepted": False, "reason": "duplicate", "height": -1,
-                    "event": None}
-        ok, reason, height = self.validate_header(blk)
-        if not ok:
-            if reason == "unknown parent":
-                if len(self.orphans) < 128:
-                    self.orphans[blk["hash"]] = blk
-                return {"accepted": False, "reason": "orphan", "height": -1,
-                        "event": None}
-            return {"accepted": False, "reason": reason, "height": -1,
-                    "event": None}
-        if blk["prev"] in self.invalid:
-            # building on a known-invalid branch: header may be fine, but
-            # the branch can never become active.
-            self.invalid.add(blk["hash"])
-            parent = self.index[blk["prev"]]
-            work_cum = parent["work_cum"] + block_work(blk["bits"])
-            self.index[blk["hash"]] = dict(blk, height=height,
-                                           work_cum=work_cum)
-            _append_jsonl(self.blocks_path,
-                          {"height": height, "hash": blk["hash"].hex(),
-                           "work_cum": work_cum, "block": enc_block(blk)})
-            self._save_state()
-            return {"accepted": False, "reason": "parent invalid",
-                    "height": height, "event": None}
-        parent = self.index[blk["prev"]]
-        work_cum = parent["work_cum"] + block_work(blk["bits"])
-        rec = dict(blk, height=height, work_cum=work_cum)
-        self.index[blk["hash"]] = rec
-        _append_jsonl(self.blocks_path,
-                      {"height": height, "hash": blk["hash"].hex(),
-                       "work_cum": work_cum, "block": enc_block(blk)})
-        # tips bookkeeping
-        if blk["prev"] in self.tips:
-            del self.tips[blk["prev"]]
-        self.tips[blk["hash"]] = height
-        # resolve orphans that were waiting for this block
-        self._resolve_orphans(blk["hash"])
+        if prev_hash == self._tip_hash:
+            return self.utxo.copy()
+        base = None
+        if self.net == "fork":
+            if self._snapshot is None and not self._snapshot_unavailable:
+                self._snapshot = self._open_snapshot()
+                if self._snapshot is None:
+                    self._snapshot_unavailable = True
+            prev_height = self.index[prev_hash]["height"]
+            if self._snapshot_active_at(prev_height + 1):
+                base = UtxoSet(snapshot=self._snapshot)
+        path = self._path_to(prev_hash)
+        return build_utxo([{"txs": rec["txs"]} for rec in path], base=base)
 
-        event = None
-        if blk["prev"] == self.best:
-            # fast path: extends the active tip (the common case)
-            ok, reason = self.validate_block_full(blk, height, self.utxo)
-            if not ok:
-                self.invalid.add(blk["hash"])
-                self.tips.pop(blk["hash"], None)
-                self._save_state()
-                return {"accepted": False,
-                        "reason": f"block invalid: {reason}",
-                        "height": height, "event": None}
-            undo = self._connect_utxo(self.utxo, blk["txs"], height)
-            self.undo[blk["hash"]] = undo
-            self.best = blk["hash"]
-            _append_jsonl(self.active_path,
-                          {"height": height, "hash": blk["hash"].hex(),
-                           "work_cum": work_cum, "block": enc_block(blk)})
-            event = {"type": "extension", "at": time.time(),
-                     "height": height, "new_tip": blk["hash"].hex(),
-                     "connected_txids": sorted(
-                         txid_internal(t).hex() for t in blk["txs"][1:]),
-                     "disconnected_raw": []}
-        elif work_cum > self.index[self.best]["work_cum"]:
-            # slower path: a side branch now carries the most work
-            try:
-                event = self._reorg_to(blk["hash"])
-            except ValueError as e:
-                self._save_state()
-                return {"accepted": False,
-                        "reason": f"branch invalid: {e}",
-                        "height": height, "event": None}
-        self._save_state()
-        return {"accepted": True, "reason": "ok", "height": height,
-                "event": event}
-
-    def _resolve_orphans(self, parent_hash: bytes):
-        for oh, ob in list(self.orphans.items()):
-            if ob["prev"] == parent_hash:
-                del self.orphans[oh]
-                self.submit_block(ob)
-
-    # ------------------------------------------------------------ reorg
-    def _common_ancestor(self, a: bytes, b: bytes):
-        """Walk the heavier tip back until heights meet, then together."""
-        ra, rb = self.index[a], self.index[b]
-        while ra["height"] > rb["height"]:
-            a = ra["prev"]
-            ra = self.index[a]
-        while rb["height"] > ra["height"]:
-            b = rb["prev"]
-            rb = self.index[b]
-        while a != b:
-            a = ra["prev"]
-            b = rb["prev"]
-            ra = self.index[a]
-            rb = self.index[b]
-        return a
-
-    def _active_chain_hashes(self):
-        """Hashes from best back to genesis (tip-first)."""
-        out, h = [], self.best
-        while True:
-            out.append(h)
-            if h == self.genesis_hash:
-                break
-            h = self.index[h]["prev"]
-        return out
-
-    def _reorg_to(self, new_tip: bytes):
-        """Switch the active chain to new_tip (must have most work).
-
-        Validates the entire new branch against a UTXO copy before
-        touching live state; commit is two atomic file rewrites.
-        Returns the reorg event dict (also appended to self.reorgs)."""
-        old_tip = self.best
-        fork = self._common_ancestor(old_tip, new_tip)
-        fork_h = self.index[fork]["height"]
-        old_h = self.index[old_tip]["height"]
-        new_h = self.index[new_tip]["height"]
-
-        # 1. disconnect on a copy
-        utxo_copy = {k: list(v) for k, v in self.utxo.items()}
-        h = old_tip
-        while h != fork:
-            self._disconnect_utxo(utxo_copy, self.undo[h])
-            h = self.index[h]["prev"]
-
-        # 2. connect the new branch on the copy, fully validating
-        branch = []
-        h = new_tip
-        while h != fork:
-            branch.append(h)
-            h = self.index[h]["prev"]
-        branch.reverse()
-        undo_new = {}
-        for bh in branch:
-            rec = self.index[bh]
-            blk = {k: rec[k] for k in ("version", "prev", "merkle", "time",
-                                       "bits", "nonce", "hash", "txs")}
-            ok, reason = self.validate_block_full(blk, rec["height"],
-                                                  utxo_copy)
-            if not ok:
-                # Branch is invalid: it can never become active. Mark the
-                # failing block (and the tip that triggered this attempt --
-                # children inherit via submit_block).
-                self.invalid.add(bh)
-                self.invalid.add(new_tip)
-                self.tips.pop(new_tip, None)
-                raise ValueError(f"reorg branch invalid at "
-                                 f"h={rec['height']}: {reason}")
-            undo_new[bh] = self._connect_utxo(utxo_copy, blk["txs"],
-                                             rec["height"])
-
-        # 3. commit: atomic rewrite of active.jsonl, then state.json
-        new_active = []
-        h = new_tip
-        while True:
-            rec = self.index[h]
-            new_active.append({"height": rec["height"],
-                               "hash": h.hex(),
-                               "work_cum": rec["work_cum"],
-                               "block": enc_block(
-                                   {k: rec[k] for k in
-                                    ("version", "prev", "merkle", "time",
-                                     "bits", "nonce", "hash", "txs")})})
-            if h == self.genesis_hash:
-                break
-            h = rec["prev"]
-        new_active.reverse()
-        fd, tmp = tempfile.mkstemp(dir=self.cdir, prefix=".active-")
+    def _check_activation_commitment(self, txs, height):
+        """At the snapshot activation height the coinbase scriptSig must
+        push the snapshot hash (32 bytes). Returns None if OK (or not the
+        activation height), else an error string."""
+        if height != self._activation_height:
+            return None
+        if self._snapshot_hash is None:
+            return "activation height reached but snapshot not loaded"
         try:
-            with os.fdopen(fd, "w") as f:
-                for rec in new_active:
-                    f.write(json.dumps(rec) + "\n")
-                f.flush()
-                os.fsync(f.fileno())
-            os.replace(tmp, self.active_path)
-        except BaseException:
+            cb = txs[0]
+            # scriptSig starts after: version(4) + vin_count(1) +
+            # prev_txid(32) + prev_vout(4)
+            off = 4 + 1 + 32 + 4
+            slen = cb[off]
+            off += 1
+            script = cb[off:off + slen]
+            pushes = _parse_pushes(script)
+        except Exception:
+            return "activation block: cannot parse coinbase scriptSig"
+        if self._snapshot_hash not in pushes:
+            return "activation block: coinbase missing snapshot hash commitment"
+        return None
+
+    # -------------------------------------------------------------- submit
+    def submit_block(self, blk):
+        """Validate and store a block. Returns {"accepted": bool,
+        "event": {...}|None, "reason": str}."""
+        use_network(self.net)
+        try:
+            prev_hash = bytes(blk["prev"])
+            txs = [bytes(t) for t in blk["txs"]]
+        except Exception:
+            return {"accepted": False, "event": None,
+                    "reason": "malformed block fields"}
+        auxpow = None
+        if blk.get("auxpow") is not None:
             try:
-                os.unlink(tmp)
-            except OSError:
-                pass
-            raise
-
-        # 4. swap live state
-        disconnected_txs = []  # non-coinbase txs from orphaned blocks
-        h = old_tip
-        while h != fork:
-            rec = self.index[h]
-            disconnected_txs.extend(rec["txs"][1:])
-            h = rec["prev"]
-        connected_ids = set()
-        for bh in branch:
-            for tx in self.index[bh]["txs"][1:]:
-                connected_ids.add(txid_internal(tx).hex())
-
-        self.utxo = utxo_copy
-        # rebuild undo map: keep fork..genesis entries, add the new branch
-        new_undo = {hh: u for hh, u in self.undo.items()
-                    if self.index[hh]["height"] <= fork_h}
-        new_undo.update(undo_new)
-        self.undo = new_undo
-        self.best = new_tip
-
-        ev = {"type": "reorg", "at": time.time(), "fork_height": fork_h,
-              "depth": old_h - fork_h, "new_depth": new_h - fork_h,
-              "old_tip": old_tip.hex(), "new_tip": new_tip.hex(),
-              "disconnected_txs": [txid_internal(t).hex()
-                                   for t in disconnected_txs],
-              "connected_txids": sorted(connected_ids)}
-        self.reorgs.append(ev)
-        self._save_state()
-        # return raw txs too for mempool resurrection (not persisted)
-        ev["disconnected_raw"] = disconnected_txs
-        return ev
-
-    # ------------------------------------------------------------ queries
-    def tip(self):
-        r = self.index[self.best]
-        return {"height": r["height"], "hash": self.best.hex(),
-                "work_cum": r["work_cum"]}
-
-    def tips_info(self):
-        return [{"hash": h.hex(), "height": ht,
-                 "work_cum": self.index[h]["work_cum"]}
-                for h, ht in self.tips.items()]
-
-    def chain_hashes(self):
-        """Public: hashes of the canonical (active) chain, tip-first."""
-        return self._active_chain_hashes()
-
-    def locator(self):
-        """Block locator for getheaders: tip, then exponential step-back."""
-        out, h, step, n = [], self.best, 1, 0
-        while True:
-            out.append(h)
-            if h == self.genesis_hash:
-                break
-            for _ in range(step):
-                h = self.index[h]["prev"]
-                if h == self.genesis_hash:
-                    break
-            n += 1
-            if n > 10:
-                step *= 2
-        if out[-1] != self.genesis_hash:
-            out.append(self.genesis_hash)
-        return out
-
-    def headers_since(self, locator: list, stop: bytes, limit: int = 2000):
-        """Headers after the newest locator entry we know, up to stop.
-
-        locator/stop are display-order hashes (wire convention); the
-        index is display-keyed too, so they compare directly. Returned
-        header dicts carry display-order prev/merkle (enc_headers'
-        contract).
-
-        Walks forward along the heaviest chain containing the start
-        block (not just the active chain), so forked peers can sync."""
-        start = None
-        for lh in locator:
-            if lh in self.index:
-                start = lh
-                break
-        if start is None:
-            start = self.genesis_hash
-        if stop == bytes(32):
-            stop = None
-        # children map
-        children = {}
-        for h, r in self.index.items():
-            children.setdefault(r["prev"], []).append(h)
-        for ch in children.values():
-            ch.sort(key=lambda h: self.index[h]["work_cum"], reverse=True)
-        out = []
-        cur = start
-        while len(out) < limit:
-            ch = children.get(cur)
-            if not ch:
-                break
-            cur = ch[0]  # heaviest child
-            r = self.index[cur]
-            out.append({k: r[k] for k in ("version", "prev", "merkle",
-                                          "time", "bits", "nonce")})
-            if stop is not None and cur == stop:
-                break
-        return out
+                ap = blk["auxpow"]
+                auxpow = {"parent_header": bytes(ap["parent_header"]),
+                          "parent_coinbase": bytes(ap["parent_coinbase"]),
+                          "coinbase_branch": [bytes(s) for s in
+                                              ap["coinbase_branch"]],
+                          "coinbase_index": int(ap["coinbase_index"])}
+            except Exception:
+                return {"accepted": False, "event": None,
+                        "reason": "malformed auxpow attachment"}
+        prev = self.index.get(prev_hash)
+        if prev is None:
+            return {"accepted": False, "event": None,
+                    "reason": "orphan: unknown prev"}
+        height = prev["height"] + 1
+        norm = {"version": blk["version"], "prev": prev_hash,
+                "merkle": bytes(blk["merkle"]), "time": blk["time"],
+                "bits": blk["bits"], "nonce": blk["nonce"], "txs": txs}
+        if auxpow is not None:
+            norm["auxpow"] = auxpow
+        hh = _header_hash(norm)
+        if hh in self.index:
+            # Already known (e.g. block arrived via both inv->getblock and
+            # a broadcast push). Reject cleanly instead of re-appending a
+            # duplicate record to the chain file.
+            return {"accepted": False, "event": None,
+                    "reason": "duplicate block"}
+        fork_utxo = self._fork_utxo(prev_hash)
+        path = self._path_to(prev_hash)
+        bad = self._check_activation_commitment(txs, height)
+        if bad:
+            return {"accepted": False, "event": None, "reason": bad}
+        # Spent-leaf candidate set: the parent path's spent pairs, as a
+        # copy — validation may add this block's pairs to it, but a
+        # rejected block must not pollute the active set.
+        if prev_hash == self._tip_hash:
+            candidate_spent = set(self.spent_pqh_pairs)
+        else:
+            candidate_spent = set()
+            for key in _scan_spent_pairs(path):
+                root_hex, idx = key.rsplit(":", 1)
+                candidate_spent.add((bytes.fromhex(root_hex), int(idx)))
+        if auxpow is not None:
+            bad = validate_auxpow(norm, prev, height, path, utxo=fork_utxo,
+                                  spent_pairs=candidate_spent)
+        else:
+            bad = validate_block(norm, prev, height, path, utxo=fork_utxo,
+                                 spent_pairs=candidate_spent)
+        if bad:
+            return {"accepted": False, "event": None, "reason": bad}
+        rec = dict(norm, height=height, hash=hh, txs=txs)
+        # append first: crash-safe, the record is fully validated
+        with open(self.chain_path, "a") as f:
+            f.write(json.dumps(_enc_rec(rec)) + "\n")
+        self._index_record(rec)
+        new_work = rec["work"]
+        if new_work > self._active_work:
+            # new best chain: reorg (or plain extension)
+            old_path = self._path_to(self._tip_hash)
+            new_path = self._path_to(hh)
+            fork = 0
+            while (fork < len(old_path) and fork < len(new_path)
+                   and old_path[fork]["hash"] == new_path[fork]["hash"]):
+                fork += 1
+            removed = old_path[fork:]
+            added = new_path[fork:]
+            # Deep-reorg guard (small-chain 51% protection): refuse to unwind
+            # more than max_reorg_depth blocks for a heavier branch — unless
+            # our own tip is stale, in which case we are catching up after
+            # downtime, not under attack.
+            max_depth = self.params.get("max_reorg_depth", 0)
+            if max_depth and len(removed) > max_depth:
+                spacing = self.params.get("daa_spacing",
+                                          self.params["target_spacing"])
+                tip_time = old_path[-1]["time"] if old_path else 0
+                stale = tip_time < time.time() - 2 * max_depth * spacing
+                if not stale:
+                    return {"accepted": False, "event": None,
+                            "reason": "reorg too deep"}
+            # fork_utxo is already a private UtxoSet (tip copy or fresh
+            # side-branch replay): apply the block onto it directly.
+            apply_block_txs(txs, fork_utxo, height)
+            self.utxo = fork_utxo
+            self._tip_hash = hh
+            self._active_work = new_work
+            # Commit the spent-leaf set in place (mempool holds a
+            # reference to this set) and persist it with real txid/height
+            # references from the new active path.
+            self.spent_pqh_pairs.clear()
+            self.spent_pqh_pairs.update(candidate_spent)
+            new_path = self._path_to(hh)
+            if self.spent_registry is not None:
+                self.spent_registry.replace_with(
+                    _scan_spent_pairs(new_path))
+            self._select_best_tip()
+            event = {"height": height, "hash": hh.hex(),
+                     "added": added, "removed": removed}
+            return {"accepted": True, "event": event, "reason": "ok"}
+        self._select_best_tip()
+        return {"accepted": True, "event": None, "reason": "side branch"}

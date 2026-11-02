@@ -461,3 +461,8 @@ Email: holedozer@icloud.com
 - [Issues](https://github.com/Holedozer1229/Excalibur-EXS/issues)
 
 ---
+
+## EXCAL fork — updated 2026-11-01
+Live Python fork code is in `genesis-fork/` (see `excalibur.py`). Fork block 0 = Bitcoin block 968,698 header.
+HTLC activated at height 36010, fusion lock at height 50,000 only. No completed EXCAL/BTC atomic swap yet — see `website/EXCAL-STATUS-2026-11-01.md`.
+Website: https://www.excaliburcrypto.com (GitHub Pages, this repo).
