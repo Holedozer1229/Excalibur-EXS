@@ -15,6 +15,6 @@
   },
   "dependencies": {
     "@chainlink/contracts": "^0.8.0",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.4.5"
   }
 }
