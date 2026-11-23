@@ -1,0 +1,30 @@
+{
+  "spec_name": "EXS prophecy commitment vector",
+  "spec_version": "1.0-candidate",
+  "status": "candidate-frozen-for-review; not activated as consensus",
+  "encoding": "UTF-8",
+  "normalization": "none",
+  "separator": "single ASCII space (0x20) between words",
+  "trailing_newline": false,
+  "axiom": "sword legend pull magic kingdom artist stone destroy forget fire steel honey question",
+  "axiom_byte_length": 85,
+  "axiom_sha256": "87da299f5969e0e38e85840ff13b9aef2044dbfcfed1295a6d042a3bcc6b9181",
+  "axiom_sha512": "96b294662809fd0f2161b82e99c17d5dd0298acf67c121139f06801c1491ebf9ef29b7cf86d1387f4e0f35a07b752fe261ce5049328114d15adcecba705a94e4",
+  "no_separator_sha256": "bae594495c21f9ba2a0707f56e31f92f763d4570da174e8f28b629c72b5a6e79",
+  "no_separator_sha512": "88c11dc1c4a2b18fd65d94c5de70a7b12cb4e4de8c3b17fd0a01ce7890505b6c987cda46e5a5bece7eb765692b712cb7fef85673195b1b8357b5dbaafa227504",
+  "sovereign_seed": {
+    "algorithm": "PBKDF2-HMAC-SHA512",
+    "password_encoding": "UTF-8 exact axiom bytes",
+    "salt_ascii": "EXCALIBUR-SOVEREIGN-GENESIS-v1",
+    "iterations": 600000,
+    "dklen": 32,
+    "seed_hex": "582946fd65d357fa6d73dbf071fe70f2a2698ec253a6bec584a86ef500bcfa2d"
+  },
+  "notes": [
+    "The axiom is public protocol text, not secret entropy or a wallet seed.",
+    "The selected candidate digest matches SHA-256 of the exact UTF-8 bytes and the normalized SHA-256 because this axiom is already lowercase and single-spaced.",
+    "The no-separator digests are separate, non-canonical candidates and must not be substituted.",
+    "The seed is a public deterministic anchor/commitment, never a private key.",
+    "Before consensus activation, independent implementations must reproduce every vector and the protocol must specify the field/version semantics."
+  ]
+}
