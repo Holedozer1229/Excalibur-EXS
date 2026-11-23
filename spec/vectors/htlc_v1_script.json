@@ -1,0 +1,42 @@
+{
+  "address": "exs1pgl6upuxe8kz6jlv93fwrky2qgyw6tgll4pcdyazd978zsf46sqms7fhvnh",
+  "address_hrp_draft": "exs",
+  "address_note": "Bech32m address under the DRAFT HRP 'exs' from docs/EXS_NETWORK_PARAMETERS_DRAFT_0_1.md. The HRP is provisional and unregistered; the address is a test vector only, not a funded or spendable address.",
+  "claim_xonly_pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+  "computed_by": "omega.htlc.htlc_output (stdlib-only reference implementation); reproduced by tests/test_omega_htlc_v1.py",
+  "control_block": "c050929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0",
+  "internal_key": "50929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0",
+  "internal_key_note": "BIP-341 NUMS point H = lift_x(SHA256(uncompressed encoding of G)); discrete logarithm unknown, so no key-path spend exists for this output.",
+  "limitations": [
+    "Schnorr signatures for the claim/refund branches are not yet demonstrated end-to-end (BIP-340 signing/verification itself passes all official vectors in tests/test_omega_bip340_vectors.py; the BIP-342 tapscript execution and sighash construction for this leaf are still open).",
+    "Cross-language reproduction of this commitment vector has not yet been done.",
+    "No consensus implementation or activation is included."
+  ],
+  "output_pubkey": "47f5c0f0d93d85a97d858a5c3b1140411da5a3ffa870d2744d2f8e2826ba8037",
+  "output_pubkey_parity": 0,
+  "refund_locktime_height": 500000,
+  "refund_xonly_pubkey": "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+  "script_hex": "6382012088a8207c83e9955142c0c14e6a38e629aa78e455c5341eb1ea4870dd4938d236074ea5882079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ac670320a107b17520f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9ac68",
+  "script_length_bytes": 116,
+  "script_pubkey": "512047f5c0f0d93d85a97d858a5c3b1140411da5a3ffa870d2744d2f8e2826ba8037",
+  "secret_hex": "4558532048544c43206b6e6f776e2d616e737765722073656372657420763100",
+  "secret_sha256": "7c83e9955142c0c14e6a38e629aa78e455c5341eb1ea4870dd4938d236074ea5",
+  "spec": "ExcalOmega HTLC v1",
+  "status": "draft serialization + Taproot commitment vector; not consensus activation",
+  "tapleaf_hash": "d5f41c4f765a472b87541f93d49bf5a850f889ddcc645c6f476b2fa72567af00",
+  "tapleaf_version": "c0",
+  "tweak": "753e24e05efd5522da869c1c648f8977f873e2bd5fe1d65664b16b3e96d4bf3f",
+  "witness_claim_shape": [
+    "signature64",
+    "preimage32",
+    "01",
+    "tapscript",
+    "control_block"
+  ],
+  "witness_refund_shape": [
+    "signature64",
+    "empty_vector",
+    "tapscript",
+    "control_block"
+  ]
+}
