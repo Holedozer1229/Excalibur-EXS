@@ -12,6 +12,51 @@ The current EXS repository must be treated as a research prototype until the cry
 
 The rebuild is a clean, reviewable implementation. Existing code may be retained only after its behavior is isolated, specified, and shown to pass independent tests. A passing legacy self-test is not evidence of BIP-340/341 conformance or production security.
 
+## 1A. Progress log — 2026-11-23 (PR #67)
+
+What changed on this branch, and what it does and does not prove:
+
+- **Audit reproduced twice, reconciled.** The branch reproduction
+  (`docs/EXS_REPRODUCED_AUDIT_2026-11-23.md`) and an independent
+  reproduction agree on substance: 48 of 67 finding-level claims
+  CONFIRMED, 19 CORRECTED (line numbers, attribution, search
+  scope, two kernel-description errors), 0 NOT FOUND, 1 partially
+  NOT VERIFIABLE (btcd's `ComputeTaprootOutputKey` 2nd-argument
+  expectation — no vendored btcd in-tree). No CRITICAL/HIGH
+  finding was refuted. Reconciliation:
+  `docs/EXS_AUDIT_RECONCILIATION_2026-11-23.md`.
+- **Reference primitives implemented (`omega/`, stdlib-only
+  Python).** BIP-340 Schnorr, BIP-341 Taproot, BIP-350 Bech32m,
+  CSPRNG-only key generation, and the HTLC v1 commitment. The
+  suite (`tests/test_omega_*.py`, 45 tests total with the two
+  pre-existing vector files) passes: all 19 official BIP-340
+  vectors, all 7 official BIP-341 wallet vectors (scriptPubKey +
+  key-path spending), official BIP-350 Bech32m vectors, and the
+  pinned HTLC v1 vector extended to the full Taproot commitment.
+- **Domain registry published** (`docs/EXS_DOMAIN_REGISTRY_V0_1.md`):
+  adopted BIP tags, the frozen prophecy candidate, and the
+  forbidden constructions (axiom-derived keys, XOR tweaks,
+  fabricated addresses, timestamp "signatures", float consensus).
+- **Draft network parameters published**
+  (`docs/EXS_NETWORK_PARAMETERS_DRAFT_0_1.md`): provisional HRPs
+  `exs` / `texs`, NUMS internal key pinned, chain ID / magic /
+  genesis unassigned, genesis/supply contradictions recorded
+  unresolved.
+- **HTLC v1 commitment completed** (serialization layer only):
+  NUMS internal key pinned, tweak/output key/control block/
+  scriptPubKey/draft-HRP address computed and recorded in
+  `spec/vectors/htlc_v1_script.json`.
+
+What this does NOT prove: `omega/` is reference code — not
+constant-time, not independently reviewed, not production custody.
+BIP-342 tapscript execution, Trifold/FROST, consensus/PoW
+selection, genesis construction, node/P2P, and chain-backed
+Rosetta are all still open. The unsafe legacy paths
+(`warchest_vault.py`, `forge_treasury_key.py`,
+`cmd/exs-wallet/wallet_cli.py`, `pkg/foundry/exs_foundry.py`,
+`pkg/bitcoin/taproot.go`) are NOT fixed and remain blocked; they
+are replaced, not repaired, by `omega/`.
+
 ## 2. Hard safety invariants
 
 1. Public prophecy words, public genesis parameters, timestamps, nonces, hashes, and public repository contents MUST NOT be used as entropy or passwords for private keys.
@@ -206,3 +251,13 @@ This draft does not:
 ## HTLC is a first-class ExcalOmega feature
 
 The proposed native Taproot claim/refund contract is specified in [`EXCALOMEGA_HTLC_V1_DRAFT.md`](EXCALOMEGA_HTLC_V1_DRAFT.md), with a pinned script/TapLeaf vector in [`spec/vectors/htlc_v1_script.json`](../spec/vectors/htlc_v1_script.json) and serialization tests in [`tests/test_htlc_v1_vectors.py`](../tests/test_htlc_v1_vectors.py). This is a proposed design, not an implementation or activation. The legacy `genesis-fork/` structural HTLC is historical research and is not reused as the normative Omega design. Genesis remains blocked until BIP-340/341/342 implementation, NUMS internal-key construction, control-block validation, and cross-language vectors pass independent review.
+
+Status 2026-11-23: the BIP-340/341 implementation and the NUMS
+internal-key construction now exist as reference code (`omega/`,
+all official BIP-340/341/350 vectors passing), the control block
+is validated against the pinned vector, and the full Taproot
+commitment (tweak, output key, scriptPubKey, draft-HRP address)
+is recorded in the vector file. Still open: BIP-342 tapscript
+execution, the TapSighash construction for the HTLC leaf,
+claim/refund spend tests, cross-language vectors, independent
+review, and activation.

@@ -59,11 +59,11 @@ The selector is exactly `0x01` for claim and the empty vector for refund. Other 
 The output MUST be a witness-v1 32-byte P2TR program derived using BIP-341:
 - TapLeaf version `0xc0` and the exact tapscript above.
 - The BIP-341 tagged `TapLeaf` hash and canonical CompactSize script length.
-- A protocol-fixed NUMS internal key whose discrete logarithm is not known, so the key path cannot bypass the HTLC branches.
+- A protocol-fixed NUMS internal key whose discrete logarithm is not known, so the key path cannot bypass the HTLC branches. The NUMS point is PINNED: `H = lift_x(0x50929b74c1a04954b78b4b6035e97a5e078a5a0f28ec96d547bfee9ace803ac0)` (BIP-341, the SHA-256 of the standard uncompressed encoding of G as X coordinate; re-derived from first principles in `tests/test_omega_htlc_v1.py`). A key-path bypass is a consensus failure. The implementation MUST prove that HTLC outputs cannot be spent through an alternate key-path signature.
 - BIP-341 tagged `TapTweak` construction and the standard output-key parity/control-block rules.
-- Bech32m address encoding with the ExcalOmega network HRP, to be assigned in the network-parameters specification.
+- Bech32m address encoding with the ExcalOmega network HRP. The HRP is DRAFT-assigned as `exs` (mainnet) / `texs` (testnet) in `docs/EXS_NETWORK_PARAMETERS_DRAFT_0_1.md` — provisional and unregistered, for test vectors only.
 
-The NUMS point, HRP, network magic, activation height, and exact serialized test vectors MUST be pinned before consensus activation. A key-path bypass is a consensus failure. The implementation MUST prove that HTLC outputs cannot be spent through an alternate key-path signature.
+The full Taproot commitment for the pinned vector (tweak, output key, control block, scriptPubKey, draft-HRP address) is computed by the reference implementation in `omega/htlc.py` and recorded in `spec/vectors/htlc_v1_script.json` (tweak `753e24e0…d4bf3f`, output key `47f5c0f0…ba8037`, control block `c050929b74…803ac0`, scriptPubKey `512047f5c0f0…ba8037`, address `exs1pgl6upuxe8kz6jlv93fwrky2qgyw6tgll4pcdyazd978zsf46sqms7fhvnh`). The control block is verified to reconstruct exactly this output key (`tests/test_omega_htlc_v1.py`). Network magic and activation height remain unassigned; no consensus implementation or activation is included.
 
 ## 3. Contract identifier and metadata
 
@@ -130,7 +130,18 @@ Before activation, implement and pass:
 - fuzzing of witness parsing, script numbers, control blocks, and boundary heights;
 - independent cryptographic review and a consensus activation proposal.
 
-No genesis mining, treasury funding, or production HTLC funds are permitted until all gates pass.
+Status 2026-11-23 (PR #67): the serialization, TapLeaf,
+TapTweak/output-key/control-block and Bech32m gates now have
+evidence — `omega/` passes all 19 official BIP-340 vectors, all 7
+official BIP-341 wallet vectors (including control blocks and
+key-path spending), the official BIP-350 Bech32m vectors, and the
+pinned HTLC v1 script/TapLeaf vector, extended to the full Taproot
+commitment (`spec/vectors/htlc_v1_script.json`). Still open:
+BIP-342 tapscript execution and the TapSighash construction for
+this leaf, claim/refund spend tests, cross-language vectors,
+fuzzing, independent review, and activation. No genesis mining,
+treasury funding, or production HTLC funds are permitted until all
+gates pass.
 
 ## 8. Scope of this draft
 
