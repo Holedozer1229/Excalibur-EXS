@@ -1,0 +1,43 @@
+name: ExcalOmega vector tests
+
+on:
+  pull_request:
+    paths:
+      - "tests/test_prophecy_commitment_vectors.py"
+      - "tests/test_htlc_v1_vectors.py"
+      - "spec/vectors/**"
+      - ".github/workflows/exs-vector-tests.yml"
+  push:
+    branches: [security/rebuild-spec-v0.1]
+    paths:
+      - "tests/test_prophecy_commitment_vectors.py"
+      - "tests/test_htlc_v1_vectors.py"
+      - "spec/vectors/**"
+      - ".github/workflows/exs-vector-tests.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: exs-vector-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  vectors:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Compile vector tests
+        run: python -m compileall -q tests/test_prophecy_commitment_vectors.py tests/test_htlc_v1_vectors.py
+      - name: Run known-answer tests
+        run: |
+          python -m unittest discover -s tests -p "test_prophecy_commitment_vectors.py" -v
+          python -m unittest discover -s tests -p "test_htlc_v1_vectors.py" -v
