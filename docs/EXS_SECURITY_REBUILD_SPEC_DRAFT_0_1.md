@@ -201,3 +201,8 @@ This draft does not:
 - authorize treasury funding, token sale, premine, or genesis mining.
 
 **Release principle:** No genesis without reproducible vectors. No funds without demonstrated spendability. No security claim without independent verification.
+
+
+## HTLC is a first-class ExcalOmega feature
+
+The proposed native Taproot claim/refund contract is specified in [`EXCALOMEGA_HTLC_V1_DRAFT.md`](EXCALOMEGA_HTLC_V1_DRAFT.md), with a pinned script/TapLeaf vector in [`spec/vectors/htlc_v1_script.json`](../spec/vectors/htlc_v1_script.json) and serialization tests in [`tests/test_htlc_v1_vectors.py`](../tests/test_htlc_v1_vectors.py). This is a proposed design, not an implementation or activation. The legacy `genesis-fork/` structural HTLC is historical research and is not reused as the normative Omega design. Genesis remains blocked until BIP-340/341/342 implementation, NUMS internal-key construction, control-block validation, and cross-language vectors pass independent review.
